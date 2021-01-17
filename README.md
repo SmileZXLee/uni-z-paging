@@ -63,11 +63,7 @@
 * 设置自定义emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理
 
 ```html
-<z-paging
-  ref="paging"
-  @query="queryList"
-  :list.sync="dataList"
-  style="height: 100%"
+<z-pagingref="paging" @query="queryList" :list.sync="dataList" style="height: 100%"
 >
   <!-- 设置自己的emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
   <empty-view slot="empty"></empty-view>
