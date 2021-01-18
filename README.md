@@ -12,50 +12,50 @@
 
 ```html
 <template>
-	<view class="content">
-		<z-paging ref="paging" @query="queryList" :list.sync="dataList" style="height: 100%">
-			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
-			<view>
-				<view class="item" v-for="(item,index) in dataList">
-					<view class="item-title">{{item.title}}</view>
-				</view>
-			</view>
-		</z-paging>
-	</view>
+    <view class="content">
+        <z-paging ref="paging" @query="queryList" :list.sync="dataList" style="height: 100%">
+            <!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
+            <view>
+                <view class="item" v-for="(item,index) in dataList">
+                    <view class="item-title">{{item.title}}</view>
+                </view>
+            </view>
+        </z-paging>
+    </view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				dataList: [],
-			};
-		},
-		onLoad() {
-			//在Page的onLoad()方法中无法同步获取this.$refs，需要延时1毫秒再调用
-			setTimeout(() => {
-				this.$refs.paging.reload();
-			}, 1);
-		},
-		methods: {
-			queryList(pageNo, pageSize) {
-				this.$request.queryList(pageNo, pageSize, (data) => {
-					this.$refs.paging.addData(data);
-				});
-			},
-		},
-	};
+    export default {
+        data() {
+            return {
+                dataList: [],
+            };
+        },
+        onLoad() {
+            //在Page的onLoad()方法中无法同步获取this.$refs，需要延时1毫秒再调用
+            setTimeout(() => {
+                this.$refs.paging.reload();
+            }, 1);
+        },
+        methods: {
+            queryList(pageNo, pageSize) {
+                this.$request.queryList(pageNo, pageSize, (data) => {
+                    this.$refs.paging.addData(data);
+                });
+            },
+        },
+    };
 </script>
 
 <style scoped>
-	/* 注意，父元素需要固定高度，z-paging的height:100%才会生效 */
-	page {
-		height: 100%;
-	}
+    /* 注意，父元素需要固定高度，z-paging的height:100%才会生效 */
+    page {
+        height: 100%;
+    }
 
-	.content {
-		height: 100%;
-	}
+    .content {
+        height: 100%;
+    }
 </style>
 ```
 
@@ -71,14 +71,14 @@
 
 ```html
 <z-paging ref="paging" @query="queryList" :list.sync="dataList" style="height: 100%">
-	<!-- 设置自己的emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
-	<empty-view slot="empty"></empty-view>
+    <!-- 设置自己的emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
+    <empty-view slot="empty"></empty-view>
 
-	<view>
-		<view class="item" v-for="(item,index) in dataList">
-			<view class="item-title">{{item.title}}</view>
-		</view>
-	</view>
+    <view>
+        <view class="item" v-for="(item,index) in dataList">
+            <view class="item-title">{{item.title}}</view>
+        </view>
+    </view>
 </z-paging>
 ```
 
@@ -88,14 +88,14 @@
 
 ```html
 <z-paging ref="paging" @query="queryList" :list.sync="dataList" style="height: 100%">
-	<!-- 设置自己的emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
-	<empty-view slot="empty"></empty-view>
+    <!-- 设置自己的emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
+    <empty-view slot="empty"></empty-view>
 
-	<view>
-		<view class="item" v-for="(item,index) in dataList">
-			<view class="item-title">{{item.title}}</view>
-		</view>
-	</view>
+    <view>
+        <view class="item" v-for="(item,index) in dataList">
+            <view class="item-title">{{item.title}}</view>
+        </view>
+    </view>
 </z-paging>
 ```
 
@@ -105,13 +105,13 @@
 
 ```html
 <z-paging ref="paging" @query="queryList" :list.sync="dataList" style="height: 100%">
-	<view>
-		<view class="item" v-for="(item,index) in dataList">
-			<view class="item-title">{{item.title}}</view>
-		</view>
-	</view>
-	<view style="background-color: red" slot="loadingMoreNoMore">这是完全自定义的没有更多数据view</view>
-</z-paging>
+    <view>
+        <view class="item" v-for="(item,index) in dataList">
+            <view class="item-title">{{item.title}}</view>
+        </view>
+    </view>
+    <view style="background-color: red" slot="loadingMoreNoMore">这是完全自定义的没有更多数据view</view>
+</z-paging
 ```
 
 
