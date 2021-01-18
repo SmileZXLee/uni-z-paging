@@ -2,6 +2,8 @@
 
 > 【uni-app自动分页器】超简单！仅需三步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view等。
 
+## 在DCloud插件市场中访问：https://ext.dcloud.net.cn/plugin?id=3935
+
 # 基本使用
 
 * ①在`<template>` 中使用@query绑定js中分页请求的方法(`z-paging`会将计算好的pageNo和pageSize两个参数传递到此方法中)，然后通过 :list.sync绑定列表for循环的list。
