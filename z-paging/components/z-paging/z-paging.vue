@@ -22,7 +22,7 @@ getList(pageNo,pagSize){
 ```js
 this.$refs.paging.reload();
 ```
-注意：在Page的onLoad()方法中无法同步获取this.$refs，请加一个setTimeOut再获取
+注意：如果需要在在Page的onLoad()方法中使用（默认自动会调用），请加一个setTimeOut再调用
 ```js
 setTimeout(()=>{
 	this.$refs.paging.reload();
@@ -33,7 +33,7 @@ setTimeout(()=>{
 若未确定其高度而是根据具体内容将其撑高，则它永远滚动不到底部，因为它不存在[底部]的概念，因为它会无限[长高]
 
  -->
-<template name="z-paging">
+<template name="z-paging" style="height: 100%;">
 	<scroll-view scroll-y="true" class="scroll-view" :enable-back-to-top="enableBackToTop" :show-scrollbar="showScrollbar"
 	 :refresher-enabled="refresherEnabled" :refresher-threshold="refresherThreshold" :refresher-triggered="refresherTriggered"
 	 @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh">
@@ -43,7 +43,7 @@ setTimeout(()=>{
 		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus==1&&$slots.loadingMoreLoading&&showLoadingMore" name="loadingMoreLoading" />
 		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus==2&&$slots.loadingMoreNoMore&&showLoadingMore" name="loadingMoreNoMore" />
 		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus==3&&$slots.loadingMoreFail&&showLoadingMore" name="loadingMoreFail" />
-		<view @click="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText" class="load-more-text">{{ownLoadingMoreText}}</view>
+		<view @click="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText" class="load-more-text" :style="[loadingMoreCustomStyle]">{{ownLoadingMoreText}}</view>
 	</scroll-view>
 </template>
 
@@ -54,7 +54,9 @@ setTimeout(()=>{
 	 * @tutorial https://github.com/SmileZXLee/uni-z-paging
 	 * @property {Number} default-page-no 自定义pageNo，默认为1
 	 * @property {Number} default-page-size 自定义pageSize，默认为15
+	 * @property {Boolean} mounted-auto-call-reload z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
 	 * @property {String} loading-more-text 自定义底部加载更多文字
+	 * @property {Object} loading-more-custom-style 自定义底部加载更多样式
 	 * @property {Boolean} loading-more-enabled 是否启用加载更多数据(含滑动到底部加载更多数据和点击加载更多数据)，默认为是
 	 * @property {Boolean} to-bottom-loading-more-enabled 是否启用滑动到底部加载更多数据
 	 * @property {String} loading-more-default-text 滑动到底部"默认"文字，默认为【点击加载更多】
@@ -63,8 +65,8 @@ setTimeout(()=>{
 	 * @property {String} loading-more-fail-text 滑动到底部"加载失败"文字，默认为【加载失败，点击重新加载】
 	 * @property {String} show-default-loading-moretext 是否显示默认的加载更多text，默认为是
 	 * @property {Boolean} hide-empty-view 是否强制隐藏空数据图，默认为否
-	 * @property {Boolean} show-scrollbar 控制是否出现滚动条
-	 * @property {Boolean} enable-back-to-top iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向
+	 * @property {Boolean} show-scrollbar 控制是否出现滚动条，默认为否
+	 * @property {Boolean} enable-back-to-top iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向，默认为否
 	 * @property {Boolean} refresher-enabled 是否开启自定义下拉刷新，默认为是
 	 * @property {Number} refresher-threshold 设置自定义下拉刷新阈值，默认为45
 	 * @property {String} refresher-default-style 设置自定义下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式，默认为black
@@ -115,12 +117,26 @@ setTimeout(()=>{
 					return 15;
 				},
 			},
+			//z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
+			mountedAutoCallReload: {
+				type: Boolean,
+				default: function() {
+					return true;
+				},
+			},
 			//自定义底部加载更多文字
 			loadingMoreText: {
 				type: String,
 				default: function() {
 					return "";
 				},
+			},
+			//自定义底部加载更多样式
+			loadingMoreCustomStyle: {
+				type: Object,
+				default() {
+					return {}
+				}
 			},
 			//是否启用加载更多数据(含滑动到底部加载更多数据和点击加载更多数据)，默认为是
 			loadingMoreEnabled: {
@@ -178,14 +194,14 @@ setTimeout(()=>{
 					return false;
 				},
 			},
-			//控制是否出现滚动条
+			//控制是否出现滚动条，默认为否
 			showScrollbar: {
 				type: Boolean,
 				default: function() {
 					return false;
 				},
 			},
-			//iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向
+			//iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向，默认为否
 			enableBackToTop: {
 				type: Boolean,
 				default: function() {
@@ -213,6 +229,9 @@ setTimeout(()=>{
 					return "black";
 				},
 			},
+		},
+		mounted() {
+			this.reload();
 		},
 		watch: {
 			totalData(newVal, oldVal) {

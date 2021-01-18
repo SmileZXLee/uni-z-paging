@@ -1,1 +1,10 @@
 .DS_Store
+build/*
+!build/icons
+npm-debug.log
+npm-debug.log.*
+yarn.lock
+thumbs.db
+!.gitkeep
+unpackage/*
+/unpackage
