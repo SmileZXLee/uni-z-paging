@@ -3,7 +3,7 @@
 		<z-paging ref="paging" @query="queryList" :list.sync="dataList" style="height: 100%;">
 			<!-- 设置自定义emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
 			<empty-view slot="empty"></empty-view>
-			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为solt插入有数量限制 -->
+			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view>
 				<view class="item" v-for="(item,index) in dataList" @click="itemClick(item)">
 					<view class="item-title">{{item.title}}</view>
@@ -42,7 +42,7 @@
 </script>
 
 <style scoped>
-	/* 注意，父元素需要固定高度，z-paging的height:100%才会生效 */
+	/* 注意，父节点需要固定高度，z-paging的height:100%才会生效 */
 	page{
 		height: 100%;
 	}

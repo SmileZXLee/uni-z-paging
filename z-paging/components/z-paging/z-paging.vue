@@ -5,7 +5,7 @@
 1.在html中：
 其中@query绑定js中分页请求的方法，:list.sync绑定列表for循环的list.
 <paging @query="getList" :list.sync="list" ref="paging" style="height: 100%;">
-	这里面写需要分页的list，由于solt有数量限制，建议在这里面的外层套一层非循环创建的view，如:
+	这里面写需要分页的list，由于slot有数量限制，建议在这里面的外层套一层非循环创建的view，如:
 	<view class="data-list">
 		<view class="data-item" v-for="(item,index) in list" :key="index"></view>
 	</view>
@@ -68,7 +68,6 @@ setTimeout(()=>{
 	 * @property {Boolean} refresher-enabled 是否开启自定义下拉刷新，默认为是
 	 * @property {Number} refresher-threshold 设置自定义下拉刷新阈值，默认为45
 	 * @property {String} refresher-default-style 设置自定义下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式，默认为black
-	 * @property {String} empty-view-is 空数据图的组件名，无法使用easycom，建议通过：<view slot="empty">空数据内容</view>引入空数据图
 	 * @event {Function} addData 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认为是)
 	 * @event {Function} reload 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果
 	 * @event {Function} endRefresh 手动停止下拉刷新加载
