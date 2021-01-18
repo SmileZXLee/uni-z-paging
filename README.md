@@ -1,16 +1,20 @@
-# uni-z-paging
+# z-paging
 
-> 【uni-app自动分页组件】使用少量的代码轻松完成完整分页逻辑(下拉刷新、上拉加载更多)
+> 【uni-app自动分页器】超简单！仅需三步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view等。
 
 # 基本使用
 
-* 使用@query绑定js中分页请求的方法，:list.sync绑定列表for循环的list即可
+* ①在`<template>` 中使用@query绑定js中分页请求的方法(`z-paging`会将计算好的pageNo和pageSize两个参数传递到此方法中)，然后通过 :list.sync绑定列表for循环的list。
+* ②在请求结果回调中，通过调用`z-paging`的`addData()`方法，将请求返回的数组传递给`z-paging`处理
+* ③在`onLoad()`中调用`z-paging`的`reload()`方法。
+
+#### 【注意】z-paging必须有确定的高度！否则上拉加载更多将无法触发，请确保已设置z-paging的高度，并且z-paging的父节点也有确定的高度！！
 
 ```html
 <template>
 	<view class="content">
 		<z-paging ref="paging" @query="queryList" :list.sync="dataList" style="height: 100%">
-			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为solt插入有数量限制 -->
+			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view>
 				<view class="item" v-for="(item,index) in dataList">
 					<view class="item-title">{{item.title}}</view>
@@ -55,6 +59,10 @@
 </style>
 ```
 
+| 效果演示                                                     |
+| ------------------------------------------------------------ |
+| ![](http://www.zxlee.cn/github/uni-z-paging/uni-z-paging.gif) |
+
 
 
 ## 设置自定义emptyView组件
@@ -67,7 +75,7 @@
 	<empty-view slot="empty"></empty-view>
 
 	<view>
-		<view class="item" v-for="(item,index) in dataList" @click="itemClick(item)">
+		<view class="item" v-for="(item,index) in dataList">
 			<view class="item-title">{{item.title}}</view>
 		</view>
 	</view>
@@ -84,7 +92,7 @@
 	<empty-view slot="empty"></empty-view>
 
 	<view>
-		<view class="item" v-for="(item,index) in dataList" @click="itemClick(item)">
+		<view class="item" v-for="(item,index) in dataList">
 			<view class="item-title">{{item.title}}</view>
 		</view>
 	</view>
@@ -98,7 +106,7 @@
 ```html
 <z-paging ref="paging" @query="queryList" :list.sync="dataList" style="height: 100%">
 	<view>
-		<view class="item" v-for="(item,index) in dataList" @click="itemClick(item)">
+		<view class="item" v-for="(item,index) in dataList">
 			<view class="item-title">{{item.title}}</view>
 		</view>
 	</view>
@@ -130,7 +138,6 @@
 |       refresher-enabled        |                    是否开启自定义下拉刷新                    |     Boolean      |          true          |    false    |
 |      refresher-threshold       |                    设置自定义下拉刷新阈值                    | String \| Number |           45           |      -      |
 |    refresher-default-style     | 设置自定义下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式 |      String      |         black          | white、none |
-|         empty-view-is          | 空数据图的组件名，无法使用easycom，建议通过：<view slot="empty">空数据内容</view>引入空数据图 |      String      |           -            |      -      |
 
 ## Slot
 
@@ -144,7 +151,7 @@
 
 ## Events
 
-* 监听组件方法
+* 监听组件方法(自定义扩展，一般无需使用)
 
 | 事件名              | 说明                 | 回调参数                                            |
 | ------------------- | -------------------- | --------------------------------------------------- |
