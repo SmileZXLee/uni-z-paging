@@ -24,11 +24,6 @@
 				dataList: []
 			}
 		},
-		onLoad() {
-			// setTimeout(() => {
-			// 	this.$refs.paging.reload();
-			// }, 1)
-		},
 		methods: {
 			queryList(pageNo, pageSize) {
 				this.$request.queryList(pageNo, pageSize, (data) => {
@@ -77,5 +72,4 @@
 		width: 100%;
 		background-color: #eeeeee;
 	}
-	
 </style>

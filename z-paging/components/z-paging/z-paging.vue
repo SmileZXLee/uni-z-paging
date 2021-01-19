@@ -39,11 +39,14 @@ setTimeout(()=>{
 	 @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh">
 		<slot v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading" name="empty" />
 		<slot />
-		<slot @click="_onLoadingMore('click')" v-if="loadingStatus==0&&$slots.loadingMoreDefault&&showLoadingMore" name="loadingMoreDefault" />
-		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus==1&&$slots.loadingMoreLoading&&showLoadingMore" name="loadingMoreLoading" />
-		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus==2&&$slots.loadingMoreNoMore&&showLoadingMore" name="loadingMoreNoMore" />
-		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus==3&&$slots.loadingMoreFail&&showLoadingMore" name="loadingMoreFail" />
-		<view @click="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText" class="load-more-text" :style="[loadingMoreCustomStyle]">{{ownLoadingMoreText}}</view>
+		<slot @click="_onLoadingMore('click')" v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore" name="loadingMoreDefault" />
+		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore" name="loadingMoreLoading" />
+		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore" name="loadingMoreNoMore" />
+		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore" name="loadingMoreFail" />
+		<view @click="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText" class="load-more-container" :style="[loadingMoreCustomStyle]">
+			<text v-if="loadingStatus===1" class="loading-view" :style="[loadingMoreLoadingCustomStyle]"></text>
+			<text>{{ownLoadingMoreText}}</text>
+		</view>
 	</scroll-view>
 </template>
 
@@ -57,10 +60,11 @@ setTimeout(()=>{
 	 * @property {Boolean} mounted-auto-call-reload z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
 	 * @property {String} loading-more-text 自定义底部加载更多文字
 	 * @property {Object} loading-more-custom-style 自定义底部加载更多样式
+	 * @property {Object} loading-more-loading-custom-style 自定义底部加载更多加载中动画样式
 	 * @property {Boolean} loading-more-enabled 是否启用加载更多数据(含滑动到底部加载更多数据和点击加载更多数据)，默认为是
 	 * @property {Boolean} to-bottom-loading-more-enabled 是否启用滑动到底部加载更多数据
 	 * @property {String} loading-more-default-text 滑动到底部"默认"文字，默认为【点击加载更多】
-	 * @property {String} loading-more-loading-text 滑动到底部"加载中"文字，默认为【加载中...】
+	 * @property {String} loading-more-loading-text 滑动到底部"加载中"文字，默认为【正在加载...】
 	 * @property {String} loading-more-no-more-text 滑动到底部"没有更多"文字，默认为【没有更多了】
 	 * @property {String} loading-more-fail-text 滑动到底部"加载失败"文字，默认为【加载失败，点击重新加载】
 	 * @property {String} show-default-loading-moretext 是否显示默认的加载更多text，默认为是
@@ -134,7 +138,14 @@ setTimeout(()=>{
 			//自定义底部加载更多样式
 			loadingMoreCustomStyle: {
 				type: Object,
-				default() {
+				default () {
+					return {}
+				}
+			},
+			//自定义底部加载更多加载中动画样式
+			loadingMoreLoadingCustomStyle: {
+				type: Object,
+				default () {
 					return {}
 				}
 			},
@@ -159,11 +170,11 @@ setTimeout(()=>{
 					return "点击加载更多";
 				},
 			},
-			//滑动到底部"加载中"文字，默认为【加载中...】
+			//滑动到底部"加载中"文字，默认为【正在加载...】
 			loadingMoreLoadingText: {
 				type: String,
 				default: function() {
-					return "加载中...";
+					return "正在加载...";
 				},
 			},
 			//滑动到底部"没有更多"文字，默认为【没有更多了】
@@ -310,10 +321,10 @@ setTimeout(()=>{
 			},
 			//触发加载更多时调用,from:0-滑动到底部触发；1-点击加载更多触发
 			_onLoadingMore(from) {
-				if (from == "toBottom" && !this.toBottomLoadingMoreEnabled) {
+				if (from === "toBottom" && !this.toBottomLoadingMoreEnabled) {
 					return;
 				}
-				if (!this.loadingMoreEnabled || !(this.loadingStatus == 0 || 3)) return;
+				if (!this.loadingMoreEnabled || !(this.loadingStatus === 0 || 3)) return;
 				this._doLoadingMore();
 			},
 			//处理开始加载更多状态
@@ -358,11 +369,32 @@ setTimeout(()=>{
 		height: 100%;
 	}
 
-	.load-more-text {
-		text-align: center;
+	.load-more-container{
 		color: darkgray;
 		height: 40px;
-		line-height: 40px;
 		font-size: 25rpx;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.loading-view {
+		margin-right: 6rpx;
+		width: 21rpx;
+		height: 21rpx;
+		border: 2px solid #eeeeee;
+		border-top-color: #999999;
+		border-radius: 50%;
+		animation: loading 1s linear infinite;
+	}
+
+	@keyframes loading {
+		0% {
+			transform: rotate(0deg);
+		}
+
+		100% {
+			transform: rotate(360deg);
+		}
 	}
 </style>
