@@ -379,10 +379,10 @@ setTimeout(()=>{
 	}
 
 	.loading-view {
-		margin-right: 6rpx;
-		width: 21rpx;
-		height: 21rpx;
-		border: 2px solid #eeeeee;
+		margin-right: 8rpx;
+		width: 22rpx;
+		height: 22rpx;
+		border: 3rpx solid #eeeeee;
 		border-top-color: #999999;
 		border-radius: 50%;
 		animation: loading 1s linear infinite;
