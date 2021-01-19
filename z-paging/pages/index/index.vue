@@ -26,6 +26,7 @@
 		},
 		methods: {
 			queryList(pageNo, pageSize) {
+				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
 				this.$request.queryList(pageNo, pageSize, (data) => {
 					this.$refs.paging.addData(data);
 				})
