@@ -371,7 +371,7 @@ setTimeout(()=>{
 
 	.load-more-container{
 		color: darkgray;
-		height: 40px;
+		height: 80rpx;
 		font-size: 25rpx;
 		display: flex;
 		align-items: center;
