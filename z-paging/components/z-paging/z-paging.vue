@@ -76,7 +76,7 @@ setTimeout(()=>{
 	 * @property {Object} loading-more-no-more-line-custom-style 自定义底部没有更多数据的分割线样式
 	 * @property {Boolean} hide-empty-view 是否强制隐藏空数据图，默认为否
 	 * @property {Boolean} show-scrollbar 控制是否出现滚动条，默认为否
-	 * @property {Boolean} lower-threshold 距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为50
+	 * @property {Number} lower-threshold 距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为50
 	 * @property {Boolean} enable-back-to-top iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向，默认为否
 	 * @property {Boolean} refresher-enabled 是否开启自定义下拉刷新，默认为是
 	 * @property {Number} refresher-threshold 设置自定义下拉刷新阈值，默认为45
