@@ -6,8 +6,9 @@
 
 # 基本使用
 
-* ①在`<template>` 中使用@query绑定js中分页请求的方法(`z-paging`会将计算好的pageNo和pageSize两个参数传递到此方法中)，然后通过 :list.sync绑定列表for循环的list。
-* ②在请求结果回调中，通过调用`z-paging`的`addData()`方法，将请求返回的数组传递给`z-paging`处理
+* ①在`<template>` 中使用@query绑定js中分页请求的方法(`z-paging`会将计算好的pageNo和pageSize两个参数传递到此方法中)，然后通过` :list.sync`绑定列表for循环的list。
+
+* ②在请求结果回调中，通过调用`z-paging`的`addData()`方法，将请求返回的数组传递给`z-paging`处理，如：`this.$refs.paging.addData(服务器返回的数组);`；若请求失败，调用`this.$refs.paging.addData(false);`即可。
 
 #### 【注意】z-paging必须有确定的高度！否则上拉加载更多将无法触发，请确保z-paging的父节点有确定的高度！！
 
@@ -48,7 +49,6 @@
     page {
         height: 100%;
     }
-
     .content {
         height: 100%;
     }
@@ -116,27 +116,30 @@
 
 ## Props 
 
-|               参数                |                             说明                             |       类型       |         默认值         |   可选值    |
-| :-------------------------------: | :----------------------------------------------------------: | :--------------: | :--------------------: | :---------: |
-|          default-page-no          |                         自定义pageNo                         | String \| Number |           1            |      -      |
-|         default-page-size         |                        自定义pageSize                        | String \| Number |           15           |      -      |
-|     mounted-auto-call-reload      | `z-paging` `mounted`后自动调用`reload`方法(`mounted`后自动调用接口) |     Boolean      |          true          |    false    |
-|       loading-more-enabled        | 是否启用加载更多数据(含滑动到底部加载更多数据和点击加载更多数据)，默认为是 |     Boolean      |          true          |    false    |
-|  to-bottom-loading-more-enabled   |                是否启用滑动到底部加载更多数据                |     Boolean      |          true          |    false    |
-|         loading-more-text         |  自定义底部加载更多文字(当需要不同加载状态固定文字时才使用)  |      String      |           -            |      -      |
-|     loading-more-custom-style     |         自定义底部加载更多样式；如：{'color':'red'}          |      Object      |           -            |      -      |
-| loading-more-loading-custom-style |               自定义底部加载更多加载中动画样式               |      Object      |           -            |      -      |
-|     loading-more-default-text     |                     滑动到底部"默认"文字                     |      String      |      点击加载更多      |      -      |
-|     loading-more-loading-text     |                    滑动到底部"加载中"文字                    |      String      |      正在加载...       |      -      |
-|     loading-more-no-more-text     |                   滑动到底部"没有更多"文字                   |      String      |       没有更多了       |      -      |
-|      loading-more-fail-text       |                   滑动到底部"加载失败"文字                   |      String      | 加载失败，点击重新加载 |      -      |
-|   show-default-loading-moretext   |                  是否显示默认的加载更多text                  |     Boolean      |          true          |    false    |
-|          hide-empty-view          |                     是否强制隐藏空数据图                     |     Boolean      |         false          |    true     |
-|          show-scrollbar           |                      控制是否出现滚动条                      |     Boolean      |         false          |    true     |
-|        enable-back-to-top         | iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向 |     Boolean      |         false          |    true     |
-|         refresher-enabled         |                    是否开启自定义下拉刷新                    |     Boolean      |          true          |    false    |
-|        refresher-threshold        |                    设置自定义下拉刷新阈值                    | String \| Number |           45           |      -      |
-|      refresher-default-style      | 设置自定义下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式 |      String      |         black          | white、none |
+|                  参数                  |                             说明                             |       类型       |         默认值         |   可选值    |
+| :------------------------------------: | :----------------------------------------------------------: | :--------------: | :--------------------: | :---------: |
+|            default-page-no             |                         自定义pageNo                         | String \| Number |           1            |      -      |
+|           default-page-size            |                        自定义pageSize                        | String \| Number |           15           |      -      |
+|        mounted-auto-call-reload        | `z-paging` `mounted`后自动调用`reload`方法(`mounted`后自动调用接口) |     Boolean      |          true          |    false    |
+|          loading-more-enabled          | 是否启用加载更多数据(含滑动到底部加载更多数据和点击加载更多数据)，默认为是 |     Boolean      |          true          |    false    |
+|     to-bottom-loading-more-enabled     |                是否启用滑动到底部加载更多数据                |     Boolean      |          true          |    false    |
+|           loading-more-text            |  自定义底部加载更多文字(当需要不同加载状态固定文字时才使用)  |      String      |           -            |      -      |
+|       loading-more-custom-style        |         自定义底部加载更多样式；如：{'color':'red'}          |      Object      |           -            |      -      |
+|   loading-more-loading-custom-style    |               自定义底部加载更多加载中动画样式               |      Object      |           -            |      -      |
+|       loading-more-default-text        |                     滑动到底部"默认"文字                     |      String      |      点击加载更多      |      -      |
+|       loading-more-loading-text        |                    滑动到底部"加载中"文字                    |      String      |      正在加载...       |      -      |
+|       loading-more-no-more-text        |                   滑动到底部"没有更多"文字                   |      String      |       没有更多了       |      -      |
+|         loading-more-fail-text         |                   滑动到底部"加载失败"文字                   |      String      | 加载失败，点击重新加载 |      -      |
+|     show-default-loading-moretext      |                  是否显示默认的加载更多text                  |     Boolean      |          true          |    false    |
+|     show-loading-more-no-more-line     |            是否显示没有更多数据的分割线，默认为是            |     Boolean      |          true          |    false    |
+| loading-more-no-more-line-custom-style |              自定义底部没有更多数据的分割线样式              |      Object      |           -            |      -      |
+|            hide-empty-view             |                     是否强制隐藏空数据图                     |     Boolean      |         false          |    true     |
+|             show-scrollbar             |                      控制是否出现滚动条                      |     Boolean      |         false          |    true     |
+|            lower-threshold             |     距底部/右边多远时（单位px），触发 scrolltolower 事件     |      Number      |           50           |      -      |
+|           enable-back-to-top           | iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向 |     Boolean      |         false          |    true     |
+|           refresher-enabled            |                    是否开启自定义下拉刷新                    |     Boolean      |          true          |    false    |
+|          refresher-threshold           |                    设置自定义下拉刷新阈值                    | String \| Number |           45           |      -      |
+|        refresher-default-style         | 设置自定义下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式 |      String      |         black          | white、none |
 
 ## Slot
 
