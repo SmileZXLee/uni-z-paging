@@ -23,10 +23,10 @@
 			}
 		},
 		onLoad() {
-			setTimeout(()=>{
+			setTimeout(() => {
 				this.$refs.paging.reload();
-			},100)
-			
+			}, 100)
+
 		},
 		methods: {
 			queryList(pageNo, pageSize) {

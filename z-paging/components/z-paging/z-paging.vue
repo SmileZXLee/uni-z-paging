@@ -37,7 +37,7 @@ setTimeout(()=>{
  -->
 <template name="z-paging" style="height: 100%;">
 	<scroll-view scroll-y="true" class="scroll-view" :enable-back-to-top="enableBackToTop" :show-scrollbar="showScrollbar"
-	 :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled" :refresher-threshold="refresherThreshold" :refresher-triggered="refresherTriggered"
+	 :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled" :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle" :refresher-triggered="refresherTriggered"
 	 @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh">
 		<slot v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading" name="empty" />
 		<slot />
@@ -46,10 +46,10 @@ setTimeout(()=>{
 		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore" name="loadingMoreNoMore" />
 		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore" name="loadingMoreFail" />
 		<view @click="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText" class="load-more-container" :style="[loadingMoreCustomStyle]">
-			<text class="loading-more-line" :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
-			<text v-if="loadingStatus===1" class="loading-more-line-loading-view" :style="[loadingMoreLoadingCustomStyle]"></text>
-			<text class="loading-more-text">{{ownLoadingMoreText}}</text>
-			<text class="loading-more-line" :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+			<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'" :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+			<text v-if="loadingStatus===1" :class="defaultThemeStyle==='white'?'loading-more-line-loading-view loading-more-line-loading-view-white':'loading-more-line-loading-view loading-more-line-loading-view-black'" :style="[loadingMoreLoadingCustomStyle]"></text>
+			<text :class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{ownLoadingMoreText}}</text>
+			<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'" :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
 		</view>
 	</scroll-view>
 </template>
@@ -57,10 +57,11 @@ setTimeout(()=>{
 <script>
 	/**
 	 * z-paging 分页组件
-	 * @description uni-app使用少量的代码轻松完成完整分页逻辑
+	 * @description 【uni-app自动分页器】超简单，低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view等。
 	 * @tutorial https://github.com/SmileZXLee/uni-z-paging
 	 * @property {Number} default-page-no 自定义pageNo，默认为1
 	 * @property {Number} default-page-size 自定义pageSize，默认为15
+	 * @property {String} default-theme-style loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
 	 * @property {Boolean} mounted-auto-call-reload z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
 	 * @property {String} loading-more-text 自定义底部加载更多文字
 	 * @property {Object} loading-more-custom-style 自定义底部加载更多样式
@@ -110,6 +111,7 @@ setTimeout(()=>{
 					2: this.loadingMoreNoMoreText,
 					3: this.loadingMoreFailText,
 				},
+				finalRefresherDefaultStyle: 'black'
 			};
 		},
 		props: {
@@ -128,6 +130,20 @@ setTimeout(()=>{
 				type: [Number, String],
 				default: function() {
 					return 15;
+				},
+			},
+			//loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
+			defaultThemeStyle: {
+				type: String,
+				default: function() {
+					return 'black';
+				}
+			},
+			//z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
+			mountedAutoCallReload: {
+				type: Boolean,
+				default: function() {
+					return true;
 				},
 			},
 			//z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
@@ -267,8 +283,8 @@ setTimeout(()=>{
 			refresherDefaultStyle: {
 				type: String,
 				default: function() {
-					return "black";
-				},
+					return "";
+				}
 			},
 		},
 		mounted() {
@@ -292,6 +308,22 @@ setTimeout(()=>{
 			loadingStatus(newVal, oldVal) {
 				this.$emit("loadingStatusChange", newVal);
 			},
+			defaultThemeStyle: {
+				handler(newVal){
+					if(newVal.length){
+						this.finalRefresherDefaultStyle = newVal;
+					}
+				},
+				immediate: true
+			},
+			refresherDefaultStyle: {
+				handler(newVal){
+					if(newVal.length){
+						this.finalRefresherDefaultStyle = newVal;
+					}
+				},
+				immediate: true
+			}
 		},
 		computed: {
 			ownLoadingMoreText() {
@@ -299,7 +331,7 @@ setTimeout(()=>{
 					return this.loadingMoreText;
 				}
 				return this.loadingStatusTextMap[this.loadingStatus];
-			},
+			}
 		},
 		methods: {
 			//请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认是是）
@@ -398,6 +430,16 @@ setTimeout(()=>{
 				this.refresherTriggered = "restore";
 				this.$emit("onRestore");
 			},
+			//获取主题样式的class
+			_getThemeStyleClass(cls){
+				if(this.defaultThemeStyle === 'black'){
+					return `${cls} ${cls}-black`;
+				}
+				if(this.defaultThemeStyle === 'white'){
+					return `${cls} ${cls}-white`;
+				}
+				return cls;
+			}
 		},
 	};
 </script>
@@ -409,7 +451,6 @@ setTimeout(()=>{
 	}
 
 	.load-more-container{
-		color: darkgray;
 		height: 80rpx;
 		font-size: 25rpx;
 		display: flex;
@@ -421,19 +462,43 @@ setTimeout(()=>{
 		width: 22rpx;
 		height: 23rpx;
 		border: 3rpx solid #dddddd;
-		border-top-color: #555555;
 		border-radius: 50%;
 		animation: loading 1s linear infinite;
+	}
+	
+	.loading-more-line-loading-view-black{
+		border-color: #dddddd;
+		border-top-color: #444444;
+	}
+	
+	.loading-more-line-loading-view-white{
+		border-color: #aaaaaa;
+		border-top-color: #ffffff;
 	}
 	
 	.loading-more-text{
 		padding: 0rpx 8rpx;
 	}
 	
+	.loading-more-text-black{
+		color: #a4a4a4;
+	}
+	
+	.loading-more-text-white{
+		color: #f1f1f1;
+	}
+	
 	.loading-more-line{
 		height: 1px;
 		width: 100rpx;
+	}
+	
+	.loading-more-line-black{
 		background-color: #eeeeee;
+	}
+	
+	.loading-more-line-white{
+		background-color: #cccccc;
 	}
 
 	@keyframes loading {
