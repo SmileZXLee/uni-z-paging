@@ -1,5 +1,5 @@
 let listCount = 34;
-let loadingTime = 1000;
+let loadingTime = 500;
 /* 模拟分页网络请求获取数据 */
 function queryList(pageNo,pageSize,callback){
 	pageNo = parseInt(pageNo);

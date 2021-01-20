@@ -16,6 +16,8 @@ getList(pageNo,pagSize){
 	//拿到分页组件传递过来的pageNo和pageSize和其他需要的参数，传给服务器
 	//在请求成功的回调里面拿到服务器返回的数据，调用以下方法即可(假设res.data.list为服务器返回列表)：
 	this.$refs.paging.addData(res.data.list);
+	//如果请求失败，可以书写以下代码：
+	this.$refs.paging.addData(false);
 }
 3.如果要重新加载分页数据(如下拉刷新):
 在js中调用
@@ -35,7 +37,7 @@ setTimeout(()=>{
  -->
 <template name="z-paging" style="height: 100%;">
 	<scroll-view scroll-y="true" class="scroll-view" :enable-back-to-top="enableBackToTop" :show-scrollbar="showScrollbar"
-	 :refresher-enabled="refresherEnabled" :refresher-threshold="refresherThreshold" :refresher-triggered="refresherTriggered"
+	 :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled" :refresher-threshold="refresherThreshold" :refresher-triggered="refresherTriggered"
 	 @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh">
 		<slot v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading" name="empty" />
 		<slot />
@@ -44,8 +46,10 @@ setTimeout(()=>{
 		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore" name="loadingMoreNoMore" />
 		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore" name="loadingMoreFail" />
 		<view @click="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText" class="load-more-container" :style="[loadingMoreCustomStyle]">
-			<text v-if="loadingStatus===1" class="loading-view" :style="[loadingMoreLoadingCustomStyle]"></text>
-			<text>{{ownLoadingMoreText}}</text>
+			<text class="loading-more-line" :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+			<text v-if="loadingStatus===1" class="loading-more-line-loading-view" :style="[loadingMoreLoadingCustomStyle]"></text>
+			<text class="loading-more-text">{{ownLoadingMoreText}}</text>
+			<text class="loading-more-line" :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
 		</view>
 	</scroll-view>
 </template>
@@ -68,8 +72,11 @@ setTimeout(()=>{
 	 * @property {String} loading-more-no-more-text 滑动到底部"没有更多"文字，默认为【没有更多了】
 	 * @property {String} loading-more-fail-text 滑动到底部"加载失败"文字，默认为【加载失败，点击重新加载】
 	 * @property {String} show-default-loading-moretext 是否显示默认的加载更多text，默认为是
+	 * @property {String} show-loading-more-no-more-line 是否显示没有更多数据的分割线，默认为是
+	 * @property {Object} loading-more-no-more-line-custom-style 自定义底部没有更多数据的分割线样式
 	 * @property {Boolean} hide-empty-view 是否强制隐藏空数据图，默认为否
 	 * @property {Boolean} show-scrollbar 控制是否出现滚动条，默认为否
+	 * @property {Boolean} lower-threshold 距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为50
 	 * @property {Boolean} enable-back-to-top iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向，默认为否
 	 * @property {Boolean} refresher-enabled 是否开启自定义下拉刷新，默认为是
 	 * @property {Number} refresher-threshold 设置自定义下拉刷新阈值，默认为45
@@ -92,6 +99,8 @@ setTimeout(()=>{
 				refresherTriggered: false,
 				loading: false,
 				firstPageLoaded: false,
+				//当前加载类型 0-下拉刷新 1-上拉加载更多
+				loadingType: 0,
 				//底部加载更多文字状态 0-默认状态 1.加载中 2.没有更多数据 3.加载失败
 				loadingStatus: 0,
 				//底部加载更多文字Map
@@ -198,6 +207,20 @@ setTimeout(()=>{
 					return true;
 				},
 			},
+			//是否显示没有更多数据的分割线，默认为是
+			showLoadingMoreNoMoreLine: {
+				type: Boolean,
+				default: function() {
+					return true;
+				},
+			},
+			//自定义底部没有更多数据的分割线样式
+			loadingMoreNoMoreLineCustomStyle: {
+				type: Object,
+				default: function() {
+					return true;
+				},
+			},
 			//是否强制隐藏空数据图，默认为否
 			hideEmptyView: {
 				type: Boolean,
@@ -210,6 +233,13 @@ setTimeout(()=>{
 				type: Boolean,
 				default: function() {
 					return false;
+				},
+			},
+			//距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为50
+			lowerThreshold: {
+				type: Number,
+				default: function() {
+					return 50;
 				},
 			},
 			//iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向，默认为否
@@ -242,7 +272,9 @@ setTimeout(()=>{
 			},
 		},
 		mounted() {
-			this.reload();
+			if(this.mountedAutoCallReload){
+				this.reload();
+			}
 		},
 		watch: {
 			totalData(newVal, oldVal) {
@@ -272,16 +304,26 @@ setTimeout(()=>{
 		methods: {
 			//请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认是是）
 			addData(data, success = true) {
+				var dataType = Object.prototype.toString.call(data);
+				if(dataType === '[object Boolean]'){
+					success = data;
+					data = [];
+				}else if(dataType !== '[object Array]'){
+					console.error('addData参数类型不正确，第一个参数类型必须为Array!');
+				}
 				if (this.refresherTriggered) {
 					this.refresherTriggered = false;
 				}
 				this.loading = false;
 				if (success) {
 					this.loadingStatus = 0;
+					this._currentDataChange(data, this.currentData);
 				} else {
 					this.loadingStatus = 3;
+					if(this.loadingType === 1){
+						this.pageNo--;
+					}
 				}
-				this._currentDataChange(data, this.currentData);
 			},
 			//重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果
 			reload() {
@@ -311,7 +353,6 @@ setTimeout(()=>{
 					(newVal.length && newVal.length < this.defaultPageSize)
 				) {
 					this.loadingStatus = 2;
-					this.pageNo = -1;
 				}
 				if (!this.totalData.length) {
 					this.totalData = newVal;
@@ -334,14 +375,11 @@ setTimeout(()=>{
 			},
 			//处理开始加载更多
 			_doLoadingMore() {
-				if (this.pageNo != -1) {
+				if (this.pageNo >= this.defaultPageNo && this.loadingStatus !== 2) {
 					this.pageNo++;
 					this._startLoading();
-					this.$emit("loadingMore", {
-						pageNo: this.pageNo,
-						pageSize: this.defaultPageSize,
-					});
 					this.$emit("query", this.pageNo, this.defaultPageSize);
+					this.loadingType = 1;
 				}
 			},
 			//自定义下拉刷新被触发
@@ -353,6 +391,7 @@ setTimeout(()=>{
 				this.refresherTriggered = true;
 				this.reload();
 				this.$emit("onRefresh");
+				this.loadingType = 0;
 			},
 			//自定义下拉刷新被复位
 			_onRestore() {
@@ -378,14 +417,23 @@ setTimeout(()=>{
 		justify-content: center;
 	}
 
-	.loading-view {
-		margin-right: 8rpx;
+	.loading-more-line-loading-view {
 		width: 22rpx;
-		height: 22rpx;
-		border: 3rpx solid #eeeeee;
-		border-top-color: #999999;
+		height: 23rpx;
+		border: 3rpx solid #dddddd;
+		border-top-color: #555555;
 		border-radius: 50%;
 		animation: loading 1s linear infinite;
+	}
+	
+	.loading-more-text{
+		padding: 0rpx 8rpx;
+	}
+	
+	.loading-more-line{
+		height: 1px;
+		width: 100rpx;
+		background-color: #eeeeee;
 	}
 
 	@keyframes loading {

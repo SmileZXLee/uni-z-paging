@@ -12,9 +12,7 @@
 				</view>
 			</view>
 		</z-paging>
-		
 	</view>
-
 </template>
 
 <script>
@@ -23,6 +21,12 @@
 			return {
 				dataList: []
 			}
+		},
+		onLoad() {
+			setTimeout(()=>{
+				this.$refs.paging.reload();
+			},100)
+			
 		},
 		methods: {
 			queryList(pageNo, pageSize) {
