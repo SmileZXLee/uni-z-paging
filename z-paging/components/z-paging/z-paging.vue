@@ -36,9 +36,9 @@ setTimeout(()=>{
 
  -->
 <template name="z-paging" style="height: 100%;">
-	<scroll-view scroll-y="true" class="scroll-view" :enable-back-to-top="enableBackToTop" :show-scrollbar="showScrollbar"
+	<scroll-view scroll-y="true" :scroll-top="scrollTop" class="scroll-view" :enable-back-to-top="enableBackToTop" :show-scrollbar="showScrollbar"
 	 :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled" :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle" :refresher-triggered="refresherTriggered"
-	 @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh">
+	 @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh">
 		<slot v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading" name="empty" />
 		<slot />
 		<slot @click="_onLoadingMore('click')" v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore" name="loadingMoreDefault" />
@@ -63,6 +63,7 @@ setTimeout(()=>{
 	 * @property {Number} default-page-size 自定义pageSize，默认为15
 	 * @property {String} default-theme-style loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
 	 * @property {Boolean} mounted-auto-call-reload z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
+	 * @property {Boolean} auto-clean-list-when-reload reload时立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
 	 * @property {String} loading-more-text 自定义底部加载更多文字
 	 * @property {Object} loading-more-custom-style 自定义底部加载更多样式
 	 * @property {Object} loading-more-loading-custom-style 自定义底部加载更多加载中动画样式
@@ -100,6 +101,9 @@ setTimeout(()=>{
 				refresherTriggered: false,
 				loading: false,
 				firstPageLoaded: false,
+				isUserReload: true,
+				scrollTop: 0,
+				oldScrollTop: 0,
 				//当前加载类型 0-下拉刷新 1-上拉加载更多
 				loadingType: 0,
 				//底部加载更多文字状态 0-默认状态 1.加载中 2.没有更多数据 3.加载失败
@@ -146,8 +150,8 @@ setTimeout(()=>{
 					return true;
 				},
 			},
-			//z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
-			mountedAutoCallReload: {
+			//reload时立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
+			autoCleanListWhenReload: {
 				type: Boolean,
 				default: function() {
 					return true;
@@ -294,7 +298,7 @@ setTimeout(()=>{
 		},
 		watch: {
 			totalData(newVal, oldVal) {
-				if (this.firstPageLoaded && !newVal.length && oldVal.length) {
+				if ((!this.isUserReload || !this.autoCleanListWhenReload) && this.firstPageLoaded && !newVal.length && oldVal.length) {
 					return;
 				}
 				newVal = [].concat(newVal);
@@ -359,19 +363,24 @@ setTimeout(()=>{
 			},
 			//重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果
 			reload() {
-				this.pageNo = this.defaultPageNo;
-				this._startLoading();
-				this.$emit("loadingMore", {
-					pageNo: this.pageNo,
-					pageSize: this.defaultPageSize,
-				});
-				this.$emit("query", this.pageNo, this.defaultPageSize);
-				this.firstPageLoaded = true;
-				this.totalData = [];
+				this.isUserReload = true;
+				this._reload();
 			},
 			//手动停止下拉刷新加载
 			endRefresh() {
 				this.refresherTriggered = false;
+			},
+			//私有的重新加载分页数据方法
+			_reload(){
+				this.pageNo = this.defaultPageNo;
+				this._startLoading();
+				this.$emit("query", this.pageNo, this.defaultPageSize);
+				this.firstPageLoaded = true;
+				this.totalData = [];
+				this.scrollTop = this.oldScrollTop
+				this.$nextTick(() =>{
+					this.scrollTop = 0
+				});
 			},
 			//当前数据改变时调用
 			_currentDataChange(newVal, oldVal) {
@@ -414,14 +423,18 @@ setTimeout(()=>{
 					this.loadingType = 1;
 				}
 			},
+			_scroll(e){
+				this.oldScrollTop = e.detail.scrollTop;
+			},
 			//自定义下拉刷新被触发
 			_onRefresh() {
 				if (this.loading) {
 					return;
 				}
+				this.isUserReload = false;
 				this._startLoading();
 				this.refresherTriggered = true;
-				this.reload();
+				this._reload();
 				this.$emit("onRefresh");
 				this.loadingType = 0;
 			},

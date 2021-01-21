@@ -1,7 +1,7 @@
 let listCount = 34;
 let loadingTime = 500;
 /* 模拟分页网络请求获取数据 */
-function queryList(pageNo,pageSize,callback){
+function queryList(pageNo,pageSize,type,callback){
 	pageNo = parseInt(pageNo);
 	pageSize = parseInt(pageSize);
 	uni.showLoading({
@@ -20,7 +20,7 @@ function queryList(pageNo,pageSize,callback){
 	}
 	var totalPagingList = [];
 	for(let i = 0;i < listCount;i++){
-		var item = {'title':i+1,'detail':'测试信息'};
+		var item = {'title':i+1,'detail':'测试信息'+type};
 		totalPagingList.push(item);
 	}
 	let pageNoIndex = (pageNo - 1) * pageSize;
@@ -37,7 +37,13 @@ function callQueryResult(callback,arg){
 	setTimeout(()=>{
 		uni.hideLoading();
 		console.log('%c\n----------响应开始--------','color:#0113fa;');
+		// #ifdef H5
 		console.table(arg);
+		// #endif
+		
+		// #ifndef H5
+		console.log(arg);
+		// #endif
 		console.log('%c----------响应结束--------\n','color:#0113fa;');
 		callback(arg);
 	},loadingTime)

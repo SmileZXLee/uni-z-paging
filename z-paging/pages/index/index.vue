@@ -1,6 +1,7 @@
 <template>
 	<view class="content">
-		<z-paging ref="paging" @query="queryList" :list.sync="dataList">
+		<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
+		<z-paging ref="paging" @query="queryList" :list.sync="dataList" style="height: calc(100% - 80rpx);">
 			<!-- 设置自定义emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
 			<empty-view slot="empty"></empty-view>
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
@@ -19,19 +20,18 @@
 	export default {
 		data() {
 			return {
-				dataList: []
+				dataList: [],
+				tabIndex: 0
 			}
 		},
-		onLoad() {
-			setTimeout(() => {
-				this.$refs.paging.reload();
-			}, 100)
-
-		},
 		methods: {
+			tabChange(index){
+				this.tabIndex = index;
+				this.$refs.paging.reload();
+			},
 			queryList(pageNo, pageSize) {
 				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
-				this.$request.queryList(pageNo, pageSize, (data) => {
+				this.$request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
 					this.$refs.paging.addData(data);
 				})
 			},
