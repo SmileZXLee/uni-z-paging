@@ -25,11 +25,6 @@
 				}
 			}
 		},
-		watch:{
-			items(val){
-				this.itemWidth = 1.0 / val.length
-			}
-		},
 		computed:{
 			itemWidth(){
 				return ((1.0 / this.items.length) * 100) + '%';

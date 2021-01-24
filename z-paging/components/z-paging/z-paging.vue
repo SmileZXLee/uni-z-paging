@@ -36,20 +36,28 @@ setTimeout(()=>{
 
  -->
 <template name="z-paging" style="height: 100%;">
-	<scroll-view scroll-y="true" :scroll-top="scrollTop" class="scroll-view" :enable-back-to-top="enableBackToTop" :show-scrollbar="showScrollbar"
-	 :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled" :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle" :refresher-triggered="refresherTriggered"
+	<scroll-view scroll-y="true" :scroll-top="scrollTop" class="scroll-view" :enable-back-to-top="enableBackToTop"
+	 :show-scrollbar="showScrollbar" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled"
+	 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle" :refresher-triggered="refresherTriggered"
 	 @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh">
 		<slot v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading" name="empty" />
+		<!-- 如果需要修改组件源码来统一设置全局的emptyView，可以把此处的“empty-view”换成自定义的组件名即可
+		<empty-view v-else-if="!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading"></empty-view> -->
 		<slot />
 		<slot @click="_onLoadingMore('click')" v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore" name="loadingMoreDefault" />
 		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore" name="loadingMoreLoading" />
-		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore" name="loadingMoreNoMore" />
+		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView" name="loadingMoreNoMore" />
 		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore" name="loadingMoreFail" />
-		<view @click="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText" class="load-more-container" :style="[loadingMoreCustomStyle]">
-			<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'" :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
-			<text v-if="loadingStatus===1" :class="defaultThemeStyle==='white'?'loading-more-line-loading-view loading-more-line-loading-view-white':'loading-more-line-loading-view loading-more-line-loading-view-black'" :style="[loadingMoreLoadingCustomStyle]"></text>
+		<view @click="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)" class="load-more-container"
+		 :style="[loadingMoreCustomStyle]">
+			<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
+			 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+			<image v-if="loadingStatus===1&&loadingMoreLoadingIconType==='flower'" class="loading-more-line-loading-image" :style="[loadingMoreLoadingIconCustomStyle]" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyBjbGFzcz0iaWNvbiIgd2lkdGg9IjIwMHB4IiBoZWlnaHQ9IjIwMC4wMHB4IiB2aWV3Qm94PSIwIDAgMTAyNCAxMDI0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTYyNC42NjMgNzg1LjEzOWMtMTAuNzM1LTE4LjU5NS00LjMxNi00Mi4zOTcgMTQuMzM3LTUzLjE2OCAxOC42NTMtMTAuNzcgNDIuNDc5LTQuNDI3IDUzLjIxMyAxNC4xNjhsOTAuMTIzIDE1Ni4wOTljMTAuNzM2IDE4LjU5NSA0LjMxNyA0Mi4zOTgtMTQuMzM2IDUzLjE2OS0xOC42NTMgMTAuNzctNDIuNDc5IDQuNDI2LTUzLjIxNC0xNC4xNjlsLTkwLjEyMy0xNTYuMDk5eiIgZmlsbD0iI2NkY2RjZCIgLz48cGF0aCBkPSJNMjQxLjY2NCAxMjEuNzY0Yy0xMC43MzUtMTguNTk0LTQuMzE3LTQyLjM5OCAxNC4zMzYtNTMuMTY5IDE4LjY1My0xMC43NyA0Mi40NzktNC40MjYgNTMuMjE0IDE0LjE2OGw5MC4xMjQgMTU2LjA5OWMxMC43MzUgMTguNTk0IDQuMzE2IDQyLjM5OC0xNC4zMzcgNTMuMTY4LTE4LjY1MyAxMC43Ny00Mi40NzggNC40MjYtNTMuMjEzLTE0LjE2OGwtOTAuMTI0LTE1Ni4wOTh6IiBmaWxsPSIjYTlhOWE5IiAvPjxwYXRoIGQ9Ik0yMzguODYxIDYyNC42NjNjMTguNTk0LTEwLjczNSA0Mi4zOTgtNC4zMTYgNTMuMTY4IDE0LjMzNyAxMC43NyAxOC42NTMgNC40MjYgNDIuNDc5LTE0LjE2OCA1My4yMTNsLTE1Ni4wOTggOTAuMTI0Yy0xOC41OTQgMTAuNzM1LTQyLjM5OSA0LjMxNi01My4xNjgtMTQuMzM3LTEwLjc3LTE4LjY1My00LjQyNi00Mi40NzkgMTQuMTY4LTUzLjIxM2wxNTYuMDk4LTkwLjEyNHoiIGZpbGw9IiNiYmJiYmIiIC8+PHBhdGggZD0iTTkwMi4yMzYgMjQxLjY2NGMxOC41OTQtMTAuNzM2IDQyLjM5OC00LjMxNyA1My4xNjkgMTQuMzM2IDEwLjc3IDE4LjY1NCA0LjQyNiA0Mi40NzktMTQuMTY5IDUzLjIxNGwtMTU2LjA5OSA5MC4xMjNjLTE4LjU5NCAxMC43MzUtNDIuMzk3IDQuMzE2LTUzLjE2OC0xNC4zMzctMTAuNzctMTguNjU0LTQuNDI2LTQyLjQ3OSAxNC4xNjgtNTMuMjEzbDE1Ni4wOTktOTAuMTIzeiIgZmlsbD0iIzk5OTk5OSIgLz48cGF0aCBkPSJNMzMxLjc4NyA3NDYuMTM5YzEwLjczNC0xOC41OTUgMzQuNTYtMjQuOTM4IDUzLjIxMy0xNC4xNjggMTguNjUzIDEwLjc3MSAyNS4wNzIgMzQuNTczIDE0LjMzNiA1My4xNjhsLTkwLjEyMyAxNTYuMDk5Yy0xMC43MzQgMTguNTk1LTM0LjU2IDI0LjkzOC01My4yMTMgMTQuMTY5LTE4LjY1My0xMC43NzEtMjUuMDcyLTM0LjU3NC0xNC4zMzYtNTMuMTY5bDkwLjEyMy0xNTYuMDk5eiIgZmlsbD0iI2MyYzJjMiIgLz48cGF0aCBkPSJNNzE0Ljc4NiA4Mi43NjRjMTAuNzM1LTE4LjU5NCAzNC41NjEtMjQuOTM4IDUzLjIxNC0xNC4xNjkgMTguNjUzIDEwLjc3MSAyNS4wNzIgMzQuNTc1IDE0LjMzNyA1My4xNjhsLTkwLjEyMyAxNTYuMDk5Yy0xMC43MzUgMTguNTk0LTM0LjU2MSAyNC45MzgtNTMuMjE0IDE0LjE2OC0xOC42NTMtMTAuNzcxLTI1LjA3Mi0zNC41NzQtMTQuMzM3LTUzLjE2OGw5MC4xMjMtMTU2LjA5OHoiIGZpbGw9IiM5ZDlkOWQiIC8+PHBhdGggZD0iTTI3Ny44NjEgMzMxLjc4N2MxOC41OTQgMTAuNzM1IDI0LjkzOCAzNC41NiAxNC4xNjggNTMuMjEzcy0zNC41NzQgMjUuMDcyLTUzLjE2OCAxNC4zMzZMODIuNzYzIDMwOS4yMTNDNjQuMTY5IDI5OC40NzggNTcuODI1IDI3NC42NTMgNjguNTk1IDI1NmMxMC43NzEtMTguNjUzIDM0LjU3NC0yNS4wNzIgNTMuMTY4LTE0LjMzNmwxNTYuMDk4IDkwLjEyM3oiIGZpbGw9IiNhZmFmYWYiIC8+PHBhdGggZD0iTTk0MS4yMzYgNzE0Ljc4NmMxOC41OTUgMTAuNzM0IDI0LjkzOCAzNC41NjEgMTQuMTY5IDUzLjIxNC0xMC43NzEgMTguNjUzLTM0LjU3NCAyNS4wNzItNTMuMTY5IDE0LjMzN2wtMTU2LjA5OS05MC4xMjNDNzI3LjU0NCA2ODEuNDc5IDcyMS4yIDY1Ny42NTMgNzMxLjk3IDYzOWMxMC43NzEtMTguNjUzIDM0LjU3NC0yNS4wNzIgNTMuMTY4LTE0LjMzN2wxNTYuMDk4IDkwLjEyM3oiIGZpbGw9IiNkMWQxZDEiIC8+PHBhdGggZD0iTTIxOS4xMjMgNDczYzIxLjQ3MSAwIDM4Ljg3NyAxNy40NjEgMzguODc3IDM5cy0xNy40MDYgMzktMzguODc3IDM5SDM4Ljg3N0MxNy40MDYgNTUxIDAgNTMzLjUzOSAwIDUxMnMxNy40MDYtMzkgMzguODc3LTM5aDE4MC4yNDZ6IiBmaWxsPSIjYjZiNmI2IiAvPjxwYXRoIGQ9Ik05ODUuMTIzIDQ3M2MyMS40NzEgMCAzOC44NzcgMTcuNDYxIDM4Ljg3NyAzOXMtMTcuNDA2IDM5LTM4Ljg3NyAzOUg4MDQuODc3Yy0yMS40NzEgMC0zOC44NzctMTcuNDYxLTM4Ljg3Ny0zOXMxNy40MDYtMzkgMzguODc3LTM5aDE4MC4yNDZ6IiBmaWxsPSIjOTQ5NDk0IiAvPjxwYXRoIGQ9Ik01NTEgMjE5LjEyM2MwIDIxLjQ3MS0xNy40NjEgMzguODc3LTM5IDM4Ljg3N3MtMzktMTcuNDA2LTM5LTM4Ljg3N1YzOC44NzdjMC0yMS40NzEgMTcuNDYxLTM4Ljg3NyAzOS0zOC44NzdzMzkgMTcuNDA2IDM5IDM4Ljg3N3YxODAuMjQ2eiIgZmlsbD0iI2EzYTNhMyIgLz48cGF0aCBkPSJNNTUxIDk4NS4xMjNjMCAyMS40NzEtMTcuNDYxIDM4Ljg3Ny0zOSAzOC44NzdzLTM5LTE3LjQwNi0zOS0zOC44NzdWODA0Ljg3N2MwLTIxLjQ3MSAxNy40NjEtMzguODc3IDM5LTM4Ljg3N3MzOSAxNy40MDYgMzkgMzguODc3djE4MC4yNDZ6IiBmaWxsPSIjYzhjOGM4IiAvPjwvc3ZnPg=="></image>
+			<text v-if="loadingStatus===1&&loadingMoreLoadingIconType==='circle'" :class="defaultThemeStyle==='white'?'loading-more-line-loading-view loading-more-line-loading-view-white':'loading-more-line-loading-view loading-more-line-loading-view-black'"
+			 :style="[loadingMoreLoadingIconCustomStyle]"></text>
 			<text :class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{ownLoadingMoreText}}</text>
-			<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'" :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+			<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
+			 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
 		</view>
 	</scroll-view>
 </template>
@@ -66,15 +74,17 @@ setTimeout(()=>{
 	 * @property {Boolean} auto-clean-list-when-reload reload时立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
 	 * @property {String} loading-more-text 自定义底部加载更多文字
 	 * @property {Object} loading-more-custom-style 自定义底部加载更多样式
-	 * @property {Object} loading-more-loading-custom-style 自定义底部加载更多加载中动画样式
+	 * @property {Object} loading-more-loading-icon-custom-style 自定义底部加载更多加载中动画样式
+	 * @property {String} loading-more-loading-icon-type 自定义底部加载更多加载中动画图标类型，可选circle或flower，默认为circle
 	 * @property {Boolean} loading-more-enabled 是否启用加载更多数据(含滑动到底部加载更多数据和点击加载更多数据)，默认为是
 	 * @property {Boolean} to-bottom-loading-more-enabled 是否启用滑动到底部加载更多数据
 	 * @property {String} loading-more-default-text 滑动到底部"默认"文字，默认为【点击加载更多】
 	 * @property {String} loading-more-loading-text 滑动到底部"加载中"文字，默认为【正在加载...】
 	 * @property {String} loading-more-no-more-text 滑动到底部"没有更多"文字，默认为【没有更多了】
 	 * @property {String} loading-more-fail-text 滑动到底部"加载失败"文字，默认为【加载失败，点击重新加载】
-	 * @property {String} show-default-loading-moretext 是否显示默认的加载更多text，默认为是
-	 * @property {String} show-loading-more-no-more-line 是否显示没有更多数据的分割线，默认为是
+	 * @property {Boolean} show-default-loading-more-text 是否显示默认的加载更多text，默认为是
+	 * @property {Boolean} show-loading-more-no-more-view 是否显示没有更多数据的view
+	 * @property {Boolean} show-loading-more-no-more-line 是否显示没有更多数据的分割线，默认为是
 	 * @property {Object} loading-more-no-more-line-custom-style 自定义底部没有更多数据的分割线样式
 	 * @property {Boolean} hide-empty-view 是否强制隐藏空数据图，默认为否
 	 * @property {Boolean} show-scrollbar 控制是否出现滚动条，默认为否
@@ -172,10 +182,17 @@ setTimeout(()=>{
 				}
 			},
 			//自定义底部加载更多加载中动画样式
-			loadingMoreLoadingCustomStyle: {
+			loadingMoreLoadingIconCustomStyle: {
 				type: Object,
 				default () {
 					return {}
+				}
+			},
+			//自定义底部加载更多加载中动画图标类型，可选circle或flower，默认为circle
+			loadingMoreLoadingIconType: {
+				type: String,
+				default () {
+					return 'circle';
 				}
 			},
 			//是否启用加载更多数据(含滑动到底部加载更多数据和点击加载更多数据)，默认为是
@@ -222,6 +239,13 @@ setTimeout(()=>{
 			},
 			//是否显示默认的加载更多text，默认为是
 			showDefaultLoadingMoreText: {
+				type: Boolean,
+				default: function() {
+					return true;
+				},
+			},
+			//是否显示没有更多数据的view
+			showLoadingMoreNoMoreView: {
 				type: Boolean,
 				default: function() {
 					return true;
@@ -292,7 +316,7 @@ setTimeout(()=>{
 			},
 		},
 		mounted() {
-			if(this.mountedAutoCallReload){
+			if (this.mountedAutoCallReload) {
 				this.reload();
 			}
 		},
@@ -313,16 +337,16 @@ setTimeout(()=>{
 				this.$emit("loadingStatusChange", newVal);
 			},
 			defaultThemeStyle: {
-				handler(newVal){
-					if(newVal.length){
+				handler(newVal) {
+					if (newVal.length) {
 						this.finalRefresherDefaultStyle = newVal;
 					}
 				},
 				immediate: true
 			},
 			refresherDefaultStyle: {
-				handler(newVal){
-					if(newVal.length){
+				handler(newVal) {
+					if (newVal.length) {
 						this.finalRefresherDefaultStyle = newVal;
 					}
 				},
@@ -341,10 +365,10 @@ setTimeout(()=>{
 			//请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认是是）
 			addData(data, success = true) {
 				var dataType = Object.prototype.toString.call(data);
-				if(dataType === '[object Boolean]'){
+				if (dataType === '[object Boolean]') {
 					success = data;
 					data = [];
-				}else if(dataType !== '[object Array]'){
+				} else if (dataType !== '[object Array]') {
 					console.error('addData参数类型不正确，第一个参数类型必须为Array!');
 				}
 				if (this.refresherTriggered) {
@@ -356,7 +380,7 @@ setTimeout(()=>{
 					this._currentDataChange(data, this.currentData);
 				} else {
 					this.loadingStatus = 3;
-					if(this.loadingType === 1){
+					if (this.loadingType === 1) {
 						this.pageNo--;
 					}
 				}
@@ -371,14 +395,14 @@ setTimeout(()=>{
 				this.refresherTriggered = false;
 			},
 			//私有的重新加载分页数据方法
-			_reload(){
+			_reload() {
 				this.pageNo = this.defaultPageNo;
 				this._startLoading();
 				this.$emit("query", this.pageNo, this.defaultPageSize);
 				this.firstPageLoaded = true;
 				this.totalData = [];
-				this.scrollTop = this.oldScrollTop
-				this.$nextTick(() =>{
+				this.scrollTop = this.oldScrollTop;
+				this.$nextTick(() => {
 					this.scrollTop = 0
 				});
 			},
@@ -423,7 +447,7 @@ setTimeout(()=>{
 					this.loadingType = 1;
 				}
 			},
-			_scroll(e){
+			_scroll(e) {
 				this.oldScrollTop = e.detail.scrollTop;
 			},
 			//自定义下拉刷新被触发
@@ -444,11 +468,11 @@ setTimeout(()=>{
 				this.$emit("onRestore");
 			},
 			//获取主题样式的class
-			_getThemeStyleClass(cls){
-				if(this.defaultThemeStyle === 'black'){
+			_getThemeStyleClass(cls) {
+				if (this.defaultThemeStyle === 'black') {
 					return `${cls} ${cls}-black`;
 				}
-				if(this.defaultThemeStyle === 'white'){
+				if (this.defaultThemeStyle === 'white') {
 					return `${cls} ${cls}-white`;
 				}
 				return cls;
@@ -463,7 +487,7 @@ setTimeout(()=>{
 		height: 100%;
 	}
 
-	.load-more-container{
+	.load-more-container {
 		height: 80rpx;
 		font-size: 25rpx;
 		display: flex;
@@ -471,55 +495,74 @@ setTimeout(()=>{
 		justify-content: center;
 	}
 
+	.loading-more-line-loading-image {
+		margin-right: 8rpx;
+		width: 28rpx;
+		height: 28rpx;
+		animation: loading-flower 1s steps(12) infinite;
+	}
+
 	.loading-more-line-loading-view {
+		margin-right: 8rpx;
 		width: 22rpx;
 		height: 23rpx;
 		border: 3rpx solid #dddddd;
 		border-radius: 50%;
-		animation: loading 1s linear infinite;
+		animation: loading-circle 1s linear infinite;
 	}
-	
-	.loading-more-line-loading-view-black{
-		border-color: #dddddd;
+
+	.loading-more-line-loading-view-black {
+		border-color: #c8c8c8;
 		border-top-color: #444444;
 	}
-	
-	.loading-more-line-loading-view-white{
+
+	.loading-more-line-loading-view-white {
 		border-color: #aaaaaa;
 		border-top-color: #ffffff;
 	}
-	
-	.loading-more-text{
-		padding: 0rpx 8rpx;
-	}
-	
-	.loading-more-text-black{
+
+	.loading-more-text-black {
 		color: #a4a4a4;
 	}
-	
-	.loading-more-text-white{
+
+	.loading-more-text-white {
 		color: #f1f1f1;
 	}
-	
-	.loading-more-line{
+
+	.loading-more-line {
 		height: 1px;
 		width: 100rpx;
+		margin: 0rpx 10rpx;
 	}
-	
-	.loading-more-line-black{
+
+	.loading-more-line-black {
 		background-color: #eeeeee;
 	}
-	
-	.loading-more-line-white{
+
+	.loading-more-line-white {
 		background-color: #cccccc;
 	}
 
-	@keyframes loading {
+	@keyframes loading-flower {
 		0% {
+			-webkit-transform: rotate(0deg);
+			transform: rotate(0deg);
+		}
+
+		to {
+			-webkit-transform: rotate(1turn);
+			transform: rotate(1turn);
+		}
+	}
+
+	@keyframes loading-circle {
+		0% {
+			-webkit-transform: rotate(0deg);
 			transform: rotate(0deg);
 		}
 
 		100% {
+			-webkit-transform: rotate(360deg);
 			transform: rotate(360deg);
 		}
 	}
