@@ -121,6 +121,7 @@
 |           default-page-size            |                        自定义pageSize                        | String \| Number |           15           |      -      |
 |          default-theme-style           | loading(下拉刷新、上拉加载更多)的主题样式，支持black，white  |      String      |         black          |    white    |
 |        mounted-auto-call-reload        | `z-paging` `mounted`后自动调用`reload`方法(`mounted`后自动调用接口) |     Boolean      |          true          |    false    |
+|      auto-clean-list-when-reload       | reload时立即自动清空原list，若立即自动清空，则在reload之后、请求回调之前页面是空白的 |     Boolean      |          true          |    false    |
 |          loading-more-enabled          | 是否启用加载更多数据(含滑动到底部加载更多数据和点击加载更多数据)，默认为是 |     Boolean      |          true          |    false    |
 |     to-bottom-loading-more-enabled     |                是否启用滑动到底部加载更多数据                |     Boolean      |          true          |    false    |
 |           loading-more-text            |  自定义底部加载更多文字(当需要不同加载状态固定文字时才使用)  |      String      |           -            |      -      |
@@ -169,4 +170,3 @@
 | ------- | ------------------------------------------------------------ | -------------------------------------------------------- |
 | reload  | 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果   | -                                                        |
 | addData | 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理 | Value1:请求结果数组；value2:是否请求成功，不填默认为true |
-
