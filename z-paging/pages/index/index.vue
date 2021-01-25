@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
-		<z-paging loading-more-loading-icon-type="flower" ref="paging" @query="queryList" :list.sync="dataList" style="height: calc(100% - 80rpx);">
+		<z-paging ref="paging" @query="queryList" :list.sync="dataList" style="height: calc(100% - 80rpx);">
 			<!-- 设置自定义emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
 			<empty-view slot="empty"></empty-view>
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
@@ -36,6 +36,7 @@
 				})
 			},
 			itemClick(item) {
+				this.$refs.paging.doLoadMore();
 				console.log('点击了', item.title);
 			}
 		}
