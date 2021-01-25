@@ -4,6 +4,8 @@
 
 ## 在DCloud插件市场中访问：https://ext.dcloud.net.cn/plugin?id=3935
 
+### 反馈qq群(点击加群)：[790460711](https://jq.qq.com/?_wv=1027&k=vU2fKZZH)
+
 # 基本使用
 
 * ①在`<template>` 中使用@query绑定js中分页请求的方法(`z-paging`会将计算好的pageNo和pageSize两个参数传递到此方法中)，然后通过` :list.sync`绑定列表for循环的list。
@@ -126,12 +128,15 @@
 |     to-bottom-loading-more-enabled     |                是否启用滑动到底部加载更多数据                |     Boolean      |          true          |    false    |
 |           loading-more-text            |  自定义底部加载更多文字(当需要不同加载状态固定文字时才使用)  |      String      |           -            |      -      |
 |       loading-more-custom-style        |         自定义底部加载更多样式；如：{'color':'red'}          |      Object      |           -            |      -      |
-|   loading-more-loading-custom-style    |               自定义底部加载更多加载中动画样式               |      Object      |           -            |      -      |
+| loading-more-loading-icon-custom-style |               自定义底部加载更多加载中动画样式               |      Object      |           -            |      -      |
+|     loading-more-loading-icon-type     | 自定义底部加载更多加载中动画图标类型，可选circle或flower，默认为circle |      String      |         circle         |   flower    |
+| loading-more-loading-icon-custom-image | 自定义底部加载更多加载中动画图标图片，若设置则使用自定义的动画图标，`loading-more-loading-icon-type`将无效 |      String      |           -            |      -      |
 |       loading-more-default-text        |                     滑动到底部"默认"文字                     |      String      |      点击加载更多      |      -      |
 |       loading-more-loading-text        |                    滑动到底部"加载中"文字                    |      String      |      正在加载...       |      -      |
 |       loading-more-no-more-text        |                   滑动到底部"没有更多"文字                   |      String      |       没有更多了       |      -      |
 |         loading-more-fail-text         |                   滑动到底部"加载失败"文字                   |      String      | 加载失败，点击重新加载 |      -      |
-|     show-default-loading-moretext      |                  是否显示默认的加载更多text                  |     Boolean      |          true          |    false    |
+|     show-loading-more-no-more-view     |                  是否显示没有更多数据的view                  |     Boolean      |          true          |    false    |
+|     show-default-loading-more-text     |                  是否显示默认的加载更多text                  |     Boolean      |          true          |    false    |
 |     show-loading-more-no-more-line     |            是否显示没有更多数据的分割线，默认为是            |     Boolean      |          true          |    false    |
 | loading-more-no-more-line-custom-style |              自定义底部没有更多数据的分割线样式              |      Object      |           -            |      -      |
 |            hide-empty-view             |                     是否强制隐藏空数据图                     |     Boolean      |         false          |    true     |
@@ -166,7 +171,9 @@
 
   注意：在Page的onLoad()方法中无法同步获取this.$refs，请加一个setTimeOut延时1毫秒再调用(默认会在页面加载时自动调用reload()无须手动调用)
 
-| 方法名  | 说明                                                         | 参数                                                     |
-| ------- | ------------------------------------------------------------ | -------------------------------------------------------- |
-| reload  | 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果   | -                                                        |
-| addData | 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理 | Value1:请求结果数组；value2:是否请求成功，不填默认为true |
+| 方法名     | 说明                                                         | 参数                                                     |
+| ---------- | ------------------------------------------------------------ | -------------------------------------------------------- |
+| reload     | 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果   | -                                                        |
+| addData    | 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理 | Value1:请求结果数组；value2:是否请求成功，不填默认为true |
+| doLoadMore | 手动触发上拉加载更多(非必须，可依据具体需求使用)             | -                                                        |
+
