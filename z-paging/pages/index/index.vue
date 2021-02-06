@@ -27,10 +27,13 @@
 		methods: {
 			tabChange(index){
 				this.tabIndex = index;
+				//当切换tab时请调用组件的reload方法，请勿直接调用：queryList方法！！
 				this.$refs.paging.reload();
 			},
 			queryList(pageNo, pageSize) {
+				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
 				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
+				//模拟请求服务器获取分页数据
 				this.$request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
 					this.$refs.paging.addData(data);
 				})
@@ -44,17 +47,19 @@
 </script>
 
 <style>
-	/* 注意，父节点需要固定高度，z-paging的height:100%才会生效 */
+	/* 注意，1、父节点需要固定高度，z-paging的height:100%才会生效 */
+	/* 注意，2、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突 */
 	page {
 		height: 100%;
 	}
 
 	.content {
 		height: 100%;
+		/* 父节点建议开启flex布局 */
 		display: flex;
 		flex-direction: column;
 	}
-
+	
 	.item {
 		position: relative;
 		height: 100rpx;

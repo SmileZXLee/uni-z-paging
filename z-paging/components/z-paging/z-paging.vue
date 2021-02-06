@@ -31,8 +31,9 @@ setTimeout(()=>{
 },1)
 ```
 4.注意事项：
-因分页组件是通过@scrolltolower来判断滚动到底部的，因此z-paging需要有固定的高度，才可以触发滚动到底部事件，
-若未确定其高度而是根据具体内容将其撑高，则它永远滚动不到底部，因为它不存在[底部]的概念，因为它会无限[长高]
+1、因分页组件是通过@scrolltolower来判断滚动到底部的，因此z-paging需要有固定的高度，才可以触发滚动到底部事件，
+若未确定其高度而是根据具体内容将其撑高，则它永远滚动不到底部，因为它不存在[底部]的概念，因为它会无限[长高]。
+2、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突
 
  -->
 <template name="z-paging" style="height: 100%;">
@@ -41,8 +42,8 @@ setTimeout(()=>{
 	 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle" :refresher-triggered="refresherTriggered"
 	 @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh">
 		<slot v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading" name="empty" />
-		<!-- 如果需要修改组件源码来统一设置全局的emptyView，可以把此处的“empty-view”换成自定义的组件名即可
-		<empty-view v-else-if="!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading"></empty-view> -->
+		<!-- 如果需要修改组件源码来统一设置全局的emptyView，可以把此处的“empty-view”换成自定义的组件名即可 -->
+		<!-- <empty-view v-else-if="!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading"></empty-view> --> 
 		<slot />
 		<slot @click="_onLoadingMore('click')" v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore" name="loadingMoreDefault" />
 		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore" name="loadingMoreLoading" />
@@ -378,6 +379,7 @@ setTimeout(()=>{
 					success = data;
 					data = [];
 				} else if (dataType !== '[object Array]') {
+					data = [];
 					console.error('addData参数类型不正确，第一个参数类型必须为Array!');
 				}
 				if (this.refresherTriggered) {
@@ -399,6 +401,7 @@ setTimeout(()=>{
 				this.isUserReload = true;
 				this._reload();
 			},
+			//手动触发上拉加载更多(非必须，可依据具体需求使用)
 			doLoadMore(){
 				this._onLoadingMore('toBottom');
 			},
