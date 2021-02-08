@@ -41,30 +41,53 @@ setTimeout(()=>{
 	 :show-scrollbar="showScrollbar" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled"
 	 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle" :refresher-triggered="refresherTriggered"
 	 @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh">
-		<slot v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading" name="empty" />
-		<!-- 如果需要修改组件源码来统一设置全局的emptyView，可以把此处的“empty-view”换成自定义的组件名即可 -->
-		<!-- <empty-view v-else-if="!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading"></empty-view> --> 
-		<slot />
-		<slot @click="_onLoadingMore('click')" v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore" name="loadingMoreDefault" />
-		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore" name="loadingMoreLoading" />
-		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView" name="loadingMoreNoMore" />
-		<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore" name="loadingMoreFail" />
-		<view @click="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)" class="load-more-container"
-		 :style="[loadingMoreCustomStyle]">
-			<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
-			 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
-			<image v-if="loadingStatus===1&&loadingMoreLoadingIconCustomImage.length" :src="loadingMoreLoadingIconCustomImage" class="loading-more-line-loading-custom-image"></image>
-			<image v-if="loadingStatus===1&&loadingMoreLoadingIconType==='flower'&&!loadingMoreLoadingIconCustomImage.length" class="loading-more-line-loading-image" :style="[loadingMoreLoadingIconCustomStyle]" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyBjbGFzcz0iaWNvbiIgd2lkdGg9IjIwMHB4IiBoZWlnaHQ9IjIwMC4wMHB4IiB2aWV3Qm94PSIwIDAgMTAyNCAxMDI0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTYyNC42NjMgNzg1LjEzOWMtMTAuNzM1LTE4LjU5NS00LjMxNi00Mi4zOTcgMTQuMzM3LTUzLjE2OCAxOC42NTMtMTAuNzcgNDIuNDc5LTQuNDI3IDUzLjIxMyAxNC4xNjhsOTAuMTIzIDE1Ni4wOTljMTAuNzM2IDE4LjU5NSA0LjMxNyA0Mi4zOTgtMTQuMzM2IDUzLjE2OS0xOC42NTMgMTAuNzctNDIuNDc5IDQuNDI2LTUzLjIxNC0xNC4xNjlsLTkwLjEyMy0xNTYuMDk5eiIgZmlsbD0iI2NkY2RjZCIgLz48cGF0aCBkPSJNMjQxLjY2NCAxMjEuNzY0Yy0xMC43MzUtMTguNTk0LTQuMzE3LTQyLjM5OCAxNC4zMzYtNTMuMTY5IDE4LjY1My0xMC43NyA0Mi40NzktNC40MjYgNTMuMjE0IDE0LjE2OGw5MC4xMjQgMTU2LjA5OWMxMC43MzUgMTguNTk0IDQuMzE2IDQyLjM5OC0xNC4zMzcgNTMuMTY4LTE4LjY1MyAxMC43Ny00Mi40NzggNC40MjYtNTMuMjEzLTE0LjE2OGwtOTAuMTI0LTE1Ni4wOTh6IiBmaWxsPSIjYTlhOWE5IiAvPjxwYXRoIGQ9Ik0yMzguODYxIDYyNC42NjNjMTguNTk0LTEwLjczNSA0Mi4zOTgtNC4zMTYgNTMuMTY4IDE0LjMzNyAxMC43NyAxOC42NTMgNC40MjYgNDIuNDc5LTE0LjE2OCA1My4yMTNsLTE1Ni4wOTggOTAuMTI0Yy0xOC41OTQgMTAuNzM1LTQyLjM5OSA0LjMxNi01My4xNjgtMTQuMzM3LTEwLjc3LTE4LjY1My00LjQyNi00Mi40NzkgMTQuMTY4LTUzLjIxM2wxNTYuMDk4LTkwLjEyNHoiIGZpbGw9IiNiYmJiYmIiIC8+PHBhdGggZD0iTTkwMi4yMzYgMjQxLjY2NGMxOC41OTQtMTAuNzM2IDQyLjM5OC00LjMxNyA1My4xNjkgMTQuMzM2IDEwLjc3IDE4LjY1NCA0LjQyNiA0Mi40NzktMTQuMTY5IDUzLjIxNGwtMTU2LjA5OSA5MC4xMjNjLTE4LjU5NCAxMC43MzUtNDIuMzk3IDQuMzE2LTUzLjE2OC0xNC4zMzctMTAuNzctMTguNjU0LTQuNDI2LTQyLjQ3OSAxNC4xNjgtNTMuMjEzbDE1Ni4wOTktOTAuMTIzeiIgZmlsbD0iIzk5OTk5OSIgLz48cGF0aCBkPSJNMzMxLjc4NyA3NDYuMTM5YzEwLjczNC0xOC41OTUgMzQuNTYtMjQuOTM4IDUzLjIxMy0xNC4xNjggMTguNjUzIDEwLjc3MSAyNS4wNzIgMzQuNTczIDE0LjMzNiA1My4xNjhsLTkwLjEyMyAxNTYuMDk5Yy0xMC43MzQgMTguNTk1LTM0LjU2IDI0LjkzOC01My4yMTMgMTQuMTY5LTE4LjY1My0xMC43NzEtMjUuMDcyLTM0LjU3NC0xNC4zMzYtNTMuMTY5bDkwLjEyMy0xNTYuMDk5eiIgZmlsbD0iI2MyYzJjMiIgLz48cGF0aCBkPSJNNzE0Ljc4NiA4Mi43NjRjMTAuNzM1LTE4LjU5NCAzNC41NjEtMjQuOTM4IDUzLjIxNC0xNC4xNjkgMTguNjUzIDEwLjc3MSAyNS4wNzIgMzQuNTc1IDE0LjMzNyA1My4xNjhsLTkwLjEyMyAxNTYuMDk5Yy0xMC43MzUgMTguNTk0LTM0LjU2MSAyNC45MzgtNTMuMjE0IDE0LjE2OC0xOC42NTMtMTAuNzcxLTI1LjA3Mi0zNC41NzQtMTQuMzM3LTUzLjE2OGw5MC4xMjMtMTU2LjA5OHoiIGZpbGw9IiM5ZDlkOWQiIC8+PHBhdGggZD0iTTI3Ny44NjEgMzMxLjc4N2MxOC41OTQgMTAuNzM1IDI0LjkzOCAzNC41NiAxNC4xNjggNTMuMjEzcy0zNC41NzQgMjUuMDcyLTUzLjE2OCAxNC4zMzZMODIuNzYzIDMwOS4yMTNDNjQuMTY5IDI5OC40NzggNTcuODI1IDI3NC42NTMgNjguNTk1IDI1NmMxMC43NzEtMTguNjUzIDM0LjU3NC0yNS4wNzIgNTMuMTY4LTE0LjMzNmwxNTYuMDk4IDkwLjEyM3oiIGZpbGw9IiNhZmFmYWYiIC8+PHBhdGggZD0iTTk0MS4yMzYgNzE0Ljc4NmMxOC41OTUgMTAuNzM0IDI0LjkzOCAzNC41NjEgMTQuMTY5IDUzLjIxNC0xMC43NzEgMTguNjUzLTM0LjU3NCAyNS4wNzItNTMuMTY5IDE0LjMzN2wtMTU2LjA5OS05MC4xMjNDNzI3LjU0NCA2ODEuNDc5IDcyMS4yIDY1Ny42NTMgNzMxLjk3IDYzOWMxMC43NzEtMTguNjUzIDM0LjU3NC0yNS4wNzIgNTMuMTY4LTE0LjMzN2wxNTYuMDk4IDkwLjEyM3oiIGZpbGw9IiNkMWQxZDEiIC8+PHBhdGggZD0iTTIxOS4xMjMgNDczYzIxLjQ3MSAwIDM4Ljg3NyAxNy40NjEgMzguODc3IDM5cy0xNy40MDYgMzktMzguODc3IDM5SDM4Ljg3N0MxNy40MDYgNTUxIDAgNTMzLjUzOSAwIDUxMnMxNy40MDYtMzkgMzguODc3LTM5aDE4MC4yNDZ6IiBmaWxsPSIjYjZiNmI2IiAvPjxwYXRoIGQ9Ik05ODUuMTIzIDQ3M2MyMS40NzEgMCAzOC44NzcgMTcuNDYxIDM4Ljg3NyAzOXMtMTcuNDA2IDM5LTM4Ljg3NyAzOUg4MDQuODc3Yy0yMS40NzEgMC0zOC44NzctMTcuNDYxLTM4Ljg3Ny0zOXMxNy40MDYtMzkgMzguODc3LTM5aDE4MC4yNDZ6IiBmaWxsPSIjOTQ5NDk0IiAvPjxwYXRoIGQ9Ik01NTEgMjE5LjEyM2MwIDIxLjQ3MS0xNy40NjEgMzguODc3LTM5IDM4Ljg3N3MtMzktMTcuNDA2LTM5LTM4Ljg3N1YzOC44NzdjMC0yMS40NzEgMTcuNDYxLTM4Ljg3NyAzOS0zOC44NzdzMzkgMTcuNDA2IDM5IDM4Ljg3N3YxODAuMjQ2eiIgZmlsbD0iI2EzYTNhMyIgLz48cGF0aCBkPSJNNTUxIDk4NS4xMjNjMCAyMS40NzEtMTcuNDYxIDM4Ljg3Ny0zOSAzOC44NzdzLTM5LTE3LjQwNi0zOS0zOC44NzdWODA0Ljg3N2MwLTIxLjQ3MSAxNy40NjEtMzguODc3IDM5LTM4Ljg3N3MzOSAxNy40MDYgMzkgMzguODc3djE4MC4yNDZ6IiBmaWxsPSIjYzhjOGM4IiAvPjwvc3ZnPg=="></image>
-			<text v-if="loadingStatus===1&&loadingMoreLoadingIconType==='circle'&&!loadingMoreLoadingIconCustomImage.length" :class="defaultThemeStyle==='white'?'loading-more-line-loading-view loading-more-line-loading-view-white':'loading-more-line-loading-view loading-more-line-loading-view-black'"
-			 :style="[loadingMoreLoadingIconCustomStyle]"></text>
-			<text :class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{ownLoadingMoreText}}</text>
-			<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
-			 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+		<view @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend" :style="[{transform: refresherTransform,transition: refresherTransition}]">
+			<view class="custom-refresher-view" :style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`}]">
+				<view class="custom-refresher-container" style="height: 100%;">
+					<view class="custom-refresher-left">
+						<image v-if="refresherStatus!==2" :class="refresherLeftImageClass" style="transform: rotate(180deg);" :src="base64Arrow"></image>
+						<image v-else class="loading-more-line-loading-image custom-refresher-left-image" :src="base64Flower"></image>
+					</view>
+					<view class="custom-refresher-right">
+						<view class="custom-refresher-right-text">{{refresherStatusTextMap[refresherStatus]}}</view>
+					</view>
+				</view>
+			</view>
+			<slot v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading" name="empty" />
+			<!-- 如果需要修改组件源码来统一设置全局的emptyView，可以把此处的“empty-view”换成自定义的组件名即可 -->
+			<!-- <empty-view v-else-if="!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading"></empty-view> -->
+			<slot />
+			<slot @click="_onLoadingMore('click')" v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore" name="loadingMoreDefault" />
+			<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore"
+			 name="loadingMoreLoading" />
+			<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView"
+			 name="loadingMoreNoMore" />
+			<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore" name="loadingMoreFail" />
+			<view @click="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)"
+			 class="load-more-container" :style="[loadingMoreCustomStyle]">
+				<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
+				 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+				<image v-if="loadingStatus===1&&loadingMoreLoadingIconCustomImage.length" :src="loadingMoreLoadingIconCustomImage"
+				 class="loading-more-line-loading-custom-image"></image>
+				<image v-if="loadingStatus===1&&loadingMoreLoadingIconType==='flower'&&!loadingMoreLoadingIconCustomImage.length"
+				 class="loading-more-line-loading-image" :style="[loadingMoreLoadingIconCustomStyle]" src="base64Flower"></image>
+				<text v-if="loadingStatus===1&&loadingMoreLoadingIconType==='circle'&&!loadingMoreLoadingIconCustomImage.length"
+				 :class="defaultThemeStyle==='white'?'loading-more-line-loading-view loading-more-line-loading-view-white':'loading-more-line-loading-view loading-more-line-loading-view-black'"
+				 :style="[loadingMoreLoadingIconCustomStyle]"></text>
+				<text :class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{ownLoadingMoreText}}</text>
+				<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
+				 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+			</view>
 		</view>
+
 	</scroll-view>
 </template>
 
 <script>
+	const base64Arrow =
+		'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyBjbGFzcz0iaWNvbiIgd2lkdGg9IjIwMHB4IiBoZWlnaHQ9IjIwMC4wMHB4IiB2aWV3Qm94PSIwIDAgMTAyNCAxMDI0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTUyNS4zMzkzMjYgMTg2LjE3MjQ1Mkw4MDEuNzg5MDg2IDQ2Mi42MjIyMTJjMTIuNDk2Njk4IDEyLjQ5NjY5OCAzMi43NTgxMzYgMTIuNDk2Njk4IDQ1LjI1NDgzNCAwIDEyLjQ5NzQwNS0xMi40OTc0MDUgMTIuNDk2Njk4LTMyLjc1ODEzNiAwLTQ1LjI1NDgzNGwtMzMxLjAxNDM2Mi0zMzEuMDE0MzYyYy0xMi40OTY2OTgtMTIuNDk2Njk4LTMyLjc1NzQyOS0xMi40OTc0MDUtNDUuMjU0ODM0IDBsLTM0MS43OTU2MTkgMzM5LjE0Mzk2OWMtMTIuNDk2Njk4IDEyLjQ5NjY5OC0xMi40OTY2OTggMzIuNzU4MTM2IDAgNDUuMjU0ODM0IDEyLjQ5NjY5OCAxMi40OTY2OTggMzIuNzU4MTM2IDEyLjQ5NjY5OCA0NS4yNTQ4MzQgMGwyODcuMTA1ODYtMjg0LjQ1NDIwOUw0NjEuMzcyMzI1IDkyNS43MjYyNDJjMCAxNy42NzM0MjcgMTQuMzI2NjkgMzIuMDAwMTE3IDMyLjAwMDExOCAzMi4wMDAxMTcgMTcuNjcyNzItMC4wMDA3MDcgMzEuOTk5NDEtMTQuMzI3Mzk4IDMyLjAwMDExNy0zMi4wMDAxMTdsLTAuMDMyNTI3LTczOS41NTMwODN6IiBmaWxsPSIjNTE1MTUxIiAvPjwvc3ZnPg==';
+	const base64Flower =
+		'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyBjbGFzcz0iaWNvbiIgd2lkdGg9IjIwMHB4IiBoZWlnaHQ9IjIwMC4wMHB4IiB2aWV3Qm94PSIwIDAgMTAyNCAxMDI0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTYyNC42NjMgNzg1LjEzOWMtMTAuNzM1LTE4LjU5NS00LjMxNi00Mi4zOTcgMTQuMzM3LTUzLjE2OCAxOC42NTMtMTAuNzcgNDIuNDc5LTQuNDI3IDUzLjIxMyAxNC4xNjhsOTAuMTIzIDE1Ni4wOTljMTAuNzM2IDE4LjU5NSA0LjMxNyA0Mi4zOTgtMTQuMzM2IDUzLjE2OS0xOC42NTMgMTAuNzctNDIuNDc5IDQuNDI2LTUzLjIxNC0xNC4xNjlsLTkwLjEyMy0xNTYuMDk5eiIgZmlsbD0iI2NkY2RjZCIgLz48cGF0aCBkPSJNMjQxLjY2NCAxMjEuNzY0Yy0xMC43MzUtMTguNTk0LTQuMzE3LTQyLjM5OCAxNC4zMzYtNTMuMTY5IDE4LjY1My0xMC43NyA0Mi40NzktNC40MjYgNTMuMjE0IDE0LjE2OGw5MC4xMjQgMTU2LjA5OWMxMC43MzUgMTguNTk0IDQuMzE2IDQyLjM5OC0xNC4zMzcgNTMuMTY4LTE4LjY1MyAxMC43Ny00Mi40NzggNC40MjYtNTMuMjEzLTE0LjE2OGwtOTAuMTI0LTE1Ni4wOTh6IiBmaWxsPSIjYTlhOWE5IiAvPjxwYXRoIGQ9Ik0yMzguODYxIDYyNC42NjNjMTguNTk0LTEwLjczNSA0Mi4zOTgtNC4zMTYgNTMuMTY4IDE0LjMzNyAxMC43NyAxOC42NTMgNC40MjYgNDIuNDc5LTE0LjE2OCA1My4yMTNsLTE1Ni4wOTggOTAuMTI0Yy0xOC41OTQgMTAuNzM1LTQyLjM5OSA0LjMxNi01My4xNjgtMTQuMzM3LTEwLjc3LTE4LjY1My00LjQyNi00Mi40NzkgMTQuMTY4LTUzLjIxM2wxNTYuMDk4LTkwLjEyNHoiIGZpbGw9IiNiYmJiYmIiIC8+PHBhdGggZD0iTTkwMi4yMzYgMjQxLjY2NGMxOC41OTQtMTAuNzM2IDQyLjM5OC00LjMxNyA1My4xNjkgMTQuMzM2IDEwLjc3IDE4LjY1NCA0LjQyNiA0Mi40NzktMTQuMTY5IDUzLjIxNGwtMTU2LjA5OSA5MC4xMjNjLTE4LjU5NCAxMC43MzUtNDIuMzk3IDQuMzE2LTUzLjE2OC0xNC4zMzctMTAuNzctMTguNjU0LTQuNDI2LTQyLjQ3OSAxNC4xNjgtNTMuMjEzbDE1Ni4wOTktOTAuMTIzeiIgZmlsbD0iIzk5OTk5OSIgLz48cGF0aCBkPSJNMzMxLjc4NyA3NDYuMTM5YzEwLjczNC0xOC41OTUgMzQuNTYtMjQuOTM4IDUzLjIxMy0xNC4xNjggMTguNjUzIDEwLjc3MSAyNS4wNzIgMzQuNTczIDE0LjMzNiA1My4xNjhsLTkwLjEyMyAxNTYuMDk5Yy0xMC43MzQgMTguNTk1LTM0LjU2IDI0LjkzOC01My4yMTMgMTQuMTY5LTE4LjY1My0xMC43NzEtMjUuMDcyLTM0LjU3NC0xNC4zMzYtNTMuMTY5bDkwLjEyMy0xNTYuMDk5eiIgZmlsbD0iI2MyYzJjMiIgLz48cGF0aCBkPSJNNzE0Ljc4NiA4Mi43NjRjMTAuNzM1LTE4LjU5NCAzNC41NjEtMjQuOTM4IDUzLjIxNC0xNC4xNjkgMTguNjUzIDEwLjc3MSAyNS4wNzIgMzQuNTc1IDE0LjMzNyA1My4xNjhsLTkwLjEyMyAxNTYuMDk5Yy0xMC43MzUgMTguNTk0LTM0LjU2MSAyNC45MzgtNTMuMjE0IDE0LjE2OC0xOC42NTMtMTAuNzcxLTI1LjA3Mi0zNC41NzQtMTQuMzM3LTUzLjE2OGw5MC4xMjMtMTU2LjA5OHoiIGZpbGw9IiM5ZDlkOWQiIC8+PHBhdGggZD0iTTI3Ny44NjEgMzMxLjc4N2MxOC41OTQgMTAuNzM1IDI0LjkzOCAzNC41NiAxNC4xNjggNTMuMjEzcy0zNC41NzQgMjUuMDcyLTUzLjE2OCAxNC4zMzZMODIuNzYzIDMwOS4yMTNDNjQuMTY5IDI5OC40NzggNTcuODI1IDI3NC42NTMgNjguNTk1IDI1NmMxMC43NzEtMTguNjUzIDM0LjU3NC0yNS4wNzIgNTMuMTY4LTE0LjMzNmwxNTYuMDk4IDkwLjEyM3oiIGZpbGw9IiNhZmFmYWYiIC8+PHBhdGggZD0iTTk0MS4yMzYgNzE0Ljc4NmMxOC41OTUgMTAuNzM0IDI0LjkzOCAzNC41NjEgMTQuMTY5IDUzLjIxNC0xMC43NzEgMTguNjUzLTM0LjU3NCAyNS4wNzItNTMuMTY5IDE0LjMzN2wtMTU2LjA5OS05MC4xMjNDNzI3LjU0NCA2ODEuNDc5IDcyMS4yIDY1Ny42NTMgNzMxLjk3IDYzOWMxMC43NzEtMTguNjUzIDM0LjU3NC0yNS4wNzIgNTMuMTY4LTE0LjMzN2wxNTYuMDk4IDkwLjEyM3oiIGZpbGw9IiNkMWQxZDEiIC8+PHBhdGggZD0iTTIxOS4xMjMgNDczYzIxLjQ3MSAwIDM4Ljg3NyAxNy40NjEgMzguODc3IDM5cy0xNy40MDYgMzktMzguODc3IDM5SDM4Ljg3N0MxNy40MDYgNTUxIDAgNTMzLjUzOSAwIDUxMnMxNy40MDYtMzkgMzguODc3LTM5aDE4MC4yNDZ6IiBmaWxsPSIjYjZiNmI2IiAvPjxwYXRoIGQ9Ik05ODUuMTIzIDQ3M2MyMS40NzEgMCAzOC44NzcgMTcuNDYxIDM4Ljg3NyAzOXMtMTcuNDA2IDM5LTM4Ljg3NyAzOUg4MDQuODc3Yy0yMS40NzEgMC0zOC44NzctMTcuNDYxLTM4Ljg3Ny0zOXMxNy40MDYtMzkgMzguODc3LTM5aDE4MC4yNDZ6IiBmaWxsPSIjOTQ5NDk0IiAvPjxwYXRoIGQ9Ik01NTEgMjE5LjEyM2MwIDIxLjQ3MS0xNy40NjEgMzguODc3LTM5IDM4Ljg3N3MtMzktMTcuNDA2LTM5LTM4Ljg3N1YzOC44NzdjMC0yMS40NzEgMTcuNDYxLTM4Ljg3NyAzOS0zOC44NzdzMzkgMTcuNDA2IDM5IDM4Ljg3N3YxODAuMjQ2eiIgZmlsbD0iI2EzYTNhMyIgLz48cGF0aCBkPSJNNTUxIDk4NS4xMjNjMCAyMS40NzEtMTcuNDYxIDM4Ljg3Ny0zOSAzOC44NzdzLTM5LTE3LjQwNi0zOS0zOC44NzdWODA0Ljg3N2MwLTIxLjQ3MSAxNy40NjEtMzguODc3IDM5LTM4Ljg3N3MzOSAxNy40MDYgMzkgMzguODc3djE4MC4yNDZ6IiBmaWxsPSIjYzhjOGM4IiAvPjwvc3ZnPg=='
 	/**
 	 * z-paging 分页组件
 	 * @description 【uni-app自动分页器】超简单，低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view等。
@@ -117,9 +140,11 @@ setTimeout(()=>{
 				isUserReload: true,
 				scrollTop: 0,
 				oldScrollTop: 0,
+				base64Arrow: base64Arrow,
+				base64Flower: base64Flower,
 				//当前加载类型 0-下拉刷新 1-上拉加载更多
 				loadingType: 0,
-				//底部加载更多文字状态 0-默认状态 1.加载中 2.没有更多数据 3.加载失败
+				//底部加载更多状态 0-默认状态 1.加载中 2.没有更多数据 3.加载失败
 				loadingStatus: 0,
 				//底部加载更多文字Map
 				loadingStatusTextMap: {
@@ -128,6 +153,18 @@ setTimeout(()=>{
 					2: this.loadingMoreNoMoreText,
 					3: this.loadingMoreFailText,
 				},
+				//下拉刷新状态 0-默认状态 1.松手立即刷新 2.刷新中
+				refresherStatus: 0,
+				//下拉刷新文字Map
+				refresherStatusTextMap: {
+					0: '继续下拉刷新',
+					1: '松开立即刷新',
+					2: '正在刷新...'
+				},
+				refresherLeftImageClass: 'custom-refresher-left-image',
+				refresherTouchstartY: 0,
+				refresherTransform: 'translateY(0px)',
+				refresherTransition: '0s',
 				finalRefresherDefaultStyle: 'black'
 			};
 		},
@@ -307,7 +344,7 @@ setTimeout(()=>{
 			refresherEnabled: {
 				type: Boolean,
 				default: function() {
-					return true;
+					return false;
 				},
 			},
 			//设置自定义下拉刷新阈值，默认为45
@@ -323,7 +360,7 @@ setTimeout(()=>{
 				default: function() {
 					return "";
 				}
-			},
+			}
 		},
 		mounted() {
 			if (this.mountedAutoCallReload) {
@@ -361,6 +398,14 @@ setTimeout(()=>{
 					}
 				},
 				immediate: true
+			},
+			refresherStatus(newVal, oldVal) {
+				if (newVal === 0 && oldVal !== 0) {
+					this.refresherLeftImageClass = 'custom-refresher-left-image custom-refresher-arrow-down';
+				}
+				if (newVal !== 0 && oldVal === 0) {
+					this.refresherLeftImageClass = 'custom-refresher-left-image custom-refresher-arrow-top';
+				}
 			}
 		},
 		computed: {
@@ -380,12 +425,13 @@ setTimeout(()=>{
 					data = [];
 				} else if (dataType !== '[object Array]') {
 					data = [];
-					console.error('addData参数类型不正确，第一个参数类型必须为Array!');
+					console.error('[z-paging]:addData参数类型不正确，第一个参数类型必须为Array!');
 				}
 				if (this.refresherTriggered) {
 					this.refresherTriggered = false;
 				}
 				this.loading = false;
+				this._refresherEnd();
 				if (success) {
 					this.loadingStatus = 0;
 					this._currentDataChange(data, this.currentData);
@@ -399,10 +445,11 @@ setTimeout(()=>{
 			//重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果
 			reload() {
 				this.isUserReload = true;
+				this._refresherEnd();
 				this._reload();
 			},
 			//手动触发上拉加载更多(非必须，可依据具体需求使用)
-			doLoadMore(){
+			doLoadMore() {
 				this._onLoadingMore('toBottom');
 			},
 			//手动停止下拉刷新加载
@@ -491,6 +538,53 @@ setTimeout(()=>{
 					return `${cls} ${cls}-white`;
 				}
 				return cls;
+			},
+			// 拖拽开始
+			_refresherTouchstart(e) {
+				this.refresherTransition = 'transform .1s linear'
+				this.refresherTouchstartY = e.touches[0].clientY
+			},
+			//拖拽中
+			_refresherTouchmove(e) {
+				let refresherTouchmoveY = e.touches[0].clientY;
+				let moveDistance = refresherTouchmoveY - this.refresherTouchstartY;
+				if (moveDistance < 0) {
+					return
+				}
+				if (moveDistance >= this.refresherThreshold) {
+					this.refresherStatus = 1;
+					moveDistance = this.refresherThreshold + (moveDistance - this.refresherThreshold) * 0.2;
+				} else {
+					this.refresherStatus = 0;
+				}
+				this.refresherTransform = `translateY(${moveDistance}px)`
+			},
+			//拖拽结束
+			_refresherTouchend(e) {
+				let refresherTouchendY = e.changedTouches[0].clientY;
+				let moveDistance = refresherTouchendY - this.refresherTouchstartY;
+				if(moveDistance > this.refresherThreshold){
+					this.refresherTransform = `translateY(${this.refresherThreshold}px)`
+					this.refresherStatus = 2;
+					this._doRefresherLoad();
+				}else{
+					this._refresherEnd();
+				}
+				
+			},
+			//下拉刷新结束
+			_refresherEnd(){
+				this.refresherTransform = 'translateY(0px)'
+				this.refresherTransition = 'transform 0.3s cubic-bezier(.21,1.93,.53,.64)'
+				setTimeout(() => {
+					this.refresherStatus = 0;
+				}, 100)
+				this.loading = false;
+			},
+			//触发下拉刷新
+			_doRefresherLoad(){
+				this._onRefresh();
+				this.loading = true;
 			}
 		},
 	};
@@ -500,6 +594,38 @@ setTimeout(()=>{
 	.scroll-view {
 		width: 100%;
 		height: 100%;
+	}
+
+	.custom-refresher-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.custom-refresher-left-image {
+		width: 30rpx;
+		height: 30rpx;
+		margin-top: 10rpx;
+		margin-right: 8rpx;
+	}
+
+	.custom-refresher-arrow-top {
+		animation: refresher-arrow-top 0.25s linear;
+		-webkitanimation: refresher-arrow-top 0.25s linear;
+		animation-fill-mode: forwards;
+		-webkit-animation-fill-mode: forwards;
+	}
+
+	.custom-refresher-arrow-down {
+		animation: refresher-arrow-down 0.25s linear;
+		-webkit-animation: refresher-arrow-down 0.25s linear;
+		animation-fill-mode: forwards;
+		-webkit-animation-fill-mode: forwards;
+	}
+
+	.custom-refresher-right {
+		font-size: 24rpx;
+		color: #666666;
 	}
 
 	.load-more-container {
@@ -516,8 +642,8 @@ setTimeout(()=>{
 		height: 28rpx;
 		animation: loading-flower 1s steps(12) infinite;
 	}
-	
-	.loading-more-line-loading-custom-image{
+
+	.loading-more-line-loading-custom-image {
 		margin-right: 8rpx;
 		width: 28rpx;
 		height: 28rpx;
@@ -586,6 +712,30 @@ setTimeout(()=>{
 		100% {
 			-webkit-transform: rotate(360deg);
 			transform: rotate(360deg);
+		}
+	}
+
+	@keyframes refresher-arrow-top {
+		0% {
+			-webkit-transform: rotate(180deg);
+			transform: rotate(180deg);
+		}
+
+		100% {
+			-webkit-transform: rotate(0deg);
+			transform: rotate(0deg);
+		}
+	}
+
+	@keyframes refresher-arrow-down {
+		0% {
+			-webkit-transform: rotate(0deg);
+			transform: rotate(0deg);
+		}
+
+		100% {
+			-webkit-transform: rotate(180deg);
+			transform: rotate(180deg);
 		}
 	}
 </style>

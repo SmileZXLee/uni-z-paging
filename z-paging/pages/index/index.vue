@@ -39,7 +39,6 @@
 				})
 			},
 			itemClick(item) {
-				this.$refs.paging.doLoadMore();
 				console.log('点击了', item.title);
 			}
 		}
