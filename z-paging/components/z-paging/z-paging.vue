@@ -24,7 +24,7 @@ getList(pageNo,pagSize){
 ```js
 this.$refs.paging.reload();
 ```
-注意：如果需要在在Page的onLoad()方法中使用（默认自动会调用），请加一个setTimeOut再调用
+注意：如果需要在在Page的onLoad()方法中使用（默认自动会调用），请加一个setTimeOut或nextTick再调用
 ```js
 setTimeout(()=>{
 	this.$refs.paging.reload();
@@ -440,6 +440,7 @@ setTimeout(()=>{
 				if (newVal !== 0 && oldVal === 0) {
 					this.refresherLeftImageClass = 'custom-refresher-left-image custom-refresher-arrow-top';
 				}
+				this.$emit("refresherStatusChange", newVal);
 			}
 		},
 		computed: {
@@ -618,7 +619,7 @@ setTimeout(()=>{
 			//下拉刷新结束
 			_refresherEnd(){
 				this.refresherTransform = 'translateY(0px)'
-				this.refresherTransition = 'transform 0.3s cubic-bezier(.21,1.93,.53,.64)'
+				this.refresherTransition = 'transform 0.3s cubic-bezier(0.19,1.64,0.42,0.72)'
 				setTimeout(() => {
 					this.refresherStatus = 0;
 				}, 100)
