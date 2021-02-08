@@ -38,12 +38,13 @@ setTimeout(()=>{
  -->
 <template name="z-paging" style="height: 100%;">
 	<scroll-view scroll-y="true" :scroll-top="scrollTop" class="scroll-view" :enable-back-to-top="enableBackToTop"
-	 :show-scrollbar="showScrollbar" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled"
+	 :show-scrollbar="showScrollbar" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher"
 	 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle" :refresher-triggered="refresherTriggered"
 	 @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh">
-		<view @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend" :style="[{transform: refresherTransform,transition: refresherTransition}]">
-			<view class="custom-refresher-view" :style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`}]">
-				<view class="custom-refresher-container" style="height: 100%;">
+		<view class="paging-main" @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
+			<view v-if="refresherEnabled&&useCustomRefresher" class="custom-refresher-view" :style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`}]">
+				<slot v-if="$slots.refresher" name="refresher" />
+				<view  v-else class="custom-refresher-container" style="height: 100%;">
 					<view class="custom-refresher-left">
 						<image v-if="refresherStatus!==2" :class="refresherLeftImageClass" style="transform: rotate(180deg);" :src="base64Arrow"></image>
 						<image v-else class="loading-more-line-loading-image custom-refresher-left-image" :src="base64Flower"></image>
@@ -53,33 +54,34 @@ setTimeout(()=>{
 					</view>
 				</view>
 			</view>
-			<slot v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading" name="empty" />
-			<!-- 如果需要修改组件源码来统一设置全局的emptyView，可以把此处的“empty-view”换成自定义的组件名即可 -->
-			<!-- <empty-view v-else-if="!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading"></empty-view> -->
-			<slot />
-			<slot @click="_onLoadingMore('click')" v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore" name="loadingMoreDefault" />
-			<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore"
-			 name="loadingMoreLoading" />
-			<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView"
-			 name="loadingMoreNoMore" />
-			<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore" name="loadingMoreFail" />
-			<view @click="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)"
-			 class="load-more-container" :style="[loadingMoreCustomStyle]">
-				<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
-				 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
-				<image v-if="loadingStatus===1&&loadingMoreLoadingIconCustomImage.length" :src="loadingMoreLoadingIconCustomImage"
-				 class="loading-more-line-loading-custom-image"></image>
-				<image v-if="loadingStatus===1&&loadingMoreLoadingIconType==='flower'&&!loadingMoreLoadingIconCustomImage.length"
-				 class="loading-more-line-loading-image" :style="[loadingMoreLoadingIconCustomStyle]" src="base64Flower"></image>
-				<text v-if="loadingStatus===1&&loadingMoreLoadingIconType==='circle'&&!loadingMoreLoadingIconCustomImage.length"
-				 :class="defaultThemeStyle==='white'?'loading-more-line-loading-view loading-more-line-loading-view-white':'loading-more-line-loading-view loading-more-line-loading-view-black'"
-				 :style="[loadingMoreLoadingIconCustomStyle]"></text>
-				<text :class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{ownLoadingMoreText}}</text>
-				<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
-				 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+			<view class="paging-container">
+				<slot v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading" name="empty" />
+				<!-- 如果需要修改组件源码来统一设置全局的emptyView，可以把此处的“empty-view”换成自定义的组件名即可 -->
+				<!-- <empty-view v-else-if="!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading"></empty-view> -->
+				<slot />
+				<slot @click="_onLoadingMore('click')" v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore" name="loadingMoreDefault" />
+				<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore"
+				 name="loadingMoreLoading" />
+				<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView"
+				 name="loadingMoreNoMore" />
+				<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore" name="loadingMoreFail" />
+				<view @click="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)"
+				 class="load-more-container" :style="[loadingMoreCustomStyle]">
+					<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
+					 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+					<image v-if="loadingStatus===1&&loadingMoreLoadingIconCustomImage.length" :src="loadingMoreLoadingIconCustomImage"
+					 class="loading-more-line-loading-custom-image"></image>
+					<image v-if="loadingStatus===1&&loadingMoreLoadingIconType==='flower'&&!loadingMoreLoadingIconCustomImage.length"
+					 class="loading-more-line-loading-image" :style="[loadingMoreLoadingIconCustomStyle]" :src="base64Flower"></image>
+					<text v-if="loadingStatus===1&&loadingMoreLoadingIconType==='circle'&&!loadingMoreLoadingIconCustomImage.length"
+					 :class="defaultThemeStyle==='white'?'loading-more-line-loading-view loading-more-line-loading-view-white':'loading-more-line-loading-view loading-more-line-loading-view-black'"
+					 :style="[loadingMoreLoadingIconCustomStyle]"></text>
+					<text :class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{ownLoadingMoreText}}</text>
+					<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
+					 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+				</view>
 			</view>
 		</view>
-
 	</scroll-view>
 </template>
 
@@ -97,6 +99,10 @@ setTimeout(()=>{
 	 * @property {String} default-theme-style loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
 	 * @property {Boolean} mounted-auto-call-reload z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
 	 * @property {Boolean} auto-clean-list-when-reload reload时立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
+	 * @property {Boolean} use-custom-refresher 是否使用自定义的下拉刷新，默认为否，使用uni自带的下拉刷新。设置为是后则使用z-paging的下拉刷新
+	 * @property {Boolean} refresher-default-text 自定义下拉刷新默认状态下的文字(useCustomRefresher为true时生效)
+	 * @property {Boolean} refresher-pulling-text 自定义下拉刷新松手立即刷新状态下的文字(useCustomRefresher为true时生效)
+	 * @property {Boolean} refresher-refreshing-text 自定义下拉刷新刷新中状态下的文字(useCustomRefresher为true时生效)
 	 * @property {String} loading-more-text 自定义底部加载更多文字
 	 * @property {Object} loading-more-custom-style 自定义底部加载更多样式
 	 * @property {Object} loading-more-loading-icon-custom-style 自定义底部加载更多加载中动画样式
@@ -142,6 +148,11 @@ setTimeout(()=>{
 				oldScrollTop: 0,
 				base64Arrow: base64Arrow,
 				base64Flower: base64Flower,
+				refresherLeftImageClass: 'custom-refresher-left-image',
+				refresherTouchstartY: 0,
+				refresherTransform: 'translateY(0px)',
+				refresherTransition: '0s',
+				finalRefresherDefaultStyle: 'black',
 				//当前加载类型 0-下拉刷新 1-上拉加载更多
 				loadingType: 0,
 				//底部加载更多状态 0-默认状态 1.加载中 2.没有更多数据 3.加载失败
@@ -157,15 +168,10 @@ setTimeout(()=>{
 				refresherStatus: 0,
 				//下拉刷新文字Map
 				refresherStatusTextMap: {
-					0: '继续下拉刷新',
-					1: '松开立即刷新',
-					2: '正在刷新...'
-				},
-				refresherLeftImageClass: 'custom-refresher-left-image',
-				refresherTouchstartY: 0,
-				refresherTransform: 'translateY(0px)',
-				refresherTransition: '0s',
-				finalRefresherDefaultStyle: 'black'
+					0: this.refresherDefaultText,
+					1: this.refresherPullingText,
+					2: this.refresherRefreshingText
+				}
 			};
 		},
 		props: {
@@ -207,6 +213,34 @@ setTimeout(()=>{
 					return true;
 				},
 			},
+			//是否使用自定义的下拉刷新，默认为否，使用uni自带的下拉刷新。设置为是后则使用z-paging的下拉刷新
+			useCustomRefresher: {
+				type: Boolean,
+				default: function() {
+					return false;
+				},
+			},
+			//自定义下拉刷新默认状态下的文字(useCustomRefresher为true时生效)
+			refresherDefaultText: {
+				type: String,
+				default: function() {
+					return "继续下拉刷新";
+				},
+			},
+			//自定义下拉刷新松手立即刷新状态下的文字(useCustomRefresher为true时生效)
+			refresherPullingText: {
+				type: String,
+				default: function() {
+					return "松开立即刷新";
+				},
+			},
+			//自定义下拉刷新刷新中状态下的文字(useCustomRefresher为true时生效)
+			refresherRefreshingText: {
+				type: String,
+				default: function() {
+					return "正在刷新...";
+				},
+			},
 			//自定义底部加载更多文字
 			loadingMoreText: {
 				type: String,
@@ -228,11 +262,11 @@ setTimeout(()=>{
 					return {}
 				}
 			},
-			//自定义底部加载更多加载中动画图标类型，可选circle或flower，默认为circle
+			//自定义底部加载更多加载中动画图标类型，可选flower或circle，默认为flower
 			loadingMoreLoadingIconType: {
 				type: String,
 				default () {
-					return 'circle';
+					return 'flower';
 				}
 			},
 			//自定义底部加载更多加载中动画图标图片
@@ -344,7 +378,7 @@ setTimeout(()=>{
 			refresherEnabled: {
 				type: Boolean,
 				default: function() {
-					return false;
+					return true;
 				},
 			},
 			//设置自定义下拉刷新阈值，默认为45
@@ -354,7 +388,7 @@ setTimeout(()=>{
 					return 45;
 				},
 			},
-			//设置自定义下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式，默认为black
+			//设置系统下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式，默认为black
 			refresherDefaultStyle: {
 				type: String,
 				default: function() {
@@ -442,7 +476,7 @@ setTimeout(()=>{
 					}
 				}
 			},
-			//重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果
+			//重新加载分页数据，pageNo会恢复为默认值，相当于下拉刷新的效果
 			reload() {
 				this.isUserReload = true;
 				this._refresherEnd();
@@ -541,11 +575,17 @@ setTimeout(()=>{
 			},
 			// 拖拽开始
 			_refresherTouchstart(e) {
+				if(!this.refresherEnabled || !this.useCustomRefresher){
+					return;
+				}
 				this.refresherTransition = 'transform .1s linear'
 				this.refresherTouchstartY = e.touches[0].clientY
 			},
 			//拖拽中
 			_refresherTouchmove(e) {
+				if(!this.refresherEnabled || !this.useCustomRefresher){
+					return;
+				}
 				let refresherTouchmoveY = e.touches[0].clientY;
 				let moveDistance = refresherTouchmoveY - this.refresherTouchstartY;
 				if (moveDistance < 0) {
@@ -561,6 +601,9 @@ setTimeout(()=>{
 			},
 			//拖拽结束
 			_refresherTouchend(e) {
+				if(!this.refresherEnabled || !this.useCustomRefresher){
+					return;
+				}
 				let refresherTouchendY = e.changedTouches[0].clientY;
 				let moveDistance = refresherTouchendY - this.refresherTouchstartY;
 				if(moveDistance > this.refresherThreshold){
@@ -594,6 +637,16 @@ setTimeout(()=>{
 	.scroll-view {
 		width: 100%;
 		height: 100%;
+	}
+	
+	.paging-main{
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+	
+	.paging-container{
+		flex: 1;
 	}
 
 	.custom-refresher-container {
