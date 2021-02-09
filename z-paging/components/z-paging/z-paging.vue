@@ -40,10 +40,10 @@ setTimeout(()=>{
 <template name="z-paging" style="height: 100%;">
 	<scroll-view scroll-y="true" :scroll-top="scrollTop" class="scroll-view" :enable-back-to-top="enableBackToTop"
 	 :show-scrollbar="showScrollbar" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher"
-	 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle" :refresher-triggered="refresherTriggered"
+	 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground" :refresher-triggered="refresherTriggered"
 	 @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh">
-		<view class="paging-main" @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
-			<view v-if="refresherEnabled&&useCustomRefresher" class="custom-refresher-view" :style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`}]">
+		<view class="paging-main" @touchstart="_refresherTouchstart" @touchmove.stop="_refresherTouchmove" @touchend="_refresherTouchend" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
+			<view v-if="refresherEnabled&&useCustomRefresher" class="custom-refresher-view" :style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 				<slot v-if="$slots.refresher" name="refresher" />
 				<view  v-else class="custom-refresher-container" style="height: 100%;">
 					<view class="custom-refresher-left">
@@ -126,6 +126,7 @@ setTimeout(()=>{
 	 * @property {Boolean} refresher-enabled 是否开启自定义下拉刷新，默认为是
 	 * @property {Number} refresher-threshold 设置自定义下拉刷新阈值，默认为45
 	 * @property {String} refresher-default-style 设置自定义下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式，默认为black
+	 * @property {String} refresher-background 设置自定义下拉刷新区域背景颜色
 	 * @event {Function} addData 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认为是)
 	 * @event {Function} reload 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果
 	 * @event {Function} endRefresh 手动停止下拉刷新加载
@@ -396,6 +397,13 @@ setTimeout(()=>{
 				default: function() {
 					return "";
 				}
+			},
+			//设置系统下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式，默认为black
+			refresherBackground: {
+				type: String,
+				default: function() {
+					return "#FFFFFF";
+				}
 			}
 		},
 		mounted() {
@@ -469,7 +477,9 @@ setTimeout(()=>{
 					this.refresherTriggered = false;
 				}
 				this.loading = false;
-				this._refresherEnd();
+				setTimeout(()=>{
+					this._refresherEnd();
+				},200)
 				if (success) {
 					this.loadingStatus = 0;
 					this._currentDataChange(data, this.currentData);
