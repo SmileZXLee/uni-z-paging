@@ -2,9 +2,11 @@
 	<view class="content">
 		<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 		<z-paging ref="paging" :refresher-threshold="80" :use-custom-refresher="true" @query="queryList" :list.sync="dataList" :refresher-status.sync="refresherStatus" style="height: calc(100% - 80rpx);">
-			<!-- 设置自定义emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
+			<!-- 自定义下拉刷新view -->
 			<custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>
+			<!-- 自定义没有更多数据view -->
 			<custom-nomore slot="loadingMoreNoMore"></custom-nomore>
+			<!-- 设置自定义emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
 			<empty-view slot="empty"></empty-view>
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view>
