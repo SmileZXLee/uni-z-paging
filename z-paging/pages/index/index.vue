@@ -8,8 +8,6 @@
 			<view>自定义下拉刷新与上拉加载演示</view>
 			<view>custom-demo.vue</view>
 		</view>
-		
-		<view class="bottom">https://ext.dcloud.net.cn/plugin?id=3935</view>
 	</view>
 </template>
 
@@ -54,7 +52,7 @@
 		align-items: center;
 		border-radius: 20rpx;
 		font-size: 40rpx;
-		margin-top: 30rpx;
+		margin-top: 40rpx;
 	}
 	.item-red{
 		background: linear-gradient(to right, #ffffff 0%, #f9d8ce 100%);

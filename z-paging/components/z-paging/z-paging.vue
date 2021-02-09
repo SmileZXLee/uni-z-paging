@@ -1,4 +1,5 @@
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
+<!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
 
 <!-- 使用方法 -->
 <!-- 
@@ -626,6 +627,7 @@ setTimeout(()=>{
 					this.refresherStatus = 0;
 				}, 100)
 				this.loading = false;
+				this.$emit("onRestore");
 			},
 			//触发下拉刷新
 			_doRefresherLoad(){
