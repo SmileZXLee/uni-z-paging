@@ -1,19 +1,15 @@
 <template>
 	<view class="content">
-		<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
-		<z-paging ref="paging" :use-custom-refresher="true" @query="queryList" :list.sync="dataList" style="height: calc(100% - 80rpx);">
-			<!-- 设置自定义emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
-			<!-- <view class="" slot="refresher" style="height: 100%;">哈哈哈哈</view> -->
-			<empty-view slot="empty"></empty-view>
-			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
-			<view>
-				<view class="item" v-for="(item,index) in dataList" @click="itemClick(item)">
-					<view class="item-title">{{item.title}}</view>
-					<view class="item-detail">{{item.detail}}</view>
-					<view class="item-line"></view>
-				</view>
-			</view>
-		</z-paging>
+		<view class="demo-view item-blue" @click="commonDemoClick">
+			<view>普通模式演示</view>
+			<view>common-demo.vue</view>
+		</view>
+		<view class="demo-view item-red" @click="customDemoClick">
+			<view>自定义下拉刷新与上拉加载演示</view>
+			<view>custom-demo.vue</view>
+		</view>
+		
+		<view class="bottom">https://ext.dcloud.net.cn/plugin?id=3935</view>
 	</view>
 </template>
 
@@ -21,68 +17,65 @@
 	export default {
 		data() {
 			return {
-				dataList: [],
-				tabIndex: 0
+				commonDemoClick(){
+					uni.navigateTo({
+						url: '../common-demo/common-demo'
+					})
+				},
+				customDemoClick(){
+					uni.navigateTo({
+						url: '../custom-demo/custom-demo'
+					})
+				},
 			}
 		},
 		methods: {
-			tabChange(index){
-				this.tabIndex = index;
-				//当切换tab时请调用组件的reload方法，请勿直接调用：queryList方法！！
-				this.$refs.paging.reload();
-			},
-			queryList(pageNo, pageSize) {
-				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
-				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
-				//模拟请求服务器获取分页数据，请替换成自己的网络请求
-				this.$request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
-					this.$refs.paging.addData(data);
-				})
-			},
-			itemClick(item) {
-				console.log('点击了', item.title);
-			}
+			
 		}
 	}
 </script>
 
 <style>
-	/* 注意，1、父节点需要固定高度，z-paging的height:100%才会生效 */
-	/* 注意，2、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突 */
-	page {
+	page{
 		height: 100%;
 	}
-
 	.content {
 		height: 100%;
-		/* 父节点建议开启flex布局 */
 		display: flex;
 		flex-direction: column;
+		align-items: center;
+	}
+	.demo-view{
+		height: 120px;
+		width: 90%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		border-radius: 20rpx;
+		font-size: 40rpx;
+		margin-top: 30rpx;
+	}
+	.item-red{
+		background: linear-gradient(to right, #ffffff 0%, #f9d8ce 100%);
+		color: #ed9272;
+		box-shadow: 0 0  20rpx #f9d8ce;
+	}
+	.item-blue{
+		color: #89b6f7;
+		background: linear-gradient(to right, #ffffff 0%, #deebfd 100%);
+		box-shadow: 0 0  20rpx #deebfd;
 	}
 	
-	.item {
-		position: relative;
-		height: 100rpx;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 0rpx 30rpx;
-	}
-
-	.item-detail {
-		padding: 5rpx 15rpx;
-		border-radius: 10rpx;
-		font-size: 28rpx;
-		color: white;
-		background-color: #007AFF;
-	}
-
-	.item-line {
-		position: absolute;
-		bottom: 0rpx;
-		left: 0rpx;
-		height: 1px;
+	.bottom{
 		width: 100%;
-		background-color: #eeeeee;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		height: 50rpx;
+		line-height: 50rpx;
+		text-align: center;
+		font-size: 24rpx;
+		
 	}
 </style>

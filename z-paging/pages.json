@@ -6,6 +6,24 @@
 				"navigationBarTitleText": "z-paging"
 			}
 		}
+        ,{
+            "path" : "pages/common-demo/common-demo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "普通模式演示",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/custom-demo/custom-demo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "自定义下拉刷新与上拉加载演示",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

@@ -129,6 +129,7 @@ setTimeout(()=>{
 	 * @event {Function} reload 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果
 	 * @event {Function} endRefresh 手动停止下拉刷新加载
 	 * @event {Function} loadingStatusChange 分页加载状态改变(0-默认状态 1.加载中 2.没有更多数据 3.加载失败)
+	 * @event {Function} refresherStatusChange 自定义下拉刷新状态改变(useCustomRefresher为true时生效)(0-默认状态 1.松手立即刷新 2.刷新中)
 	 * @event {Function} onRefresh 自定义下拉刷新被触发
 	 * @event {Function} onRestore 自定义下拉刷新被复位
 	 */
@@ -383,7 +384,7 @@ setTimeout(()=>{
 			},
 			//设置自定义下拉刷新阈值，默认为45
 			refresherThreshold: {
-				type: [Number, String],
+				type: [Number],
 				default: function() {
 					return 45;
 				},
@@ -441,6 +442,7 @@ setTimeout(()=>{
 					this.refresherLeftImageClass = 'custom-refresher-left-image custom-refresher-arrow-top';
 				}
 				this.$emit("refresherStatusChange", newVal);
+				this.$emit("update:refresherStatus", newVal);
 			}
 		},
 		computed: {
@@ -607,7 +609,7 @@ setTimeout(()=>{
 				}
 				let refresherTouchendY = e.changedTouches[0].clientY;
 				let moveDistance = refresherTouchendY - this.refresherTouchstartY;
-				if(moveDistance > this.refresherThreshold){
+				if(moveDistance >= this.refresherThreshold){
 					this.refresherTransform = `translateY(${this.refresherThreshold}px)`
 					this.refresherStatus = 2;
 					this._doRefresherLoad();
