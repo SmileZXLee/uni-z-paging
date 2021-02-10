@@ -450,8 +450,11 @@ setTimeout(()=>{
 				if (newVal !== 0 && oldVal === 0) {
 					this.refresherLeftImageClass = 'custom-refresher-left-image custom-refresher-arrow-top';
 				}
-				this.$emit("refresherStatusChange", newVal);
-				this.$emit("update:refresherStatus", newVal);
+				
+				if(newVal !== oldVal){
+					this.$emit("refresherStatusChange", newVal);
+					this.$emit("update:refresherStatus", newVal);
+				}
 			}
 		},
 		computed: {
@@ -504,6 +507,9 @@ setTimeout(()=>{
 			endRefresh() {
 				this.refresherTriggered = false;
 			},
+			scrollToTop(){
+				this._scrollToTop();
+			},
 			//私有的重新加载分页数据方法
 			_reload() {
 				this.pageNo = this.defaultPageNo;
@@ -511,10 +517,7 @@ setTimeout(()=>{
 				this.$emit("query", this.pageNo, this.defaultPageSize);
 				this.firstPageLoaded = true;
 				this.totalData = [];
-				this.scrollTop = this.oldScrollTop;
-				this.$nextTick(() => {
-					this.scrollTop = 0
-				});
+				this._scrollToTop();
 			},
 			//当前数据改变时调用
 			_currentDataChange(newVal, oldVal) {
@@ -542,6 +545,12 @@ setTimeout(()=>{
 				}
 				if (!this.loadingMoreEnabled || !(this.loadingStatus === 0 || 3)) return;
 				this._doLoadingMore();
+			},
+			_scrollToTop(){
+				this.scrollTop = this.oldScrollTop;
+				this.$nextTick(() => {
+					this.scrollTop = 0
+				});
 			},
 			//处理开始加载更多状态
 			_startLoading() {
@@ -605,6 +614,7 @@ setTimeout(()=>{
 				if (moveDistance < 0) {
 					return
 				}
+				moveDistance = moveDistance * 0.8;
 				if (moveDistance >= this.refresherThreshold) {
 					this.refresherStatus = 1;
 					moveDistance = this.refresherThreshold + (moveDistance - this.refresherThreshold) * 0.2;
@@ -620,6 +630,7 @@ setTimeout(()=>{
 				}
 				let refresherTouchendY = e.changedTouches[0].clientY;
 				let moveDistance = refresherTouchendY - this.refresherTouchstartY;
+				moveDistance = moveDistance * 0.8;
 				if(moveDistance >= this.refresherThreshold){
 					this.refresherTransform = `translateY(${this.refresherThreshold}px)`
 					this.refresherStatus = 2;
