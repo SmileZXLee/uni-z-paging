@@ -32,20 +32,22 @@ setTimeout(()=>{
 },1)
 ```
 4.注意事项：
-1、因分页组件是通过@scrolltolower来判断滚动到底部的，因此z-paging需要有固定的高度，才可以触发滚动到底部事件，
+a、因分页组件是通过@scrolltolower来判断滚动到底部的，因此z-paging需要有固定的高度，才可以触发滚动到底部事件，
 若未确定其高度而是根据具体内容将其撑高，则它永远滚动不到底部，因为它不存在[底部]的概念，因为它会无限[长高]。
-2、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突
-
+b、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突
+c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true
  -->
-<template name="z-paging" style="height: 100%;">
+<template name="z-paging">
 	<scroll-view scroll-y="true" :scroll-top="scrollTop" class="scroll-view" :enable-back-to-top="enableBackToTop"
 	 :show-scrollbar="showScrollbar" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher"
-	 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground" :refresher-triggered="refresherTriggered"
-	 @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh">
-		<view class="paging-main" @touchstart="_refresherTouchstart" @touchmove.stop="_refresherTouchmove" @touchend="_refresherTouchend" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
+	 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
+	 :refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
+	 @refresherrestore="_onRestore" @refresherrefresh="_onRefresh">
+		<view class="paging-main" @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend"
+		 :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
 			<view v-if="refresherEnabled&&useCustomRefresher" class="custom-refresher-view" :style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 				<slot v-if="$slots.refresher" name="refresher" />
-				<view  v-else class="custom-refresher-container" style="height: 100%;">
+				<view v-else class="custom-refresher-container" style="height: 100%;">
 					<view class="custom-refresher-left">
 						<image v-if="refresherStatus!==2" :class="refresherLeftImageClass" style="transform: rotate(180deg);" :src="base64Arrow"></image>
 						<image v-else class="loading-more-line-loading-image custom-refresher-left-image" :src="base64Flower"></image>
@@ -386,7 +388,7 @@ setTimeout(()=>{
 			},
 			//设置自定义下拉刷新阈值，默认为45
 			refresherThreshold: {
-				type: [Number],
+				type: Number,
 				default: function() {
 					return 45;
 				},
@@ -418,14 +420,14 @@ setTimeout(()=>{
 				}
 				newVal = [].concat(newVal);
 				this.showLoadingMore = newVal.length;
-				this.$emit("update:list", newVal);
+				this.$emit('update:list', newVal);
 				this.firstPageLoaded = false;
 			},
 			currentData(newVal, oldVal) {
 				this._currentDataChange(newVal, oldVal);
 			},
 			loadingStatus(newVal, oldVal) {
-				this.$emit("loadingStatusChange", newVal);
+				this.$emit('loadingStatusChange', newVal);
 			},
 			defaultThemeStyle: {
 				handler(newVal) {
@@ -450,10 +452,10 @@ setTimeout(()=>{
 				if (newVal !== 0 && oldVal === 0) {
 					this.refresherLeftImageClass = 'custom-refresher-left-image custom-refresher-arrow-top';
 				}
-				
-				if(newVal !== oldVal){
-					this.$emit("refresherStatusChange", newVal);
-					this.$emit("update:refresherStatus", newVal);
+
+				if (newVal !== oldVal) {
+					this.$emit('refresherStatusChange', newVal);
+					this.$emit('update:refresherStatus', newVal);
 				}
 			}
 		},
@@ -480,9 +482,9 @@ setTimeout(()=>{
 					this.refresherTriggered = false;
 				}
 				this.loading = false;
-				setTimeout(()=>{
+				setTimeout(() => {
 					this._refresherEnd();
-				},200)
+				}, 200)
 				if (success) {
 					this.loadingStatus = 0;
 					this._currentDataChange(data, this.currentData);
@@ -507,14 +509,14 @@ setTimeout(()=>{
 			endRefresh() {
 				this.refresherTriggered = false;
 			},
-			scrollToTop(){
+			scrollToTop() {
 				this._scrollToTop();
 			},
 			//私有的重新加载分页数据方法
 			_reload() {
 				this.pageNo = this.defaultPageNo;
 				this._startLoading();
-				this.$emit("query", this.pageNo, this.defaultPageSize);
+				this.$emit('query', this.pageNo, this.defaultPageSize);
 				this.firstPageLoaded = true;
 				this.totalData = [];
 				this._scrollToTop();
@@ -546,7 +548,7 @@ setTimeout(()=>{
 				if (!this.loadingMoreEnabled || !(this.loadingStatus === 0 || 3)) return;
 				this._doLoadingMore();
 			},
-			_scrollToTop(){
+			_scrollToTop() {
 				this.scrollTop = this.oldScrollTop;
 				this.$nextTick(() => {
 					this.scrollTop = 0
@@ -562,7 +564,7 @@ setTimeout(()=>{
 				if (this.pageNo >= this.defaultPageNo && this.loadingStatus !== 2) {
 					this.pageNo++;
 					this._startLoading();
-					this.$emit("query", this.pageNo, this.defaultPageSize);
+					this.$emit('query', this.pageNo, this.defaultPageSize);
 					this.loadingType = 1;
 				}
 			},
@@ -578,13 +580,13 @@ setTimeout(()=>{
 				this._startLoading();
 				this.refresherTriggered = true;
 				this._reload();
-				this.$emit("onRefresh");
+				this.$emit('onRefresh');
 				this.loadingType = 0;
 			},
 			//自定义下拉刷新被复位
 			_onRestore() {
-				this.refresherTriggered = "restore";
-				this.$emit("onRestore");
+				this.refresherTriggered = 'restore';
+				this.$emit('onRestore');
 			},
 			//获取主题样式的class
 			_getThemeStyleClass(cls) {
@@ -598,15 +600,15 @@ setTimeout(()=>{
 			},
 			// 拖拽开始
 			_refresherTouchstart(e) {
-				if(!this.refresherEnabled || !this.useCustomRefresher){
+				if (!this.refresherEnabled || !this.useCustomRefresher || this.oldScrollTop > 10) {
 					return;
 				}
 				this.refresherTransition = 'transform .1s linear'
-				this.refresherTouchstartY = e.touches[0].clientY
+				this.refresherTouchstartY = e.touches[0].clientY;
 			},
 			//拖拽中
 			_refresherTouchmove(e) {
-				if(!this.refresherEnabled || !this.useCustomRefresher){
+				if (!this.refresherEnabled || !this.useCustomRefresher || this.oldScrollTop > 10) {
 					return;
 				}
 				let refresherTouchmoveY = e.touches[0].clientY;
@@ -625,33 +627,32 @@ setTimeout(()=>{
 			},
 			//拖拽结束
 			_refresherTouchend(e) {
-				if(!this.refresherEnabled || !this.useCustomRefresher){
+				if (!this.refresherEnabled || !this.useCustomRefresher || this.oldScrollTop > 10) {
 					return;
 				}
 				let refresherTouchendY = e.changedTouches[0].clientY;
 				let moveDistance = refresherTouchendY - this.refresherTouchstartY;
 				moveDistance = moveDistance * 0.8;
-				if(moveDistance >= this.refresherThreshold){
+				if (moveDistance >= this.refresherThreshold) {
 					this.refresherTransform = `translateY(${this.refresherThreshold}px)`
 					this.refresherStatus = 2;
 					this._doRefresherLoad();
-				}else{
+				} else {
 					this._refresherEnd();
 				}
-				
 			},
 			//下拉刷新结束
-			_refresherEnd(){
+			_refresherEnd() {
 				this.refresherTransform = 'translateY(0px)'
 				this.refresherTransition = 'transform 0.3s cubic-bezier(0.19,1.64,0.42,0.72)'
 				setTimeout(() => {
 					this.refresherStatus = 0;
 				}, 100)
 				this.loading = false;
-				this.$emit("onRestore");
+				this.$emit('onRestore');
 			},
 			//触发下拉刷新
-			_doRefresherLoad(){
+			_doRefresherLoad() {
 				this._onRefresh();
 				this.loading = true;
 			}
@@ -664,14 +665,14 @@ setTimeout(()=>{
 		width: 100%;
 		height: 100%;
 	}
-	
-	.paging-main{
+
+	.paging-main {
 		height: 100%;
 		display: flex;
 		flex-direction: column;
 	}
-	
-	.paging-container{
+
+	.paging-container {
 		flex: 1;
 	}
 
