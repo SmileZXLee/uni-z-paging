@@ -38,54 +38,55 @@ b、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度�
 c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true
  -->
 <template name="z-paging">
-	<scroll-view scroll-y="true" :scroll-top="scrollTop" class="scroll-view" :enable-back-to-top="enableBackToTop"
-	 :show-scrollbar="showScrollbar" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher"
-	 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
-	 :refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
-	 @refresherrestore="_onRestore" @refresherrefresh="_onRefresh">
-		<view class="paging-main" @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend"
-		 :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
-			<view v-if="refresherEnabled&&useCustomRefresher" class="custom-refresher-view" :style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
-				<slot v-if="$slots.refresher" name="refresher" />
-				<view v-else class="custom-refresher-container" style="height: 100%;">
-					<view class="custom-refresher-left">
-						<image v-if="refresherStatus!==2" :class="refresherLeftImageClass" style="transform: rotate(180deg);" :src="base64Arrow"></image>
-						<image v-else class="loading-more-line-loading-image custom-refresher-left-image" :src="base64Flower"></image>
+	<view class="z-paging-content" @touchmove.stop.prevent>
+		<scroll-view scroll-y="true" :scroll-top="scrollTop" class="scroll-view" :enable-back-to-top="enableBackToTop"
+		 :show-scrollbar="showScrollbar" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher"
+		 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
+		 :refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
+		 @refresherrestore="_onRestore" @refresherrefresh="_onRefresh" @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
+			<view class="paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
+				<view v-if="refresherEnabled&&useCustomRefresher" class="custom-refresher-view" :style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
+					<slot v-if="$slots.refresher" name="refresher" />
+					<view v-else class="custom-refresher-container" style="height: 100%;">
+						<view class="custom-refresher-left">
+							<image v-if="refresherStatus!==2" :class="refresherLeftImageClass" style="transform: rotate(180deg);" :src="base64Arrow"></image>
+							<image v-else class="loading-more-line-loading-image custom-refresher-left-image" :src="base64Flower"></image>
+						</view>
+						<view class="custom-refresher-right">
+							<view class="custom-refresher-right-text">{{refresherStatusTextMap[refresherStatus]}}</view>
+						</view>
 					</view>
-					<view class="custom-refresher-right">
-						<view class="custom-refresher-right-text">{{refresherStatusTextMap[refresherStatus]}}</view>
+				</view>
+				<view class="paging-container">
+					<slot v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading" name="empty" />
+					<!-- 如果需要修改组件源码来统一设置全局的emptyView，可以把此处的“empty-view”换成自定义的组件名即可 -->
+					<!-- <empty-view v-else-if="!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading"></empty-view> -->
+					<slot />
+					<slot @click="_onLoadingMore('click')" v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore" name="loadingMoreDefault" />
+					<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore"
+					 name="loadingMoreLoading" />
+					<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView"
+					 name="loadingMoreNoMore" />
+					<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore" name="loadingMoreFail" />
+					<view @click="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)"
+					 class="load-more-container" :style="[loadingMoreCustomStyle]">
+						<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
+						 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+						<image v-if="loadingStatus===1&&loadingMoreLoadingIconCustomImage.length" :src="loadingMoreLoadingIconCustomImage"
+						 class="loading-more-line-loading-custom-image"></image>
+						<image v-if="loadingStatus===1&&loadingMoreLoadingIconType==='flower'&&!loadingMoreLoadingIconCustomImage.length"
+						 class="loading-more-line-loading-image" :style="[loadingMoreLoadingIconCustomStyle]" :src="base64Flower"></image>
+						<text v-if="loadingStatus===1&&loadingMoreLoadingIconType==='circle'&&!loadingMoreLoadingIconCustomImage.length"
+						 :class="defaultThemeStyle==='white'?'loading-more-line-loading-view loading-more-line-loading-view-white':'loading-more-line-loading-view loading-more-line-loading-view-black'"
+						 :style="[loadingMoreLoadingIconCustomStyle]"></text>
+						<text :class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{ownLoadingMoreText}}</text>
+						<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
+						 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
 					</view>
 				</view>
 			</view>
-			<view class="paging-container">
-				<slot v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading" name="empty" />
-				<!-- 如果需要修改组件源码来统一设置全局的emptyView，可以把此处的“empty-view”换成自定义的组件名即可 -->
-				<!-- <empty-view v-else-if="!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading"></empty-view> -->
-				<slot />
-				<slot @click="_onLoadingMore('click')" v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore" name="loadingMoreDefault" />
-				<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore"
-				 name="loadingMoreLoading" />
-				<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView"
-				 name="loadingMoreNoMore" />
-				<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore" name="loadingMoreFail" />
-				<view @click="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)"
-				 class="load-more-container" :style="[loadingMoreCustomStyle]">
-					<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
-					 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
-					<image v-if="loadingStatus===1&&loadingMoreLoadingIconCustomImage.length" :src="loadingMoreLoadingIconCustomImage"
-					 class="loading-more-line-loading-custom-image"></image>
-					<image v-if="loadingStatus===1&&loadingMoreLoadingIconType==='flower'&&!loadingMoreLoadingIconCustomImage.length"
-					 class="loading-more-line-loading-image" :style="[loadingMoreLoadingIconCustomStyle]" :src="base64Flower"></image>
-					<text v-if="loadingStatus===1&&loadingMoreLoadingIconType==='circle'&&!loadingMoreLoadingIconCustomImage.length"
-					 :class="defaultThemeStyle==='white'?'loading-more-line-loading-view loading-more-line-loading-view-white':'loading-more-line-loading-view loading-more-line-loading-view-black'"
-					 :style="[loadingMoreLoadingIconCustomStyle]"></text>
-					<text :class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{ownLoadingMoreText}}</text>
-					<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
-					 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
-				</view>
-			</view>
-		</view>
-	</scroll-view>
+		</scroll-view>
+	</view>
 </template>
 
 <script>
@@ -155,7 +156,7 @@ c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，
 				base64Flower: base64Flower,
 				refresherLeftImageClass: 'custom-refresher-left-image',
 				refresherTouchstartY: 0,
-				refresherTransform: 'translateY(0px)',
+				refresherTransform: 'translateY(-1px)',
 				refresherTransition: '0s',
 				finalRefresherDefaultStyle: 'black',
 				//当前加载类型 0-下拉刷新 1-上拉加载更多
@@ -619,7 +620,7 @@ c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，
 				moveDistance = moveDistance * 0.8;
 				if (moveDistance >= this.refresherThreshold) {
 					this.refresherStatus = 1;
-					moveDistance = this.refresherThreshold + (moveDistance - this.refresherThreshold) * 0.2;
+					moveDistance = this.refresherThreshold + (moveDistance - this.refresherThreshold) * 0.3;
 				} else {
 					this.refresherStatus = 0;
 				}
@@ -643,7 +644,7 @@ c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，
 			},
 			//下拉刷新结束
 			_refresherEnd() {
-				this.refresherTransform = 'translateY(0px)'
+				this.refresherTransform = 'translateY(-1px)'
 				this.refresherTransition = 'transform 0.3s cubic-bezier(0.19,1.64,0.42,0.72)'
 				setTimeout(() => {
 					this.refresherStatus = 0;
@@ -661,7 +662,7 @@ c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，
 </script>
 
 <style scoped>
-	.scroll-view {
+	.z-paging-content,.scroll-view {
 		width: 100%;
 		height: 100%;
 	}
