@@ -38,8 +38,8 @@ b、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度�
 c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true
  -->
 <template name="z-paging">
-	<view class="z-paging-content" @touchmove.stop.prevent>
-		<scroll-view scroll-y="true" :scroll-top="scrollTop" class="scroll-view" :enable-back-to-top="enableBackToTop"
+	<view class="z-paging-content" @touchmove.stop.prevent="e=>e.preventDefault()">
+		<scroll-view scroll-y="true" class="scroll-view" :scroll-top="scrollTop" :scroll-y="scrollEnable" :enable-back-to-top="enableBackToTop"
 		 :show-scrollbar="showScrollbar" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher"
 		 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
 		 :refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
@@ -150,13 +150,14 @@ c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，
 				loading: false,
 				firstPageLoaded: false,
 				isUserReload: true,
+				scrollEnable: true,
 				scrollTop: 0,
 				oldScrollTop: 0,
 				base64Arrow: base64Arrow,
 				base64Flower: base64Flower,
 				refresherLeftImageClass: 'custom-refresher-left-image',
 				refresherTouchstartY: 0,
-				refresherTransform: 'translateY(-1px)',
+				refresherTransform: 'translateY(0px)',
 				refresherTransition: '0s',
 				finalRefresherDefaultStyle: 'black',
 				//当前加载类型 0-下拉刷新 1-上拉加载更多
@@ -624,6 +625,7 @@ c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，
 				} else {
 					this.refresherStatus = 0;
 				}
+				this.scrollEnable = false;
 				this.refresherTransform = `translateY(${moveDistance}px)`
 			},
 			//拖拽结束
@@ -634,7 +636,7 @@ c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，
 				let refresherTouchendY = e.changedTouches[0].clientY;
 				let moveDistance = refresherTouchendY - this.refresherTouchstartY;
 				moveDistance = moveDistance * 0.8;
-				if (moveDistance >= this.refresherThreshold) {
+				if (moveDistance >= this.refresherThreshold && this.refresherStatus === 1) {
 					this.refresherTransform = `translateY(${this.refresherThreshold}px)`
 					this.refresherStatus = 2;
 					this._doRefresherLoad();
@@ -644,12 +646,13 @@ c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，
 			},
 			//下拉刷新结束
 			_refresherEnd() {
-				this.refresherTransform = 'translateY(-1px)'
+				this.refresherTransform = 'translateY(0px)'
 				this.refresherTransition = 'transform 0.3s cubic-bezier(0.19,1.64,0.42,0.72)'
 				setTimeout(() => {
 					this.refresherStatus = 0;
 				}, 100)
 				this.loading = false;
+				this.scrollEnable = true;
 				this.$emit('onRestore');
 			},
 			//触发下拉刷新
@@ -671,6 +674,10 @@ c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，
 		height: 100%;
 		display: flex;
 		flex-direction: column;
+	}
+	
+	.custom-refresher-view{
+		
 	}
 
 	.paging-container {

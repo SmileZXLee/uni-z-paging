@@ -35,9 +35,9 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		padding: 10px 0px;
 	}
 	.refresher-image{
+		margin-top: 10px;
 		height: 50px;
 		width: 50px;
 	}
