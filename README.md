@@ -153,11 +153,12 @@
 |        mounted-auto-call-reload        | `z-paging` `mounted`后自动调用`reload`方法(`mounted`后自动调用接口) |     Boolean      |          true          |    false    |
 |      auto-clean-list-when-reload       | reload时立即自动清空原list，若立即自动清空，则在reload之后、请求回调之前页面是空白的 |     Boolean      |          true          |    false    |
 |          use-custom-refresher          | 是否使用自定义的下拉刷新，默认为否，使用uni自带的下拉刷新。设置为是后则使用z-paging的下拉刷新 |     Boolean      |         false          |    true     |
-|             refresher-fps              |   自定义下拉刷新下拉帧率，默认为50，过高可能会出现抖动问题   |      Number      |           50           |      -      |
-|         refresher-default-text         | 自定义下拉刷新默认状态下的文字(useCustomRefresher为true时生效) |      String      |      继续下拉刷新      |      -      |
-|         refresher-pulling-text         | 自定义下拉刷新松手立即刷新状态下的文字(useCustomRefresher为true时生效) |      String      |      松开立即刷新      |      -      |
-|       refresher-refreshing-text        | 自定义下拉刷新刷新中状态下的文字(useCustomRefresher为true时生效) |      String      |      正在刷新...       |      -      |
-|          loading-more-enabled          | 是否启用加载更多数据(含滑动到底部加载更多数据和点击加载更多数据)，默认为是 |     Boolean      |          true          |    false    |
+|             refresher-fps              | 自定义下拉刷新下拉帧率，默认为50，过高可能会出现抖动问题(use-custom-refresher为true时生效) |      Number      |           50           |      -      |
+|         refresher-default-text         | 自定义下拉刷新默认状态下的文字(use-custom-refresher为true时生效) |      String      |      继续下拉刷新      |      -      |
+|         refresher-pulling-text         | 自定义下拉刷新松手立即刷新状态下的文字(use-custom-refresher为true时生效) |      String      |      松开立即刷新      |      -      |
+|       refresher-refreshing-text        | 自定义下拉刷新刷新中状态下的文字(use-custom-refresher为true时生效) |      String      |      正在刷新...       |      -      |
+|      refresher-end-bounce-enabled      | 是否开启自定义下拉刷新刷新结束回弹效果(use-custom-refresher为true时生效) |     Boolean      |          true          |    false    |
+|          loading-more-enabled          | 是否启用加载更多数据(含滑动到底部加载更多数据和点击加载更多数据) |     Boolean      |          true          |    false    |
 |     to-bottom-loading-more-enabled     |                是否启用滑动到底部加载更多数据                |     Boolean      |          true          |    false    |
 |           loading-more-text            |  自定义底部加载更多文字(当需要不同加载状态固定文字时才使用)  |      String      |           -            |      -      |
 |       loading-more-custom-style        |         自定义底部加载更多样式；如：{'color':'red'}          |      Object      |           -            |      -      |
@@ -179,13 +180,14 @@
 |           refresher-enabled            |                    是否开启自定义下拉刷新                    |     Boolean      |          true          |    false    |
 |          refresher-threshold           |               设置自定义下拉刷新阈值（单位px）               |      Number      |           45           |      -      |
 |        refresher-default-style         | 设置系统下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式 |      String      |         black          | white、none |
+|          refresher-background          |                设置自定义下拉刷新区域背景颜色                |      String      |    #FFFFFF00(透明)     |      -      |
 
 ## Slot
 
 | 名称               | 说明                                                         |
 | :----------------- | ------------------------------------------------------------ |
 | empty              | 自定义空数据占位view                                         |
-| refresher          | 自定义下拉刷新view，设置后则不使用uni自带的下拉刷新view和z-paging自定义的下拉刷新view。此view的style必须设置为`height:100%` (useCustomRefresher为true时生效) |
+| refresher          | 自定义下拉刷新view，设置后则不使用uni自带的下拉刷新view和z-paging自定义的下拉刷新view。此view的style必须设置为`height:100%` (use-custom-refresher为true时生效) |
 | loadingMoreDefault | 自定义滑动到底部"默认"状态的view                             |
 | loadingMoreLoading | 自定义滑动到底部"加载中"状态的view                           |
 | loadingMoreNoMore  | 自定义滑动到底部"没有更多数据"状态的view                     |
@@ -198,13 +200,16 @@
 | 事件名                | 说明                                                         | 回调参数                                            |
 | --------------------- | ------------------------------------------------------------ | --------------------------------------------------- |
 | loadingStatusChange   | 分页加载状态改变                                             | value:0-默认状态 1.加载中 2.没有更多数据 3.加载失败 |
-| refresherStatusChange | 自定义下拉刷新状态改变(useCustomRefresher为true时生效)【注：通过`:refresher-status.sync`绑定当前data中的指定变量亦可】 | value:0-默认状态 1.松手立即刷新 2.刷新中            |
+| refresherStatusChange | 自定义下拉刷新状态改变(use-custom-refresher为true时生效)【注：通过`:refresher-status.sync`绑定当前data中的指定变量亦可】 | value:0-默认状态 1.松手立即刷新 2.刷新中            |
+| refresherTouchstart   | 自定义下拉刷新下拉开始(use-custom-refresher为true时生效)【注：当需要更细致定制自定义下拉刷新时使用，如果只需监听下拉刷新各个状态改变，使用`refresherStatusChange`即可】 | value:当前触摸开始的屏幕点的y值(单位px)             |
+| refresherTouchmove    | 自定义下拉刷新下拉中开始(use-custom-refresher为true时生效)【注：当需要更细致定制自定义下拉刷新时使用，如果只需监听下拉刷新各个状态改变，使用`refresherStatusChange`即可】 | value:当前需要下拉的距离(单位px)                    |
+| refresherTouchend     | 自定义下拉刷新下拉结束(use-custom-refresher为true时生效)【注：当需要更细致定制自定义下拉刷新时使用，如果只需监听下拉刷新各个状态改变，使用`refresherStatusChange`即可】 | value:当前触摸结束分页内容下移的y值(单位px)         |
 | onRefresh             | 自定义下拉刷新被触发                                         | -                                                   |
 | onRestore             | 自定义下拉刷新被复位                                         | -                                                   |
 
 * 主动调用组件方法 (假设给z-paging设置ref="paging"，则通过this.$refs.paging.xxx()方式调用)
 
-  注意：在Page的onLoad()方法中无法同步获取this.$refs，请加一个setTimeOut延时1毫秒再调用(默认会在页面加载时自动调用reload()无须手动调用)
+  注意：在Page的onLoad()方法中无法同步获取this.$refs，请加一个setTimeOut延时1毫秒或nextTick再调用(默认会在页面加载时自动调用reload()无须手动调用)
 
 | 方法名      | 说明                                                         | 参数                                                     |
 | ----------- | ------------------------------------------------------------ | -------------------------------------------------------- |
