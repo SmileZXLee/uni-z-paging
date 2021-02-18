@@ -616,7 +616,7 @@ c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，
 				let refresherTouchmoveY = e.touches[0].clientY;
 				let moveDistance = refresherTouchmoveY - this.refresherTouchstartY;
 				if (moveDistance < 0) {
-					return
+					return;
 				}
 				moveDistance = moveDistance * 0.8;
 				if (moveDistance >= this.refresherThreshold) {
