@@ -8,6 +8,11 @@
 			<view>自定义下拉刷新与上拉加载演示</view>
 			<view>custom-demo.vue</view>
 		</view>
+		<view class="demo-view item-green" @click="scrollTabSwiperDemoClick">
+			<view>滑动切换选项卡演示</view>
+			<view>（使用了uView的tabsSwiper组件）</view>
+			<view>scroll-tab-swiper-demo.vue</view>
+		</view>
 	</view>
 </template>
 
@@ -23,6 +28,11 @@
 				customDemoClick(){
 					uni.navigateTo({
 						url: '../custom-demo/custom-demo'
+					})
+				},
+				scrollTabSwiperDemoClick(){
+					uni.navigateTo({
+						url: '../scroll-tab-swiper-demo/scroll-tab-swiper-demo'
 					})
 				},
 			}
@@ -64,16 +74,9 @@
 		background: linear-gradient(to right, #ffffff 0%, #deebfd 100%);
 		box-shadow: 0 0  20rpx #deebfd;
 	}
-	
-	.bottom{
-		width: 100%;
-		position: fixed;
-		bottom: 0;
-		left: 0;
-		height: 50rpx;
-		line-height: 50rpx;
-		text-align: center;
-		font-size: 24rpx;
-		
+	.item-green{
+		color: #3f9a03;
+		background: linear-gradient(to right, #ffffff 0%, #d5f7be 100%);
+		box-shadow: 0 0  20rpx #deebfd;
 	}
 </style>

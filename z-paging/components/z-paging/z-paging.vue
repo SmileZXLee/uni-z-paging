@@ -35,10 +35,12 @@ setTimeout(()=>{
 a、因分页组件是通过@scrolltolower来判断滚动到底部的，因此z-paging需要有固定的高度，才可以触发滚动到底部事件，
 若未确定其高度而是根据具体内容将其撑高，则它永远滚动不到底部，因为它不存在[底部]的概念，因为它会无限[长高]。
 b、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突
+c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲突，这将导致使用滑动切换tab时无法横向切换，若您需要横向切换功能，请删除下方的`@touchmove.stop.prevent`；
+若此时下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true。(因uni无法动态控制是否允许冒泡，因此只能使用此方法，若您有更好的解决方案可以通过顶部github或dcloud插件市场联系我，不胜感激！)
  -->
 <template name="z-paging">
-	<view class="z-paging-content" @touchmove.stop.prevent="e=>e.preventDefault()">
-		<scroll-view scroll-y="true" class="scroll-view" :scroll-top="scrollTop" :scroll-y="scrollEnable" :enable-back-to-top="enableBackToTop"
+	<view class="z-paging-content" @touchmove.stop.prevent>
+		<scroll-view class="scroll-view" :scroll-top="scrollTop" :scroll-y="scrollEnable" :enable-back-to-top="enableBackToTop"
 		 :show-scrollbar="showScrollbar" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher"
 		 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle"
 		 :refresher-background="refresherBackground" :refresher-triggered="refresherTriggered" @scroll="_scroll"
