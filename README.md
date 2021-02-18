@@ -1,10 +1,15 @@
-# z-paging
+# uni-z-paging
 
 > 【uni-app自动分页器】超简单，低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view等。
 
 ## 在DCloud插件市场中访问：https://ext.dcloud.net.cn/plugin?id=3935
-
 ### 反馈qq群(点击加群)：[790460711](https://jq.qq.com/?_wv=1027&k=vU2fKZZH)
+
+### 平台兼容性
+
+| App  |  h5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 字节小程序 | QQ小程序 |
+| :--: | :--: | :--------: | :----------: | :--------: | :--------: | :------: |
+|  √   |  √   |     √      |      √       |     √      |     √      |    √     |
 
 # 基本使用
 
@@ -62,6 +67,7 @@
 
 * z-paging必须有确定的高度！否则上拉加载更多将无法触发，请确保z-paging的父节点有确定的高度！！
 * 请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突。
+* 当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true。
 
 ## 设置自定义emptyView组件
 
@@ -97,6 +103,27 @@
 </z-paging>
 ```
 
+## 自定义下拉刷新view
+
+* `use-custom-refresher`需要设置为true，此时将不会使用uni自带的下拉刷新，转为使用z-paging自定义的下拉刷新，通过slot可以插入开发者自定义的下拉刷新view。
+
+```html
+<z-paging ref="paging" :refresher-threshold="80" :use-custom-refresher="true" @query="queryList" :list.sync="dataList" :refresher-status.sync="refresherStatus">
+  <!-- 自定义下拉刷新view，若不设置，则使用z-paging自带的下拉刷新view -->
+  <custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>
+  <!-- 设置自定义emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
+  <empty-view slot="empty"></empty-view>
+  <!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
+  <view>
+    <view class="item" v-for="(item,index) in dataList" @click="itemClick(item)">
+      <view class="item-title">{{item.title}}</view>
+      <view class="item-detail">{{item.detail}}</view>
+      <view class="item-line"></view>
+    </view>
+  </view>
+</z-paging>
+```
+
 ## 自定义加载更多各个状态的描述view
 
 * 以修改【没有更多了】状态描述view为例
@@ -126,6 +153,7 @@
 |        mounted-auto-call-reload        | `z-paging` `mounted`后自动调用`reload`方法(`mounted`后自动调用接口) |     Boolean      |          true          |    false    |
 |      auto-clean-list-when-reload       | reload时立即自动清空原list，若立即自动清空，则在reload之后、请求回调之前页面是空白的 |     Boolean      |          true          |    false    |
 |          use-custom-refresher          | 是否使用自定义的下拉刷新，默认为否，使用uni自带的下拉刷新。设置为是后则使用z-paging的下拉刷新 |     Boolean      |         false          |    true     |
+|             refresher-fps              |   自定义下拉刷新下拉帧率，默认为50，过高可能会出现抖动问题   |      Number      |           50           |      -      |
 |         refresher-default-text         | 自定义下拉刷新默认状态下的文字(useCustomRefresher为true时生效) |      String      |      继续下拉刷新      |      -      |
 |         refresher-pulling-text         | 自定义下拉刷新松手立即刷新状态下的文字(useCustomRefresher为true时生效) |      String      |      松开立即刷新      |      -      |
 |       refresher-refreshing-text        | 自定义下拉刷新刷新中状态下的文字(useCustomRefresher为true时生效) |      String      |      正在刷新...       |      -      |
@@ -178,8 +206,9 @@
 
   注意：在Page的onLoad()方法中无法同步获取this.$refs，请加一个setTimeOut延时1毫秒再调用(默认会在页面加载时自动调用reload()无须手动调用)
 
-| 方法名     | 说明                                                         | 参数                                                     |
-| ---------- | ------------------------------------------------------------ | -------------------------------------------------------- |
-| reload     | 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果   | -                                                        |
-| addData    | 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理 | Value1:请求结果数组；value2:是否请求成功，不填默认为true |
-| doLoadMore | 手动触发上拉加载更多(非必须，可依据具体需求使用)             | -                                                        |
+| 方法名      | 说明                                                         | 参数                                                     |
+| ----------- | ------------------------------------------------------------ | -------------------------------------------------------- |
+| reload      | 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果   | -                                                        |
+| addData     | 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理 | Value1:请求结果数组；value2:是否请求成功，不填默认为true |
+| doLoadMore  | 手动触发上拉加载更多(非必须，可依据具体需求使用)             | -                                                        |
+| scrollToTop | 滚动到顶部                                                   | -                                                        |
