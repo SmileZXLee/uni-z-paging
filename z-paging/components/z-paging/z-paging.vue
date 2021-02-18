@@ -647,10 +647,9 @@ b、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度�
 				if (moveDistance < 0) {
 					return;
 				}
-				moveDistance = moveDistance * 0.7;
+				moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
 				if (moveDistance >= this.refresherThreshold) {
 					this.refresherStatus = 1;
-					moveDistance = this.refresherThreshold + (moveDistance - this.refresherThreshold) * 0.3;
 				} else {
 					this.refresherStatus = 0;
 				}
@@ -665,7 +664,7 @@ b、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度�
 				}
 				let refresherTouchendY = e.changedTouches[0].clientY;
 				let moveDistance = refresherTouchendY - this.refresherTouchstartY;
-				moveDistance = moveDistance * 0.7;
+				moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
 				if (moveDistance >= this.refresherThreshold && this.refresherStatus === 1) {
 					this.refresherTransform = `translateY(${this.refresherThreshold}px)`
 					this.refresherStatus = 2;
@@ -692,6 +691,14 @@ b、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度�
 			_doRefresherLoad() {
 				this._onRefresh();
 				this.loading = true;
+			},
+			//获取处理后的moveDistance
+			_getFinalRefresherMoveDistance(moveDistance){
+				moveDistance = moveDistance * 0.7;
+				if (moveDistance >= this.refresherThreshold) {
+					moveDistance = this.refresherThreshold + (moveDistance - this.refresherThreshold) * 0.3;
+				}
+				return moveDistance;
 			}
 		},
 	};
