@@ -41,9 +41,10 @@ c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，
 	<view class="z-paging-content" @touchmove.stop.prevent="e=>e.preventDefault()">
 		<scroll-view scroll-y="true" class="scroll-view" :scroll-top="scrollTop" :scroll-y="scrollEnable" :enable-back-to-top="enableBackToTop"
 		 :show-scrollbar="showScrollbar" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher"
-		 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
-		 :refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
-		 @refresherrestore="_onRestore" @refresherrefresh="_onRefresh" @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
+		 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle"
+		 :refresher-background="refresherBackground" :refresher-triggered="refresherTriggered" @scroll="_scroll"
+		 @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"
+		 @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
 			<view class="paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
 				<view v-if="refresherEnabled&&useCustomRefresher" class="custom-refresher-view" :style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<slot v-if="$slots.refresher" name="refresher" />
@@ -104,9 +105,10 @@ c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，
 	 * @property {Boolean} mounted-auto-call-reload z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
 	 * @property {Boolean} auto-clean-list-when-reload reload时立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
 	 * @property {Boolean} use-custom-refresher 是否使用自定义的下拉刷新，默认为否，使用uni自带的下拉刷新。设置为是后则使用z-paging的下拉刷新
-	 * @property {Boolean} refresher-default-text 自定义下拉刷新默认状态下的文字(useCustomRefresher为true时生效)
-	 * @property {Boolean} refresher-pulling-text 自定义下拉刷新松手立即刷新状态下的文字(useCustomRefresher为true时生效)
-	 * @property {Boolean} refresher-refreshing-text 自定义下拉刷新刷新中状态下的文字(useCustomRefresher为true时生效)
+	 * @property {Number} refresher-fps 自定义下拉刷新下拉帧率，默认为50，过高可能会出现抖动问题
+	 * @property {String} refresher-default-text 自定义下拉刷新默认状态下的文字(useCustomRefresher为true时生效)
+	 * @property {String} refresher-pulling-text 自定义下拉刷新松手立即刷新状态下的文字(useCustomRefresher为true时生效)
+	 * @property {String} refresher-refreshing-text 自定义下拉刷新刷新中状态下的文字(useCustomRefresher为true时生效)
 	 * @property {String} loading-more-text 自定义底部加载更多文字
 	 * @property {Object} loading-more-custom-style 自定义底部加载更多样式
 	 * @property {Object} loading-more-loading-icon-custom-style 自定义底部加载更多加载中动画样式
@@ -178,7 +180,8 @@ c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，
 					0: this.refresherDefaultText,
 					1: this.refresherPullingText,
 					2: this.refresherRefreshingText
-				}
+				},
+				pullDownTimeStamp: 0
 			};
 		},
 		props: {
@@ -225,6 +228,13 @@ c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，
 				type: Boolean,
 				default: function() {
 					return false;
+				},
+			},
+			//自定义下拉刷新下拉帧率，默认为50，过高可能会出现抖动问题
+			refresherFps: {
+				type: Number,
+				default: function() {
+					return 50;
 				},
 			},
 			//自定义下拉刷新默认状态下的文字(useCustomRefresher为true时生效)
@@ -467,6 +477,9 @@ c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，
 					return this.loadingMoreText;
 				}
 				return this.loadingStatusTextMap[this.loadingStatus];
+			},
+			pullDownDisTimeStamp(){
+				return 1000 / this.refresherFps;
 			}
 		},
 		methods: {
@@ -610,15 +623,20 @@ c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，
 			},
 			//拖拽中
 			_refresherTouchmove(e) {
+				const currentTimeStamp = (new Date()).getTime();
+				if (this.pullDownTimeStamp && currentTimeStamp - this.pullDownTimeStamp <= this.pullDownDisTimeStamp) {
+					return;
+				}         
 				if (!this.refresherEnabled || !this.useCustomRefresher || this.oldScrollTop > 10) {
 					return;
 				}
+				this.pullDownTimeStamp = currentTimeStamp;
 				let refresherTouchmoveY = e.touches[0].clientY;
 				let moveDistance = refresherTouchmoveY - this.refresherTouchstartY;
 				if (moveDistance < 0) {
 					return;
 				}
-				moveDistance = moveDistance * 0.8;
+				moveDistance = moveDistance * 0.7;
 				if (moveDistance >= this.refresherThreshold) {
 					this.refresherStatus = 1;
 					moveDistance = this.refresherThreshold + (moveDistance - this.refresherThreshold) * 0.3;
@@ -626,7 +644,7 @@ c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，
 					this.refresherStatus = 0;
 				}
 				this.scrollEnable = false;
-				this.refresherTransform = `translateY(${moveDistance}px)`
+				this.refresherTransform = `translateY(${moveDistance}px)`;
 			},
 			//拖拽结束
 			_refresherTouchend(e) {
@@ -665,7 +683,8 @@ c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，
 </script>
 
 <style scoped>
-	.z-paging-content,.scroll-view {
+	.z-paging-content,
+	.scroll-view {
 		width: 100%;
 		height: 100%;
 	}
@@ -675,10 +694,8 @@ c.当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，
 		display: flex;
 		flex-direction: column;
 	}
-	
-	.custom-refresher-view{
-		
-	}
+
+	.custom-refresher-view {}
 
 	.paging-container {
 		flex: 1;
