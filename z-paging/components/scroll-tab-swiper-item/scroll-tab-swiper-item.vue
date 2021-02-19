@@ -1,6 +1,7 @@
 <template>
 	<view class="content">
-		<z-paging ref="paging" @query="queryList" :list.sync="dataList" style="height: 100%;">
+		<!-- 这里设置了z-paging加载时禁止自动调用reload方法，自行控制何时reload（懒加载），同时允许touchmove事件冒泡，否则无法横向滚动切换tab -->
+		<z-paging ref="paging" @query="queryList" :list.sync="dataList" :mounted-auto-call-reload="false" :touchmove-propagation-enabled="true" style="height: 100%;">
 			<empty-view slot="empty"></empty-view>
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view>
@@ -18,7 +19,8 @@
 	export default {
 		data() {
 			return {
-				dataList: []
+				dataList: [],
+				firstLoaded: false
 			}
 		},
 		props:{
@@ -27,20 +29,37 @@
 				default: function(){
 					return 0
 				}
-			}
+			},
+			currentIndex: {
+				type: Number,
+				default: function(){
+					return 0
+				}
+			},
+		},
+		watch: {
+			currentIndex: {
+				handler(newVal) {
+					if(newVal === this.tabIndex){
+						//懒加载，当滑动到当前的item时，才去加载
+						if(!this.firstLoaded){
+							this.$nextTick(()=>{
+								this.$refs.paging.reload();
+							})
+						}
+					}
+				},
+				immediate: true
+			},
 		},
 		methods: {
-			tabChange(index){
-				this.tabIndex = index;
-				//当切换tab时请调用组件的reload方法，请勿直接调用：queryList方法！！
-				this.$refs.paging.reload();
-			},
 			queryList(pageNo, pageSize) {
 				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
 				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
 				//模拟请求服务器获取分页数据，请替换成自己的网络请求
 				this.$request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
 					this.$refs.paging.addData(data);
+					this.firstLoaded = true;
 				})
 			},
 			itemClick(item) {

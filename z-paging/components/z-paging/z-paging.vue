@@ -36,10 +36,10 @@ a、因分页组件是通过@scrolltolower来判断滚动到底部的，因此z-
 若未确定其高度而是根据具体内容将其撑高，则它永远滚动不到底部，因为它不存在[底部]的概念，因为它会无限[长高]。
 b、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突
 c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲突，这将导致使用滑动切换tab时无法横向切换，若您需要横向切换功能，请删除下方的`@touchmove.stop.prevent`；
-若此时下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true。(因uni无法动态控制是否允许冒泡，因此只能使用此方法，若您有更好的解决方案可以通过顶部github或dcloud插件市场联系我，不胜感激！)
+若此时下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true。或者在当前page的根view中添加@touchmove.stop.prevent (因uni无法动态控制是否允许冒泡，因此只能使用此方法，若您有更好的解决方案可以通过顶部github或dcloud插件市场联系我，不胜感激！)
  -->
 <template name="z-paging">
-	<view class="z-paging-content" @touchmove.stop.prevent>
+	<view v-if="!touchmovePropagationEnabled" class="z-paging-content" @touchmove.stop.prevent>
 		<scroll-view class="scroll-view" :scroll-top="scrollTop" :scroll-y="scrollEnable" :enable-back-to-top="enableBackToTop"
 		 :show-scrollbar="showScrollbar" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher"
 		 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle"
@@ -64,13 +64,71 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					<!-- 如果需要修改组件源码来统一设置全局的emptyView，可以把此处的“empty-view”换成自定义的组件名即可 -->
 					<!-- <empty-view v-else-if="!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading"></empty-view> -->
 					<slot />
-					<slot @click="_onLoadingMore('click')" v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore" name="loadingMoreDefault" />
-					<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore"
+					<slot @click="_onLoadingMore('click')" v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled" name="loadingMoreDefault" />
+					<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled"
 					 name="loadingMoreLoading" />
-					<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView"
+					<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled"
 					 name="loadingMoreNoMore" />
-					<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore" name="loadingMoreFail" />
-					<view @click="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)"
+					<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled" name="loadingMoreFail" />
+					<view @click="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled"
+					 class="load-more-container" :style="[loadingMoreCustomStyle]">
+						<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
+						 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+						<image v-if="loadingStatus===1&&loadingMoreLoadingIconCustomImage.length" :src="loadingMoreLoadingIconCustomImage"
+						 class="loading-more-line-loading-custom-image"></image>
+						<image v-if="loadingStatus===1&&loadingMoreLoadingIconType==='flower'&&!loadingMoreLoadingIconCustomImage.length"
+						 class="loading-more-line-loading-image" :style="[loadingMoreLoadingIconCustomStyle]" :src="base64Flower"></image>
+						<text v-if="loadingStatus===1&&loadingMoreLoadingIconType==='circle'&&!loadingMoreLoadingIconCustomImage.length"
+						 :class="defaultThemeStyle==='white'?'loading-more-line-loading-view loading-more-line-loading-view-white':'loading-more-line-loading-view loading-more-line-loading-view-black'"
+						 :style="[loadingMoreLoadingIconCustomStyle]"></text>
+						<text :class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{ownLoadingMoreText}}</text>
+						<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
+						 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+					</view>
+				</view>
+			</view>
+		</scroll-view>
+	</view>
+	<!-- 此处的代码和上方完全一样，复制了一份，因为在uni上暂时没找到动态控制是否阻止冒泡的方案；
+	尝试过以下方案：
+	 1.通过event.stopPropagation()来阻止冒泡，因为事件返回的event对象并非浏览器的evnet对象，因此uni只支持使用修饰符阻止冒泡；
+	 2.参照了uni的scrollView的源码，使用addEventListener来添加touch事件，并在touch事件中获取到浏览器event对象调用event.stopPropagation()来阻止冒泡，
+	 但因在uni中使用ref无法获取view等对象而放弃，进而使用uni.createSelectorQuery()查找指定view，但在小程序中无法获取浏览器dom对象，因此也不可行。
+	 3.在最上面盖一个透明view并添加touch相关手势，但会影响底下view的点击等事件，因此它们不属于父子关系，而是兄弟关系，手势点击无法向上传递。
+	 4.使用小程序中的template is将重复代码复用，然后使用v-if来隐藏或显示两个不同的“paging-main”，但uni中不支持此写法。
+	 【如果有更优解决方案可以发送邮件到admin.zxlee.cn或加入qq群790460711提出您的想法，感谢！！！】 -->
+	<view v-else class="z-paging-content">
+		<scroll-view class="scroll-view" :scroll-top="scrollTop" :scroll-y="scrollEnable" :enable-back-to-top="enableBackToTop"
+		 :show-scrollbar="showScrollbar" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher"
+		 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle"
+		 :refresher-background="refresherBackground" :refresher-triggered="refresherTriggered" @scroll="_scroll"
+		 @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"
+		 @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
+			<view class="paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
+				<view v-if="refresherEnabled&&useCustomRefresher" class="custom-refresher-view" :style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
+					<slot v-if="$slots.refresher" name="refresher" />
+					<view v-else class="custom-refresher-container" style="height: 100%;">
+						<view class="custom-refresher-left">
+							<image v-if="refresherStatus!==2" :class="refresherLeftImageClass" :style="[{'transform': 'rotate(180deg)','filter' :defaultThemeStyle==='white'?'brightness(10)':''}]" :src="base64Arrow"></image>
+							<image v-else class="loading-more-line-loading-image custom-refresher-left-image" :src="base64Flower"></image>
+						</view>
+						<view :class="defaultThemeStyle==='white'?'custom-refresher-right custom-refresher-right-white':'custom-refresher-right custom-refresher-right-black'">
+							<view class="custom-refresher-right-text">{{refresherStatusTextMap[refresherStatus]}}</view>
+						</view>
+					</view>
+				</view>
+				<view class="paging-container">
+					<slot v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading" name="empty" />
+					<!-- 如果需要修改组件源码来统一设置全局的emptyView，可以把此处的“empty-view”换成自定义的组件名即可 -->
+					<!-- <empty-view v-else-if="!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading"></empty-view> -->
+					<slot />
+					<slot @click="_onLoadingMore('click')" v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled" name="loadingMoreDefault" />
+					<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled"
+					 name="loadingMoreLoading" />
+					<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled"
+					 name="loadingMoreNoMore" />
+					<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled" name="loadingMoreFail" />
+					<view @click="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled"
 					 class="load-more-container" :style="[loadingMoreCustomStyle]">
 						<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
 						 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
@@ -134,6 +192,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 * @property {Number} refresher-threshold 设置自定义下拉刷新阈值，默认为45
 	 * @property {String} refresher-default-style 设置自定义下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式，默认为black
 	 * @property {String} refresher-background 设置自定义下拉刷新区域背景颜色
+	 * @property {Boolean} touchmove-propagation-enabled 是否允许touchmove事件冒泡，默认为否，禁止冒泡可避免一些情况下下拉刷新时页面其他元素跟着下移，若您使用横向滑动切换选项卡，则需要将此属性设置为true，否则无法横向滑动
 	 * @event {Function} addData 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认为是)
 	 * @event {Function} reload 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果
 	 * @event {Function} endRefresh 手动停止下拉刷新加载
@@ -429,6 +488,13 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				type: String,
 				default: function() {
 					return "#ffffff00";
+				}
+			},
+			//是否允许touchmove事件冒泡，默认为否，禁止冒泡可避免一些情况下下拉刷新时页面其他元素跟着下移，若您使用横向滑动切换选项卡，则需要将此属性设置为true，否则无法横向滑动
+			touchmovePropagationEnabled: {
+				type: Boolean,
+				default: function() {
+					return false;
 				}
 			}
 		},
