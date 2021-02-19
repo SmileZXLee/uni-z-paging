@@ -1,8 +1,9 @@
-# uni-z-paging
+# z-paging
 
 > 【uni-app自动分页器】超简单，低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view等。
 
 ## 在DCloud插件市场中访问：https://ext.dcloud.net.cn/plugin?id=3935
+
 ### 反馈qq群(点击加群)：[790460711](https://jq.qq.com/?_wv=1027&k=vU2fKZZH)
 
 ### 平台兼容性
@@ -10,6 +11,10 @@
 | App  |  h5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 字节小程序 | QQ小程序 |
 | :--: | :--: | :--------: | :----------: | :--------: | :--------: | :------: |
 |  √   |  √   |     √      |      √       |     √      |     √      |    √     |
+
+### 在线demo体验地址：
+
+* http://www.zxlee.cn/github/uni-z-paging/demo/index.html
 
 # 基本使用
 
@@ -67,7 +72,8 @@
 
 * z-paging必须有确定的高度！否则上拉加载更多将无法触发，请确保z-paging的父节点有确定的高度！！
 * 请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突。
-* 当使用自定义下拉刷新时，若下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true。
+* z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲突，这将导致使用滑动切换tab时无法横向切换，若您需要横向切换功能，请删除下方的`@touchmove.stop.prevent`；
+  若此时下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true。(因uni无法动态控制是否允许冒泡，因此只能使用此方法，若您有更好的解决方案可以通过顶部github或dcloud插件市场联系我，不胜感激！)
 
 ## 设置自定义emptyView组件
 
@@ -181,6 +187,7 @@
 |          refresher-threshold           |               设置自定义下拉刷新阈值（单位px）               |      Number      |           45           |      -      |
 |        refresher-default-style         | 设置系统下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式 |      String      |         black          | white、none |
 |          refresher-background          |                设置自定义下拉刷新区域背景颜色                |      String      |    #FFFFFF00(透明)     |      -      |
+|     touchmove-propagation-enabled      | 是否允许touchmove事件冒泡，默认为否，禁止冒泡可避免一些情况下下拉刷新时页面其他元素跟着下移，若您使用横向滑动切换选项卡，则需要将此属性设置为true，否则无法横向滑动 |     Boolean      |         false          |    true     |
 
 ## Slot
 
