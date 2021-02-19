@@ -617,7 +617,6 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			//当前数据改变时调用
 			_currentDataChange(newVal, oldVal) {
 				newVal = [].concat(newVal);
-				if (!this.loadingMoreEnabled) return;
 				if (this.pageNo === this.defaultPageNo) {
 					this.totalData = [];
 				}
