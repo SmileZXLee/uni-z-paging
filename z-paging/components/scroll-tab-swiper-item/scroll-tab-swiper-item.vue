@@ -3,6 +3,7 @@
 		<!-- 这里设置了z-paging加载时禁止自动调用reload方法，自行控制何时reload（懒加载），同时允许touchmove事件冒泡，否则无法横向滚动切换tab -->
 		<z-paging ref="paging" @query="queryList" :list.sync="dataList" :mounted-auto-call-reload="false" :touchmove-propagation-enabled="true" style="height: 100%;">
 			<empty-view slot="empty"></empty-view>
+			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view>
 				<view class="item" v-for="(item,index) in dataList" @click="itemClick(item)">
@@ -72,10 +73,6 @@
 <style>
 	/* 注意，1、父节点需要固定高度，z-paging的height:100%才会生效 */
 	/* 注意，2、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突 */
-	page {
-		height: 100%;
-	}
-
 	.content {
 		height: 100%;
 		/* 父节点建议开启flex布局 */

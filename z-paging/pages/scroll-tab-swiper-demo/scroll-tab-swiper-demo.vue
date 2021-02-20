@@ -53,7 +53,7 @@
 	}
 </script>
 
-<style scoped>
+<style>
 	page {
 		height: 100%;
 	}

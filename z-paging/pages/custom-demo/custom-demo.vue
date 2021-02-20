@@ -8,6 +8,7 @@
 			<custom-nomore slot="loadingMoreNoMore"></custom-nomore>
 			<!-- 设置自定义emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
 			<empty-view slot="empty"></empty-view>
+			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view>
 				<view class="item" v-for="(item,index) in dataList" @click="itemClick(item)">
