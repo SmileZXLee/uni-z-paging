@@ -47,15 +47,17 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		 @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"
 		 @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
 			<view class="paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
-				<view v-if="refresherEnabled&&useCustomRefresher" class="custom-refresher-view" :style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
-					<slot v-if="$slots.refresher" name="refresher" />
-					<view v-else class="custom-refresher-container" style="height: 100%;">
-						<view class="custom-refresher-left">
-							<image v-if="refresherStatus!==2" :class="refresherLeftImageClass" :style="[{'transform': 'rotate(180deg)','filter' :defaultThemeStyle==='white'?'brightness(10)':''}]" :src="base64Arrow"></image>
-							<image v-else class="loading-more-line-loading-image custom-refresher-left-image" :src="base64Flower"></image>
-						</view>
-						<view :class="defaultThemeStyle==='white'?'custom-refresher-right custom-refresher-right-white':'custom-refresher-right custom-refresher-right-black'">
-							<view class="custom-refresher-right-text">{{refresherStatusTextMap[refresherStatus]}}</view>
+				<view v-if="refresherEnabled&&useCustomRefresher" class="custom-refresher-view" :style="[{'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
+					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
+						<slot v-if="$slots.refresher" name="refresher" />
+						<view v-else class="custom-refresher-container" style="height: 100%;">
+							<view class="custom-refresher-left">
+								<image v-if="refresherStatus!==2" :class="refresherLeftImageClass" :style="[{'transform': 'rotate(180deg)','filter' :defaultThemeStyle==='white'?'brightness(10)':''}]" :src="base64Arrow"></image>
+								<image v-else class="loading-more-line-loading-image custom-refresher-left-image" :src="base64Flower"></image>
+							</view>
+							<view :class="defaultThemeStyle==='white'?'custom-refresher-right custom-refresher-right-white':'custom-refresher-right custom-refresher-right-black'">
+								<view class="custom-refresher-right-text">{{refresherStatusTextMap[refresherStatus]}}</view>
+							</view>
 						</view>
 					</view>
 				</view>
@@ -106,14 +108,16 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		 @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
 			<view class="paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
 				<view v-if="refresherEnabled&&useCustomRefresher" class="custom-refresher-view" :style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
-					<slot v-if="$slots.refresher" name="refresher" />
-					<view v-else class="custom-refresher-container" style="height: 100%;">
-						<view class="custom-refresher-left">
-							<image v-if="refresherStatus!==2" :class="refresherLeftImageClass" :style="[{'transform': 'rotate(180deg)','filter' :defaultThemeStyle==='white'?'brightness(10)':''}]" :src="base64Arrow"></image>
-							<image v-else class="loading-more-line-loading-image custom-refresher-left-image" :src="base64Flower"></image>
-						</view>
-						<view :class="defaultThemeStyle==='white'?'custom-refresher-right custom-refresher-right-white':'custom-refresher-right custom-refresher-right-black'">
-							<view class="custom-refresher-right-text">{{refresherStatusTextMap[refresherStatus]}}</view>
+					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
+						<slot v-if="$slots.refresher" name="refresher" />
+						<view v-else class="custom-refresher-container" style="height: 100%;">
+							<view class="custom-refresher-left">
+								<image v-if="refresherStatus!==2" :class="refresherLeftImageClass" :style="[{'transform': 'rotate(180deg)','filter' :defaultThemeStyle==='white'?'brightness(10)':''}]" :src="base64Arrow"></image>
+								<image v-else class="loading-more-line-loading-image custom-refresher-left-image" :src="base64Flower"></image>
+							</view>
+							<view :class="defaultThemeStyle==='white'?'custom-refresher-right custom-refresher-right-white':'custom-refresher-right custom-refresher-right-black'">
+								<view class="custom-refresher-right-text">{{refresherStatusTextMap[refresherStatus]}}</view>
+							</view>
 						</view>
 					</view>
 				</view>
@@ -180,6 +184,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 * @property {String} loading-more-loading-text 滑动到底部"加载中"文字，默认为【正在加载...】
 	 * @property {String} loading-more-no-more-text 滑动到底部"没有更多"文字，默认为【没有更多了】
 	 * @property {String} loading-more-fail-text 滑动到底部"加载失败"文字，默认为【加载失败，点击重新加载】
+	 * @property {Boolean} hide-loading-more-when-first-page-no-more 当第一页就没有更多数据时，隐藏上拉加载更多view，默认为是
 	 * @property {Boolean} show-loading-more-no-more-view 是否显示没有更多数据的view，默认为是
 	 * @property {Boolean} show-default-loading-more-text 是否显示默认的加载更多text，默认为是
 	 * @property {Boolean} show-loading-more-no-more-line 是否显示没有更多数据的分割线，默认为是
@@ -406,6 +411,13 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					return "加载失败，点击重新加载";
 				},
 			},
+			//当第一页就没有更多数据时，隐藏上拉加载更多view，默认为是
+			hideLoadingMoreWhenFirstPageNoMore: {
+				type: Boolean,
+				default: function() {
+					return true;
+				},
+			},
 			//是否显示默认的加载更多text，默认为是
 			showDefaultLoadingMoreText: {
 				type: Boolean,
@@ -509,7 +521,15 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					return;
 				}
 				newVal = [].concat(newVal);
-				this.showLoadingMore = newVal.length;
+				if(this.hideLoadingMoreWhenFirstPageNoMore){
+					if(newVal.length < this.defaultPageSize){
+						this.showLoadingMore = false;
+					}else{
+						this.showLoadingMore = newVal.length;
+					}
+				}else{
+					this.showLoadingMore = newVal.length;
+				}
 				this.$emit('update:list', newVal);
 				this.firstPageLoaded = false;
 			},
@@ -783,8 +803,6 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		display: flex;
 		flex-direction: column;
 	}
-	
-	.custom-refresher-view {}
 
 	.paging-container {
 		flex: 1;
