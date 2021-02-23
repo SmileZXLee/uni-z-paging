@@ -10,6 +10,7 @@
 			console.log('App Hide')
 		}
 	}
+	
 </script>
 
 <style>

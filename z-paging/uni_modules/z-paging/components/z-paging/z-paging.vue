@@ -531,7 +531,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					return;
 				}
 				newVal = [].concat(newVal);
-				if (this.loadingStatus === 2 && this.hideLoadingMoreWhenNoMoreAndInsideOfPaging) {
+				if (this.loadingStatus === 2 && this.hideLoadingMoreWhenNoMoreAndInsideOfPaging && newVal.length) {
 					this.$nextTick(() => {
 						this._checkShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal);
 					})
@@ -797,19 +797,19 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			},
 			//判断当没有更多数据且分页内容未超出z-paging时是否显示没有更多数据的view
 			async _checkShowLoadingMoreWhenNoMoreAndInsideOfPaging(totalData) {
-				try{
+				try {
 					let pagingContainerH = 0;
 					let scrollViewH = 0;
 					const pagingContainerNode = await this._getNodeClientRect('.paging-container-content');
 					const scrollViewNode = await this._getNodeClientRect('.scroll-view');
-					if(pagingContainerNode != '' && pagingContainerNode != undefined && pagingContainerNode.length){
+					if (pagingContainerNode != '' && pagingContainerNode != undefined && pagingContainerNode.length) {
 						pagingContainerH = pagingContainerNode[0].height;
 					}
-					if(scrollViewNode != '' && scrollViewNode != undefined && scrollViewNode.length){
+					if (scrollViewNode != '' && scrollViewNode != undefined && scrollViewNode.length) {
 						scrollViewH = scrollViewNode[0].height;
 					}
 					this.showLoadingMore = pagingContainerH >= scrollViewH;
-				}catch(e){
+				} catch (e) {
 					this.showLoadingMore = totalData.length;
 				}
 			},
@@ -823,10 +823,10 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				res.select(select).boundingClientRect();
 				return new Promise((resolve, reject) => {
 					res.exec(data => {
-						 resolve(data);
+						resolve(data);
 					});
 				});
-				
+
 			}
 		},
 	};
@@ -835,13 +835,17 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 <style scoped>
 	.z-paging-content,
 	.scroll-view {
+		/* #ifndef APP-NVUE */
 		width: 100%;
 		height: 100%;
+		/* #endif */
 	}
-
+	
 	.paging-main {
 		height: 100%;
+		/* #ifndef APP-NVUE */
 		display: flex;
+		/* #endif */
 		flex-direction: column;
 	}
 
@@ -850,7 +854,10 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	}
 
 	.custom-refresher-container {
+		/* #ifndef APP-NVUE */
 		display: flex;
+		/* #endif */
+		flex-direction: row;
 		justify-content: center;
 		align-items: center;
 	}
@@ -863,17 +870,23 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	}
 
 	.custom-refresher-arrow-top {
+		/* #ifndef APP-NVUE */
 		animation: refresher-arrow-top 0.25s linear;
 		-webkitanimation: refresher-arrow-top 0.25s linear;
 		animation-fill-mode: forwards;
 		-webkit-animation-fill-mode: forwards;
+		/* #endif */
+
 	}
 
 	.custom-refresher-arrow-down {
+		/* #ifndef APP-NVUE */
 		animation: refresher-arrow-down 0.25s linear;
 		-webkit-animation: refresher-arrow-down 0.25s linear;
 		animation-fill-mode: forwards;
 		-webkit-animation-fill-mode: forwards;
+		/* #endif */
+
 	}
 
 	.custom-refresher-right {
@@ -891,7 +904,10 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	.load-more-container {
 		height: 80rpx;
 		font-size: 25rpx;
+		/* #ifndef APP-NVUE */
 		display: flex;
+		/* #endif */
+		flex-direction: row;
 		align-items: center;
 		justify-content: center;
 	}
@@ -900,14 +916,20 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		margin-right: 8rpx;
 		width: 28rpx;
 		height: 28rpx;
+		/* #ifndef APP-NVUE */
 		animation: loading-flower 1s steps(12) infinite;
+		/* #endif */
+
 	}
 
 	.loading-more-line-loading-custom-image {
 		margin-right: 8rpx;
 		width: 28rpx;
 		height: 28rpx;
+		/* #ifndef APP-NVUE */
 		animation: loading-circle 1s linear infinite;
+		/* #endif */
+
 	}
 
 	.loading-more-line-loading-view {
@@ -916,7 +938,10 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		height: 23rpx;
 		border: 3rpx solid #dddddd;
 		border-radius: 50%;
+		/* #ifndef APP-NVUE */
 		animation: loading-circle 1s linear infinite;
+		/* #endif */
+
 	}
 
 	.loading-more-line-loading-view-black {

@@ -17,23 +17,23 @@
 				currentIndex: 0
 			};
 		},
-		props:{
+		props: {
 			items: {
 				type: Array,
-				default: function(){
+				default: function() {
 					return []
 				}
 			}
 		},
-		computed:{
-			itemWidth(){
+		computed: {
+			itemWidth() {
 				return ((1.0 / this.items.length) * 100) + '%';
 			}
 		},
-		methods:{
-			itemClick(index){
-				if(this.currentIndex != index){
-					this.$emit('change',index);
+		methods: {
+			itemClick(index) {
+				if (this.currentIndex != index) {
+					this.$emit('change', index);
 				}
 				this.currentIndex = index;
 			}
@@ -42,32 +42,40 @@
 </script>
 
 <style scoped>
-	.segment-control{
-		
-	}
-	.segment{
+	.segment-control {}
+
+	.segment {
 		height: 100%;
 		height: 80rpx;
+		/* #ifndef APP-NVUE */
 		display: flex;
+		/* #endif */
+		flex-direction: row;
 		font-size: 30rpx;
 		color: darkgray;
 		border-bottom: #eeeeee solid 1px;
 	}
-	.segment-item{
+
+	.segment-item {
 		height: 100%;
 	}
-	.title-container{
+
+	.title-container {
 		width: 100%;
 		height: calc(100% - 2px);
+		/* #ifndef APP-NVUE */
 		display: flex;
+		/* #endif */
 		justify-content: center;
 		align-items: center;
 		text-align: center;
 	}
-	.title{
+
+	.title {
 		width: 100%;
 	}
-	.line{
+
+	.line {
 		height: 2px;
 		width: 70%;
 		margin-left: 15%;

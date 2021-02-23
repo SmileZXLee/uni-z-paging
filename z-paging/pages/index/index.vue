@@ -34,7 +34,7 @@
 					uni.navigateTo({
 						url: '../scroll-tab-swiper-demo/scroll-tab-swiper-demo'
 					})
-				},
+				}
 			}
 		},
 		methods: {

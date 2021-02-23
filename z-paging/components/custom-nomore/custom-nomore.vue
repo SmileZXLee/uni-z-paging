@@ -1,6 +1,6 @@
 <template>
 	<view class="nomore">
-		<image class="nomore-image" src="http://www.zxlee.cn/github/uni-z-paging/no_more.png"></image>
+		<image class="nomore-image" mode="aspectFit" src="http://www.zxlee.cn/github/uni-z-paging/no_more.png"></image>
 		<view class="nomore-text">已经到达宇宙尽头啦~</view>
 	</view>
 </template>
@@ -24,7 +24,6 @@
 		padding: 10px 0px;
 	}
 	.nomore-image{
-		height: 100px;
 		width: 100px;
 	}
 	.nomore-text{
