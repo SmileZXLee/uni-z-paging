@@ -1,0 +1,79 @@
+{
+  "id": "z-paging",
+  "displayName": "超简单、低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)",
+  "version": "1.1.9",
+  "description": "【自动分页组件】超简单、低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)",
+  "keywords": [
+    "分页器",
+    "Pagination",
+    "支持自定义下拉刷新",
+    "自定义上拉加载"
+],
+  "repository": "https://github.com/SmileZXLee/uni-z-paging",
+  "engines": {
+    "HBuilderX": "^3.0.7"
+  },
+  "dcloudext": {
+    "category": [
+        "前端组件",
+        "通用组件"
+    ],
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": "393727164"
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "插件不采集任何数据",
+      "permissions": "无"
+    },
+    "npmurl": ""
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "y",
+        "aliyun": "y"
+      },
+      "client": {
+        "App": {
+          "app-vue": "y",
+          "app-nvue": "u"
+        },
+        "H5-mobile": {
+          "Safari": "y",
+          "Android Browser": "y",
+          "微信浏览器(Android)": "y",
+          "QQ浏览器(Android)": "y"
+        },
+        "H5-pc": {
+          "Chrome": "y",
+          "IE": "y",
+          "Edge": "y",
+          "Firefox": "y",
+          "Safari": "y"
+        },
+        "小程序": {
+          "微信": "y",
+          "阿里": "y",
+          "百度": "y",
+          "字节跳动": "y",
+          "QQ": "y"
+        },
+        "快应用": {
+          "华为": "u",
+          "联盟": "u"
+        }
+      }
+    }
+  }
+}
