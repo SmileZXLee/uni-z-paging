@@ -16,12 +16,17 @@
 
 * [http://www.zxlee.cn/github/uni-z-paging/demo/index.html](http://www.zxlee.cn/github/uni-z-paging/demo/index.html)
 
+| 扫码体验                                                     |
+| ------------------------------------------------------------ |
+| ![](http://www.zxlee.cn/github/uni-z-paging/z-paging-demo.png) |
+
 ### 此插件已支持`uni_modules`，下载完整示例时请在`uni_modules`目录下复制插件。
 
 # 基本使用
 
 * ①在`<template>` 中使用@query绑定js中分页请求的方法(`z-paging`会将计算好的pageNo和pageSize两个参数传递到此方法中)，然后通过` :list.sync`绑定列表for循环的list。
 * ②在请求结果回调中，通过调用`z-paging`的`addData()`方法，将请求返回的数组传递给`z-paging`处理，如：`this.$refs.paging.addData(服务器返回的数组);`；若请求失败，调用：`this.$refs.paging.addData(false);`即可。
+* 仅h5、App、微信小程序支持uni scroll-view自带的下拉刷新，若运行在其他平台上，请设置`use-custom-refresher`为true以使用`z-paging`自带的下拉刷新。
 
 ```html
 <template>
