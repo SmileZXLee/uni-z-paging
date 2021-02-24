@@ -1,7 +1,10 @@
+<!-- 这个示例演示了使用页面自带的下拉刷新和onReachBottom事件结合使用的情况 -->
 <template>
 	<view class="content">
 		<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
-		<z-paging ref="paging" @query="queryList" :auto-clean-list-when-reload="false" :list.sync="dataList" style="height: calc(100% - 80rpx);">
+		<!-- 在这种情况下，需要关闭z-paging自带的下拉刷新，同时在pages.json中开启此页面的下拉刷新，因此页面中z-paging没有确定的高度，
+		因此受“hide-loading-more-when-no-more-and-inside-of-paging”属性影响，当没有更多数据时会自动隐藏没有更多数据view，此时需要将其设置为false -->
+		<z-paging ref="paging" @query="queryList" :list.sync="dataList" :refresher-enabled="false" :hide-loading-more-when-no-more-and-inside-of-paging="false">
 			<empty-view slot="empty"></empty-view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
@@ -24,11 +27,19 @@
 				tabIndex: 0
 			}
 		},
+		// 当下拉刷新触发时，手动触发reload方法
+		onPullDownRefresh() {
+			this.$refs.paging.reload();
+		},
+		// 当页面滚动到底部时，手动触发doLoadMore方法
+		onReachBottom() {
+			this.$refs.paging.doLoadMore();
+		},
 		methods: {
 			tabChange(index){
 				this.tabIndex = index;
 				//当切换tab时请调用组件的reload方法，请勿直接调用：queryList方法！！
-				this.$refs.paging.reload(true);
+				this.$refs.paging.reload();
 			},
 			queryList(pageNo, pageSize) {
 				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
@@ -36,6 +47,8 @@
 				//模拟请求服务器获取分页数据，请替换成自己的网络请求
 				this.$request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
 					this.$refs.paging.addData(data);
+					//需要手动关闭页面的下拉刷新
+					uni.stopPullDownRefresh();
 				})
 			},
 			itemClick(item) {
@@ -46,19 +59,8 @@
 </script>
 
 <style>
-	/* 注意，1、父节点需要固定高度，z-paging的height:100%才会生效 */
-	/* 注意，2、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突 */
-	page {
-		height: 100%;
-	}
-
-	.content {
-		height: 100%;
-		/* 父节点建议开启flex布局 */
-		display: flex;
-		flex-direction: column;
-	}
-	
+	/* 这种情况无需确定z-paging的高度，内部元素会自动将其撑高，当滚动到页面底部时，
+	需手动调用doLoadMore方法，因为z-paging未固定高度时，其内部的scroll-view的scrolltolower事件无法被触发 */
 	.item {
 		position: relative;
 		height: 100rpx;

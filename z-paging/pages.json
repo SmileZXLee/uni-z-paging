@@ -33,6 +33,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/page-default-demo/page-default-demo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "页面自带下拉刷新和onReachBottom事件结合使用示例",
+                "enablePullDownRefresh": true
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

@@ -39,7 +39,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 若此时下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true。或者在当前page的根view中添加@touchmove.stop.prevent (因uni无法动态控制是否允许冒泡，因此只能使用此方法，若您有更好的解决方案可以通过顶部github或dcloud插件市场联系我，不胜感激！)
  -->
 <template name="z-paging">
-	<view v-if="!touchmovePropagationEnabled" class="z-paging-content" @touchmove.stop.prevent>
+	<view v-if="!touchmovePropagationEnabled&&refresherEnabled" class="z-paging-content" @touchmove.stop.prevent>
 		<scroll-view class="scroll-view" :scroll-top="scrollTop" :scroll-y="scrollEnable" :enable-back-to-top="enableBackToTop"
 		 :show-scrollbar="showScrollbar" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher"
 		 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle"
@@ -209,7 +209,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 * @property {String} refresher-background 设置自定义下拉刷新区域背景颜色
 	 * @property {Boolean} touchmove-propagation-enabled 是否允许touchmove事件冒泡，默认为否，禁止冒泡可避免一些情况下下拉刷新时页面其他元素跟着下移，若您使用横向滑动切换选项卡，则需要将此属性设置为true，否则无法横向滑动
 	 * @event {Function} addData 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认为是)
-	 * @event {Function} reload 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果
+	 * @event {Function} reload 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果(animate为true时会展示下拉刷新动画，默认为false)
 	 * @event {Function} endRefresh 手动停止下拉刷新加载
 	 * @event {Function} loadingStatusChange 分页加载状态改变(0-默认状态 1.加载中 2.没有更多数据 3.加载失败)
 	 * @event {Function} refresherStatusChange 自定义下拉刷新状态改变(use-custom-refresher为true时生效)(0-默认状态 1.松手立即刷新 2.刷新中)
@@ -616,10 +616,18 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					}
 				}
 			},
-			//重新加载分页数据，pageNo会恢复为默认值，相当于下拉刷新的效果
-			reload() {
+			//重新加载分页数据，pageNo会恢复为默认值，相当于下拉刷新的效果(animate为true时会展示下拉刷新动画，默认为false)
+			reload(animate=false) {
 				this.isUserReload = true;
-				this._refresherEnd();
+				if(animate){
+					if(this.useCustomRefresher){
+						this._doRefresherRefreshAnimate();
+					}else{
+						this.refresherTriggered = true;
+					}
+				}else{
+					this._refresherEnd();
+				}
 				this._reload();
 			},
 			//手动触发上拉加载更多(非必须，可依据具体需求使用)
@@ -781,6 +789,11 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				this.loading = false;
 				this.scrollEnable = true;
 				this.$emit('onRestore');
+			},
+			//模拟用户手动触发下拉刷新
+			_doRefresherRefreshAnimate(){
+				this.refresherTransform = `translateY(${this.refresherThreshold}px)`;
+				this.refresherStatus = 2;
 			},
 			//触发下拉刷新
 			_doRefresherLoad() {

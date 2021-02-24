@@ -1,7 +1,7 @@
 {
   "id": "z-paging",
   "displayName": "超简单、低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)",
-  "version": "1.1.9",
+  "version": "1.2.0",
   "description": "【自动分页组件】超简单、低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)",
   "keywords": [
     "分页器",
@@ -47,7 +47,7 @@
       "client": {
         "App": {
           "app-vue": "y",
-          "app-nvue": "u"
+          "app-nvue": "n"
         },
         "H5-mobile": {
           "Safari": "y",

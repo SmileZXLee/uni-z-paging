@@ -13,6 +13,11 @@
 			<view>（使用了uView的tabsSwiper组件）</view>
 			<view>scroll-tab-swiper-demo.vue</view>
 		</view>
+		<view class="demo-view item-purple" @click="pageDefaultDemoClick">
+			<view>页面自带下拉刷新和</view>
+			<view>onReachBottom事件结合使用示例</view>
+			<view>page-default-demo.vue</view>
+		</view>
 	</view>
 </template>
 
@@ -33,6 +38,11 @@
 				scrollTabSwiperDemoClick(){
 					uni.navigateTo({
 						url: '../scroll-tab-swiper-demo/scroll-tab-swiper-demo'
+					})
+				},
+				pageDefaultDemoClick(){
+					uni.navigateTo({
+						url: '../page-default-demo/page-default-demo'
 					})
 				}
 			}
@@ -77,6 +87,11 @@
 	.item-green{
 		color: #3f9a03;
 		background: linear-gradient(to right, #ffffff 0%, #d5f7be 100%);
+		box-shadow: 0 0  20rpx #deebfd;
+	}
+	.item-purple{
+		color: #c306fa;
+		background: linear-gradient(to right, #ffffff 0%, #ebbbf9 100%);
 		box-shadow: 0 0  20rpx #deebfd;
 	}
 </style>
