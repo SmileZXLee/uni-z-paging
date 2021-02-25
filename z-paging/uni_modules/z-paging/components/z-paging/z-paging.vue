@@ -728,7 +728,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			},
 			// 拖拽开始
 			_refresherTouchstart(e) {
-				if (!this.refresherEnabled || !this.useCustomRefresher || this.oldScrollTop > 10) {
+				if (!this.refresherEnabled || !this.useCustomRefresher || this.scrollTop > 10) {
 					return;
 				}
 				this.refresherTransition = 'transform .1s linear';
@@ -741,7 +741,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				if (this.pullDownTimeStamp && currentTimeStamp - this.pullDownTimeStamp <= this.pullDownDisTimeStamp) {
 					return;
 				}
-				if (!this.refresherEnabled || !this.useCustomRefresher || this.oldScrollTop > 10) {
+				if (!this.refresherEnabled || !this.useCustomRefresher || this.scrollTop > 10) {
 					return;
 				}
 				this.pullDownTimeStamp = currentTimeStamp;
@@ -762,7 +762,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			},
 			//拖拽结束
 			_refresherTouchend(e) {
-				if (!this.refresherEnabled || !this.useCustomRefresher || this.oldScrollTop > 10) {
+				if (!this.refresherEnabled || !this.useCustomRefresher || this.scrollTop > 10) {
 					return;
 				}
 				let refresherTouchendY = e.changedTouches[0].clientY;

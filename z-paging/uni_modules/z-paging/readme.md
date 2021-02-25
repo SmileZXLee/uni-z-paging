@@ -168,7 +168,7 @@
 |                  loading-more-text                  |  自定义底部加载更多文字(当需要不同加载状态固定文字时才使用)  |      String      |           -            |      -      |
 |              loading-more-custom-style              |         自定义底部加载更多样式；如：{'color':'red'}          |      Object      |           -            |      -      |
 |       loading-more-loading-icon-custom-style        |               自定义底部加载更多加载中动画样式               |      Object      |           -            |      -      |
-|           loading-more-loading-icon-type            | 自定义底部加载更多加载中动画图标类型，可选flower或circle，默认为flower |      String      |         flower         |   Circle    |
+|           loading-more-loading-icon-type            | 自定义底部加载更多加载中动画图标类型，可选flower或circle，默认为flower |      String      |         flower         |   circle    |
 |       loading-more-loading-icon-custom-image        | 自定义底部加载更多加载中动画图标图片，若设置则使用自定义的动画图标，`loading-more-loading-icon-type`将无效 |      String      |           -            |      -      |
 |              loading-more-default-text              |                     滑动到底部"默认"文字                     |      String      |      点击加载更多      |      -      |
 |              loading-more-loading-text              |                    滑动到底部"加载中"文字                    |      String      |      正在加载...       |      -      |
@@ -220,7 +220,7 @@
 
 | 方法名      | 说明                                                         | 参数                                                     |
 | ----------- | ------------------------------------------------------------ | -------------------------------------------------------- |
-| reload      | 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果   | -                                                        |
-| addData     | 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理 | Value1:请求结果数组；value2:是否请求成功，不填默认为true |
+| reload      | 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果   | value：reload时是否展示下拉刷新动画，默认为否            |
+| addData     | 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理 | value1:请求结果数组；value2:是否请求成功，不填默认为true |
 | doLoadMore  | 手动触发上拉加载更多(非必须，可依据具体需求使用，例如当z-paging未确定高度时，内部的scroll-view会无限增高，此时z-paging无法得知是否滚动到底部，您可以在页面的`onReachBottom`中手动调用此方法触发上拉加载更多) | -                                                        |
 | scrollToTop | 滚动到顶部                                                   | -                                                        |
