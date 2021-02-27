@@ -71,8 +71,7 @@
 
 * z-paging必须有确定的高度！否则上拉加载更多将无法触发，请确保z-paging的父节点有确定的高度！！
 * 请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突。
-* z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲突，这将导致使用滑动切换tab时无法横向切换，若您需要横向切换功能，请删除下方的`@touchmove.stop.prevent`；
-  若此时下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true。(因uni无法动态控制是否允许冒泡，因此只能使用此方法，若您有更好的解决方案可以通过顶部github或dcloud插件市场联系我，不胜感激！)
+* z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲突，这将导致使用滑动切换tab时无法横向切换，若您需要横向切换功能，请设置`touchmove-propagation-enabled`为true以允许冒泡；若此时下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true或在page的根节点中添加`@touchmove.stop.prevent`，详情可查看demo。
 
 ## 设置自定义emptyView组件
 
@@ -194,6 +193,7 @@
 | 名称               | 说明                                                         |
 | :----------------- | ------------------------------------------------------------ |
 | empty              | 自定义空数据占位view                                         |
+| loading            | 自定义页面reload时的加载view                                 |
 | refresher          | 自定义下拉刷新view，设置后则不使用uni自带的下拉刷新view和z-paging自定义的下拉刷新view。此view的style必须设置为`height:100%` (use-custom-refresher为true时生效) |
 | loadingMoreDefault | 自定义滑动到底部"默认"状态的view                             |
 | loadingMoreLoading | 自定义滑动到底部"加载中"状态的view                           |
