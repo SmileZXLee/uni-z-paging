@@ -213,6 +213,7 @@
 | refresherTouchend     | 自定义下拉刷新下拉结束(use-custom-refresher为true时生效)【注：当需要更细致定制自定义下拉刷新时使用，如果只需监听下拉刷新各个状态改变，使用`refresherStatusChange`即可】 | value:当前触摸结束分页内容下移的y值(单位px)         |
 | onRefresh             | 自定义下拉刷新被触发                                         | -                                                   |
 | onRestore             | 自定义下拉刷新被复位                                         | -                                                   |
+| scroll                | 滚动时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY} | -                                                   |
 
 * 主动调用组件方法 (假设给z-paging设置ref="paging"，则通过this.$refs.paging.xxx()方式调用)
 

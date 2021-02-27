@@ -220,6 +220,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 * @event {Function} refresherTouchend 自定义下拉刷新下拉结束(use-custom-refresher为true时生效)【注：当需要更细致定制自定义下拉刷新时使用，如果只需监听下拉刷新各个状态改变，使用`refresherStatusChange`即可】
 	 * @event {Function} onRefresh 自定义下拉刷新被触发
 	 * @event {Function} onRestore 自定义下拉刷新被复位
+	 * @event {Function} scroll 滚动时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY}
 	 */
 	export default {
 		name: "z-paging",
@@ -619,15 +620,15 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				}
 			},
 			//重新加载分页数据，pageNo会恢复为默认值，相当于下拉刷新的效果(animate为true时会展示下拉刷新动画，默认为false)
-			reload(animate=false) {
+			reload(animate = false) {
 				this.isUserReload = true;
-				if(animate){
-					if(this.useCustomRefresher){
+				if (animate) {
+					if (this.useCustomRefresher) {
 						this._doRefresherRefreshAnimate();
-					}else{
+					} else {
 						this.refresherTriggered = true;
 					}
-				}else{
+				} else {
 					this._refresherEnd();
 				}
 				this._reload();
@@ -699,6 +700,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				}
 			},
 			_scroll(e) {
+				this.$emit('scroll', e);
 				this.oldScrollTop = e.detail.scrollTop;
 			},
 			//自定义下拉刷新被触发
@@ -793,7 +795,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				this.$emit('onRestore');
 			},
 			//模拟用户手动触发下拉刷新
-			_doRefresherRefreshAnimate(){
+			_doRefresherRefreshAnimate() {
 				this.refresherTransform = `translateY(${this.refresherThreshold}px)`;
 				this.refresherStatus = 2;
 			},
@@ -855,7 +857,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		height: 100%;
 		/* #endif */
 	}
-	
+
 	.paging-main {
 		height: 100%;
 		/* #ifndef APP-NVUE */
