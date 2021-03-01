@@ -673,6 +673,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			},
 			//触发加载更多时调用,from:0-滑动到底部触发；1-点击加载更多触发
 			_onLoadingMore(from) {
+				this.$emit('scrolltolower',from);
 				if (from === 'toBottom' && !this.toBottomLoadingMoreEnabled) {
 					return;
 				}

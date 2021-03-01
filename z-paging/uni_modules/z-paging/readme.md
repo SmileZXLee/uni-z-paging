@@ -204,16 +204,17 @@
 
 * 监听组件方法(自定义扩展，一般无需使用)
 
-| 事件名                | 说明                                                         | 回调参数                                            |
-| --------------------- | ------------------------------------------------------------ | --------------------------------------------------- |
-| loadingStatusChange   | 分页加载状态改变                                             | value:0-默认状态 1.加载中 2.没有更多数据 3.加载失败 |
-| refresherStatusChange | 自定义下拉刷新状态改变(use-custom-refresher为true时生效)【注：通过`:refresher-status.sync`绑定当前data中的指定变量亦可】 | value:0-默认状态 1.松手立即刷新 2.刷新中            |
-| refresherTouchstart   | 自定义下拉刷新下拉开始(use-custom-refresher为true时生效)【注：当需要更细致定制自定义下拉刷新时使用，如果只需监听下拉刷新各个状态改变，使用`refresherStatusChange`即可】 | value:当前触摸开始的屏幕点的y值(单位px)             |
-| refresherTouchmove    | 自定义下拉刷新下拉中开始(use-custom-refresher为true时生效)【注：当需要更细致定制自定义下拉刷新时使用，如果只需监听下拉刷新各个状态改变，使用`refresherStatusChange`即可】 | value:当前需要下拉的距离(单位px)                    |
-| refresherTouchend     | 自定义下拉刷新下拉结束(use-custom-refresher为true时生效)【注：当需要更细致定制自定义下拉刷新时使用，如果只需监听下拉刷新各个状态改变，使用`refresherStatusChange`即可】 | value:当前触摸结束分页内容下移的y值(单位px)         |
-| onRefresh             | 自定义下拉刷新被触发                                         | -                                                   |
-| onRestore             | 自定义下拉刷新被复位                                         | -                                                   |
-| scroll                | 滚动时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY} | -                                                   |
+| 事件名                | 说明                                                         | 回调参数                                                    |
+| --------------------- | ------------------------------------------------------------ | ----------------------------------------------------------- |
+| loadingStatusChange   | 分页加载状态改变                                             | value:0-默认状态 1.加载中 2.没有更多数据 3.加载失败         |
+| refresherStatusChange | 自定义下拉刷新状态改变(use-custom-refresher为true时生效)【注：通过`:refresher-status.sync`绑定当前data中的指定变量亦可】 | value:0-默认状态 1.松手立即刷新 2.刷新中                    |
+| refresherTouchstart   | 自定义下拉刷新下拉开始(use-custom-refresher为true时生效)【注：当需要更细致定制自定义下拉刷新时使用，如果只需监听下拉刷新各个状态改变，使用`refresherStatusChange`即可】 | value:当前触摸开始的屏幕点的y值(单位px)                     |
+| refresherTouchmove    | 自定义下拉刷新下拉中开始(use-custom-refresher为true时生效)【注：当需要更细致定制自定义下拉刷新时使用，如果只需监听下拉刷新各个状态改变，使用`refresherStatusChange`即可】 | value:当前需要下拉的距离(单位px)                            |
+| refresherTouchend     | 自定义下拉刷新下拉结束(use-custom-refresher为true时生效)【注：当需要更细致定制自定义下拉刷新时使用，如果只需监听下拉刷新各个状态改变，使用`refresherStatusChange`即可】 | value:当前触摸结束分页内容下移的y值(单位px)                 |
+| onRefresh             | 自定义下拉刷新被触发                                         | -                                                           |
+| onRestore             | 自定义下拉刷新被复位                                         | -                                                           |
+| scroll                | `z-paging`内置的scroll-view滚动时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY} | -                                                           |
+| scrolltolower         | `z-paging`内置的scroll-view滚动底部时触发                    | value:来源(`toBottom`滚动到底部；`click`点击了加载更多view) |
 
 * 主动调用组件方法 (假设给z-paging设置ref="paging"，则通过this.$refs.paging.xxx()方式调用)
 
