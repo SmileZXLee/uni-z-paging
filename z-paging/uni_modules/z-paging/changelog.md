@@ -1,3 +1,5 @@
+## 1.2.6（2021-03-01）
+新增scroll-into-view和scroll-with-animation
 ## 1.2.5（2021-02-27）
 添加scrolltolower事件
 ## 1.2.4（2021-02-27）

@@ -14,11 +14,17 @@
 
 ### 此组件已支持`uni_modules`，下载完整示例时组件在`uni_modules`目录下。
 
-# 基本使用
+## 基本使用
 
 * ①在`<template>` 中使用@query绑定js中分页请求的方法(`z-paging`会将计算好的pageNo和pageSize两个参数传递到此方法中)，然后通过` :list.sync`绑定列表for循环的list。
 * ②在请求结果回调中，通过调用`z-paging`的`addData()`方法，将请求返回的数组传递给`z-paging`处理，如：`this.$refs.paging.addData(服务器返回的数组);`；若请求失败，调用：`this.$refs.paging.addData(false);`即可。
 * 仅h5、App、微信小程序支持uni scroll-view自带的下拉刷新，若运行在其他平台上，请设置`use-custom-refresher`为true以使用`z-paging`自带的下拉刷新。
+
+## 注意事项
+
+* z-paging必须有确定的高度！否则上拉加载更多将无法触发，请确保z-paging的父节点有确定的高度！！
+* 请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突。
+* z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲突，这将导致使用滑动切换tab时无法横向切换，若您需要横向切换功能，请设置`touchmove-propagation-enabled`为true以允许冒泡；若此时下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true或在page的根节点中添加`@touchmove.stop.prevent`，详情可查看demo。
 
 ```html
 <template>
@@ -66,12 +72,6 @@
 | 效果演示                                                     |
 | ------------------------------------------------------------ |
 | ![](http://www.zxlee.cn/github/uni-z-paging/uni-z-paging.gif) |
-
-## 注意事项
-
-* z-paging必须有确定的高度！否则上拉加载更多将无法触发，请确保z-paging的父节点有确定的高度！！
-* 请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突。
-* z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲突，这将导致使用滑动切换tab时无法横向切换，若您需要横向切换功能，请设置`touchmove-propagation-enabled`为true以允许冒泡；若此时下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true或在page的根节点中添加`@touchmove.stop.prevent`，详情可查看demo。
 
 ## 设置自定义emptyView组件
 
@@ -180,6 +180,8 @@
 |       loading-more-no-more-line-custom-style        |              自定义底部没有更多数据的分割线样式              |      Object      |           -            |      -      |
 |                   hide-empty-view                   |                     是否强制隐藏空数据图                     |     Boolean      |         false          |    true     |
 |                   show-scrollbar                    |                      控制是否出现滚动条                      |     Boolean      |         false          |    true     |
+|                scroll-with-animation                |                在设置滚动条位置时使用动画过渡                |     Boolean      |         false          |    true     |
+|                  scroll-into-view                   | 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素 |      String      |           -            |      -      |
 |                   lower-threshold                   |     距底部/右边多远时（单位px），触发 scrolltolower 事件     |      Number      |           50           |      -      |
 |                 enable-back-to-top                  | iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向 |     Boolean      |         false          |    true     |
 |                  refresher-enabled                  |                    是否开启自定义下拉刷新                    |     Boolean      |          true          |    false    |

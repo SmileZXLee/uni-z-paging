@@ -41,7 +41,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 <template name="z-paging">
 	<view v-if="!touchmovePropagationEnabled&&refresherEnabled" class="z-paging-content" @touchmove.stop.prevent>
 		<scroll-view class="scroll-view" :scroll-top="scrollTop" :scroll-y="scrollEnable" :enable-back-to-top="enableBackToTop"
-		 :show-scrollbar="showScrollbar" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher"
+		 :show-scrollbar="showScrollbar" :scroll-with-animation="scrollWithAnimation" :scroll-into-view="scrollIntoView" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher"
 		 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle"
 		 :refresher-background="refresherBackground" :refresher-triggered="refresherTriggered" @scroll="_scroll"
 		 @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"
@@ -107,7 +107,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 【如果有更优解决方案可以发送邮件到admin.zxlee.cn或加入qq群790460711提出您的想法，感谢！！！】 -->
 	<view v-else class="z-paging-content">
 		<scroll-view class="scroll-view" :scroll-top="scrollTop" :scroll-y="scrollEnable" :enable-back-to-top="enableBackToTop"
-		 :show-scrollbar="showScrollbar" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher"
+		 :show-scrollbar="showScrollbar" :scroll-with-animation="scrollWithAnimation" :scroll-into-view="scrollIntoView" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher"
 		 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle"
 		 :refresher-background="refresherBackground" :refresher-triggered="refresherTriggered" @scroll="_scroll"
 		 @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"
@@ -202,7 +202,9 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 * @property {Boolean} show-loading-more-no-more-line 是否显示没有更多数据的分割线，默认为是
 	 * @property {Object} loading-more-no-more-line-custom-style 自定义底部没有更多数据的分割线样式
 	 * @property {Boolean} hide-empty-view 是否强制隐藏空数据图，默认为否
-	 * @property {Boolean} show-scrollbar 控制是否出现滚动条，默认为否
+	 * @property {Boolean} show-scrollbar 在设置滚动条位置时使用动画过渡，默认为否
+	 * @property {Boolean} scroll-with-animation 控制是否出现滚动条，默认为否
+	 * @property {String} scroll-into-view 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素
 	 * @property {Number} lower-threshold 距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为50
 	 * @property {Boolean} enable-back-to-top iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向，默认为否
 	 * @property {Boolean} refresher-enabled 是否开启自定义下拉刷新，默认为是
@@ -471,6 +473,20 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				type: Boolean,
 				default: function() {
 					return false;
+				},
+			},
+			//在设置滚动条位置时使用动画过渡，默认为否
+			scrollWithAnimation: {
+				type: Boolean,
+				default: function() {
+					return false;
+				},
+			},
+			//值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素
+			scrollIntoView: {
+				type: String,
+				default: function() {
+					return '';
 				},
 			},
 			//距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为50
