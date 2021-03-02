@@ -154,7 +154,9 @@
 |                   default-page-no                   |                         自定义pageNo                         | String \| Number |           1            |      -      |
 |                  default-page-size                  |                        自定义pageSize                        | String \| Number |           15           |      -      |
 |                 default-theme-style                 | loading(下拉刷新、上拉加载更多)的主题样式，支持black，white  |      String      |         black          |    white    |
+|                   use-page-scroll                   | 使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐 |     Boolean      |         false          |    true     |
 |              mounted-auto-call-reload               | `z-paging` `mounted`后自动调用`reload`方法(`mounted`后自动调用接口) |     Boolean      |          true          |    false    |
+|           auto-scroll-to-top-when-reload            |                    reload时自动滚动到顶部                    |     Boolean      |          true          |    false    |
 |             auto-clean-list-when-reload             | reload时立即自动清空原list，若立即自动清空，则在reload之后、请求回调之前页面是空白的 |     Boolean      |          true          |    false    |
 |                use-custom-refresher                 | 是否使用自定义的下拉刷新，默认为否，使用uni自带的下拉刷新。设置为是后则使用z-paging的下拉刷新 |     Boolean      |         false          |    true     |
 |                    refresher-fps                    | 自定义下拉刷新下拉帧率，默认为30，过高可能会出现抖动问题(use-custom-refresher为true时生效) |      Number      |           30           |      -      |
@@ -222,9 +224,10 @@
 
   注意：在Page的onLoad()方法中无法同步获取this.$refs，请加一个setTimeOut延时1毫秒或nextTick再调用(默认会在页面加载时自动调用reload()无须手动调用)
 
-| 方法名      | 说明                                                         | 参数                                                     |
-| ----------- | ------------------------------------------------------------ | -------------------------------------------------------- |
-| reload      | 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果   | value：reload时是否展示下拉刷新动画，默认为否            |
-| addData     | 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理 | value1:请求结果数组；value2:是否请求成功，不填默认为true |
-| doLoadMore  | 手动触发上拉加载更多(非必须，可依据具体需求使用，例如当z-paging未确定高度时，内部的scroll-view会无限增高，此时z-paging无法得知是否滚动到底部，您可以在页面的`onReachBottom`中手动调用此方法触发上拉加载更多) | -                                                        |
-| scrollToTop | 滚动到顶部                                                   | -                                                        |
+| 方法名              | 说明                                                         | 参数                                                     |
+| ------------------- | ------------------------------------------------------------ | -------------------------------------------------------- |
+| reload              | 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果   | value：reload时是否展示下拉刷新动画，默认为否            |
+| addData             | 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理 | value1:请求结果数组；value2:是否请求成功，不填默认为true |
+| doLoadMore          | 手动触发上拉加载更多(非必须，可依据具体需求使用，例如当z-paging未确定高度时，内部的scroll-view会无限增高，此时z-paging无法得知是否滚动到底部，您可以在页面的`onReachBottom`中手动调用此方法触发上拉加载更多) | -                                                        |
+| scrollToTop         | 滚动到顶部                                                   | -                                                        |
+| updatePageScrollTop | 当使用页面滚动(z-paging不固定高度)并且自定义下拉刷新时，请在页面的onPageScroll中调用此方法，告知z-paging当前的pageScrollTop，否则会导致在任意位置都可以下拉刷新 |                                                          |
