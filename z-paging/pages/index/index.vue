@@ -18,6 +18,10 @@
 			<view>onReachBottom事件结合使用示例</view>
 			<view>page-default-demo.vue</view>
 		</view>
+		<view class="demo-view item-yellow" @click="stickyDemoClick">
+			<view>滚动吸附效果演示</view>
+			<view>sticky-demo.vue</view>
+		</view>
 	</view>
 </template>
 
@@ -44,6 +48,11 @@
 					uni.navigateTo({
 						url: '../page-default-demo/page-default-demo'
 					})
+				},
+				stickyDemoClick(){
+					uni.navigateTo({
+						url: '../sticky-demo/sticky-demo'
+					})
 				}
 			}
 		},
@@ -62,17 +71,18 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		padding-bottom: 30rpx;
 	}
 	.demo-view{
-		height: 120px;
+		height: 110px;
 		width: 90%;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 		border-radius: 20rpx;
-		font-size: 40rpx;
-		margin-top: 40rpx;
+		font-size: 34rpx;
+		margin-top: 30rpx;
 	}
 	.item-red{
 		background: linear-gradient(to right, #ffffff 0%, #f9d8ce 100%);
@@ -92,6 +102,11 @@
 	.item-purple{
 		color: #c306fa;
 		background: linear-gradient(to right, #ffffff 0%, #ebbbf9 100%);
+		box-shadow: 0 0  20rpx #deebfd;
+	}
+	.item-yellow{
+		color: #d0c905;
+		background: linear-gradient(to right, #ffffff 0%, #f7f5b6 100%);
 		box-shadow: 0 0  20rpx #deebfd;
 	}
 </style>

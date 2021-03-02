@@ -45,6 +45,7 @@
 	.segment-control {}
 
 	.segment {
+		background-color: white;
 		height: 100%;
 		height: 80rpx;
 		/* #ifndef APP-NVUE */
@@ -54,6 +55,8 @@
 		font-size: 30rpx;
 		color: darkgray;
 		border-bottom: #eeeeee solid 1px;
+		
+		z-index: 100;
 	}
 
 	.segment-item {

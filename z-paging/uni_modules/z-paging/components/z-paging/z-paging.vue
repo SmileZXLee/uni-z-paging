@@ -39,8 +39,8 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 若此时下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true。或者在当前page的根view中添加@touchmove.stop.prevent (因uni无法动态控制是否允许冒泡，因此只能使用此方法，若您有更好的解决方案可以通过顶部github或dcloud插件市场联系我，不胜感激！)
  -->
 <template name="z-paging">
-	<view v-if="!touchmovePropagationEnabled&&refresherEnabled" class="z-paging-content" @touchmove.stop.prevent>
-		<scroll-view class="scroll-view" :scroll-top="scrollTop" :scroll-y="scrollEnable" :enable-back-to-top="enableBackToTop"
+	<view v-if="!touchmovePropagationEnabled&&refresherEnabled&&useCustomRefresher" class="z-paging-content" @touchmove.stop.prevent>
+		<scroll-view class="scroll-view" :scroll-top="scrollTop" :scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
 		 :show-scrollbar="showScrollbar" :scroll-with-animation="scrollWithAnimation" :scroll-into-view="scrollIntoView" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher"
 		 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle"
 		 :refresher-background="refresherBackground" :refresher-triggered="refresherTriggered" @scroll="_scroll"
@@ -106,7 +106,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 4.使用小程序中的template is将重复代码复用，然后使用v-if来隐藏或显示两个不同的“paging-main”，但uni中不支持此写法。
 	 【如果有更优解决方案可以发送邮件到admin.zxlee.cn或加入qq群790460711提出您的想法，感谢！！！】 -->
 	<view v-else class="z-paging-content">
-		<scroll-view class="scroll-view" :scroll-top="scrollTop" :scroll-y="scrollEnable" :enable-back-to-top="enableBackToTop"
+		<scroll-view class="scroll-view" :scroll-top="scrollTop" :scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
 		 :show-scrollbar="showScrollbar" :scroll-with-animation="scrollWithAnimation" :scroll-into-view="scrollIntoView" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher"
 		 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle"
 		 :refresher-background="refresherBackground" :refresher-triggered="refresherTriggered" @scroll="_scroll"
@@ -177,7 +177,9 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 * @property {Number} default-page-no 自定义pageNo，默认为1
 	 * @property {Number} default-page-size 自定义pageSize，默认为15
 	 * @property {String} default-theme-style loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
+	 * @property {Boolean} use-page-scroll 使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
 	 * @property {Boolean} mounted-auto-call-reload z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
+	 * @property {Boolean} auto-scroll-to-top-when-reload reload时自动滚动到顶部，默认为是
 	 * @property {Boolean} auto-clean-list-when-reload reload时立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
 	 * @property {Boolean} use-custom-refresher 是否使用自定义的下拉刷新，默认为否，使用uni自带的下拉刷新。设置为是后则使用z-paging的下拉刷新
 	 * @property {Number} refresher-fps 自定义下拉刷新下拉帧率，默认为30，过高可能会出现抖动问题(use-custom-refresher为true时生效)
@@ -265,7 +267,8 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					1: this.refresherPullingText,
 					2: this.refresherRefreshingText
 				},
-				pullDownTimeStamp: 0
+				pullDownTimeStamp: 0,
+				pageScrollTop: -1
 			};
 		},
 		props: {
@@ -293,12 +296,26 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					return 'black';
 				}
 			},
+			//使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
+			usePageScroll: {
+				type: Boolean,
+				default: function() {
+					return false;
+				}
+			},
 			//z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
 			mountedAutoCallReload: {
 				type: Boolean,
 				default: function() {
 					return true;
 				},
+			},
+			//reload时自动滚动到顶部，默认为是
+			autoScrollToTopWhenReload: {
+				type: Boolean,
+				default: function() {
+					return true;
+				}
 			},
 			//reload时立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
 			autoCleanListWhenReload: {
@@ -550,7 +567,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					return;
 				}
 				newVal = [].concat(newVal);
-				if (this.loadingStatus === 2 && this.hideLoadingMoreWhenNoMoreAndInsideOfPaging && newVal.length) {
+				if (!this.usePageScroll && this.loadingStatus === 2 && this.hideLoadingMoreWhenNoMoreAndInsideOfPaging && newVal.length) {
 					this.$nextTick(() => {
 						this._checkShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal);
 					})
@@ -657,8 +674,17 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			endRefresh() {
 				this.refresherTriggered = false;
 			},
+			//滚动到顶部
 			scrollToTop() {
 				this._scrollToTop();
+			},
+			//当使用页面滚动并且自定义下拉刷新时，请在页面的onPageScroll中调用此方法，告知z-paging当前的pageScrollTop，否则会导致在任意位置都可以下拉刷新
+			updatePageScrollTop(value){
+				if(!value){
+					//console.error('updatePageScrollTop方法缺少参数，请将页面onPageScroll事件中的scrollTop传递给此方法');
+					return;
+				}
+				this.pageScrollTop = value;
 			},
 			//私有的重新加载分页数据方法
 			_reload() {
@@ -667,7 +693,9 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				this.$emit('query', this.pageNo, this.defaultPageSize);
 				this.firstPageLoaded = true;
 				this.totalData = [];
-				this._scrollToTop();
+				if(this.autoScrollToTopWhenReload){
+					this._scrollToTop();
+				}
 			},
 			//当前数据改变时调用
 			_currentDataChange(newVal, oldVal) {
@@ -749,7 +777,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			},
 			// 拖拽开始
 			_refresherTouchstart(e) {
-				if (!this.refresherEnabled || !this.useCustomRefresher || this.scrollTop > 10) {
+				if (this._getRefresherTouchDisabled()) {
 					return;
 				}
 				this.refresherTransition = 'transform .1s linear';
@@ -762,7 +790,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				if (this.pullDownTimeStamp && currentTimeStamp - this.pullDownTimeStamp <= this.pullDownDisTimeStamp) {
 					return;
 				}
-				if (!this.refresherEnabled || !this.useCustomRefresher || this.scrollTop > 10) {
+				if (this._getRefresherTouchDisabled()) {
 					return;
 				}
 				this.pullDownTimeStamp = currentTimeStamp;
@@ -783,12 +811,15 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			},
 			//拖拽结束
 			_refresherTouchend(e) {
-				if (!this.refresherEnabled || !this.useCustomRefresher || this.scrollTop > 10) {
+				if (this._getRefresherTouchDisabled()) {
 					return;
 				}
 				let refresherTouchendY = e.changedTouches[0].clientY;
 				let moveDistance = refresherTouchendY - this.refresherTouchstartY;
 				moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
+				if(moveDistance > 0 && this.usePageScroll && this.useCustomRefresher && this.pageScrollTop === -1){
+					console.error('usePageScroll为true并且自定义下拉刷新时必须在page滚动时通过调用z-paging组件的updatePageScrollTop方法设置当前的scrollTop')
+				}
 				if (moveDistance >= this.refresherThreshold && this.refresherStatus === 1) {
 					this.refresherTransform = `translateY(${this.refresherThreshold}px)`
 					this.refresherStatus = 2;
@@ -861,6 +892,10 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					});
 				});
 
+			},
+			//判断touch手势是否要触发
+			_getRefresherTouchDisabled(){
+				return !this.refresherEnabled || !this.useCustomRefresher || (this.usePageScroll && this.useCustomRefresher && this.pageScrollTop > 10) || (!(this.usePageScroll && this.useCustomRefresher) && this.scrollTop > 10);
 			}
 		},
 	};

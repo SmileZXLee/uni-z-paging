@@ -1,3 +1,4 @@
+<!-- 滑动切换选项卡演示 -->
 <!--  此demo使用了uView的tabsSwiper全屏选项卡 https://uviewui.com/components/tabsSwiper.html -->
 <template>
 	<view class="content" @touchmove.stop.prevent>

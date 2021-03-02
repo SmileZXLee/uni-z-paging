@@ -42,6 +42,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/sticky-demo/sticky-demo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "滚动吸附效果演示",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

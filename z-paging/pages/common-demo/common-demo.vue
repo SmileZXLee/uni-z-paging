@@ -1,3 +1,4 @@
+<!-- 普通模式演示 -->
 <template>
 	<view class="content">
 		<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
@@ -35,6 +36,7 @@
 				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
 				//模拟请求服务器获取分页数据，请替换成自己的网络请求
 				this.$request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
+					//将请求的结果数组传递给z-paging
 					this.$refs.paging.addData(data);
 				})
 			},
@@ -48,6 +50,8 @@
 <style>
 	/* 注意，1、父节点需要固定高度，z-paging的height:100%才会生效 */
 	/* 注意，2、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突 */
+	
+	/*如果有scoped，page的css设置建议放在App.vue中 */
 	page {
 		height: 100%;
 	}

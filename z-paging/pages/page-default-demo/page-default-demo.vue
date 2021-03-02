@@ -1,10 +1,9 @@
-<!-- 这个示例演示了使用页面自带的下拉刷新和onReachBottom事件结合使用的情况 -->
+<!-- 这个示例演示了使用页面自带的下拉刷新和onReachBottom事件结合使用的情况（使用页面滚动） -->
 <template>
 	<view class="content">
 		<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
-		<!-- 在这种情况下，需要关闭z-paging自带的下拉刷新，同时在pages.json中开启此页面的下拉刷新，因此页面中z-paging没有确定的高度，
-		因此受“hide-loading-more-when-no-more-and-inside-of-paging”属性影响，当没有更多数据时会自动隐藏没有更多数据view，此时需要将其设置为false -->
-		<z-paging ref="paging" @query="queryList" :list.sync="dataList" :refresher-enabled="false" :hide-loading-more-when-no-more-and-inside-of-paging="false">
+		<!-- 在这种情况下，需要关闭z-paging自带的下拉刷新，同时在pages.json中开启此页面的下拉刷新，因此页面中z-paging没有确定的高度，此时使用了页面的滚动，因此use-page-scroll需要设置为true -->
+		<z-paging ref="paging" @query="queryList" :list.sync="dataList" :refresher-enabled="false" :use-page-scroll="true">
 			<empty-view slot="empty"></empty-view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
