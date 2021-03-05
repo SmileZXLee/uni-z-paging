@@ -113,7 +113,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		 @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"
 		 @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
 			<view class="paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
-				<view v-if="refresherEnabled&&useCustomRefresher&&isTouchmovings" class="custom-refresher-view" :style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
+				<view v-if="refresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view" :style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
 						<slot v-if="$slots.refresher" name="refresher" />
 						<view v-else class="custom-refresher-container" style="height: 100%;">
@@ -838,6 +838,9 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					this._doRefresherLoad();
 				} else {
 					this._refresherEnd();
+					setTimeout(() => {
+						this.isTouchmoving = false;
+					}, 100);
 				}
 				this.$emit('refresherTouchend', moveDistance);
 			},
@@ -849,8 +852,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				}
 				setTimeout(() => {
 					this.refresherStatus = 0;
-					this.isTouchmoving = false;
-				}, 100)
+				}, 100);
 				this.loading = false;
 				this.scrollEnable = true;
 				this.$emit('onRestore');

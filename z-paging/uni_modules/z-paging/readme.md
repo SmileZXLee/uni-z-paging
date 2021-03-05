@@ -1,6 +1,6 @@
 # z-paging
 
-> 【uni-app自动分页器】超简单，低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view等。
+> 【uni-app自动分页器】超简单，低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view，支持吸顶效果等。
 
 ### 反馈qq群(点击加群)：[790460711](https://jq.qq.com/?_wv=1027&k=vU2fKZZH)
 
@@ -25,6 +25,7 @@
 * z-paging必须有确定的高度！否则上拉加载更多将无法触发，请确保z-paging的父节点有确定的高度！！
 * 请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突。
 * z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲突，这将导致使用滑动切换tab时无法横向切换，若您需要横向切换功能，请设置`touchmove-propagation-enabled`为true以允许冒泡；若此时下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true或在page的根节点中添加`@touchmove.stop.prevent`，详情可查看demo。
+* 默认的pageSize(每页显示数量)为15，如果您服务端不需要传pageSize(例如有默认的pageSize：10)，则您需要将默认的pageSize改成您与后端约定好的（10），若没有修改，则z-paging会认为传给服务端的pageSize是15，而服务端只返回了10条，因此会直接判定为没有更多数据。
 
 ```html
 <template>

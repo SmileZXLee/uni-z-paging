@@ -1,13 +1,14 @@
 {
   "id": "z-paging",
   "displayName": "超简单、低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)",
-  "version": "1.2.8",
+  "version": "1.2.9",
   "description": "【自动分页组件】超简单、低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)",
   "keywords": [
     "分页器",
     "Pagination",
     "支持自定义下拉刷新",
-    "自定义上拉加载"
+    "自定义上拉加载",
+    "吸顶"
 ],
   "repository": "https://github.com/SmileZXLee/uni-z-paging",
   "engines": {
