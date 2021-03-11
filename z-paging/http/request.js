@@ -1,12 +1,12 @@
 let listCount = 34;
-let loadingTime = 500;
+let loadingTime = 2000;
 /* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件 */
 function queryList(pageNo,pageSize,type,callback){
 	pageNo = parseInt(pageNo);
 	pageSize = parseInt(pageSize);
-	uni.showLoading({
-		title: '加载中...'
-	})
+	// uni.showLoading({
+	// 	title: '加载中...'
+	// })
 	if(pageNo < 0 || pageSize <= 0){
 		callQueryResult(callback,[]);
 		return;

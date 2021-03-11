@@ -173,6 +173,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	const {
 		windowHeight
 	} = uni.getSystemInfoSync();
+	const commonDelayTime = 100;
 	const base64Arrow =
 		'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyBjbGFzcz0iaWNvbiIgd2lkdGg9IjIwMHB4IiBoZWlnaHQ9IjIwMC4wMHB4IiB2aWV3Qm94PSIwIDAgMTAyNCAxMDI0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTUyNS4zMzkzMjYgMTg2LjE3MjQ1Mkw4MDEuNzg5MDg2IDQ2Mi42MjIyMTJjMTIuNDk2Njk4IDEyLjQ5NjY5OCAzMi43NTgxMzYgMTIuNDk2Njk4IDQ1LjI1NDgzNCAwIDEyLjQ5NzQwNS0xMi40OTc0MDUgMTIuNDk2Njk4LTMyLjc1ODEzNiAwLTQ1LjI1NDgzNGwtMzMxLjAxNDM2Mi0zMzEuMDE0MzYyYy0xMi40OTY2OTgtMTIuNDk2Njk4LTMyLjc1NzQyOS0xMi40OTc0MDUtNDUuMjU0ODM0IDBsLTM0MS43OTU2MTkgMzM5LjE0Mzk2OWMtMTIuNDk2Njk4IDEyLjQ5NjY5OC0xMi40OTY2OTggMzIuNzU4MTM2IDAgNDUuMjU0ODM0IDEyLjQ5NjY5OCAxMi40OTY2OTggMzIuNzU4MTM2IDEyLjQ5NjY5OCA0NS4yNTQ4MzQgMGwyODcuMTA1ODYtMjg0LjQ1NDIwOUw0NjEuMzcyMzI1IDkyNS43MjYyNDJjMCAxNy42NzM0MjcgMTQuMzI2NjkgMzIuMDAwMTE3IDMyLjAwMDExOCAzMi4wMDAxMTcgMTcuNjcyNzItMC4wMDA3MDcgMzEuOTk5NDEtMTQuMzI3Mzk4IDMyLjAwMDExNy0zMi4wMDAxMTdsLTAuMDMyNTI3LTczOS41NTMwODN6IiBmaWxsPSIjNTE1MTUxIiAvPjwvc3ZnPg==';
 	const base64Flower =
@@ -673,7 +674,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 						this.refresherTriggered = true;
 					}
 				} else {
-					this._refresherEnd();
+					this._refresherEnd(false);
 				}
 				this._reload();
 			},
@@ -721,7 +722,6 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				if (this.refresherTriggered) {
 					this.refresherTriggered = false;
 				}
-				this.loading = false;
 				setTimeout(() => {
 					this._refresherEnd();
 				}, 200)
@@ -832,7 +832,9 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				if (this._getRefresherTouchDisabled()) {
 					return;
 				}
-				this.isTouchmoving = false;
+				if(!this.loading){
+					this.isTouchmoving = true;
+				}
 				this.refresherTransition = 'transform .1s linear';
 				this.refresherTouchstartY = e.touches[0].clientY;
 				this.$emit('refresherTouchstart', this.refresherTouchstartY);
@@ -884,27 +886,34 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					this._refresherEnd();
 					setTimeout(() => {
 						this.isTouchmoving = false;
-					}, 100);
+					}, commonDelayTime);
 				}
+				this.scrollEnable = true;
 				this.$emit('refresherTouchend', moveDistance);
 			},
 			//下拉刷新结束
-			_refresherEnd() {
+			_refresherEnd(shouldEndLoadingDelay = true) {
 				this.refresherTransform = 'translateY(0px)';
 				if (this.refresherEndBounceEnabled) {
 					this.refresherTransition = 'transform 0.3s cubic-bezier(0.19,1.64,0.42,0.72)';
 				}
 				setTimeout(() => {
 					this.refresherStatus = 0;
-				}, 100);
-				this.loading = false;
-				this.scrollEnable = true;
+				}, commonDelayTime);
+				if(shouldEndLoadingDelay){
+					setTimeout(() => {
+						this.loading = false;
+					}, commonDelayTime);
+				}else{
+					this.loading = false;
+				}
 				this.$emit('onRestore');
 			},
 			//模拟用户手动触发下拉刷新
 			_doRefresherRefreshAnimate() {
 				this.refresherTransform = `translateY(${this.refresherThreshold}px)`;
 				this.refresherStatus = 2;
+				this.isTouchmoving = true;
 			},
 			//触发下拉刷新
 			_doRefresherLoad() {
@@ -966,7 +975,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			},
 			//判断touch手势是否要触发
 			_getRefresherTouchDisabled() {
-				return !this.refresherEnabled || !this.useCustomRefresher || (this.usePageScroll && this.useCustomRefresher && this
+				return this.loading || !this.refresherEnabled || !this.useCustomRefresher || (this.usePageScroll && this.useCustomRefresher && this
 					.pageScrollTop > 10) || (!(this.usePageScroll && this.useCustomRefresher) && this.scrollTop > 10);
 			},
 			//本地分页请求
@@ -1045,7 +1054,6 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		animation-fill-mode: forwards;
 		-webkit-animation-fill-mode: forwards;
 		/* #endif */
-
 	}
 
 	.custom-refresher-arrow-down {
@@ -1055,7 +1063,6 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		animation-fill-mode: forwards;
 		-webkit-animation-fill-mode: forwards;
 		/* #endif */
-
 	}
 
 	.custom-refresher-right {
@@ -1088,7 +1095,6 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		/* #ifndef APP-NVUE */
 		animation: loading-flower 1s steps(12) infinite;
 		/* #endif */
-
 	}
 
 	.loading-more-line-loading-custom-image {
@@ -1098,7 +1104,6 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		/* #ifndef APP-NVUE */
 		animation: loading-circle 1s linear infinite;
 		/* #endif */
-
 	}
 
 	.loading-more-line-loading-view {
@@ -1110,7 +1115,6 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		/* #ifndef APP-NVUE */
 		animation: loading-circle 1s linear infinite;
 		/* #endif */
-
 	}
 
 	.loading-more-line-loading-view-black {

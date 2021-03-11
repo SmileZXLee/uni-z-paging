@@ -35,7 +35,7 @@
 			tabChange(index){
 				this.tabIndex = index;
 				//当切换tab时请调用组件的reload方法，请勿直接调用：queryList方法！！
-				this.$refs.paging.reload();
+				this.$refs.paging.reload(true);
 			},
 			queryList(pageNo, pageSize) {
 				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
