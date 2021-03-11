@@ -1,6 +1,6 @@
 let listCount = 34;
 let loadingTime = 500;
-/* 模拟分页网络请求获取数据 */
+/* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件 */
 function queryList(pageNo,pageSize,type,callback){
 	pageNo = parseInt(pageNo);
 	pageSize = parseInt(pageSize);

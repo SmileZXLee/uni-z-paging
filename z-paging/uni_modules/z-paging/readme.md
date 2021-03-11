@@ -22,8 +22,9 @@
 
 ## 注意事项
 
-* z-paging必须有确定的高度！否则上拉加载更多将无法触发，请确保z-paging的父节点有确定的高度！！
-* 请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突。
+* z-paging必须有确定的高度！否则上拉加载更多将无法触发，请确保z-paging的所有父view有确定的高度！！
+* 请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突，计算z-paging高度比较麻烦时，建议通过`flex:1`给z-paging设置样式，其父view需要开启`flex`。
+* 如果设置了z-paging的height为100%（让z-paging的高度等于当前页面有效高度），则它的父view高度也必须为100%(或者其他确定的高度)，若z-paging的所有父节点高度都为100%，则同时也必须设置`page{height:100%}`才有效果，`page{height:100%}`建议写在App.vue中。(因为page默认没有确定的高度，如果page未设置确定的高度，则其内部的所有view设置`height:100%`都是无效的，因为未设置确定高度则代表着这个view会无限`长高`，因此子view即使设置了`height:100%`，也同样是无限`长高`，无法限制其高度小于或等于当前页面有效的高度)。
 * z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲突，这将导致使用滑动切换tab时无法横向切换，若您需要横向切换功能，请设置`touchmove-propagation-enabled`为true以允许冒泡；若此时下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true或在page的根节点中添加`@touchmove.stop.prevent`，详情可查看demo。
 * 默认的pageSize(每页显示数量)为15，如果您服务端不需要传pageSize(例如有默认的pageSize：10)，则您需要将默认的pageSize改成您与后端约定好的（10），若没有修改，则z-paging会认为传给服务端的pageSize是15，而服务端只返回了10条，因此会直接判定为没有更多数据。
 
@@ -51,6 +52,8 @@
         methods: {
             queryList(pageNo, pageSize) {
               	//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
+              	//这里的请求只是演示，请替换成自己的项目的网络请求，请在网络请求回调中
+              	//通过this.$refs.paging.addData(请求回来的数组);将请求结果传给z-paging
                 this.$request.queryList(pageNo, pageSize, (data) => {
                     this.$refs.paging.addData(data);
                 });
@@ -70,9 +73,9 @@
 </style>
 ```
 
-| 效果演示                                                     |
-| ------------------------------------------------------------ |
-| ![](http://www.zxlee.cn/github/uni-z-paging/uni-z-paging.gif) |
+| 自定义下拉刷新效果演示                                       | 吸顶效果演示                                                 |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![](http://www.zxlee.cn/github/uni-z-paging/uni-z-paging.gif) | ![](http://www.zxlee.cn/github/uni-z-paging/uni-z-paging2.gif) |
 
 ## 设置自定义emptyView组件
 
@@ -191,6 +194,7 @@
 |                 refresher-threshold                 |               设置自定义下拉刷新阈值（单位px）               |      Number      |           45           |      -      |
 |               refresher-default-style               | 设置系统下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式 |      String      |         black          | white、none |
 |                refresher-background                 |                设置自定义下拉刷新区域背景颜色                |      String      |    #FFFFFF00(透明)     |      -      |
+|              local-paging-loading-time              |          本地分页时上拉加载更多延迟时间，单位为毫秒          |      Number      |          200           |      -      |
 |            touchmove-propagation-enabled            | 是否允许touchmove事件冒泡，默认为否，禁止冒泡可避免一些情况下下拉刷新时页面其他元素跟着下移，若您使用横向滑动切换选项卡，则需要将此属性设置为true，否则无法横向滑动 |     Boolean      |         false          |    true     |
 
 ## Slot
@@ -225,10 +229,11 @@
 
   注意：在Page的onLoad()方法中无法同步获取this.$refs，请加一个setTimeOut延时1毫秒或nextTick再调用(默认会在页面加载时自动调用reload()无须手动调用)
 
-| 方法名              | 说明                                                         | 参数                                                     |
-| ------------------- | ------------------------------------------------------------ | -------------------------------------------------------- |
-| reload              | 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果   | value：reload时是否展示下拉刷新动画，默认为否            |
-| addData             | 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理 | value1:请求结果数组；value2:是否请求成功，不填默认为true |
-| doLoadMore          | 手动触发上拉加载更多(非必须，可依据具体需求使用，例如当z-paging未确定高度时，内部的scroll-view会无限增高，此时z-paging无法得知是否滚动到底部，您可以在页面的`onReachBottom`中手动调用此方法触发上拉加载更多) | -                                                        |
-| scrollToTop         | 滚动到顶部                                                   | -                                                        |
-| updatePageScrollTop | 当使用页面滚动(z-paging不固定高度)并且自定义下拉刷新时，请在页面的onPageScroll中调用此方法，告知z-paging当前的pageScrollTop，否则会导致在任意位置都可以下拉刷新 |                                                          |
+| 方法名              | 说明                                                         | 参数                                                         |
+| ------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| reload              | 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果   | value：(传true或false，默认为false)reload时是否展示下拉刷新动画，默认为否 |
+| addData             | 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理 | value1:请求结果数组；value2:是否请求成功，不填默认为true     |
+| setLocalPaging      | 设置本地分页，请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging作分页处理（若调用了此方法，则上拉加载更多时内部会自动分页，不会触发@query所绑定的事件） | value1:请求结果数组；value2:是否请求成功，不填默认为true     |
+| doLoadMore          | 手动触发上拉加载更多(非必须，可依据具体需求使用，例如当z-paging未确定高度时，内部的scroll-view会无限增高，此时z-paging无法得知是否滚动到底部，您可以在页面的`onReachBottom`中手动调用此方法触发上拉加载更多) | -                                                            |
+| scrollToTop         | 滚动到顶部                                                   | -                                                            |
+| updatePageScrollTop | 当使用页面滚动(z-paging不固定高度)并且自定义下拉刷新时，请在页面的onPageScroll中调用此方法，告知z-paging当前的pageScrollTop，否则会导致在任意位置都可以下拉刷新 |                                                              |

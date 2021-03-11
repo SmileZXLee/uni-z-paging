@@ -1,5 +1,6 @@
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
+<!-- 反馈QQ群：790460711 -->
 
 <!-- 使用方法 -->
 <!-- 
@@ -39,13 +40,15 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 若此时下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true。或者在当前page的根view中添加@touchmove.stop.prevent (因uni无法动态控制是否允许冒泡，因此只能使用此方法，若您有更好的解决方案可以通过顶部github或dcloud插件市场联系我，不胜感激！)
  -->
 <template name="z-paging">
-	<view v-if="!touchmovePropagationEnabled&&refresherEnabled&&useCustomRefresher" class="z-paging-content" @touchmove.stop.prevent>
+	<view v-if="!touchmovePropagationEnabled&&refresherEnabled&&useCustomRefresher&&!usePageScroll" class="z-paging-content"
+	 @touchmove.stop.prevent>
 		<scroll-view class="scroll-view" :scroll-top="scrollTop" :scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
-		 :show-scrollbar="showScrollbar" :scroll-with-animation="scrollWithAnimation" :scroll-into-view="scrollIntoView" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher"
-		 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle"
-		 :refresher-background="refresherBackground" :refresher-triggered="refresherTriggered" @scroll="_scroll"
-		 @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"
-		 @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
+		 :show-scrollbar="showScrollbar" :scroll-with-animation="scrollWithAnimation" :scroll-into-view="scrollIntoView"
+		 :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher" :refresher-threshold="refresherThreshold"
+		 :refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
+		 :refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
+		 @refresherrestore="_onRestore" @refresherrefresh="_onRefresh" @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove"
+		 @touchend="_refresherTouchend">
 			<view class="paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
 				<view v-if="refresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view" :style="[{'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
@@ -107,11 +110,12 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 【如果有更优解决方案可以发送邮件到admin.zxlee.cn或加入qq群790460711提出您的想法，感谢！！！】 -->
 	<view v-else class="z-paging-content">
 		<scroll-view class="scroll-view" :scroll-top="scrollTop" :scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
-		 :show-scrollbar="showScrollbar" :scroll-with-animation="scrollWithAnimation" :scroll-into-view="scrollIntoView" :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher"
-		 :refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle"
-		 :refresher-background="refresherBackground" :refresher-triggered="refresherTriggered" @scroll="_scroll"
-		 @scrolltolower="_onLoadingMore('toBottom')" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"
-		 @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
+		 :show-scrollbar="showScrollbar" :scroll-with-animation="scrollWithAnimation" :scroll-into-view="scrollIntoView"
+		 :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher" :refresher-threshold="refresherThreshold"
+		 :refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
+		 :refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
+		 @refresherrestore="_onRestore" @refresherrefresh="_onRefresh" @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove"
+		 @touchend="_refresherTouchend">
 			<view class="paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
 				<view v-if="refresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view" :style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
@@ -166,7 +170,9 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 </template>
 
 <script>
-	const { windowHeight } = uni.getSystemInfoSync();
+	const {
+		windowHeight
+	} = uni.getSystemInfoSync();
 	const base64Arrow =
 		'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyBjbGFzcz0iaWNvbiIgd2lkdGg9IjIwMHB4IiBoZWlnaHQ9IjIwMC4wMHB4IiB2aWV3Qm94PSIwIDAgMTAyNCAxMDI0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTUyNS4zMzkzMjYgMTg2LjE3MjQ1Mkw4MDEuNzg5MDg2IDQ2Mi42MjIyMTJjMTIuNDk2Njk4IDEyLjQ5NjY5OCAzMi43NTgxMzYgMTIuNDk2Njk4IDQ1LjI1NDgzNCAwIDEyLjQ5NzQwNS0xMi40OTc0MDUgMTIuNDk2Njk4LTMyLjc1ODEzNiAwLTQ1LjI1NDgzNGwtMzMxLjAxNDM2Mi0zMzEuMDE0MzYyYy0xMi40OTY2OTgtMTIuNDk2Njk4LTMyLjc1NzQyOS0xMi40OTc0MDUtNDUuMjU0ODM0IDBsLTM0MS43OTU2MTkgMzM5LjE0Mzk2OWMtMTIuNDk2Njk4IDEyLjQ5NjY5OC0xMi40OTY2OTggMzIuNzU4MTM2IDAgNDUuMjU0ODM0IDEyLjQ5NjY5OCAxMi40OTY2OTggMzIuNzU4MTM2IDEyLjQ5NjY5OCA0NS4yNTQ4MzQgMGwyODcuMTA1ODYtMjg0LjQ1NDIwOUw0NjEuMzcyMzI1IDkyNS43MjYyNDJjMCAxNy42NzM0MjcgMTQuMzI2NjkgMzIuMDAwMTE3IDMyLjAwMDExOCAzMi4wMDAxMTcgMTcuNjcyNzItMC4wMDA3MDcgMzEuOTk5NDEtMTQuMzI3Mzk4IDMyLjAwMDExNy0zMi4wMDAxMTdsLTAuMDMyNTI3LTczOS41NTMwODN6IiBmaWxsPSIjNTE1MTUxIiAvPjwvc3ZnPg==';
 	const base64Flower =
@@ -214,8 +220,10 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 * @property {Number} refresher-threshold 设置自定义下拉刷新阈值，默认为45
 	 * @property {String} refresher-default-style 设置自定义下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式，默认为black
 	 * @property {String} refresher-background 设置自定义下拉刷新区域背景颜色
+	 * @property {Number} local-paging-loading-time 本地分页时上拉加载更多延迟时间，单位为毫秒，默认200毫秒
 	 * @property {Boolean} touchmove-propagation-enabled 是否允许touchmove事件冒泡，默认为否，禁止冒泡可避免一些情况下下拉刷新时页面其他元素跟着下移，若您使用横向滑动切换选项卡，则需要将此属性设置为true，否则无法横向滑动
 	 * @event {Function} addData 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认为是)
+	 * @event {Function} setLocalPaging 设置本地分页，请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging作分页处理（若调用了此方法，则上拉加载更多时内部会自动分页，不会触发@query所绑定的事件）
 	 * @event {Function} reload 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果(animate为true时会展示下拉刷新动画，默认为false)
 	 * @event {Function} endRefresh 手动停止下拉刷新加载
 	 * @event {Function} loadingStatusChange 分页加载状态改变(0-默认状态 1.加载中 2.没有更多数据 3.加载失败)
@@ -271,7 +279,9 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				},
 				pullDownTimeStamp: 0,
 				pageScrollTop: -1,
-				isTouchmoving: false
+				isTouchmoving: false,
+				isLocalPaging: false,
+				totalLocalPagingList: []
 			};
 		},
 		props: {
@@ -551,6 +561,13 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					return "#ffffff00";
 				}
 			},
+			//本地分页时上拉加载更多延迟时间，单位为毫秒，默认200毫秒
+			localPagingLoadingTime: {
+				type: Number,
+				default: function() {
+					return 200;
+				}
+			},
 			//是否允许touchmove事件冒泡，默认为否，禁止冒泡可避免一些情况下下拉刷新时页面其他元素跟着下移，若您使用横向滑动切换选项卡，则需要将此属性设置为true，否则无法横向滑动
 			touchmovePropagationEnabled: {
 				type: Boolean,
@@ -577,7 +594,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				} else {
 					this.showLoadingMore = newVal.length;
 				}
-				if(!this.usePageScroll && this.pageNo === this.defaultPageNo){
+				if (!this.usePageScroll && this.pageNo === this.defaultPageNo) {
 					this.$nextTick(() => {
 						this._checkScrollViewOutOfPage();
 					})
@@ -635,30 +652,16 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		methods: {
 			//请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认是是）
 			addData(data, success = true) {
-				var dataType = Object.prototype.toString.call(data);
-				if (dataType === '[object Boolean]') {
-					success = data;
-					data = [];
-				} else if (dataType !== '[object Array]') {
-					data = [];
-					console.error('[z-paging]:addData参数类型不正确，第一个参数类型必须为Array!');
-				}
-				if (this.refresherTriggered) {
-					this.refresherTriggered = false;
-				}
-				this.loading = false;
-				setTimeout(() => {
-					this._refresherEnd();
-				}, 200)
-				if (success) {
-					this.loadingStatus = 0;
-					this._currentDataChange(data, this.currentData);
-				} else {
-					this.loadingStatus = 3;
-					if (this.loadingType === 1) {
-						this.pageNo--;
-					}
-				}
+				this.$nextTick(()=>{
+					this._addData(data, success, false);
+				})
+			},
+			//设置本地分页数据，请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging作分页处理（若调用了此方法，则上拉加载更多时内部会自动分页，不会触发@query所绑定的事件）
+			setLocalPaging(data, success = true) {
+				this.isLocalPaging = true;
+				this.$nextTick(()=>{
+					this._addData(data, success, true);
+				})
 			},
 			//重新加载分页数据，pageNo会恢复为默认值，相当于下拉刷新的效果(animate为true时会展示下拉刷新动画，默认为false)
 			reload(animate = false) {
@@ -687,8 +690,8 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				this._scrollToTop();
 			},
 			//当使用页面滚动并且自定义下拉刷新时，请在页面的onPageScroll中调用此方法，告知z-paging当前的pageScrollTop，否则会导致在任意位置都可以下拉刷新
-			updatePageScrollTop(value){
-				if(!value){
+			updatePageScrollTop(value) {
+				if (value == undefined) {
 					//console.error('[z-paging]updatePageScrollTop方法缺少参数，请将页面onPageScroll事件中的scrollTop传递给此方法');
 					return;
 				}
@@ -701,8 +704,42 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				this.$emit('query', this.pageNo, this.defaultPageSize);
 				this.firstPageLoaded = true;
 				this.totalData = [];
-				if(this.autoScrollToTopWhenReload){
+				if (this.autoScrollToTopWhenReload) {
 					this._scrollToTop();
+				}
+			},
+			_addData(data, success, isLocal) {
+				var dataType = Object.prototype.toString.call(data);
+				if (dataType === '[object Boolean]') {
+					success = data;
+					data = [];
+				} else if (dataType !== '[object Array]') {
+					data = [];
+					let methodStr = isLocal ? 'setLocalPaging' : 'addData';
+					console.error(`[z-paging]:${methodStr}参数类型不正确，第一个参数类型必须为Array!`);
+				}
+				if (this.refresherTriggered) {
+					this.refresherTriggered = false;
+				}
+				this.loading = false;
+				setTimeout(() => {
+					this._refresherEnd();
+				}, 200)
+				if (success) {
+					this.loadingStatus = 0;
+					if (isLocal) {
+						this.totalLocalPagingList = data;
+						this._localPagingQueryList(this.defaultPageNo, this.defaultPageSize, 0, (res) => {
+							this.addData(res);
+						})
+					} else {
+						this._currentDataChange(data, this.currentData);
+					}
+				} else {
+					this.loadingStatus = 3;
+					if (this.loadingType === 1) {
+						this.pageNo--;
+					}
 				}
 			},
 			//当前数据改变时调用
@@ -725,11 +762,12 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			},
 			//触发加载更多时调用,from:0-滑动到底部触发；1-点击加载更多触发
 			_onLoadingMore(from) {
-				this.$emit('scrolltolower',from);
+				this.$emit('scrolltolower', from);
 				if (from === 'toBottom' && !this.toBottomLoadingMoreEnabled) {
 					return;
 				}
 				if (!this.loadingMoreEnabled || !(this.loadingStatus === 0 || 3)) return;
+				
 				this._doLoadingMore();
 			},
 			_scrollToTop() {
@@ -748,7 +786,13 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				if (this.pageNo >= this.defaultPageNo && this.loadingStatus !== 2) {
 					this.pageNo++;
 					this._startLoading();
-					this.$emit('query', this.pageNo, this.defaultPageSize);
+					if (this.isLocalPaging) {
+						this._localPagingQueryList(this.pageNo, this.defaultPageSize, this.localPagingLoadingTime, (res) => {
+							this.addData(res);
+						})
+					} else {
+						this.$emit('query', this.pageNo, this.defaultPageSize);
+					}
 					this.loadingType = 1;
 				}
 			},
@@ -808,7 +852,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				if (moveDistance < 0) {
 					return;
 				}
-				if(!this.isTouchmoving){
+				if (!this.isTouchmoving) {
 					this.isTouchmoving = true;
 				}
 				moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
@@ -829,7 +873,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				let refresherTouchendY = e.changedTouches[0].clientY;
 				let moveDistance = refresherTouchendY - this.refresherTouchstartY;
 				moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
-				if(moveDistance > 0 && this.usePageScroll && this.useCustomRefresher && this.pageScrollTop === -1){
+				if (moveDistance < 0 && this.usePageScroll && this.useCustomRefresher && this.pageScrollTop === -1) {
 					console.error('[z-paging]usePageScroll为true并且自定义下拉刷新时必须在page滚动时通过调用z-paging组件的updatePageScrollTop方法设置当前的scrollTop')
 				}
 				if (moveDistance >= this.refresherThreshold && this.refresherStatus === 1) {
@@ -894,15 +938,15 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				}
 			},
 			//检测z-paging是否超出了页面高度
-			async _checkScrollViewOutOfPage(){
-				try{
+			async _checkScrollViewOutOfPage() {
+				try {
 					const scrollViewNode = await this._getNodeClientRect('.scroll-view');
 					const scrollViewTotalH = scrollViewNode[0].top + scrollViewNode[0].height;
-					if(scrollViewTotalH > windowHeight + 200){
-						console.error('[z-paging]检测到z-paging的高度超出页面高度，这将导致滚动出现异常，请确保z-paging有确定的高度！！');
+					if (scrollViewTotalH > windowHeight + 200) {
+						console.error('[z-paging]检测到z-paging的高度超出页面高度，这将导致滚动出现异常，请确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}，此时z-paging的百分比高度才能生效。详情参照demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)');
 					}
-				}catch(e){
-					
+				} catch (e) {
+
 				}
 			},
 			//获取节点尺寸
@@ -921,8 +965,37 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 
 			},
 			//判断touch手势是否要触发
-			_getRefresherTouchDisabled(){
-				return !this.refresherEnabled || !this.useCustomRefresher || (this.usePageScroll && this.useCustomRefresher && this.pageScrollTop > 10) || (!(this.usePageScroll && this.useCustomRefresher) && this.scrollTop > 10);
+			_getRefresherTouchDisabled() {
+				return !this.refresherEnabled || !this.useCustomRefresher || (this.usePageScroll && this.useCustomRefresher && this
+					.pageScrollTop > 10) || (!(this.usePageScroll && this.useCustomRefresher) && this.scrollTop > 10);
+			},
+			//本地分页请求
+			_localPagingQueryList(pageNo, pageSize, localPagingLoadingTime, callback) {
+				pageNo = parseInt(pageNo);
+				pageSize = parseInt(pageSize);
+				if (pageNo < 0 || pageSize <= 0) {
+					callQueryResult(callback, []);
+					return;
+				}
+				if (pageNo == 0) {
+					pageNo = 1;
+				}
+				var totalPagingList = [].concat(this.totalLocalPagingList);
+				let pageNoIndex = (pageNo - 1) * pageSize;
+				if (pageNoIndex + pageSize <= totalPagingList.length) {
+					this._localPagingQueryResult(callback, totalPagingList.splice(pageNoIndex, pageSize), localPagingLoadingTime);
+				} else if (pageNoIndex < totalPagingList.length) {
+					this._localPagingQueryResult(callback, totalPagingList.splice(pageNoIndex, totalPagingList.length - pageNoIndex),
+						localPagingLoadingTime);
+				} else {
+					this._localPagingQueryResult(callback, [], localPagingLoadingTime);
+				}
+			},
+			//本地分页请求回调
+			_localPagingQueryResult(callback, arg, localPagingLoadingTime) {
+				setTimeout(() => {
+					callback(arg);
+				}, localPagingLoadingTime)
 			}
 		},
 	};
