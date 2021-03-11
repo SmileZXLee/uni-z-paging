@@ -40,7 +40,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 若此时下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true。或者在当前page的根view中添加@touchmove.stop.prevent (因uni无法动态控制是否允许冒泡，因此只能使用此方法，若您有更好的解决方案可以通过顶部github或dcloud插件市场联系我，不胜感激！)
  -->
 <template name="z-paging">
-	<view v-if="!touchmovePropagationEnabled&&refresherEnabled&&useCustomRefresher&&!usePageScroll" class="z-paging-content"
+	<view v-if="!touchmovePropagationEnabled&&refresherEnabled&&!usePageScroll" class="z-paging-content"
 	 @touchmove.stop.prevent>
 		<scroll-view class="scroll-view" :scroll-top="scrollTop" :scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
 		 :show-scrollbar="showScrollbar" :scroll-with-animation="scrollWithAnimation" :scroll-into-view="scrollIntoView"
@@ -833,7 +833,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					return;
 				}
 				if(!this.loading){
-					this.isTouchmoving = true;
+					this.isTouchmoving = false;
 				}
 				this.refresherTransition = 'transform .1s linear';
 				this.refresherTouchstartY = e.touches[0].clientY;
