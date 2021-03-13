@@ -42,7 +42,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 <template name="z-paging">
 	<view v-if="!touchmovePropagationEnabled&&refresherEnabled&&!usePageScroll" class="z-paging-content"
 	 @touchmove.stop.prevent>
-		<scroll-view class="scroll-view" :scroll-top="scrollTop" :scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
+		<scroll-view class="scroll-view" :style="scrollViewStyle" :scroll-top="scrollTop" :scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
 		 :show-scrollbar="showScrollbar" :scroll-with-animation="scrollWithAnimation" :scroll-into-view="scrollIntoView"
 		 :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher" :refresher-threshold="refresherThreshold"
 		 :refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
@@ -109,7 +109,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 4.使用小程序中的template is将重复代码复用，然后使用v-if来隐藏或显示两个不同的“paging-main”，但uni中不支持此写法。
 	 【如果有更优解决方案可以发送邮件到admin.zxlee.cn或加入qq群790460711提出您的想法，感谢！！！】 -->
 	<view v-else class="z-paging-content">
-		<scroll-view class="scroll-view" :scroll-top="scrollTop" :scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
+		<scroll-view class="scroll-view" :style="scrollViewStyle" :scroll-top="scrollTop" :scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
 		 :show-scrollbar="showScrollbar" :scroll-with-animation="scrollWithAnimation" :scroll-into-view="scrollIntoView"
 		 :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher" :refresher-threshold="refresherThreshold"
 		 :refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
@@ -170,9 +170,6 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 </template>
 
 <script>
-	const {
-		windowHeight
-	} = uni.getSystemInfoSync();
 	const commonDelayTime = 100;
 	const base64Arrow =
 		'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyBjbGFzcz0iaWNvbiIgd2lkdGg9IjIwMHB4IiBoZWlnaHQ9IjIwMC4wMHB4IiB2aWV3Qm94PSIwIDAgMTAyNCAxMDI0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTUyNS4zMzkzMjYgMTg2LjE3MjQ1Mkw4MDEuNzg5MDg2IDQ2Mi42MjIyMTJjMTIuNDk2Njk4IDEyLjQ5NjY5OCAzMi43NTgxMzYgMTIuNDk2Njk4IDQ1LjI1NDgzNCAwIDEyLjQ5NzQwNS0xMi40OTc0MDUgMTIuNDk2Njk4LTMyLjc1ODEzNiAwLTQ1LjI1NDgzNGwtMzMxLjAxNDM2Mi0zMzEuMDE0MzYyYy0xMi40OTY2OTgtMTIuNDk2Njk4LTMyLjc1NzQyOS0xMi40OTc0MDUtNDUuMjU0ODM0IDBsLTM0MS43OTU2MTkgMzM5LjE0Mzk2OWMtMTIuNDk2Njk4IDEyLjQ5NjY5OC0xMi40OTY2OTggMzIuNzU4MTM2IDAgNDUuMjU0ODM0IDEyLjQ5NjY5OCAxMi40OTY2OTggMzIuNzU4MTM2IDEyLjQ5NjY5OCA0NS4yNTQ4MzQgMGwyODcuMTA1ODYtMjg0LjQ1NDIwOUw0NjEuMzcyMzI1IDkyNS43MjYyNDJjMCAxNy42NzM0MjcgMTQuMzI2NjkgMzIuMDAwMTE3IDMyLjAwMDExOCAzMi4wMDAxMTcgMTcuNjcyNzItMC4wMDA3MDcgMzEuOTk5NDEtMTQuMzI3Mzk4IDMyLjAwMDExNy0zMi4wMDAxMTdsLTAuMDMyNTI3LTczOS41NTMwODN6IiBmaWxsPSIjNTE1MTUxIiAvPjwvc3ZnPg==';
@@ -184,6 +181,8 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 * @tutorial https://github.com/SmileZXLee/uni-z-paging
 	 * @property {Number} default-page-no 自定义pageNo，默认为1
 	 * @property {Number} default-page-size 自定义pageSize，默认为15
+	 * @property {Boolean} auto-height z-paging是否自动高度，若自动高度则会自动铺满屏幕，默认为否
+	 * @property {String} auto-height-addition z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数
 	 * @property {String} default-theme-style loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
 	 * @property {Boolean} use-page-scroll 使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
 	 * @property {Boolean} mounted-auto-call-reload z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
@@ -240,7 +239,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		name: "z-paging",
 		data() {
 			return {
-				windowHeight: 0,
+				systemInfo: {},
 				currentData: [],
 				totalData: [],
 				pageNo: 1,
@@ -248,6 +247,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				refresherTriggered: false,
 				loading: false,
 				firstPageLoaded: false,
+				loaded: false,
 				isUserReload: true,
 				scrollEnable: true,
 				scrollTop: 0,
@@ -278,11 +278,14 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					1: this.refresherPullingText,
 					2: this.refresherRefreshingText
 				},
+				scrollViewStyle: {},
 				pullDownTimeStamp: 0,
 				pageScrollTop: -1,
 				isTouchmoving: false,
 				isLocalPaging: false,
-				totalLocalPagingList: []
+				totalLocalPagingList: [],
+				isAddedData: false,
+				isTotalChangeFromAddData: false
 			};
 		},
 		props: {
@@ -301,6 +304,20 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				type: [Number, String],
 				default: function() {
 					return 15;
+				},
+			},
+			//z-paging是否自动高度，若自动高度则会自动铺满屏幕
+			autoHeight: {
+				type: Boolean,
+				default: function() {
+					return false;
+				},
+			},
+			//z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，若需要减少高度，则传负数
+			autoHeightAddition: {
+				type: String,
+				default: function() {
+					return '0px';
 				},
 			},
 			//loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
@@ -581,6 +598,13 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			if (this.mountedAutoCallReload) {
 				this.reload();
 			}
+			this.$nextTick(()=>{
+				this.systemInfo = uni.getSystemInfoSync();
+				if(!this.usePageScroll && this.autoHeight){
+					this._setAutoHeight();
+				}
+				this.loaded = true;
+			})
 		},
 		watch: {
 			totalData(newVal, oldVal) {
@@ -595,6 +619,11 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				} else {
 					this.showLoadingMore = newVal.length;
 				}
+				if (this.usePageScroll && this.isTotalChangeFromAddData) {
+					this.$nextTick(() => {
+						this._checkScrollViewShouldFullHeight();
+					})
+				}
 				if (!this.usePageScroll && this.pageNo === this.defaultPageNo) {
 					this.$nextTick(() => {
 						this._checkScrollViewOutOfPage();
@@ -602,12 +631,23 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				}
 				this.$emit('update:list', newVal);
 				this.firstPageLoaded = false;
+				this.isTotalChangeFromAddData = false;
 			},
 			currentData(newVal, oldVal) {
 				this._currentDataChange(newVal, oldVal);
 			},
 			loadingStatus(newVal, oldVal) {
 				this.$emit('loadingStatusChange', newVal);
+			},
+			oldScrollTop(newVal, oldVal) {
+				this.$emit('scrollTopChange', newVal);
+				this.$emit('update:scrollTop', newVal);
+			},
+			pageScrollTop(newVal, oldVal) {
+				if(this.usePageScroll){
+					this.$emit('scrollTopChange', newVal);
+					this.$emit('update:scrollTop', newVal);
+				}
 			},
 			defaultThemeStyle: {
 				handler(newVal) {
@@ -616,6 +656,21 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					}
 				},
 				immediate: true
+			},
+			usePageScroll(newVal, oldVal) {
+				if(this.loaded && this.autoHeight){
+					this._setAutoHeight(!newVal);
+				}
+			},
+			autoHeight(newVal, oldVal) {
+				if(this.loaded && !this.usePageScroll){
+					this._setAutoHeight(newVal);
+				}
+			},
+			autoHeightAddition(newVal, oldVal) {
+				if(this.loaded && !this.usePageScroll && this.autoHeight){
+					this._setAutoHeight(newVal);
+				}
 			},
 			refresherDefaultStyle: {
 				handler(newVal) {
@@ -700,16 +755,20 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			},
 			//私有的重新加载分页数据方法
 			_reload() {
+				this.isAddedData = false;
 				this.pageNo = this.defaultPageNo;
 				this._startLoading();
-				this.$emit('query', this.pageNo, this.defaultPageSize);
 				this.firstPageLoaded = true;
+				this.isTotalChangeFromAddData = false;
 				this.totalData = [];
+				this.$emit('query', this.pageNo, this.defaultPageSize);
 				if (this.autoScrollToTopWhenReload) {
 					this._scrollToTop();
 				}
 			},
 			_addData(data, success, isLocal) {
+				this.isAddedData = true;
+				this.isTotalChangeFromAddData = true;
 				var dataType = Object.prototype.toString.call(data);
 				if (dataType === '[object Boolean]') {
 					success = data;
@@ -951,11 +1010,44 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				try {
 					const scrollViewNode = await this._getNodeClientRect('.scroll-view');
 					const scrollViewTotalH = scrollViewNode[0].top + scrollViewNode[0].height;
-					if (scrollViewTotalH > windowHeight + 200) {
+					if (scrollViewTotalH > this.systemInfo.windowHeight + 100) {
 						console.error('[z-paging]检测到z-paging的高度超出页面高度，这将导致滚动出现异常，请确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}，此时z-paging的百分比高度才能生效。详情参照demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)');
 					}
 				} catch (e) {
 
+				}
+			},
+			//检测z-paging是否要全屏覆盖(当使用页面滚动并且不满全屏时，默认z-paging需要铺满全屏，避免数据过少时内部的empty-view无法正确展示)
+			async _checkScrollViewShouldFullHeight(){
+				try {
+					const scrollViewNode = await this._getNodeClientRect('.scroll-view');
+					const pagingContainerNode = await this._getNodeClientRect('.paging-container-content');
+					const scrollViewHeight = pagingContainerNode[0].height;
+					const scrollViewTop = scrollViewNode[0].top;
+					if(this.isAddedData && scrollViewHeight + scrollViewTop <= this.systemInfo.windowHeight + 10){
+						this._setAutoHeight(true, scrollViewNode);
+					}else{
+						this._setAutoHeight(false);
+					}
+				} catch (e) {
+					
+				}
+			},
+			//设置z-paging高度
+			async _setAutoHeight(shouldFullHeight = true, scrollViewNode = null){
+				console.log('_setAutoHeight',shouldFullHeight)
+				try {
+					if(shouldFullHeight){
+						let finalScrollViewNode = scrollViewNode ? scrollViewNode : await this._getNodeClientRect('.scroll-view');
+						const scrollViewTop = finalScrollViewNode[0].top;
+						const scrollViewHeight = this.systemInfo.windowHeight - scrollViewTop;
+						let additionHeight = this._convertTextToPx(this.autoHeightAddition);
+						this.scrollViewStyle = {height: scrollViewHeight + additionHeight + 'px'};
+					}else{
+						this.scrollViewStyle = {};
+					}
+				} catch (e) {
+					
 				}
 			},
 			//获取节点尺寸
@@ -1005,6 +1097,23 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				setTimeout(() => {
 					callback(arg);
 				}, localPagingLoadingTime)
+			},
+			//将文本的px或者rpx转为px的值
+			_convertTextToPx(text){
+				let isRpx = false;
+				if(text.indexOf('rpx') != -1){
+					text = text.replace('rpx','');
+					isRpx = true;
+				}else if(text.indexOf('px') != -1){
+					text = text.replace('px','');
+				}
+				if(!isNaN(text)){
+					if(isRpx){
+						return Number(uni.upx2px(text));
+					}
+					return Number(text);
+				}
+				return 0;
 			}
 		},
 	};
@@ -1029,6 +1138,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 
 	.paging-container {
 		flex: 1;
+		position: relative;
 	}
 
 	.custom-refresher-container {
