@@ -74,7 +74,8 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				</view>
 				<view class="paging-container">
 					<slot v-if="$slots.loading&&!firstPageLoaded&&loading" name="loading" />
-					<slot v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&!firstPageLoaded&&(autoHideEmptyViewWhenLoading?(!loading):true)"
+					<slot
+						v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)"
 						name="empty" />
 					<!-- 如果需要修改组件源码来统一设置全局的emptyView，可以把此处的“empty-view”换成自定义的组件名即可 -->
 					<!-- <empty-view v-else-if="!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading"></empty-view> -->
@@ -163,7 +164,8 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				</view>
 				<view class="paging-container">
 					<slot v-if="$slots.loading&&!firstPageLoaded&&loading" name="loading" />
-					<slot v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading"
+					<slot
+						v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):!realTotalData.length)"
 						name="empty" />
 					<!-- 如果需要修改组件源码来统一设置全局的emptyView，可以把此处的“empty-view”换成自定义的组件名即可 -->
 					<!-- <empty-view v-else-if="!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading"></empty-view> -->
@@ -255,6 +257,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 * @property {Boolean} show-loading-more-no-more-line 是否显示没有更多数据的分割线，默认为是
 	 * @property {Object} loading-more-no-more-line-custom-style 自定义底部没有更多数据的分割线样式
 	 * @property {Boolean} hide-empty-view 是否强制隐藏空数据图，默认为否
+	 * @property {Boolean} auto-hide-empty-view-when-loading 加载中时是否自动隐藏空数据图，默认为是
 	 * @property {Boolean} show-scrollbar 在设置滚动条位置时使用动画过渡，默认为否
 	 * @property {Boolean} scroll-with-animation 控制是否出现滚动条，默认为否
 	 * @property {String} scroll-into-view 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素
@@ -328,6 +331,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				isTouchmoving: false,
 				isLocalPaging: false,
 				totalLocalPagingList: [],
+				realTotalData: [],
 				isAddedData: false,
 				isTotalChangeFromAddData: false
 			};
@@ -687,11 +691,12 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 						this._checkScrollViewShouldFullHeight();
 					})
 				}
-				if (!this.usePageScroll && this.pageNo === this.defaultPageNo) {
+				if (!this.usePageScroll && (this.pageNo === this.defaultPageNo || this.defaultPageNo + 1)) {
 					this.$nextTick(() => {
 						this._checkScrollViewOutOfPage();
 					})
 				}
+				this.realTotalData = newVal;
 				this.$emit('update:list', newVal);
 				this.firstPageLoaded = false;
 				this.isTotalChangeFromAddData = false;
@@ -910,7 +915,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					this._startLoading();
 					if (this.isLocalPaging) {
 						this._localPagingQueryList(this.pageNo, this.defaultPageSize, this.localPagingLoadingTime, (
-						res) => {
+							res) => {
 							this.addData(res);
 						})
 					} else {
@@ -1001,7 +1006,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				if (moveDistance < 0 && this.usePageScroll && this.useCustomRefresher && this.pageScrollTop === -1) {
 					console.error(
 						'[z-paging]usePageScroll为true并且自定义下拉刷新时必须在page滚动时通过调用z-paging组件的updatePageScrollTop方法设置当前的scrollTop'
-						)
+					)
 				}
 				if (moveDistance >= this.refresherThreshold && this.refresherStatus === 1) {
 					this.refresherTransform = `translateY(${this.refresherThreshold}px)`
@@ -1079,7 +1084,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					if (scrollViewTotalH > this.systemInfo.windowHeight + 100) {
 						console.error(
 							'[z-paging]检测到z-paging的高度超出页面高度，这将导致滚动出现异常，请确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}，此时z-paging的百分比高度才能生效。详情参照demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
-							);
+						);
 					}
 				} catch (e) {
 
@@ -1103,7 +1108,6 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			},
 			//设置z-paging高度
 			async _setAutoHeight(shouldFullHeight = true, scrollViewNode = null) {
-				console.log('_setAutoHeight', shouldFullHeight)
 				try {
 					if (shouldFullHeight) {
 						let finalScrollViewNode = scrollViewNode ? scrollViewNode : await this._getNodeClientRect(
@@ -1293,6 +1297,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		animation: loading-circle 1s linear infinite;
 		/* #endif */
 	}
+	
 
 	.loading-more-line-loading-view {
 		margin-right: 8rpx;

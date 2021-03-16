@@ -2,7 +2,8 @@
 <template>
 	<view class="content">
 		<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
-		<z-paging ref="paging" :refresher-threshold="80" :use-custom-refresher="true" @query="queryList" :list.sync="dataList" :refresher-status.sync="refresherStatus" style="height: calc(100% - 80rpx);">
+		<z-paging ref="paging" :refresher-threshold="80" :use-custom-refresher="true" @query="queryList"
+			:list.sync="dataList" :refresher-status.sync="refresherStatus" style="height: calc(100% - 80rpx);">
 			<!-- 自定义下拉刷新view(如果use-custom-refresher设置为true且不设置slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
 			<custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>
 			<!-- 自定义没有更多数据view -->
@@ -32,9 +33,10 @@
 			}
 		},
 		methods: {
-			tabChange(index){
+			tabChange(index) {
 				this.tabIndex = index;
-				//当切换tab时请调用组件的reload方法，请勿直接调用：queryList方法！！
+				//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
+				//调用reload时参数传true则代表reload时触发下拉刷新效果，不传或false则代表取消此效果
 				this.$refs.paging.reload(true);
 			},
 			queryList(pageNo, pageSize) {
@@ -56,7 +58,7 @@
 <style>
 	/* 注意，1、父节点需要固定高度，z-paging的height:100%才会生效 */
 	/* 注意，2、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突 */
-	
+
 	/*如果有scoped，page的css设置建议放在App.vue中 */
 	page {
 		height: 100%;
@@ -68,7 +70,7 @@
 		display: flex;
 		flex-direction: column;
 	}
-	
+
 	.item {
 		position: relative;
 		height: 100rpx;
