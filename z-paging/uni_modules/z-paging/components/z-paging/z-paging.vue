@@ -41,60 +41,82 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
  -->
 <template name="z-paging">
 	<view v-if="!touchmovePropagationEnabled&&refresherEnabled&&!usePageScroll" class="z-paging-content"
-	 @touchmove.stop.prevent>
-		<scroll-view class="scroll-view" :style="scrollViewStyle" :scroll-top="scrollTop" :scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
-		 :show-scrollbar="showScrollbar" :scroll-with-animation="scrollWithAnimation" :scroll-into-view="scrollIntoView"
-		 :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher" :refresher-threshold="refresherThreshold"
-		 :refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
-		 :refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
-		 @refresherrestore="_onRestore" @refresherrefresh="_onRefresh" @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove"
-		 @touchend="_refresherTouchend">
+		@touchmove.stop.prevent>
+		<scroll-view class="scroll-view" :style="scrollViewStyle" :scroll-top="scrollTop"
+			:scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
+			:show-scrollbar="showScrollbar" :scroll-with-animation="scrollWithAnimation"
+			:scroll-into-view="scrollIntoView" :lower-threshold="lowerThreshold"
+			:refresher-enabled="refresherEnabled&&!useCustomRefresher" :refresher-threshold="refresherThreshold"
+			:refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
+			:refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
+			@refresherrestore="_onRestore" @refresherrefresh="_onRefresh" @touchstart="_refresherTouchstart"
+			@touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
 			<view class="paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
-				<view v-if="refresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view" :style="[{'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
+				<view v-if="refresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
+					:style="[{'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
 						<slot v-if="$slots.refresher" name="refresher" />
 						<view v-else class="custom-refresher-container" style="height: 100%;">
 							<view class="custom-refresher-left">
-								<image v-if="refresherStatus!==2" :class="refresherLeftImageClass" :style="[{'transform': 'rotate(180deg)','filter' :defaultThemeStyle==='white'?'brightness(10)':''}]"
-								 :src="base64Arrow"></image>
-								<image v-else class="loading-more-line-loading-image custom-refresher-left-image" :src="base64Flower"></image>
+								<image v-if="refresherStatus!==2" :class="refresherLeftImageClass"
+									:style="[{'transform': 'rotate(180deg)','filter' :defaultThemeStyle==='white'?'brightness(10)':''}]"
+									:src="base64Arrow"></image>
+								<image v-else class="loading-more-line-loading-image custom-refresher-left-image"
+									:src="base64Flower"></image>
 							</view>
-							<view :class="defaultThemeStyle==='white'?'custom-refresher-right custom-refresher-right-white':'custom-refresher-right custom-refresher-right-black'">
-								<view class="custom-refresher-right-text">{{refresherStatusTextMap[refresherStatus]}}</view>
+							<view
+								:class="defaultThemeStyle==='white'?'custom-refresher-right custom-refresher-right-white':'custom-refresher-right custom-refresher-right-black'">
+								<view class="custom-refresher-right-text">{{refresherStatusTextMap[refresherStatus]}}
+								</view>
 							</view>
 						</view>
 					</view>
 				</view>
 				<view class="paging-container">
 					<slot v-if="$slots.loading&&!firstPageLoaded&&loading" name="loading" />
-					<slot v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading" name="empty" />
+					<slot v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&!firstPageLoaded&&(autoHideEmptyViewWhenLoading?(!loading):true)"
+						name="empty" />
 					<!-- 如果需要修改组件源码来统一设置全局的emptyView，可以把此处的“empty-view”换成自定义的组件名即可 -->
 					<!-- <empty-view v-else-if="!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading"></empty-view> -->
 					<view class="paging-container-content">
 						<slot />
 					</view>
-					<slot @click="_onLoadingMore('click')" v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled"
-					 name="loadingMoreDefault" />
-					<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled"
-					 name="loadingMoreLoading" />
-					<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled"
-					 name="loadingMoreNoMore" />
-					<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled"
-					 name="loadingMoreFail" />
-					<view @click="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled"
-					 class="load-more-container" :style="[loadingMoreCustomStyle]">
-						<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
-						 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
-						<image v-if="loadingStatus===1&&loadingMoreLoadingIconCustomImage.length" :src="loadingMoreLoadingIconCustomImage"
-						 class="loading-more-line-loading-custom-image"></image>
-						<image v-if="loadingStatus===1&&loadingMoreLoadingIconType==='flower'&&!loadingMoreLoadingIconCustomImage.length"
-						 class="loading-more-line-loading-image" :style="[loadingMoreLoadingIconCustomStyle]" :src="base64Flower"></image>
-						<text v-if="loadingStatus===1&&loadingMoreLoadingIconType==='circle'&&!loadingMoreLoadingIconCustomImage.length"
-						 :class="defaultThemeStyle==='white'?'loading-more-line-loading-view loading-more-line-loading-view-white':'loading-more-line-loading-view loading-more-line-loading-view-black'"
-						 :style="[loadingMoreLoadingIconCustomStyle]"></text>
-						<text :class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{ownLoadingMoreText}}</text>
-						<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
-						 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+					<slot @click="_onLoadingMore('click')"
+						v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled"
+						name="loadingMoreDefault" />
+					<slot @click="_onLoadingMore('click')"
+						v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled"
+						name="loadingMoreLoading" />
+					<slot @click="_onLoadingMore('click')"
+						v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled"
+						name="loadingMoreNoMore" />
+					<slot @click="_onLoadingMore('click')"
+						v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled"
+						name="loadingMoreFail" />
+					<view @click="_onLoadingMore('click')"
+						v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled"
+						class="load-more-container" :style="[loadingMoreCustomStyle]">
+						<text
+							:class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
+							:style="[loadingMoreNoMoreLineCustomStyle]"
+							v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+						<image v-if="loadingStatus===1&&loadingMoreLoadingIconCustomImage.length"
+							:src="loadingMoreLoadingIconCustomImage" class="loading-more-line-loading-custom-image">
+						</image>
+						<image
+							v-if="loadingStatus===1&&loadingMoreLoadingIconType==='flower'&&!loadingMoreLoadingIconCustomImage.length"
+							class="loading-more-line-loading-image" :style="[loadingMoreLoadingIconCustomStyle]"
+							:src="base64Flower"></image>
+						<text
+							v-if="loadingStatus===1&&loadingMoreLoadingIconType==='circle'&&!loadingMoreLoadingIconCustomImage.length"
+							:class="defaultThemeStyle==='white'?'loading-more-line-loading-view loading-more-line-loading-view-white':'loading-more-line-loading-view loading-more-line-loading-view-black'"
+							:style="[loadingMoreLoadingIconCustomStyle]"></text>
+						<text
+							:class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{ownLoadingMoreText}}</text>
+						<text
+							:class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
+							:style="[loadingMoreNoMoreLineCustomStyle]"
+							v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
 					</view>
 				</view>
 			</view>
@@ -109,59 +131,81 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 4.使用小程序中的template is将重复代码复用，然后使用v-if来隐藏或显示两个不同的“paging-main”，但uni中不支持此写法。
 	 【如果有更优解决方案可以发送邮件到admin.zxlee.cn或加入qq群790460711提出您的想法，感谢！！！】 -->
 	<view v-else class="z-paging-content">
-		<scroll-view class="scroll-view" :style="scrollViewStyle" :scroll-top="scrollTop" :scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
-		 :show-scrollbar="showScrollbar" :scroll-with-animation="scrollWithAnimation" :scroll-into-view="scrollIntoView"
-		 :lower-threshold="lowerThreshold" :refresher-enabled="refresherEnabled&&!useCustomRefresher" :refresher-threshold="refresherThreshold"
-		 :refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
-		 :refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
-		 @refresherrestore="_onRestore" @refresherrefresh="_onRefresh" @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove"
-		 @touchend="_refresherTouchend">
+		<scroll-view class="scroll-view" :style="scrollViewStyle" :scroll-top="scrollTop"
+			:scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
+			:show-scrollbar="showScrollbar" :scroll-with-animation="scrollWithAnimation"
+			:scroll-into-view="scrollIntoView" :lower-threshold="lowerThreshold"
+			:refresher-enabled="refresherEnabled&&!useCustomRefresher" :refresher-threshold="refresherThreshold"
+			:refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
+			:refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
+			@refresherrestore="_onRestore" @refresherrefresh="_onRefresh" @touchstart="_refresherTouchstart"
+			@touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
 			<view class="paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
-				<view v-if="refresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view" :style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
+				<view v-if="refresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
+					:style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
 						<slot v-if="$slots.refresher" name="refresher" />
 						<view v-else class="custom-refresher-container" style="height: 100%;">
 							<view class="custom-refresher-left">
-								<image v-if="refresherStatus!==2" :class="refresherLeftImageClass" :style="[{'transform': 'rotate(180deg)','filter' :defaultThemeStyle==='white'?'brightness(10)':''}]"
-								 :src="base64Arrow"></image>
-								<image v-else class="loading-more-line-loading-image custom-refresher-left-image" :src="base64Flower"></image>
+								<image v-if="refresherStatus!==2" :class="refresherLeftImageClass"
+									:style="[{'transform': 'rotate(180deg)','filter' :defaultThemeStyle==='white'?'brightness(10)':''}]"
+									:src="base64Arrow"></image>
+								<image v-else class="loading-more-line-loading-image custom-refresher-left-image"
+									:src="base64Flower"></image>
 							</view>
-							<view :class="defaultThemeStyle==='white'?'custom-refresher-right custom-refresher-right-white':'custom-refresher-right custom-refresher-right-black'">
-								<view class="custom-refresher-right-text">{{refresherStatusTextMap[refresherStatus]}}</view>
+							<view
+								:class="defaultThemeStyle==='white'?'custom-refresher-right custom-refresher-right-white':'custom-refresher-right custom-refresher-right-black'">
+								<view class="custom-refresher-right-text">{{refresherStatusTextMap[refresherStatus]}}
+								</view>
 							</view>
 						</view>
 					</view>
 				</view>
 				<view class="paging-container">
 					<slot v-if="$slots.loading&&!firstPageLoaded&&loading" name="loading" />
-					<slot v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading" name="empty" />
+					<slot v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading"
+						name="empty" />
 					<!-- 如果需要修改组件源码来统一设置全局的emptyView，可以把此处的“empty-view”换成自定义的组件名即可 -->
 					<!-- <empty-view v-else-if="!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading"></empty-view> -->
 					<view class="paging-container-content">
 						<slot />
 					</view>
-					<slot @click="_onLoadingMore('click')" v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled"
-					 name="loadingMoreDefault" />
-					<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled"
-					 name="loadingMoreLoading" />
-					<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled"
-					 name="loadingMoreNoMore" />
-					<slot @click="_onLoadingMore('click')" v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled"
-					 name="loadingMoreFail" />
-					<view @click="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled"
-					 class="load-more-container" :style="[loadingMoreCustomStyle]">
-						<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
-						 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
-						<image v-if="loadingStatus===1&&loadingMoreLoadingIconCustomImage.length" :src="loadingMoreLoadingIconCustomImage"
-						 class="loading-more-line-loading-custom-image"></image>
-						<image v-if="loadingStatus===1&&loadingMoreLoadingIconType==='flower'&&!loadingMoreLoadingIconCustomImage.length"
-						 class="loading-more-line-loading-image" :style="[loadingMoreLoadingIconCustomStyle]" :src="base64Flower"></image>
-						<text v-if="loadingStatus===1&&loadingMoreLoadingIconType==='circle'&&!loadingMoreLoadingIconCustomImage.length"
-						 :class="defaultThemeStyle==='white'?'loading-more-line-loading-view loading-more-line-loading-view-white':'loading-more-line-loading-view loading-more-line-loading-view-black'"
-						 :style="[loadingMoreLoadingIconCustomStyle]"></text>
-						<text :class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{ownLoadingMoreText}}</text>
-						<text :class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
-						 :style="[loadingMoreNoMoreLineCustomStyle]" v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+					<slot @click="_onLoadingMore('click')"
+						v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled"
+						name="loadingMoreDefault" />
+					<slot @click="_onLoadingMore('click')"
+						v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled"
+						name="loadingMoreLoading" />
+					<slot @click="_onLoadingMore('click')"
+						v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled"
+						name="loadingMoreNoMore" />
+					<slot @click="_onLoadingMore('click')"
+						v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled"
+						name="loadingMoreFail" />
+					<view @click="_onLoadingMore('click')"
+						v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled"
+						class="load-more-container" :style="[loadingMoreCustomStyle]">
+						<text
+							:class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
+							:style="[loadingMoreNoMoreLineCustomStyle]"
+							v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+						<image v-if="loadingStatus===1&&loadingMoreLoadingIconCustomImage.length"
+							:src="loadingMoreLoadingIconCustomImage" class="loading-more-line-loading-custom-image">
+						</image>
+						<image
+							v-if="loadingStatus===1&&loadingMoreLoadingIconType==='flower'&&!loadingMoreLoadingIconCustomImage.length"
+							class="loading-more-line-loading-image" :style="[loadingMoreLoadingIconCustomStyle]"
+							:src="base64Flower"></image>
+						<text
+							v-if="loadingStatus===1&&loadingMoreLoadingIconType==='circle'&&!loadingMoreLoadingIconCustomImage.length"
+							:class="defaultThemeStyle==='white'?'loading-more-line-loading-view loading-more-line-loading-view-white':'loading-more-line-loading-view loading-more-line-loading-view-black'"
+							:style="[loadingMoreLoadingIconCustomStyle]"></text>
+						<text
+							:class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{ownLoadingMoreText}}</text>
+						<text
+							:class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
+							:style="[loadingMoreNoMoreLineCustomStyle]"
+							v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
 					</view>
 				</view>
 			</view>
@@ -359,7 +403,12 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			useCustomRefresher: {
 				type: Boolean,
 				default: function() {
+					//#ifdef H5 || APP-PLUS ||  MP-WEIXIN
 					return false;
+					//#endif
+					//#ifndef H5 || APP-PLUS ||  MP-WEIXIN
+					return true;
+					//#endif
 				},
 			},
 			//自定义下拉刷新下拉帧率，默认为30，过高可能会出现抖动问题(use-custom-refresher为true时生效)
@@ -516,6 +565,13 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					return false;
 				},
 			},
+			//加载中时是否自动隐藏空数据图，默认为是
+			autoHideEmptyViewWhenLoading: {
+				type: Boolean,
+				default: function() {
+					return true;
+				},
+			},
 			//控制是否出现滚动条，默认为否
 			showScrollbar: {
 				type: Boolean,
@@ -590,7 +646,12 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			touchmovePropagationEnabled: {
 				type: Boolean,
 				default: function() {
+					//#ifdef MP-TOUTIAO
+					return true;
+					//#endif
+					//#ifndef MP-TOUTIAO
 					return false;
+					//#endif
 				}
 			}
 		},
@@ -598,9 +659,9 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			if (this.mountedAutoCallReload) {
 				this.reload();
 			}
-			this.$nextTick(()=>{
+			this.$nextTick(() => {
 				this.systemInfo = uni.getSystemInfoSync();
-				if(!this.usePageScroll && this.autoHeight){
+				if (!this.usePageScroll && this.autoHeight) {
 					this._setAutoHeight();
 				}
 				this.loaded = true;
@@ -608,11 +669,13 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		},
 		watch: {
 			totalData(newVal, oldVal) {
-				if ((!this.isUserReload || !this.autoCleanListWhenReload) && this.firstPageLoaded && !newVal.length && oldVal.length) {
+				if ((!this.isUserReload || !this.autoCleanListWhenReload) && this.firstPageLoaded && !newVal.length &&
+					oldVal.length) {
 					return;
 				}
 				newVal = [].concat(newVal);
-				if (!this.usePageScroll && this.loadingStatus === 2 && this.hideLoadingMoreWhenNoMoreAndInsideOfPaging && newVal.length) {
+				if (!this.usePageScroll && this.loadingStatus === 2 && this.hideLoadingMoreWhenNoMoreAndInsideOfPaging &&
+					newVal.length) {
 					this.$nextTick(() => {
 						this._checkShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal);
 					})
@@ -644,7 +707,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				this.$emit('update:scrollTop', newVal);
 			},
 			pageScrollTop(newVal, oldVal) {
-				if(this.usePageScroll){
+				if (this.usePageScroll) {
 					this.$emit('scrollTopChange', newVal);
 					this.$emit('update:scrollTop', newVal);
 				}
@@ -658,17 +721,17 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				immediate: true
 			},
 			usePageScroll(newVal, oldVal) {
-				if(this.loaded && this.autoHeight){
+				if (this.loaded && this.autoHeight) {
 					this._setAutoHeight(!newVal);
 				}
 			},
 			autoHeight(newVal, oldVal) {
-				if(this.loaded && !this.usePageScroll){
+				if (this.loaded && !this.usePageScroll) {
 					this._setAutoHeight(newVal);
 				}
 			},
 			autoHeightAddition(newVal, oldVal) {
-				if(this.loaded && !this.usePageScroll && this.autoHeight){
+				if (this.loaded && !this.usePageScroll && this.autoHeight) {
 					this._setAutoHeight(newVal);
 				}
 			},
@@ -708,14 +771,14 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		methods: {
 			//请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认是是）
 			addData(data, success = true) {
-				this.$nextTick(()=>{
+				this.$nextTick(() => {
 					this._addData(data, success, false);
 				})
 			},
 			//设置本地分页数据，请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging作分页处理（若调用了此方法，则上拉加载更多时内部会自动分页，不会触发@query所绑定的事件）
 			setLocalPaging(data, success = true) {
 				this.isLocalPaging = true;
-				this.$nextTick(()=>{
+				this.$nextTick(() => {
 					this._addData(data, success, true);
 				})
 			},
@@ -826,7 +889,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					return;
 				}
 				if (!this.loadingMoreEnabled || !(this.loadingStatus === 0 || 3)) return;
-				
+
 				this._doLoadingMore();
 			},
 			_scrollToTop() {
@@ -846,7 +909,8 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					this.pageNo++;
 					this._startLoading();
 					if (this.isLocalPaging) {
-						this._localPagingQueryList(this.pageNo, this.defaultPageSize, this.localPagingLoadingTime, (res) => {
+						this._localPagingQueryList(this.pageNo, this.defaultPageSize, this.localPagingLoadingTime, (
+						res) => {
 							this.addData(res);
 						})
 					} else {
@@ -891,7 +955,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				if (this._getRefresherTouchDisabled()) {
 					return;
 				}
-				if(!this.loading){
+				if (!this.loading) {
 					this.isTouchmoving = false;
 				}
 				this.refresherTransition = 'transform .1s linear';
@@ -935,7 +999,9 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				let moveDistance = refresherTouchendY - this.refresherTouchstartY;
 				moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
 				if (moveDistance < 0 && this.usePageScroll && this.useCustomRefresher && this.pageScrollTop === -1) {
-					console.error('[z-paging]usePageScroll为true并且自定义下拉刷新时必须在page滚动时通过调用z-paging组件的updatePageScrollTop方法设置当前的scrollTop')
+					console.error(
+						'[z-paging]usePageScroll为true并且自定义下拉刷新时必须在page滚动时通过调用z-paging组件的updatePageScrollTop方法设置当前的scrollTop'
+						)
 				}
 				if (moveDistance >= this.refresherThreshold && this.refresherStatus === 1) {
 					this.refresherTransform = `translateY(${this.refresherThreshold}px)`
@@ -959,11 +1025,11 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				setTimeout(() => {
 					this.refresherStatus = 0;
 				}, commonDelayTime);
-				if(shouldEndLoadingDelay){
+				if (shouldEndLoadingDelay) {
 					setTimeout(() => {
 						this.loading = false;
 					}, commonDelayTime);
-				}else{
+				} else {
 					this.loading = false;
 				}
 				this.$emit('onRestore');
@@ -1011,43 +1077,48 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					const scrollViewNode = await this._getNodeClientRect('.scroll-view');
 					const scrollViewTotalH = scrollViewNode[0].top + scrollViewNode[0].height;
 					if (scrollViewTotalH > this.systemInfo.windowHeight + 100) {
-						console.error('[z-paging]检测到z-paging的高度超出页面高度，这将导致滚动出现异常，请确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}，此时z-paging的百分比高度才能生效。详情参照demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)');
+						console.error(
+							'[z-paging]检测到z-paging的高度超出页面高度，这将导致滚动出现异常，请确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}，此时z-paging的百分比高度才能生效。详情参照demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
+							);
 					}
 				} catch (e) {
 
 				}
 			},
 			//检测z-paging是否要全屏覆盖(当使用页面滚动并且不满全屏时，默认z-paging需要铺满全屏，避免数据过少时内部的empty-view无法正确展示)
-			async _checkScrollViewShouldFullHeight(){
+			async _checkScrollViewShouldFullHeight() {
 				try {
 					const scrollViewNode = await this._getNodeClientRect('.scroll-view');
 					const pagingContainerNode = await this._getNodeClientRect('.paging-container-content');
 					const scrollViewHeight = pagingContainerNode[0].height;
 					const scrollViewTop = scrollViewNode[0].top;
-					if(this.isAddedData && scrollViewHeight + scrollViewTop <= this.systemInfo.windowHeight + 10){
+					if (this.isAddedData && scrollViewHeight + scrollViewTop <= this.systemInfo.windowHeight + 10) {
 						this._setAutoHeight(true, scrollViewNode);
-					}else{
+					} else {
 						this._setAutoHeight(false);
 					}
 				} catch (e) {
-					
+
 				}
 			},
 			//设置z-paging高度
-			async _setAutoHeight(shouldFullHeight = true, scrollViewNode = null){
-				console.log('_setAutoHeight',shouldFullHeight)
+			async _setAutoHeight(shouldFullHeight = true, scrollViewNode = null) {
+				console.log('_setAutoHeight', shouldFullHeight)
 				try {
-					if(shouldFullHeight){
-						let finalScrollViewNode = scrollViewNode ? scrollViewNode : await this._getNodeClientRect('.scroll-view');
+					if (shouldFullHeight) {
+						let finalScrollViewNode = scrollViewNode ? scrollViewNode : await this._getNodeClientRect(
+							'.scroll-view');
 						const scrollViewTop = finalScrollViewNode[0].top;
 						const scrollViewHeight = this.systemInfo.windowHeight - scrollViewTop;
 						let additionHeight = this._convertTextToPx(this.autoHeightAddition);
-						this.scrollViewStyle = {height: scrollViewHeight + additionHeight + 'px'};
-					}else{
+						this.scrollViewStyle = {
+							height: scrollViewHeight + additionHeight + 'px'
+						};
+					} else {
 						this.scrollViewStyle = {};
 					}
 				} catch (e) {
-					
+
 				}
 			},
 			//获取节点尺寸
@@ -1063,12 +1134,17 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 						resolve(data);
 					});
 				});
-
 			},
 			//判断touch手势是否要触发
 			_getRefresherTouchDisabled() {
-				return this.loading || !this.refresherEnabled || !this.useCustomRefresher || (this.usePageScroll && this.useCustomRefresher && this
-					.pageScrollTop > 10) || (!(this.usePageScroll && this.useCustomRefresher) && this.scrollTop > 10);
+				let checkOldScrollTop = false;
+				//#ifdef MP-TOUTIAO
+				checkOldScrollTop = this.oldScrollTop > 10;
+				//#endif
+				return this.loading || !this.refresherEnabled || !this.useCustomRefresher || (this.usePageScroll && this
+					.useCustomRefresher && this
+					.pageScrollTop > 10) || (!(this.usePageScroll && this.useCustomRefresher) && (this.scrollTop >
+					10 || checkOldScrollTop));
 			},
 			//本地分页请求
 			_localPagingQueryList(pageNo, pageSize, localPagingLoadingTime, callback) {
@@ -1084,9 +1160,11 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				var totalPagingList = [].concat(this.totalLocalPagingList);
 				let pageNoIndex = (pageNo - 1) * pageSize;
 				if (pageNoIndex + pageSize <= totalPagingList.length) {
-					this._localPagingQueryResult(callback, totalPagingList.splice(pageNoIndex, pageSize), localPagingLoadingTime);
+					this._localPagingQueryResult(callback, totalPagingList.splice(pageNoIndex, pageSize),
+						localPagingLoadingTime);
 				} else if (pageNoIndex < totalPagingList.length) {
-					this._localPagingQueryResult(callback, totalPagingList.splice(pageNoIndex, totalPagingList.length - pageNoIndex),
+					this._localPagingQueryResult(callback, totalPagingList.splice(pageNoIndex, totalPagingList.length -
+							pageNoIndex),
 						localPagingLoadingTime);
 				} else {
 					this._localPagingQueryResult(callback, [], localPagingLoadingTime);
@@ -1099,16 +1177,16 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				}, localPagingLoadingTime)
 			},
 			//将文本的px或者rpx转为px的值
-			_convertTextToPx(text){
+			_convertTextToPx(text) {
 				let isRpx = false;
-				if(text.indexOf('rpx') != -1){
-					text = text.replace('rpx','');
+				if (text.indexOf('rpx') != -1) {
+					text = text.replace('rpx', '');
 					isRpx = true;
-				}else if(text.indexOf('px') != -1){
-					text = text.replace('px','');
+				} else if (text.indexOf('px') != -1) {
+					text = text.replace('px', '');
 				}
-				if(!isNaN(text)){
-					if(isRpx){
+				if (!isNaN(text)) {
+					if (isRpx) {
 						return Number(uni.upx2px(text));
 					}
 					return Number(text);

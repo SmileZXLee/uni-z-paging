@@ -1,5 +1,6 @@
 <template>
 	<view class="refresher">
+		<!-- 这里的图片请换成自己项目的图片 -->
 		<image class="refresher-image" mode="aspectFit" src="http://www.zxlee.cn/github/uni-z-paging/refresher_loading.gif"></image>
 		<view class="refresher-text">{{statusText}}</view>
 	</view>
