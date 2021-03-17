@@ -19,7 +19,7 @@
 			<empty-view slot="empty"></empty-view>
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view>
-				<view class="item" v-for="(item,index) in dataList" @click="itemClick(item)">
+				<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
 					<view class="item-title">{{item.title}}</view>
 					<view class="item-detail">{{item.detail}}</view>
 					<view class="item-line"></view>
@@ -41,7 +41,7 @@
 		methods: {
 			tabChange(index) {
 				this.tabIndex = index;
-				//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
+				//当切换tab时请调用组件的reload方法，请勿直接调用：queryList方法！！
 				this.$refs.paging.reload();
 			},
 			queryList(pageNo, pageSize) {

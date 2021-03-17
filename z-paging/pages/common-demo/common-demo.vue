@@ -7,7 +7,7 @@
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view>
-				<view class="item" v-for="(item,index) in dataList" @click="itemClick(item)">
+				<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
 					<view class="item-title">{{item.title}}</view>
 					<view class="item-detail">{{item.detail}}</view>
 					<view class="item-line"></view>
@@ -42,6 +42,7 @@
 			},
 			itemClick(item) {
 				console.log('点击了', item.title);
+				this.$refs.paging.addOneChatRecordData({'title': '新增的','detail':'111'});
 			}
 		}
 	}

@@ -22,6 +22,10 @@
 			<view>滚动吸附效果演示</view>
 			<view>sticky-demo.vue</view>
 		</view>
+		<view class="demo-view item-orange" @click="chatHistoryDemoClick">
+			<view>聊天记录模式演示</view>
+			<view>chat-history-demo.vue</view>
+		</view>
 	</view>
 </template>
 
@@ -53,6 +57,11 @@
 					uni.navigateTo({
 						url: '../sticky-demo/sticky-demo'
 					})
+				},
+				chatHistoryDemoClick(){
+					uni.navigateTo({
+						url: '../chat-history-demo/chat-history-demo'
+					})
 				}
 			}
 		},
@@ -74,7 +83,7 @@
 		padding-bottom: 30rpx;
 	}
 	.demo-view{
-		height: 110px;
+		height: 220rpx;
 		width: 90%;
 		display: flex;
 		flex-direction: column;
@@ -107,6 +116,11 @@
 	.item-yellow{
 		color: #d0c905;
 		background: linear-gradient(to right, #ffffff 0%, #f7f5b6 100%);
+		box-shadow: 0 0  20rpx #deebfd;
+	}
+	.item-orange{
+		color: #f97703;
+		background: linear-gradient(to right, #ffffff 0%, #f4c398 100%);
 		box-shadow: 0 0  20rpx #deebfd;
 	}
 </style>

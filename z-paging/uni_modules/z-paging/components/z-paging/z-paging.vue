@@ -40,19 +40,20 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 若此时下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true。或者在当前page的根view中添加@touchmove.stop.prevent (因uni无法动态控制是否允许冒泡，因此只能使用此方法，若您有更好的解决方案可以通过顶部github或dcloud插件市场联系我，不胜感激！)
  -->
 <template name="z-paging">
-	<view v-if="!touchmovePropagationEnabled&&refresherEnabled&&!usePageScroll" class="z-paging-content"
+	<view v-if="!touchmovePropagationEnabled&&finalRefresherEnabled&&!usePageScroll" class="z-paging-content"
 		@touchmove.stop.prevent>
 		<scroll-view class="scroll-view" :style="scrollViewStyle" :scroll-top="scrollTop"
 			:scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
-			:show-scrollbar="showScrollbar" :scroll-with-animation="scrollWithAnimation"
-			:scroll-into-view="scrollIntoView" :lower-threshold="lowerThreshold"
-			:refresher-enabled="refresherEnabled&&!useCustomRefresher" :refresher-threshold="refresherThreshold"
-			:refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
-			:refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
-			@refresherrestore="_onRestore" @refresherrefresh="_onRefresh" @touchstart="_refresherTouchstart"
-			@touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
+			:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
+			:scroll-into-view="privateScrollIntoView.length?privateScrollIntoView:scrollIntoView"
+			:lower-threshold="lowerThreshold" :refresher-enabled="finalRefresherEnabled&&!useCustomRefresher"
+			:refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle"
+			:refresher-background="refresherBackground" :refresher-triggered="refresherTriggered" @scroll="_scroll"
+			@scrolltolower="_onLoadingMore('toBottom')" @scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore"
+			@refresherrefresh="_onRefresh" @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove"
+			@touchend="_refresherTouchend">
 			<view class="paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
-				<view v-if="refresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
+				<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
 					:style="[{'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
 						<slot v-if="$slots.refresher" name="refresher" />
@@ -73,6 +74,15 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					</view>
 				</view>
 				<view class="paging-container">
+					<slot v-if="useChatRecordMode&&$slots.chatLoading&&loadingStatus!==2&&realTotalData.length"
+						name="chatLoading" />
+					<view v-else-if="useChatRecordMode&&loadingStatus!==2&&realTotalData.length"
+						class="chat-record-loading-container">
+						<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
+							:class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">点击加载更多</text>
+						<image v-else :src="base64Flower" class="chat-record-loading-custom-image">
+						</image>
+					</view>
 					<slot v-if="$slots.loading&&!firstPageLoaded&&loading" name="loading" />
 					<slot
 						v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)"
@@ -83,19 +93,19 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 						<slot />
 					</view>
 					<slot @click="_onLoadingMore('click')"
-						v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled"
+						v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
 						name="loadingMoreDefault" />
 					<slot @click="_onLoadingMore('click')"
 						v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled"
 						name="loadingMoreLoading" />
 					<slot @click="_onLoadingMore('click')"
-						v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled"
+						v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled&&!useChatRecordMode"
 						name="loadingMoreNoMore" />
 					<slot @click="_onLoadingMore('click')"
-						v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled"
+						v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
 						name="loadingMoreFail" />
 					<view @click="_onLoadingMore('click')"
-						v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled"
+						v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode"
 						class="load-more-container" :style="[loadingMoreCustomStyle]">
 						<text
 							:class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
@@ -134,15 +144,16 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	<view v-else class="z-paging-content">
 		<scroll-view class="scroll-view" :style="scrollViewStyle" :scroll-top="scrollTop"
 			:scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
-			:show-scrollbar="showScrollbar" :scroll-with-animation="scrollWithAnimation"
-			:scroll-into-view="scrollIntoView" :lower-threshold="lowerThreshold"
-			:refresher-enabled="refresherEnabled&&!useCustomRefresher" :refresher-threshold="refresherThreshold"
-			:refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
-			:refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
-			@refresherrestore="_onRestore" @refresherrefresh="_onRefresh" @touchstart="_refresherTouchstart"
-			@touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
+			:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
+			:scroll-into-view="privateScrollIntoView.length?privateScrollIntoView:scrollIntoView"
+			:lower-threshold="lowerThreshold" :refresher-enabled="finalRefresherEnabled&&!useCustomRefresher"
+			:refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle"
+			:refresher-background="refresherBackground" :refresher-triggered="refresherTriggered" @scroll="_scroll"
+			@scrolltolower="_onLoadingMore('toBottom')" @scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore"
+			@refresherrefresh="_onRefresh" @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove"
+			@touchend="_refresherTouchend">
 			<view class="paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
-				<view v-if="refresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
+				<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
 					:style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
 						<slot v-if="$slots.refresher" name="refresher" />
@@ -163,6 +174,15 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					</view>
 				</view>
 				<view class="paging-container">
+					<slot v-if="useChatRecordMode&&$slots.chatLoading&&loadingStatus!==2&&realTotalData.length"
+						name="chatLoading" />
+					<view v-else-if="useChatRecordMode&&loadingStatus!==2&&realTotalData.length"
+						class="chat-record-loading-container">
+						<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
+							:class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">点击加载更多</text>
+						<image v-else :src="base64Flower" class="chat-record-loading-custom-image">
+						</image>
+					</view>
 					<slot v-if="$slots.loading&&!firstPageLoaded&&loading" name="loading" />
 					<slot
 						v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):!realTotalData.length)"
@@ -173,19 +193,19 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 						<slot />
 					</view>
 					<slot @click="_onLoadingMore('click')"
-						v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled"
+						v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
 						name="loadingMoreDefault" />
 					<slot @click="_onLoadingMore('click')"
-						v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled"
+						v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
 						name="loadingMoreLoading" />
 					<slot @click="_onLoadingMore('click')"
-						v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled"
+						v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled&&!useChatRecordMode"
 						name="loadingMoreNoMore" />
 					<slot @click="_onLoadingMore('click')"
-						v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled"
+						v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
 						name="loadingMoreFail" />
 					<view @click="_onLoadingMore('click')"
-						v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled"
+						v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode"
 						class="load-more-container" :style="[loadingMoreCustomStyle]">
 						<text
 							:class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
@@ -268,6 +288,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 * @property {String} refresher-default-style 设置自定义下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式，默认为black
 	 * @property {String} refresher-background 设置自定义下拉刷新区域背景颜色
 	 * @property {Number} local-paging-loading-time 本地分页时上拉加载更多延迟时间，单位为毫秒，默认200毫秒
+	 * @property {Boolean} use-chat-record-mode 使用聊天记录模式，默认为否
 	 * @property {Boolean} touchmove-propagation-enabled 是否允许touchmove事件冒泡，默认为否，禁止冒泡可避免一些情况下下拉刷新时页面其他元素跟着下移，若您使用横向滑动切换选项卡，则需要将此属性设置为true，否则无法横向滑动
 	 * @event {Function} addData 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认为是)
 	 * @event {Function} setLocalPaging 设置本地分页，请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging作分页处理（若调用了此方法，则上拉加载更多时内部会自动分页，不会触发@query所绑定的事件）
@@ -333,7 +354,10 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				totalLocalPagingList: [],
 				realTotalData: [],
 				isAddedData: false,
-				isTotalChangeFromAddData: false
+				isTotalChangeFromAddData: false,
+				privateScrollIntoView: '',
+				privateRefresherEnabled: -1,
+				privateScrollWithAnimation: false
 			};
 		},
 		props: {
@@ -646,6 +670,13 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					return 200;
 				}
 			},
+			//使用聊天记录模式，默认为否
+			useChatRecordMode: {
+				type: Boolean,
+				default: function() {
+					return false;
+				}
+			},
 			//是否允许touchmove事件冒泡，默认为否，禁止冒泡可避免一些情况下下拉刷新时页面其他元素跟着下移，若您使用横向滑动切换选项卡，则需要将此属性设置为true，否则无法横向滑动
 			touchmovePropagationEnabled: {
 				type: Boolean,
@@ -771,6 +802,21 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			},
 			pullDownDisTimeStamp() {
 				return 1000 / this.refresherFps;
+			},
+			finalRefresherEnabled() {
+				if (this.useChatRecordMode) {
+					return false;
+				}
+				if (this.privateRefresherEnabled === -1) {
+					return this.refresherEnabled;
+				}
+				return this.privateRefresherEnabled === 1;
+			},
+			finalScrollWithAnimation() {
+				if (this.useChatRecordMode) {
+					return this.privateScrollWithAnimation;
+				}
+				return this.scrollWithAnimation;
 			}
 		},
 		methods: {
@@ -779,6 +825,18 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				this.$nextTick(() => {
 					this._addData(data, success, false);
 				})
+			},
+			//添加一条聊天记录
+			addOneChatRecordData(data, toBottom = true, toBottomWithAnimate = true) {
+				if (!this.useChatRecordMode) {
+					return;
+				}
+				this.totalData = this.totalData.concat([data]);
+				if (toBottom) {
+					setTimeout(() => {
+						this._scrollToBottom(toBottomWithAnimate);
+					}, commonDelayTime)
+				}
 			},
 			//设置本地分页数据，请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging作分页处理（若调用了此方法，则上拉加载更多时内部会自动分页，不会触发@query所绑定的事件）
 			setLocalPaging(data, success = true) {
@@ -810,8 +868,12 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				this.refresherTriggered = false;
 			},
 			//滚动到顶部
-			scrollToTop() {
-				this._scrollToTop();
+			scrollToTop(animate) {
+				this._scrollToTop(animate);
+			},
+			//滚动到底部
+			scrollToBottom(animate) {
+				this._scrollToBottom(animate);
 			},
 			//当使用页面滚动并且自定义下拉刷新时，请在页面的onPageScroll中调用此方法，告知z-paging当前的pageScrollTop，否则会导致在任意位置都可以下拉刷新
 			updatePageScrollTop(value) {
@@ -832,6 +894,9 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				this.$emit('query', this.pageNo, this.defaultPageSize);
 				if (this.autoScrollToTopWhenReload) {
 					this._scrollToTop();
+				}
+				if (this.usePageScroll && this.useChatRecordMode) {
+					console.error('[z-paging]不支持在设置使用页面滚动时使用聊天记录模式！！');
 				}
 			},
 			_addData(data, success, isLocal) {
@@ -872,6 +937,9 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			//当前数据改变时调用
 			_currentDataChange(newVal, oldVal) {
 				newVal = [].concat(newVal);
+				if (this.useChatRecordMode) {
+					newVal.reverse();
+				}
 				if (this.pageNo === this.defaultPageNo) {
 					this.totalData = [];
 				}
@@ -883,25 +951,86 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				}
 				if (!this.totalData.length) {
 					this.totalData = newVal;
+					if (this.useChatRecordMode) {
+						this.$nextTick(() => {
+							this._scrollToBottom(false);
+						})
+					}
 				} else {
-					this.totalData = this.totalData.concat(newVal);
+					if (this.useChatRecordMode) {
+						const idIndex = newVal.length;
+						this.totalData = newVal.concat(this.totalData);
+						if (this.pageNo !== this.defaultPageNo) {
+							this.$nextTick(() => {
+								this.privateScrollWithAnimation = false;
+								this.privateScrollIntoView = `z-paging-${idIndex}`;
+								this.$nextTick(() => {
+									this.privateScrollIntoView = '';
+								})
+							})
+						} else {
+							this.$nextTick(() => {
+								this._scrollToBottom(false);
+							})
+						}
+					} else {
+						this.totalData = this.totalData.concat(newVal);
+					}
+
 				}
 			},
 			//触发加载更多时调用,from:0-滑动到底部触发；1-点击加载更多触发
 			_onLoadingMore(from) {
 				this.$emit('scrolltolower', from);
-				if (from === 'toBottom' && !this.toBottomLoadingMoreEnabled) {
+				if (from === 'toBottom' && (!this.toBottomLoadingMoreEnabled || this.useChatRecordMode)) {
 					return;
 				}
-				if (!this.loadingMoreEnabled || !(this.loadingStatus === 0 || 3)) return;
+				if (!this.loadingMoreEnabled || !(this.loadingStatus === 0 || 3) || this.loading) return;
 
 				this._doLoadingMore();
 			},
-			_scrollToTop() {
+			//当滚动到顶部时
+			_scrollToUpper() {
+				if (!this.useChatRecordMode) {
+					return;
+				}
+				if (this.loadingStatus === 2) {
+					return;
+				}
+				this._onLoadingMore('click');
+			},
+			//滚动到顶部
+			_scrollToTop(animate) {
+				this.privateScrollWithAnimation = animate;
 				this.scrollTop = this.oldScrollTop;
 				this.$nextTick(() => {
-					this.scrollTop = 0
+					this.scrollTop = 0;
 				});
+			},
+			//滚动到底部
+			async _scrollToBottom(animate = true) {
+				try {
+					this.privateScrollWithAnimation = animate;
+					let pagingContainerH = 0;
+					let scrollViewH = 0;
+					const pagingContainerNode = await this._getNodeClientRect('.paging-container');
+					const scrollViewNode = await this._getNodeClientRect('.scroll-view');
+					if (pagingContainerNode != '' && pagingContainerNode != undefined && pagingContainerNode.length) {
+						pagingContainerH = pagingContainerNode[0].height;
+					}
+					if (scrollViewNode != '' && scrollViewNode != undefined && scrollViewNode.length) {
+						scrollViewH = scrollViewNode[0].height;
+					}
+					if (pagingContainerH > scrollViewH) {
+						this.scrollTop = this.oldScrollTop;
+						this.$nextTick(() => {
+							this.scrollTop = pagingContainerH - scrollViewH;
+						});
+					}
+				} catch (e) {
+
+				}
+
 			},
 			//处理开始加载更多状态
 			_startLoading() {
@@ -936,7 +1065,11 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				this.isUserReload = false;
 				this._startLoading();
 				this.refresherTriggered = true;
-				this._reload();
+				if (this.useChatRecordMode) {
+					this._onLoadingMore('click')
+				} else {
+					this._reload();
+				}
 				this.$emit('onRefresh');
 				this.loadingType = 0;
 			},
@@ -1223,6 +1356,25 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		position: relative;
 	}
 
+	.chat-record-loading-container {
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		align-items: center;
+		justify-content: center;
+		height: 70rpx;
+		width: 100%;
+		font-size: 26rpx;
+	}
+
+	.chat-record-loading-custom-image {
+		width: 35rpx;
+		height: 35rpx;
+		/* #ifndef APP-NVUE */
+		animation: loading-circle 1s linear infinite;
+		/* #endif */
+	}
+
 	.custom-refresher-container {
 		/* #ifndef APP-NVUE */
 		display: flex;
@@ -1297,7 +1449,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		animation: loading-circle 1s linear infinite;
 		/* #endif */
 	}
-	
+
 
 	.loading-more-line-loading-view {
 		margin-right: 8rpx;

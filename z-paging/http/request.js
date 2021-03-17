@@ -1,4 +1,4 @@
-let listCount = 0;
+let listCount = 34;
 let loadingTime = 500;
 /* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件 */
 function queryList(pageNo,pageSize,type,callback){
@@ -20,7 +20,7 @@ function queryList(pageNo,pageSize,type,callback){
 	}
 	var totalPagingList = [];
 	for(let i = 0;i < listCount;i++){
-		var item = {'title':i+1,'detail':'测试信息'+type};
+		var item = {'title':(i+1).toString(),'detail':'测试信息'+type};
 		totalPagingList.push(item);
 	}
 	let pageNoIndex = (pageNo - 1) * pageSize;

@@ -200,6 +200,7 @@
 |               refresher-default-style               | 设置系统下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式 |      String      |                     black                      | white、none |
 |                refresher-background                 |                设置自定义下拉刷新区域背景颜色                |      String      |                #FFFFFF00(透明)                 |      -      |
 |              local-paging-loading-time              |          本地分页时上拉加载更多延迟时间，单位为毫秒          |      Number      |                      200                       |      -      |
+|                use-chat-record-mode                 |                       使用聊天记录模式                       |     Boolean      |                     false                      |    true     |
 |            touchmove-propagation-enabled            | 是否允许touchmove事件冒泡，默认为否，禁止冒泡可避免一些情况下下拉刷新时页面其他元素跟着下移，若您使用横向滑动切换选项卡，则需要将此属性设置为true，否则无法横向滑动 |     Boolean      |                     false                      |    true     |
 
 ## Slot
@@ -209,6 +210,7 @@
 | empty              | 自定义空数据占位view                                         |
 | loading            | 自定义页面reload时的加载view                                 |
 | refresher          | 自定义下拉刷新view，设置后则不使用uni自带的下拉刷新view和z-paging自定义的下拉刷新view。此view的style必须设置为`height:100%` (use-custom-refresher为true时生效) |
+| chatLoading        | 使用聊天记录模式时自定义顶部加载更多view，`use-chat-record-mode`为true时有效 |
 | loadingMoreDefault | 自定义滑动到底部"默认"状态的view                             |
 | loadingMoreLoading | 自定义滑动到底部"加载中"状态的view                           |
 | loadingMoreNoMore  | 自定义滑动到底部"没有更多数据"状态的view                     |
@@ -235,11 +237,13 @@
 
   注意：在Page的onLoad()方法中无法同步获取this.$refs，请加一个setTimeOut延时1毫秒或nextTick再调用(默认会在页面加载时自动调用reload()无须手动调用)
 
-| 方法名              | 说明                                                         | 参数                                                         |
-| ------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| reload              | 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果   | value：(传true或false，默认为false)reload时是否展示下拉刷新动画，默认为否 |
-| addData             | 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理 | value1:请求结果数组；value2:是否请求成功，不填默认为true     |
-| setLocalPaging      | 设置本地分页，请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging作分页处理（若调用了此方法，则上拉加载更多时内部会自动分页，不会触发@query所绑定的事件） | value1:请求结果数组；value2:是否请求成功，不填默认为true     |
-| doLoadMore          | 手动触发上拉加载更多(非必须，可依据具体需求使用，例如当z-paging未确定高度时，内部的scroll-view会无限增高，此时z-paging无法得知是否滚动到底部，您可以在页面的`onReachBottom`中手动调用此方法触发上拉加载更多) ps:`use-page-scroll`需要设置为true | -                                                            |
-| scrollToTop         | 滚动到顶部                                                   | -                                                            |
-| updatePageScrollTop | 当使用页面滚动(z-paging不固定高度)并且自定义下拉刷新时，请在页面的onPageScroll中调用此方法，告知z-paging当前的pageScrollTop，否则会导致在任意位置都可以下拉刷新 |                                                              |
+| 方法名               | 说明                                                         | 参数                                                         |
+| -------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| reload               | 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果   | value：(传true或false，默认为false)reload时是否展示下拉刷新动画，默认为否 |
+| addData              | 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理 | value1:请求结果数组；value2:是否请求成功，不填默认为true     |
+| setLocalPaging       | 设置本地分页，请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging作分页处理（若调用了此方法，则上拉加载更多时内部会自动分页，不会触发@query所绑定的事件） | value1:请求结果数组；value2:是否请求成功，不填默认为true     |
+| doLoadMore           | 手动触发上拉加载更多(非必须，可依据具体需求使用，例如当z-paging未确定高度时，内部的scroll-view会无限增高，此时z-paging无法得知是否滚动到底部，您可以在页面的`onReachBottom`中手动调用此方法触发上拉加载更多) ps:`use-page-scroll`需要设置为true | -                                                            |
+| scrollToTop          | 滚动到顶部                                                   | value1:是否有动画效果，默认为是                              |
+| scrollToBottom       | 滚动到底部                                                   | value1:是否有动画效果，默认为是                              |
+| updatePageScrollTop  | 当使用页面滚动(z-paging不固定高度)并且自定义下拉刷新时，请在页面的onPageScroll中调用此方法，告知z-paging当前的pageScrollTop，否则会导致在任意位置都可以下拉刷新 |                                                              |
+| addOneChatRecordData | 添加一条聊天记录，`use-chat-record-mode`为true时有效         | value1:需要添加的一条数据；value2:是否滚动到底部，不填默认为true；value3:是否使用动画滚动到底部，不填默认为true |

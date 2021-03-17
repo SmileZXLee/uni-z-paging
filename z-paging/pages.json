@@ -5,53 +5,50 @@
 			"style": {
 				"navigationBarTitleText": "z-paging"
 			}
+		}, {
+			"path": "pages/common-demo/common-demo",
+			"style": {
+				"navigationBarTitleText": "普通模式演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/custom-demo/custom-demo",
+			"style": {
+				"navigationBarTitleText": "自定义下拉刷新与上拉加载演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/scroll-tab-swiper-demo/scroll-tab-swiper-demo",
+			"style": {
+				"navigationBarTitleText": "滑动切换选项卡演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/page-default-demo/page-default-demo",
+			"style": {
+				"navigationBarTitleText": "页面自带下拉刷新和onReachBottom事件结合使用示例",
+				"enablePullDownRefresh": true
+			}
+
+		}, {
+			"path": "pages/sticky-demo/sticky-demo",
+			"style": {
+				"navigationBarTitleText": "滚动吸附效果演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/chat-history-demo/chat-history-demo",
+			"style": {
+				"navigationBarTitleText": "聊天记录模式演示",
+				"enablePullDownRefresh": false
+			}
+
 		}
-        ,{
-            "path" : "pages/common-demo/common-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "普通模式演示",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/custom-demo/custom-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "自定义下拉刷新与上拉加载演示",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/scroll-tab-swiper-demo/scroll-tab-swiper-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "滑动切换选项卡演示",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/page-default-demo/page-default-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "页面自带下拉刷新和onReachBottom事件结合使用示例",
-                "enablePullDownRefresh": true
-            }
-            
-        }
-        ,{
-            "path" : "pages/sticky-demo/sticky-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "滚动吸附效果演示",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "z-paging",
