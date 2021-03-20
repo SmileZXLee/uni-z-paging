@@ -42,7 +42,6 @@
 			},
 			itemClick(item) {
 				console.log('点击了', item.title);
-				this.$refs.paging.addOneChatRecordData({'title': '新增的','detail':'111'});
 			}
 		}
 	}

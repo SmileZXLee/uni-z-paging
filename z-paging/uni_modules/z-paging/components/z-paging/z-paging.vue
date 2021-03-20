@@ -41,18 +41,18 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
  -->
 <template name="z-paging">
 	<view v-if="!touchmovePropagationEnabled&&finalRefresherEnabled&&!usePageScroll" class="z-paging-content"
-		@touchmove.stop.prevent>
-		<scroll-view class="scroll-view" :style="scrollViewStyle" :scroll-top="scrollTop"
+		:style="[pagingStyle]" @touchmove.stop.prevent>
+		<scroll-view class="scroll-view" :style="[scrollViewStyle]" :scroll-top="scrollTop"
 			:scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
 			:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
-			:scroll-into-view="privateScrollIntoView.length?privateScrollIntoView:scrollIntoView"
-			:lower-threshold="lowerThreshold" :refresher-enabled="finalRefresherEnabled&&!useCustomRefresher"
-			:refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle"
-			:refresher-background="refresherBackground" :refresher-triggered="refresherTriggered" @scroll="_scroll"
-			@scrolltolower="_onLoadingMore('toBottom')" @scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore"
-			@refresherrefresh="_onRefresh" @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove"
-			@touchend="_refresherTouchend">
-			<view class="paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
+			:scroll-into-view="scrollIntoView" :lower-threshold="lowerThreshold"
+			:refresher-enabled="finalRefresherEnabled&&!useCustomRefresher" :refresher-threshold="refresherThreshold"
+			:refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
+			:refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
+			@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"
+			@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
+			<view class="paging-main" catchtouchmove="true"
+				:style="[{'transform': refresherTransform,'transition': refresherTransition}]">
 				<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
 					:style="[{'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
@@ -79,7 +79,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					<view v-else-if="useChatRecordMode&&loadingStatus!==2&&realTotalData.length"
 						class="chat-record-loading-container">
 						<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
-							:class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">点击加载更多</text>
+							:class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
 						<image v-else :src="base64Flower" class="chat-record-loading-custom-image">
 						</image>
 					</view>
@@ -141,17 +141,16 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 3.在最上面盖一个透明view并添加touch相关手势，但会影响底下view的点击等事件，因此它们不属于父子关系，而是兄弟关系，手势点击无法向上传递。
 	 4.使用小程序中的template is将重复代码复用，然后使用v-if来隐藏或显示两个不同的“paging-main”，但uni中不支持此写法。
 	 【如果有更优解决方案可以发送邮件到admin.zxlee.cn或加入qq群790460711提出您的想法，感谢！！！】 -->
-	<view v-else class="z-paging-content">
-		<scroll-view class="scroll-view" :style="scrollViewStyle" :scroll-top="scrollTop"
+	<view v-else class="z-paging-content" :style="[pagingStyle]">
+		<scroll-view class="scroll-view" :style="[scrollViewStyle]" :scroll-top="scrollTop"
 			:scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
 			:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
-			:scroll-into-view="privateScrollIntoView.length?privateScrollIntoView:scrollIntoView"
-			:lower-threshold="lowerThreshold" :refresher-enabled="finalRefresherEnabled&&!useCustomRefresher"
-			:refresher-threshold="refresherThreshold" :refresher-default-style="finalRefresherDefaultStyle"
-			:refresher-background="refresherBackground" :refresher-triggered="refresherTriggered" @scroll="_scroll"
-			@scrolltolower="_onLoadingMore('toBottom')" @scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore"
-			@refresherrefresh="_onRefresh" @touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove"
-			@touchend="_refresherTouchend">
+			:scroll-into-view="scrollIntoView" :lower-threshold="lowerThreshold"
+			:refresher-enabled="finalRefresherEnabled&&!useCustomRefresher" :refresher-threshold="refresherThreshold"
+			:refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
+			:refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
+			@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"
+			@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
 			<view class="paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
 				<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
 					:style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
@@ -179,7 +178,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					<view v-else-if="useChatRecordMode&&loadingStatus!==2&&realTotalData.length"
 						class="chat-record-loading-container">
 						<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
-							:class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">点击加载更多</text>
+							:class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
 						<image v-else :src="base64Flower" class="chat-record-loading-custom-image">
 						</image>
 					</view>
@@ -247,6 +246,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 * @tutorial https://github.com/SmileZXLee/uni-z-paging
 	 * @property {Number} default-page-no 自定义pageNo，默认为1
 	 * @property {Number} default-page-size 自定义pageSize，默认为15
+	 * @property {Object} paging-style 设置z-paging的style，部分平台可能无法直接修改组件的style，可使用此属性代替
 	 * @property {Boolean} auto-height z-paging是否自动高度，若自动高度则会自动铺满屏幕，默认为否
 	 * @property {String} auto-height-addition z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数
 	 * @property {String} default-theme-style loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
@@ -279,6 +279,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 * @property {Boolean} hide-empty-view 是否强制隐藏空数据图，默认为否
 	 * @property {Boolean} auto-hide-empty-view-when-loading 加载中时是否自动隐藏空数据图，默认为是
 	 * @property {Boolean} show-scrollbar 在设置滚动条位置时使用动画过渡，默认为否
+	 * @property {Boolean} scroll-to-top-bounce-enabled iOS设备上滚动到顶部时是否允许回弹效果，默认为是。关闭回弹效果后可使滚动到顶部与下拉刷新更连贯，但是有吸顶view时滚动到顶部时可能出现抖动。
 	 * @property {Boolean} scroll-with-animation 控制是否出现滚动条，默认为否
 	 * @property {String} scroll-into-view 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素
 	 * @property {Number} lower-threshold 距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为50
@@ -355,9 +356,9 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				realTotalData: [],
 				isAddedData: false,
 				isTotalChangeFromAddData: false,
-				privateScrollIntoView: '',
 				privateRefresherEnabled: -1,
-				privateScrollWithAnimation: false
+				privateScrollWithAnimation: false,
+				chatRecordLoadingMoreText: ''
 			};
 		},
 		props: {
@@ -376,6 +377,13 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				type: [Number, String],
 				default: function() {
 					return 15;
+				},
+			},
+			//设置z-paging的style，部分平台可能无法直接修改组件的style，可使用此属性代替
+			pagingStyle: {
+				type: Object,
+				default: function() {
+					return {};
 				},
 			},
 			//z-paging是否自动高度，若自动高度则会自动铺满屏幕
@@ -607,6 +615,13 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					return false;
 				},
 			},
+			//iOS设备上滚动到顶部时是否允许回弹效果，默认为是。关闭回弹效果后可使滚动到顶部与下拉刷新更连贯，但是有吸顶view时滚动到顶部时可能出现抖动。
+			scrollToTopBounceEnabled: {
+				type: Boolean,
+				default: function() {
+					return true;
+				},
+			},
 			//在设置滚动条位置时使用动画过渡，默认为否
 			scrollWithAnimation: {
 				type: Boolean,
@@ -826,15 +841,32 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					this._addData(data, success, false);
 				})
 			},
-			//添加一条聊天记录
-			addOneChatRecordData(data, toBottom = true, toBottomWithAnimate = true) {
+			//添加聊天记录
+			addChatRecordData(data, toBottom = true, toBottomWithAnimate = true) {
+				let dataType = Object.prototype.toString.call(data);
+				if (dataType !== '[object Array]') {
+					data = [data];
+				}
 				if (!this.useChatRecordMode) {
 					return;
 				}
-				this.totalData = this.totalData.concat([data]);
+				this.totalData = this.totalData.concat(data);
 				if (toBottom) {
 					setTimeout(() => {
 						this._scrollToBottom(toBottomWithAnimate);
+					}, commonDelayTime)
+				}
+			},
+			//从顶部添加数据，不会影响分页的pageNo和pageSize
+			addDataFromTop(data, toTop = true, toTopWithAnimate = true) {
+				let dataType = Object.prototype.toString.call(data);
+				if (dataType !== '[object Array]') {
+					data = [data];
+				}
+				this.totalData = data.concat(this.totalData);
+				if (toTop) {
+					setTimeout(() => {
+						this._scrollToTop(toTopWithAnimate);
 					}, commonDelayTime)
 				}
 			},
@@ -858,6 +890,10 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					this._refresherEnd(false);
 				}
 				this._reload();
+			},
+			//手动触发滚动到顶部加载更多，聊天记录模式时有效
+			doChatRecordLoadMore() {
+				this._onLoadingMore('click');
 			},
 			//手动触发上拉加载更多(非必须，可依据具体需求使用)
 			doLoadMore() {
@@ -895,14 +931,14 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				if (this.autoScrollToTopWhenReload) {
 					this._scrollToTop();
 				}
-				if (this.usePageScroll && this.useChatRecordMode) {
-					console.error('[z-paging]不支持在设置使用页面滚动时使用聊天记录模式！！');
+				if (!this.usePageScroll && this.useChatRecordMode) {
+					console.warn('[z-paging]使用聊天记录模式时，建议使用页面滚动，可将usePageScroll设置为true以启用页面滚动！！');
 				}
 			},
 			_addData(data, success, isLocal) {
 				this.isAddedData = true;
 				this.isTotalChangeFromAddData = true;
-				var dataType = Object.prototype.toString.call(data);
+				let dataType = Object.prototype.toString.call(data);
 				if (dataType === '[object Boolean]') {
 					success = data;
 					data = [];
@@ -916,7 +952,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				}
 				setTimeout(() => {
 					this._refresherEnd();
-				}, 200)
+				}, commonDelayTime)
 				if (success) {
 					this.loadingStatus = 0;
 					if (isLocal) {
@@ -961,13 +997,20 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 						const idIndex = newVal.length;
 						this.totalData = newVal.concat(this.totalData);
 						if (this.pageNo !== this.defaultPageNo) {
-							this.$nextTick(() => {
-								this.privateScrollWithAnimation = false;
-								this.privateScrollIntoView = `z-paging-${idIndex}`;
+							this.privateScrollWithAnimation = false;
+							let delayTime = 200;
+							//#ifdef H5
+							delayTime = 0;
+							//#endif
+							if (this.usePageScroll) {
 								this.$nextTick(() => {
-									this.privateScrollIntoView = '';
+									this._scrollIntoView(`z-paging-${idIndex}`, 30);
 								})
-							})
+							} else {
+								setTimeout(() => {
+									this._scrollIntoView(`z-paging-${idIndex}`, 30);
+								}, delayTime)
+							}
 						} else {
 							this.$nextTick(() => {
 								this._scrollToBottom(false);
@@ -976,7 +1019,6 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					} else {
 						this.totalData = this.totalData.concat(newVal);
 					}
-
 				}
 			},
 			//触发加载更多时调用,from:0-滑动到底部触发；1-点击加载更多触发
@@ -1001,6 +1043,15 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			},
 			//滚动到顶部
 			_scrollToTop(animate) {
+				if (this.usePageScroll) {
+					this.$nextTick(() => {
+						uni.pageScrollTo({
+							scrollTop: 0,
+							duration: animate ? 100 : 0,
+						});
+					});
+					return;
+				}
 				this.privateScrollWithAnimation = animate;
 				this.scrollTop = this.oldScrollTop;
 				this.$nextTick(() => {
@@ -1009,6 +1060,15 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			},
 			//滚动到底部
 			async _scrollToBottom(animate = true) {
+				if (this.usePageScroll) {
+					this.$nextTick(() => {
+						uni.pageScrollTo({
+							scrollTop: Number.MAX_VALUE,
+							duration: animate ? 100 : 0,
+						});
+					});
+					return;
+				}
 				try {
 					this.privateScrollWithAnimation = animate;
 					let pagingContainerH = 0;
@@ -1030,7 +1090,31 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				} catch (e) {
 
 				}
+			},
+			//滚动到指定view
+			async _scrollIntoView(sel, offset = 0, finishCallback) {
+				try {
+					const node = await this._getNodeClientRect('#' + sel, false);
+					if (node != '' && node != undefined && node.length) {
+						const nodeTop = node[0].top;
+						this.scrollTop = this.oldScrollTop;
+						this.$nextTick(() => {
+							if (this.usePageScroll) {
+								uni.pageScrollTo({
+									scrollTop: nodeTop - offset,
+									duration: 0
+								});
+							} else {
+								this.scrollTop = nodeTop;
+							}
+							if (finishCallback) {
+								finishCallback();
+							}
+						});
+					}
+				} catch (e) {
 
+				}
 			},
 			//处理开始加载更多状态
 			_startLoading() {
@@ -1056,6 +1140,14 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			_scroll(e) {
 				this.$emit('scroll', e);
 				this.oldScrollTop = e.detail.scrollTop;
+				if (!this.scrollToTopBounceEnabled && e.detail.scrollTop < 0) {
+					if (this.scrollEnable) {
+						this.scrollEnable = false;
+						this.$nextTick(() => {
+							this.scrollEnable = true;
+						})
+					}
+				}
 			},
 			//自定义下拉刷新被触发
 			_onRefresh() {
@@ -1088,7 +1180,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				}
 				return cls;
 			},
-			// 拖拽开始
+			//拖拽开始
 			_refresherTouchstart(e) {
 				if (this._getRefresherTouchDisabled()) {
 					return;
@@ -1259,9 +1351,13 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				}
 			},
 			//获取节点尺寸
-			_getNodeClientRect(select) {
+			_getNodeClientRect(select, inThis = true) {
 				let res = null;
-				res = uni.createSelectorQuery().in(this);
+				if (inThis) {
+					res = uni.createSelectorQuery().in(this);
+				} else {
+					res = uni.createSelectorQuery();
+				}
 				//#ifdef MP-ALIPAY
 				res = uni.createSelectorQuery();
 				//#endif
@@ -1294,7 +1390,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				if (pageNo == 0) {
 					pageNo = 1;
 				}
-				var totalPagingList = [].concat(this.totalLocalPagingList);
+				let totalPagingList = [].concat(this.totalLocalPagingList);
 				let pageNoIndex = (pageNo - 1) * pageSize;
 				if (pageNoIndex + pageSize <= totalPagingList.length) {
 					this._localPagingQueryResult(callback, totalPagingList.splice(pageNoIndex, pageSize),
@@ -1316,10 +1412,10 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			//将文本的px或者rpx转为px的值
 			_convertTextToPx(text) {
 				let isRpx = false;
-				if (text.indexOf('rpx') != -1) {
+				if (text.indexOf('rpx') !== -1) {
 					text = text.replace('rpx', '');
 					isRpx = true;
-				} else if (text.indexOf('px') != -1) {
+				} else if (text.indexOf('px') !== -1) {
 					text = text.replace('px', '');
 				}
 				if (!isNaN(text)) {
@@ -1362,7 +1458,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		/* #endif */
 		align-items: center;
 		justify-content: center;
-		height: 70rpx;
+		height: 60rpx;
 		width: 100%;
 		font-size: 26rpx;
 	}

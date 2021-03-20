@@ -19,6 +19,7 @@
 * ①在`<template>` 中使用@query绑定js中分页请求的方法(`z-paging`会将计算好的pageNo和pageSize两个参数传递到此方法中)，然后通过` :list.sync`绑定列表for循环的list。
 * ②在请求结果回调中，通过调用`z-paging`的`addData()`方法，将请求返回的数组传递给`z-paging`处理，如：`this.$refs.paging.addData(服务器返回的数组);`；若请求失败，调用：`this.$refs.paging.addData(false);`即可。
 * 仅h5、App、微信小程序支持uni scroll-view自带的下拉刷新，若运行在其他平台上，`use-custom-refresher`默认为true，将自动使用z-paging自带的下拉刷新。
+* 当tab切换或搜索时，可以通过`this.$refs.paging.reload()`刷新整个列表。
 
 ## 注意事项及常见问题
 
@@ -159,6 +160,7 @@
 | :-------------------------------------------------: | :----------------------------------------------------------: | :--------------: | :--------------------------------------------: | :---------: |
 |                   default-page-no                   |                         自定义pageNo                         | String \| Number |                       1                        |      -      |
 |                  default-page-size                  |                        自定义pageSize                        | String \| Number |                       15                       |      -      |
+|                    paging-style                     | 设置z-paging的style，部分平台可能无法直接修改组件的style，可使用此属性代替 |      Object      |                       -                        |      -      |
 |                     auto-height                     | z-paging是否自动高度，若自动高度则会自动铺满屏幕，不需要设置父view为100%等操作。（注意：自动高度可能并不准确，因为其计算方式是获取窗口【注意这里是“窗口”，不是“页面”，也就是只要您的项目包含了tabbar，所有页面的可用高度都减去了tabbar的高度】的可用高度【不包含导航栏和tabbar的高度】- z-paging与可用视图顶部的距离），可以通过`auto-height-addition`进行调整。 |     Boolean      |                     false                      |    true     |
 |                auto-height-addition                 | z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数。如"-10rpx"，"10.5px" |      String      |                      0px                       |      -      |
 |                 default-theme-style                 | loading(下拉刷新、上拉加载更多)的主题样式，支持black，white  |      String      |                     black                      |    white    |
@@ -200,7 +202,7 @@
 |               refresher-default-style               | 设置系统下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式 |      String      |                     black                      | white、none |
 |                refresher-background                 |                设置自定义下拉刷新区域背景颜色                |      String      |                #FFFFFF00(透明)                 |      -      |
 |              local-paging-loading-time              |          本地分页时上拉加载更多延迟时间，单位为毫秒          |      Number      |                      200                       |      -      |
-|                use-chat-record-mode                 |                       使用聊天记录模式                       |     Boolean      |                     false                      |    true     |
+|                use-chat-record-mode                 | 使用聊天记录模式，为保证良好的体验，建议同时开启页面滚动(设置`use-page-scroll`为true) |     Boolean      |                     false                      |    true     |
 |            touchmove-propagation-enabled            | 是否允许touchmove事件冒泡，默认为否，禁止冒泡可避免一些情况下下拉刷新时页面其他元素跟着下移，若您使用横向滑动切换选项卡，则需要将此属性设置为true，否则无法横向滑动 |     Boolean      |                     false                      |    true     |
 
 ## Slot
@@ -243,7 +245,9 @@
 | addData              | 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理 | value1:请求结果数组；value2:是否请求成功，不填默认为true     |
 | setLocalPaging       | 设置本地分页，请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging作分页处理（若调用了此方法，则上拉加载更多时内部会自动分页，不会触发@query所绑定的事件） | value1:请求结果数组；value2:是否请求成功，不填默认为true     |
 | doLoadMore           | 手动触发上拉加载更多(非必须，可依据具体需求使用，例如当z-paging未确定高度时，内部的scroll-view会无限增高，此时z-paging无法得知是否滚动到底部，您可以在页面的`onReachBottom`中手动调用此方法触发上拉加载更多) ps:`use-page-scroll`需要设置为true | -                                                            |
+| doChatRecordLoadMore | 手动触发滚动到顶部加载更多，聊天记录模式时有效               | -                                                            |
 | scrollToTop          | 滚动到顶部                                                   | value1:是否有动画效果，默认为是                              |
 | scrollToBottom       | 滚动到底部                                                   | value1:是否有动画效果，默认为是                              |
 | updatePageScrollTop  | 当使用页面滚动(z-paging不固定高度)并且自定义下拉刷新时，请在页面的onPageScroll中调用此方法，告知z-paging当前的pageScrollTop，否则会导致在任意位置都可以下拉刷新 |                                                              |
-| addOneChatRecordData | 添加一条聊天记录，`use-chat-record-mode`为true时有效         | value1:需要添加的一条数据；value2:是否滚动到底部，不填默认为true；value3:是否使用动画滚动到底部，不填默认为true |
+| addChatRecordData    | 添加聊天记录，`use-chat-record-mode`为true时有效             | value1:需要添加的聊天数据，可以是一条数据或一组数据；value2:是否滚动到底部，不填默认为true；value3:是否使用动画滚动到底部，不填默认为true |
+| addDataFromTop       | 从顶部添加数据，不会影响分页的pageNo和pageSize               | value1:需要添加的数据，可以是一条数据或一组数据；value2:是否滚动到顶部，不填默认为true；value3:是否使用动画滚动到顶部，不填默认为true |

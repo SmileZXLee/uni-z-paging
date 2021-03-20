@@ -4,7 +4,7 @@
 		<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 		<z-paging ref="paging" :refresher-threshold="80" :use-custom-refresher="true" @query="queryList"
 			:list.sync="dataList" :refresher-status.sync="refresherStatus" style="height: calc(100% - 80rpx);">
-			<!-- 自定义下拉刷新view(如果use-custom-refresher设置为true且不设置slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
+			<!-- 自定义下拉刷新view(如果use-custom-refresher设置为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
 			<custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>
 			<!-- 自定义没有更多数据view -->
 			<custom-nomore slot="loadingMoreNoMore"></custom-nomore>
