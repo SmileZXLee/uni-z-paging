@@ -235,7 +235,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	</view>
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
-	<div ref="n-list" is="list" :show-scrollbar="showScrollbar" :loadmoreoffset="lowerThreshold"
+	<div ref="n-list" class="n-list" is="list" :show-scrollbar="showScrollbar" :loadmoreoffset="lowerThreshold"
 		:scrollable="scrollEnable" @loadmore="_onLoadingMore('toBottom')" @scroll="_nOnScroll">
 		<refresh class="n-refresh" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
 			@pullingdown="_nOnPullingdown">
@@ -274,38 +274,41 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				name="empty" />
 			<!-- 如果需要修改组件源码来统一设置全局的emptyView，可以把此处的“empty-view”换成自定义的组件名即可 -->
 			<!-- <empty-view v-else-if="!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading"></empty-view> -->
-			<slot @click="_onLoadingMore('click')"
-				v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
-				name="loadingMoreDefault" />
-			<slot @click="_onLoadingMore('click')"
-				v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled"
-				name="loadingMoreLoading" />
-			<slot @click="_onLoadingMore('click')"
-				v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled&&!useChatRecordMode"
-				name="loadingMoreNoMore" />
-			<slot @click="_onLoadingMore('click')"
-				v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
-				name="loadingMoreFail" />
-			<div @click="_onLoadingMore('click')"
-				v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode"
-				class="load-more-container" :style="[loadingMoreCustomStyle]">
-				<text
-					:class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
-					:style="[loadingMoreNoMoreLineCustomStyle]"
-					v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
-				<loading-indicator v-if="loadingStatus===1" :animating="true" class="loading-more-line-loading-image">
-				</loading-indicator>
-				<text
-					v-if="loadingStatus===1&&loadingMoreLoadingIconType==='circle'&&!loadingMoreLoadingIconCustomImage.length"
-					:class="defaultThemeStyle==='white'?'loading-more-line-loading-view loading-more-line-loading-view-white':'loading-more-line-loading-view loading-more-line-loading-view-black'"
-					:style="[loadingMoreLoadingIconCustomStyle]"></text>
-				<text
-					:class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{ownLoadingMoreText}}</text>
-				<text
-					:class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
-					:style="[loadingMoreNoMoreLineCustomStyle]"
-					v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
-			</div>
+			<templete v-if="nShowBottom">
+				<slot @click="_onLoadingMore('click')"
+					v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
+					name="loadingMoreDefault" />
+				<slot @click="_onLoadingMore('click')"
+					v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled"
+					name="loadingMoreLoading" />
+				<slot @click="_onLoadingMore('click')"
+					v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled&&!useChatRecordMode"
+					name="loadingMoreNoMore" />
+				<slot @click="_onLoadingMore('click')"
+					v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
+					name="loadingMoreFail" />
+				<div @click="_onLoadingMore('click')"
+					v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode"
+					class="load-more-container" :style="[loadingMoreCustomStyle]">
+					<text
+						:class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
+						:style="[loadingMoreNoMoreLineCustomStyle]"
+						v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+					<loading-indicator v-if="loadingStatus===1" :animating="true"
+						class="loading-more-line-loading-image">
+					</loading-indicator>
+					<text
+						v-if="loadingStatus===1&&loadingMoreLoadingIconType==='circle'&&!loadingMoreLoadingIconCustomImage.length"
+						:class="defaultThemeStyle==='white'?'loading-more-line-loading-view loading-more-line-loading-view-white':'loading-more-line-loading-view loading-more-line-loading-view-black'"
+						:style="[loadingMoreLoadingIconCustomStyle]"></text>
+					<text
+						:class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{ownLoadingMoreText}}</text>
+					<text
+						:class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
+						:style="[loadingMoreNoMoreLineCustomStyle]"
+						v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+				</div>
+			</templete>
 		</cell>
 	</div>
 	<!-- #endif -->
@@ -443,7 +446,8 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				chatRecordLoadingMoreText: '',
 				moveDistance: 0,
 				nRefresherLoading: false,
-				nListIsDragging: false
+				nListIsDragging: false,
+				nShowBottom: false
 			};
 		},
 		props: {
@@ -1023,6 +1027,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			_reload() {
 				this.isAddedData = false;
 				this.pageNo = this.defaultPageNo;
+				this.nShowBottom = false;
 				this._startLoading();
 				this.firstPageLoaded = true;
 				this.isTotalChangeFromAddData = false;
@@ -1393,6 +1398,12 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				}
 				this.$emit('onRestore');
 				// #ifdef APP-NVUE
+
+				setTimeout(() => {
+					this.$nextTick(() => {
+						this.nShowBottom = true;
+					})
+				}, 800);
 				this.$refs["n-list"].resetLoadmore();
 				this.nRefresherLoading = false;
 				// #endif
@@ -1508,7 +1519,8 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				//#ifdef MP-TOUTIAO
 				checkOldScrollTop = this.oldScrollTop > 10;
 				//#endif
-				return this.loading || !this.refresherEnabled || !this.useCustomRefresher || (this.usePageScroll && this
+				return this.loading || this.useChatRecordMode || !this.refresherEnabled || !this.useCustomRefresher || (
+					this.usePageScroll && this
 					.useCustomRefresher && this
 					.pageScrollTop > 10) || (!(this.usePageScroll && this.useCustomRefresher) && (this.scrollTop >
 					10 || checkOldScrollTop));
