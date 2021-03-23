@@ -53,7 +53,7 @@
 				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
 				//模拟请求服务器获取分页数据，请替换成自己的网络请求
 				this.$request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
-					this.$refs.paging.addData(data);
+					this.$refs.paging.complete(data);
 					//需要手动关闭页面的下拉刷新
 					uni.stopPullDownRefresh();
 				})

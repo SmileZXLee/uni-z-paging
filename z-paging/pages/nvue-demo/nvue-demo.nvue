@@ -6,36 +6,51 @@
 			<empty-view slot="empty"></empty-view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
-			<view>
-				<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
+			
+			<template v-for="(item,index) in dataList">
+				<!-- #ifdef APP-NVUE -->
+				<cell class="item" :key="item.title" @click="itemClick(item)">
+					<text class="item-title">{{item.title}}</text>
+					<text class="item-detail">{{item.detail}}</text>
+					<view class="item-line"></view>
+				</cell>
+				<!-- #endif -->
+				<!-- #ifndef APP-NVUE -->
+				<view class="item" :key="index" @click="itemClick(item)">
 					<view class="item-title">{{item.title}}</view>
 					<view class="item-detail">{{item.detail}}</view>
 					<view class="item-line"></view>
 				</view>
-			</view>
+				<!-- #endif -->
+			</template>
+			
+			
+			
 		</z-paging>
 	</view>
 </template>
 
 <script>
+	import request from '../../http/request.js'
 	export default {
 		data() {
 			return {
 				dataList: [],
-				tabIndex: 0
+				tabIndex: 0,
 			}
 		},
 		methods: {
 			tabChange(index){
 				this.tabIndex = index;
 				//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
-				this.$refs.paging.reload();
+				this.$refs.paging.reload(true);
+				console.log('77777777')
 			},
 			queryList(pageNo, pageSize) {
 				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
 				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
 				//模拟请求服务器获取分页数据，请替换成自己的网络请求
-				this.$request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
+				request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
 					//将请求的结果数组传递给z-paging
 					this.$refs.paging.complete(data);
 				})
@@ -48,25 +63,23 @@
 </script>
 
 <style>
-	/* 注意，1、父节点需要固定高度，z-paging的height:100%才会生效 */
-	/* 注意，2、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突 */
 	
-	/*如果有scoped，page的css设置建议放在App.vue中 */
-	page {
-		height: 100%;
-	}
-
 	.content {
-		height: 100%;
-		/* 父节点建议开启flex布局 */
-		display: flex;
-		flex-direction: column;
+		background-color: white;
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
 	}
 	
 	.item {
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		flex-direction: row;
 		position: relative;
 		height: 100rpx;
-		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		padding: 0rpx 30rpx;
@@ -82,10 +95,10 @@
 
 	.item-line {
 		position: absolute;
-		bottom: 0rpx;
-		left: 0rpx;
+		bottom: 0;
+		left: 0;
+		right: 0;
 		height: 1px;
-		width: 100%;
 		background-color: #eeeeee;
 	}
 </style>

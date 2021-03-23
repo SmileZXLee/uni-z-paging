@@ -17,9 +17,9 @@
 getList(pageNo,pagSize){
 	//拿到分页组件传递过来的pageNo和pageSize和其他需要的参数，传给服务器
 	//在请求成功的回调里面拿到服务器返回的数据，调用以下方法即可(假设res.data.list为服务器返回列表)：
-	this.$refs.paging.addData(res.data.list);
+	this.$refs.paging.complete(res.data.list);
 	//如果请求失败，可以书写以下代码：
-	this.$refs.paging.addData(false);
+	this.$refs.paging.complete(false);
 }
 3.如果要重新加载分页数据(如下拉刷新):
 在js中调用
@@ -40,6 +40,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 若此时下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true。或者在当前page的根view中添加@touchmove.stop.prevent (因uni无法动态控制是否允许冒泡，因此只能使用此方法，若您有更好的解决方案可以通过顶部github或dcloud插件市场联系我，不胜感激！)
  -->
 <template name="z-paging">
+	<!-- #ifndef APP-NVUE -->
 	<view v-if="!touchmovePropagationEnabled&&finalRefresherEnabled&&!usePageScroll" class="z-paging-content"
 		:style="[pagingStyle]" @touchmove.stop.prevent>
 		<scroll-view class="scroll-view" :style="[scrollViewStyle]" :scroll-top="scrollTop"
@@ -60,7 +61,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 						<view v-else class="custom-refresher-container" style="height: 100%;">
 							<view class="custom-refresher-left">
 								<image v-if="refresherStatus!==2" :class="refresherLeftImageClass"
-									:style="[{'transform': 'rotate(180deg)','filter' :defaultThemeStyle==='white'?'brightness(10)':''}]"
+									:style="[{'filter' :defaultThemeStyle==='white'?'brightness(10)':''}]"
 									:src="base64Arrow"></image>
 								<image v-else class="loading-more-line-loading-image custom-refresher-left-image"
 									:src="base64Flower"></image>
@@ -232,20 +233,95 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			</view>
 		</scroll-view>
 	</view>
+	<!-- #endif -->
+	<!-- #ifdef APP-NVUE -->
+	<list ref="n-list" :show-scrollbar="showScrollbar" :loadmoreoffset="lowerThreshold" :scrollable="scrollEnable"
+		@loadmore="_onLoadingMore('toBottom')" @scroll="_nOnScroll">
+		<refresh class="n-refresh" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
+			@pullingdown="_nOnPullingdown">
+			<div class="n-refresh-container">
+				<slot v-if="$slots.refresher" name="refresher" />
+				<div v-else class="custom-refresher-container" style="height: 100%;">
+					<div class="custom-refresher-left">
+						<image v-if="refresherStatus!==2" :class="refresherLeftImageClass"
+							:style="[{'transform': 'rotate(180deg)','filter' :defaultThemeStyle==='white'?'brightness(10)':''}]"
+							:src="base64Arrow"></image>
+						<loading-indicator v-else :animating="true" class="custom-refresher-left-image"></loading-indicator>
+					</div>
+					<div
+						:class="defaultThemeStyle==='white'?'custom-refresher-right custom-refresher-right-white':'custom-refresher-right custom-refresher-right-black'">
+						<text class="custom-refresher-right-text">{{refresherStatusTextMap[refresherStatus]}}
+						</text>
+					</div>
+				</div>
+			</div>
+		</refresh>
+		<slot />
+		<cell>
+			<slot v-if="useChatRecordMode&&$slots.chatLoading&&loadingStatus!==2&&realTotalData.length"
+				name="chatLoading" />
+			<div v-else-if="useChatRecordMode&&loadingStatus!==2&&realTotalData.length"
+				class="chat-record-loading-container">
+				<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
+					:class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
+				<image v-else :src="base64Flower" class="chat-record-loading-custom-image">
+				</image>
+			</div>
+			<slot v-if="$slots.loading&&!firstPageLoaded&&loading" name="loading" />
+			<slot
+				v-if="$slots.empty&&!totalData.length&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)"
+				name="empty" />
+			<!-- 如果需要修改组件源码来统一设置全局的emptyView，可以把此处的“empty-view”换成自定义的组件名即可 -->
+			<!-- <empty-view v-else-if="!totalData.length&&!hideEmptyView&&!firstPageLoaded&&!loading"></empty-view> -->
+			<slot @click="_onLoadingMore('click')"
+				v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
+				name="loadingMoreDefault" />
+			<slot @click="_onLoadingMore('click')"
+				v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled"
+				name="loadingMoreLoading" />
+			<slot @click="_onLoadingMore('click')"
+				v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled&&!useChatRecordMode"
+				name="loadingMoreNoMore" />
+			<slot @click="_onLoadingMore('click')"
+				v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
+				name="loadingMoreFail" />
+			<div @click="_onLoadingMore('click')"
+				v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode"
+				class="load-more-container" :style="[loadingMoreCustomStyle]">
+				<text
+					:class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
+					:style="[loadingMoreNoMoreLineCustomStyle]"
+					v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+				<loading-indicator v-if="loadingStatus===1" :animating="true" class="loading-more-line-loading-image">
+				</loading-indicator>
+				<text
+					v-if="loadingStatus===1&&loadingMoreLoadingIconType==='circle'&&!loadingMoreLoadingIconCustomImage.length"
+					:class="defaultThemeStyle==='white'?'loading-more-line-loading-view loading-more-line-loading-view-white':'loading-more-line-loading-view loading-more-line-loading-view-black'"
+					:style="[loadingMoreLoadingIconCustomStyle]"></text>
+				<text
+					:class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{ownLoadingMoreText}}</text>
+				<text
+					:class="defaultThemeStyle==='white'?'loading-more-line loading-more-line-white':'loading-more-line loading-more-line-black'"
+					:style="[loadingMoreNoMoreLineCustomStyle]"
+					v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
+			</div>
+		</cell>
+	</list>
+	<!-- #endif -->
 </template>
 
 <script>
 	const commonDelayTime = 100;
 	const base64Arrow =
-		'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyBjbGFzcz0iaWNvbiIgd2lkdGg9IjIwMHB4IiBoZWlnaHQ9IjIwMC4wMHB4IiB2aWV3Qm94PSIwIDAgMTAyNCAxMDI0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTUyNS4zMzkzMjYgMTg2LjE3MjQ1Mkw4MDEuNzg5MDg2IDQ2Mi42MjIyMTJjMTIuNDk2Njk4IDEyLjQ5NjY5OCAzMi43NTgxMzYgMTIuNDk2Njk4IDQ1LjI1NDgzNCAwIDEyLjQ5NzQwNS0xMi40OTc0MDUgMTIuNDk2Njk4LTMyLjc1ODEzNiAwLTQ1LjI1NDgzNGwtMzMxLjAxNDM2Mi0zMzEuMDE0MzYyYy0xMi40OTY2OTgtMTIuNDk2Njk4LTMyLjc1NzQyOS0xMi40OTc0MDUtNDUuMjU0ODM0IDBsLTM0MS43OTU2MTkgMzM5LjE0Mzk2OWMtMTIuNDk2Njk4IDEyLjQ5NjY5OC0xMi40OTY2OTggMzIuNzU4MTM2IDAgNDUuMjU0ODM0IDEyLjQ5NjY5OCAxMi40OTY2OTggMzIuNzU4MTM2IDEyLjQ5NjY5OCA0NS4yNTQ4MzQgMGwyODcuMTA1ODYtMjg0LjQ1NDIwOUw0NjEuMzcyMzI1IDkyNS43MjYyNDJjMCAxNy42NzM0MjcgMTQuMzI2NjkgMzIuMDAwMTE3IDMyLjAwMDExOCAzMi4wMDAxMTcgMTcuNjcyNzItMC4wMDA3MDcgMzEuOTk5NDEtMTQuMzI3Mzk4IDMyLjAwMDExNy0zMi4wMDAxMTdsLTAuMDMyNTI3LTczOS41NTMwODN6IiBmaWxsPSIjNTE1MTUxIiAvPjwvc3ZnPg==';
+		'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkBAMAAACCzIhnAAAAD1BMVEVHcExRUVFMTExRUVFRUVE9CdWsAAAABHRSTlMAjjrY9ZnUjwAAAQFJREFUWMPt2MsNgzAMgGEEE1B1gKJmAIRYoCH7z9RCXrabh33iYktcIv35EEg5ZBh07pvxJU6MFSPOSRnjnBUjUsaciRUjMsb4xIoRCWNiYsUInzE5sWKEyxiYWDbyefqHx1zIeiYTk7mQYziTYecxHvEJjwmIT3hMQELCYSISEg4TkZj0mYTEpM8kJCU9JiMp6TEZyUmbAUhO2gxAQNJiIAKSFgMRmNQZhMCkziAEJTUGIyipMRjBSZkhCE7KDEFIUmTeGCHJxWz0zXaE0GTCG8ZFtEaS347r/1fe11YyHYVfubxayfjoHmc0YYwmmmiiiSaaaKLJ7ckyz5ve+dw3Xw2emdwm9xSbAAAAAElFTkSuQmCC';
 	const base64Flower =
-		'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyBjbGFzcz0iaWNvbiIgd2lkdGg9IjIwMHB4IiBoZWlnaHQ9IjIwMC4wMHB4IiB2aWV3Qm94PSIwIDAgMTAyNCAxMDI0IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTYyNC42NjMgNzg1LjEzOWMtMTAuNzM1LTE4LjU5NS00LjMxNi00Mi4zOTcgMTQuMzM3LTUzLjE2OCAxOC42NTMtMTAuNzcgNDIuNDc5LTQuNDI3IDUzLjIxMyAxNC4xNjhsOTAuMTIzIDE1Ni4wOTljMTAuNzM2IDE4LjU5NSA0LjMxNyA0Mi4zOTgtMTQuMzM2IDUzLjE2OS0xOC42NTMgMTAuNzctNDIuNDc5IDQuNDI2LTUzLjIxNC0xNC4xNjlsLTkwLjEyMy0xNTYuMDk5eiIgZmlsbD0iI2NkY2RjZCIgLz48cGF0aCBkPSJNMjQxLjY2NCAxMjEuNzY0Yy0xMC43MzUtMTguNTk0LTQuMzE3LTQyLjM5OCAxNC4zMzYtNTMuMTY5IDE4LjY1My0xMC43NyA0Mi40NzktNC40MjYgNTMuMjE0IDE0LjE2OGw5MC4xMjQgMTU2LjA5OWMxMC43MzUgMTguNTk0IDQuMzE2IDQyLjM5OC0xNC4zMzcgNTMuMTY4LTE4LjY1MyAxMC43Ny00Mi40NzggNC40MjYtNTMuMjEzLTE0LjE2OGwtOTAuMTI0LTE1Ni4wOTh6IiBmaWxsPSIjYTlhOWE5IiAvPjxwYXRoIGQ9Ik0yMzguODYxIDYyNC42NjNjMTguNTk0LTEwLjczNSA0Mi4zOTgtNC4zMTYgNTMuMTY4IDE0LjMzNyAxMC43NyAxOC42NTMgNC40MjYgNDIuNDc5LTE0LjE2OCA1My4yMTNsLTE1Ni4wOTggOTAuMTI0Yy0xOC41OTQgMTAuNzM1LTQyLjM5OSA0LjMxNi01My4xNjgtMTQuMzM3LTEwLjc3LTE4LjY1My00LjQyNi00Mi40NzkgMTQuMTY4LTUzLjIxM2wxNTYuMDk4LTkwLjEyNHoiIGZpbGw9IiNiYmJiYmIiIC8+PHBhdGggZD0iTTkwMi4yMzYgMjQxLjY2NGMxOC41OTQtMTAuNzM2IDQyLjM5OC00LjMxNyA1My4xNjkgMTQuMzM2IDEwLjc3IDE4LjY1NCA0LjQyNiA0Mi40NzktMTQuMTY5IDUzLjIxNGwtMTU2LjA5OSA5MC4xMjNjLTE4LjU5NCAxMC43MzUtNDIuMzk3IDQuMzE2LTUzLjE2OC0xNC4zMzctMTAuNzctMTguNjU0LTQuNDI2LTQyLjQ3OSAxNC4xNjgtNTMuMjEzbDE1Ni4wOTktOTAuMTIzeiIgZmlsbD0iIzk5OTk5OSIgLz48cGF0aCBkPSJNMzMxLjc4NyA3NDYuMTM5YzEwLjczNC0xOC41OTUgMzQuNTYtMjQuOTM4IDUzLjIxMy0xNC4xNjggMTguNjUzIDEwLjc3MSAyNS4wNzIgMzQuNTczIDE0LjMzNiA1My4xNjhsLTkwLjEyMyAxNTYuMDk5Yy0xMC43MzQgMTguNTk1LTM0LjU2IDI0LjkzOC01My4yMTMgMTQuMTY5LTE4LjY1My0xMC43NzEtMjUuMDcyLTM0LjU3NC0xNC4zMzYtNTMuMTY5bDkwLjEyMy0xNTYuMDk5eiIgZmlsbD0iI2MyYzJjMiIgLz48cGF0aCBkPSJNNzE0Ljc4NiA4Mi43NjRjMTAuNzM1LTE4LjU5NCAzNC41NjEtMjQuOTM4IDUzLjIxNC0xNC4xNjkgMTguNjUzIDEwLjc3MSAyNS4wNzIgMzQuNTc1IDE0LjMzNyA1My4xNjhsLTkwLjEyMyAxNTYuMDk5Yy0xMC43MzUgMTguNTk0LTM0LjU2MSAyNC45MzgtNTMuMjE0IDE0LjE2OC0xOC42NTMtMTAuNzcxLTI1LjA3Mi0zNC41NzQtMTQuMzM3LTUzLjE2OGw5MC4xMjMtMTU2LjA5OHoiIGZpbGw9IiM5ZDlkOWQiIC8+PHBhdGggZD0iTTI3Ny44NjEgMzMxLjc4N2MxOC41OTQgMTAuNzM1IDI0LjkzOCAzNC41NiAxNC4xNjggNTMuMjEzcy0zNC41NzQgMjUuMDcyLTUzLjE2OCAxNC4zMzZMODIuNzYzIDMwOS4yMTNDNjQuMTY5IDI5OC40NzggNTcuODI1IDI3NC42NTMgNjguNTk1IDI1NmMxMC43NzEtMTguNjUzIDM0LjU3NC0yNS4wNzIgNTMuMTY4LTE0LjMzNmwxNTYuMDk4IDkwLjEyM3oiIGZpbGw9IiNhZmFmYWYiIC8+PHBhdGggZD0iTTk0MS4yMzYgNzE0Ljc4NmMxOC41OTUgMTAuNzM0IDI0LjkzOCAzNC41NjEgMTQuMTY5IDUzLjIxNC0xMC43NzEgMTguNjUzLTM0LjU3NCAyNS4wNzItNTMuMTY5IDE0LjMzN2wtMTU2LjA5OS05MC4xMjNDNzI3LjU0NCA2ODEuNDc5IDcyMS4yIDY1Ny42NTMgNzMxLjk3IDYzOWMxMC43NzEtMTguNjUzIDM0LjU3NC0yNS4wNzIgNTMuMTY4LTE0LjMzN2wxNTYuMDk4IDkwLjEyM3oiIGZpbGw9IiNkMWQxZDEiIC8+PHBhdGggZD0iTTIxOS4xMjMgNDczYzIxLjQ3MSAwIDM4Ljg3NyAxNy40NjEgMzguODc3IDM5cy0xNy40MDYgMzktMzguODc3IDM5SDM4Ljg3N0MxNy40MDYgNTUxIDAgNTMzLjUzOSAwIDUxMnMxNy40MDYtMzkgMzguODc3LTM5aDE4MC4yNDZ6IiBmaWxsPSIjYjZiNmI2IiAvPjxwYXRoIGQ9Ik05ODUuMTIzIDQ3M2MyMS40NzEgMCAzOC44NzcgMTcuNDYxIDM4Ljg3NyAzOXMtMTcuNDA2IDM5LTM4Ljg3NyAzOUg4MDQuODc3Yy0yMS40NzEgMC0zOC44NzctMTcuNDYxLTM4Ljg3Ny0zOXMxNy40MDYtMzkgMzguODc3LTM5aDE4MC4yNDZ6IiBmaWxsPSIjOTQ5NDk0IiAvPjxwYXRoIGQ9Ik01NTEgMjE5LjEyM2MwIDIxLjQ3MS0xNy40NjEgMzguODc3LTM5IDM4Ljg3N3MtMzktMTcuNDA2LTM5LTM4Ljg3N1YzOC44NzdjMC0yMS40NzEgMTcuNDYxLTM4Ljg3NyAzOS0zOC44NzdzMzkgMTcuNDA2IDM5IDM4Ljg3N3YxODAuMjQ2eiIgZmlsbD0iI2EzYTNhMyIgLz48cGF0aCBkPSJNNTUxIDk4NS4xMjNjMCAyMS40NzEtMTcuNDYxIDM4Ljg3Ny0zOSAzOC44NzdzLTM5LTE3LjQwNi0zOS0zOC44NzdWODA0Ljg3N2MwLTIxLjQ3MSAxNy40NjEtMzguODc3IDM5LTM4Ljg3N3MzOSAxNy40MDYgMzkgMzguODc3djE4MC4yNDZ6IiBmaWxsPSIjYzhjOGM4IiAvPjwvc3ZnPg=='
+		'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkBAMAAACCzIhnAAAAKlBMVEVHcEzDw8Ovr6+pqamUlJTCwsKenp61tbWxsbGysrLNzc2bm5u5ubmjo6MpovhuAAAACnRSTlMA/P79/sHDhiZS0DxZowAABBBJREFUWMPtl89rE0EUx7ctTXatB3MI1SWnDbUKPUgXqh4ED8Uf7KUVSm3ooVSpSii0Fn/gD4j4o+APiEoVmos9FO2celiqZVgwgaKHPQiCCkv+F99kM7Ozm5kxq1dfD91k9pPve9/3ZjbRNHHok/mKli4eIPNgSuRObuN9SqSEzM20iGnm0yIbqCuV7NSSSIV7uyPM6JMBYdeTOanh/QihJYZsUCSby+VkMj2AvOt0rAeQAwqE3lfKMZVlQCZk1QOCKkkVPadITCfIRNKxfoJI5+0OIFtJx14CMSg1mRSDko7VAfksRQzEbGYqxOJcVTWMCH2I1/IACNW0PWU2M8cmAVHtnH5mM1VRWtwKZjOd5JbF6s1IbaYqaotjNlPHgDAnlAizubTR6ovMYn052g/U5qcmOpi0WL8xTS/3IfSet5m8MEr5ajjF5le6dq/OJpobrdY0t3i9QgefWrxW9/1BLhk0E9m8FeUMhhXal499iD0eQRfDF+ts/tttORRerfp+oV7f4xJj82iUYm1Yzod+ZQEAlS/8mMBwKebVmCVp1f0JLS6zKd17+iwRKTARVg2SHtz3iEbBH+Q+U28zW2Jiza8Tjb1YFoYZMsJyjDqp3M9XBQdSdPLFdxEpvOB37JrHcmR/y9+LgoTlCFGZEa2sc6d4PGlweEa2JSVPoVm+IfGG3ZL037iV9oH+P+Jxc4HGVflNq1M0pivao/EopO4b/ojVCP9GjmiXOeS0DOn1o/iiccT4ORnyvBGF3yUywkQajW4Ti0SGuiy/wVSg/L8w+X/8Q+hvUx8Xd90z4oV5a1i88MbFWHz0WZZ1UrTwBGPX3Rat9AFiXRMRjoMdIdJLEOt2h7jrYOzgOamKZSWSNspOS0X8SAqRYmxRL7sg4eLzYmNehcxh3uoyud/BH2Udux4ywxFTc1xC7Mgf4vMhc5S+kSH3Y7yj+qpwIWSoPTVCOOPVthGx9FbGqrwFw6wSFxJr+17zeKcztt3u+2roAEVgUjDd+AHGuxHy2rZHaa8JMkTHEeyi85ANPO9j9BVuBRD2FY5LDMo/Sz/2hReqGIs/KiFin+CsPsYO/yvM3jL2vE8EbX7/Bf8ejtr2GLN65bioAdgLd8Bis/mD5GmP2qeqyo2ZwQEOtAjRIDH7mBKpUcMoApbZJ5UIxkEwxyMZyMxW/uKFvHCFR3SSmerHyDNQ2dF4JG6zIMpBgLfjSF9x1D6smFcYnGApjmSLICO3ecCDWrQ48geba9DI3STy2i7ax6WIB62fSyIZIiO3GFQqSURp8wCo7GhJBGwuSovJBNjb7kT6FPVnIa9qJ2Ko+l9mefGIdinaMp0yC1URYiwsdfNE45EuA5Cx9EhalfvN5s+UyItm81vaB3p4joniN+SCP7Qc1hblAAAAAElFTkSuQmCC'
 	/**
 	 * z-paging 分页组件
 	 * @description 【uni-app自动分页器】超简单，低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view等。
 	 * @tutorial https://github.com/SmileZXLee/uni-z-paging
-	 * @property {Number} default-page-no 自定义pageNo，默认为1
-	 * @property {Number} default-page-size 自定义pageSize，默认为15
+	 * @property {Number|String} default-page-no 自定义pageNo，默认为1
+	 * @property {Number|String} default-page-size 自定义pageSize，默认为15
 	 * @property {Object} paging-style 设置z-paging的style，部分平台可能无法直接修改组件的style，可使用此属性代替
 	 * @property {Boolean} auto-height z-paging是否自动高度，若自动高度则会自动铺满屏幕，默认为否
 	 * @property {String} auto-height-addition z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数
@@ -254,8 +330,10 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 * @property {Boolean} mounted-auto-call-reload z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
 	 * @property {Boolean} auto-scroll-to-top-when-reload reload时自动滚动到顶部，默认为是
 	 * @property {Boolean} auto-clean-list-when-reload reload时立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
-	 * @property {Boolean} use-custom-refresher 是否使用自定义的下拉刷新，默认为否，使用uni自带的下拉刷新。设置为是后则使用z-paging的下拉刷新
-	 * @property {Number} refresher-fps 自定义下拉刷新下拉帧率，默认为30，过高可能会出现抖动问题(use-custom-refresher为true时生效)
+	 * @property {Boolean} use-custom-refresher 是否使用自定义的下拉刷新，默认为是，即使用z-paging的下拉刷新。设置为false即代表使用uni scroll-view自带的下拉刷新，h5、App、微信小程序以外的平台不支持uni scroll-view自带的下拉刷新
+	 * @property {Number|String} refresher-fps 自定义下拉刷新下拉帧率，默认为30，过高可能会出现抖动问题(use-custom-refresher为true时生效)
+	 * @property {Number|String} refresher-max-angle 自定义下拉刷新允许触发的最大下拉角度，默认为40度，当下拉角度小于设定值时，自定义下拉刷新动画不会被触发
+	 * @property {Boolean} refresher-angle-enable-change-continued 自定义下拉刷新的角度由未达到最大角度变到达到最大角度时，是否继续下拉刷新手势，默认为是，在tab横向切换时建议设置为否
 	 * @property {String} refresher-default-text 自定义下拉刷新默认状态下的文字(use-custom-refresher为true时生效)
 	 * @property {String} refresher-pulling-text 自定义下拉刷新松手立即刷新状态下的文字(use-custom-refresher为true时生效)
 	 * @property {String} refresher-refreshing-text 自定义下拉刷新刷新中状态下的文字(use-custom-refresher为true时生效)
@@ -288,7 +366,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 * @property {Number} refresher-threshold 设置自定义下拉刷新阈值，默认为45
 	 * @property {String} refresher-default-style 设置自定义下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式，默认为black
 	 * @property {String} refresher-background 设置自定义下拉刷新区域背景颜色
-	 * @property {Number} local-paging-loading-time 本地分页时上拉加载更多延迟时间，单位为毫秒，默认200毫秒
+	 * @property {Number|String} local-paging-loading-time 本地分页时上拉加载更多延迟时间，单位为毫秒，默认200毫秒
 	 * @property {Boolean} use-chat-record-mode 使用聊天记录模式，默认为否
 	 * @property {Boolean} touchmove-propagation-enabled 是否允许touchmove事件冒泡，默认为否，禁止冒泡可避免一些情况下下拉刷新时页面其他元素跟着下移，若您使用横向滑动切换选项卡，则需要将此属性设置为true，否则无法横向滑动
 	 * @event {Function} addData 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认为是)
@@ -325,6 +403,8 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				base64Flower: base64Flower,
 				refresherLeftImageClass: 'custom-refresher-left-image',
 				refresherTouchstartY: 0,
+				lastRefresherTouchmove: null,
+				refresherReachMaxAngle: true,
 				refresherTransform: 'translateY(0px)',
 				refresherTransition: '0s',
 				finalRefresherDefaultStyle: 'black',
@@ -358,7 +438,10 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				isTotalChangeFromAddData: false,
 				privateRefresherEnabled: -1,
 				privateScrollWithAnimation: false,
-				chatRecordLoadingMoreText: ''
+				chatRecordLoadingMoreText: '',
+				moveDistance: 0,
+				nRefresherLoading: false,
+				nListIsDragging: false
 			};
 		},
 		props: {
@@ -435,23 +518,32 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					return true;
 				},
 			},
-			//是否使用自定义的下拉刷新，默认为否，使用uni自带的下拉刷新。设置为是后则使用z-paging的下拉刷新
+			//是否使用自定义的下拉刷新，默认为是，即使用z-paging的下拉刷新。设置为false即代表使用uni scroll-view自带的下拉刷新，h5、App、微信小程序以外的平台不支持uni scroll-view自带的下拉刷新
 			useCustomRefresher: {
 				type: Boolean,
 				default: function() {
-					//#ifdef H5 || APP-PLUS ||  MP-WEIXIN
-					return false;
-					//#endif
-					//#ifndef H5 || APP-PLUS ||  MP-WEIXIN
 					return true;
-					//#endif
 				},
 			},
 			//自定义下拉刷新下拉帧率，默认为30，过高可能会出现抖动问题(use-custom-refresher为true时生效)
 			refresherFps: {
-				type: Number,
+				type: [Number, String],
 				default: function() {
 					return 30;
+				},
+			},
+			//自定义下拉刷新允许触发的最大下拉角度，默认为40度，当下拉角度小于设定值时，自定义下拉刷新动画不会被触发
+			refresherMaxAngle: {
+				type: [Number, String],
+				default: function() {
+					return 40;
+				},
+			},
+			//自定义下拉刷新的角度由未达到最大角度变到达到最大角度时，是否继续下拉刷新手势，默认为是，在tab横向切换时建议设置为否
+			refresherAngleEnableChangeContinued: {
+				type: Boolean,
+				default: function() {
+					return true;
 				},
 			},
 			//自定义下拉刷新默认状态下的文字(use-custom-refresher为true时生效)
@@ -680,7 +772,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			},
 			//本地分页时上拉加载更多延迟时间，单位为毫秒，默认200毫秒
 			localPagingLoadingTime: {
-				type: Number,
+				type: [Number, String],
 				default: function() {
 					return 200;
 				}
@@ -836,6 +928,10 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		},
 		methods: {
 			//请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认是是）
+			complete(data, success = true) {
+				this.addData(data, success);
+			},
+			//与上方complete方法功能一致，新版本中设置服务端回调数组请使用complete方法
 			addData(data, success = true) {
 				this.$nextTick(() => {
 					this._addData(data, success, false);
@@ -886,6 +982,9 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					} else {
 						this.refresherTriggered = true;
 					}
+					// #ifdef APP-NVUE
+					this.nRefresherLoading = true;
+					// #endif
 				} else {
 					this._refresherEnd(false);
 				}
@@ -935,6 +1034,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					console.warn('[z-paging]使用聊天记录模式时，建议使用页面滚动，可将usePageScroll设置为true以启用页面滚动！！');
 				}
 			},
+			//私有的处理服务端返回的数组方法
 			_addData(data, success, isLocal) {
 				this.isAddedData = true;
 				this.isTotalChangeFromAddData = true;
@@ -958,7 +1058,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					if (isLocal) {
 						this.totalLocalPagingList = data;
 						this._localPagingQueryList(this.defaultPageNo, this.defaultPageSize, 0, (res) => {
-							this.addData(res);
+							this.complete(res);
 						})
 					} else {
 						this._currentDataChange(data, this.currentData);
@@ -1188,9 +1288,11 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				if (!this.loading) {
 					this.isTouchmoving = false;
 				}
+				const touch = this._getCommonTouch(e);
 				this.refresherTransition = 'transform .1s linear';
-				this.refresherTouchstartY = e.touches[0].clientY;
+				this.refresherTouchstartY = touch.touchY;
 				this.$emit('refresherTouchstart', this.refresherTouchstartY);
+				this.lastRefresherTouchmove = touch;
 			},
 			//拖拽中
 			_refresherTouchmove(e) {
@@ -1201,12 +1303,32 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				if (this._getRefresherTouchDisabled()) {
 					return;
 				}
-				this.pullDownTimeStamp = currentTimeStamp;
-				let refresherTouchmoveY = e.touches[0].clientY;
+				this.pullDownTimeStamp = Number(currentTimeStamp);
+				const touch = this._getCommonTouch(e);
+				let refresherTouchmoveY = touch.touchY;
 				let moveDistance = refresherTouchmoveY - this.refresherTouchstartY;
 				if (moveDistance < 0) {
 					return;
 				}
+				if (this.refresherMaxAngle >= 0 && this.refresherMaxAngle <= 90 && this.lastRefresherTouchmove && this
+					.lastRefresherTouchmove.touchY <= refresherTouchmoveY) {
+					if (!this.refresherAngleEnableChangeContinued && this.moveDistance < 1 && !this
+						.refresherReachMaxAngle) {
+						return;
+					}
+					const x = Math.abs(touch.touchX - this.lastRefresherTouchmove.touchX);
+					const y = Math.abs(refresherTouchmoveY - this.lastRefresherTouchmove.touchY);
+					const z = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+					if (x && y) {
+						const angle = Math.asin(y / z) / Math.PI * 180;
+						if (angle < this.refresherMaxAngle) {
+							this.lastRefresherTouchmove = touch;
+							this.refresherReachMaxAngle = false;
+							return;
+						}
+					}
+				}
+				this.refresherReachMaxAngle = true;
 				if (!this.isTouchmoving) {
 					this.isTouchmoving = true;
 				}
@@ -1218,14 +1340,18 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				}
 				this.scrollEnable = false;
 				this.refresherTransform = `translateY(${moveDistance}px)`;
+				this.moveDistance = moveDistance;
 				this.$emit('refresherTouchmove', moveDistance);
+				this.lastRefresherTouchmove = touch;
 			},
 			//拖拽结束
 			_refresherTouchend(e) {
 				if (this._getRefresherTouchDisabled()) {
 					return;
 				}
-				let refresherTouchendY = e.changedTouches[0].clientY;
+				this.refresherReachMaxAngle = true;
+				const touch = this._getCommonTouch(e);
+				let refresherTouchendY = touch.touchY;
 				let moveDistance = refresherTouchendY - this.refresherTouchstartY;
 				moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
 				if (moveDistance < 0 && this.usePageScroll && this.useCustomRefresher && this.pageScrollTop === -1) {
@@ -1234,7 +1360,8 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					)
 				}
 				if (moveDistance >= this.refresherThreshold && this.refresherStatus === 1) {
-					this.refresherTransform = `translateY(${this.refresherThreshold}px)`
+					this.refresherTransform = `translateY(${this.refresherThreshold}px)`;
+					this.moveDistance = this.refresherThreshold;
 					this.refresherStatus = 2;
 					this._doRefresherLoad();
 				} else {
@@ -1249,6 +1376,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			//下拉刷新结束
 			_refresherEnd(shouldEndLoadingDelay = true) {
 				this.refresherTransform = 'translateY(0px)';
+				this.moveDistance = 0;
 				if (this.refresherEndBounceEnabled) {
 					this.refresherTransition = 'transform 0.3s cubic-bezier(0.19,1.64,0.42,0.72)';
 				}
@@ -1263,10 +1391,15 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					this.loading = false;
 				}
 				this.$emit('onRestore');
+				// #ifdef APP-NVUE
+				this.$refs["n-list"].resetLoadmore();
+				this.nRefresherLoading = false;
+				// #endif
 			},
 			//模拟用户手动触发下拉刷新
 			_doRefresherRefreshAnimate() {
 				this.refresherTransform = `translateY(${this.refresherThreshold}px)`;
+				this.moveDistance = this.refresherThreshold;
 				this.refresherStatus = 2;
 				this.isTouchmoving = true;
 			},
@@ -1308,7 +1441,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					const scrollViewTotalH = scrollViewNode[0].top + scrollViewNode[0].height;
 					if (scrollViewTotalH > this.systemInfo.windowHeight + 100) {
 						console.error(
-							'[z-paging]检测到z-paging的高度超出页面高度，这将导致滚动出现异常，请确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}，此时z-paging的百分比高度才能生效。详情参照demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
+							'[z-paging]检测到z-paging的高度超出页面高度，这将导致滚动出现���常，请确保z-paging有确定的高度(如果通过百���比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}，此时z-paging的百分比高度才能生效。详情参照demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
 						);
 					}
 				} catch (e) {
@@ -1425,6 +1558,51 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					return Number(text);
 				}
 				return 0;
+			},
+			//获取最终的touch位置
+			_getCommonTouch(e) {
+				let touch = null;
+				if (e.touches && e.touches.length) {
+					touch = e.touches[0];
+				} else if (e.changedTouches && e.changedTouches.length) {
+					touch = e.changedTouches[0];
+				} else if (e.datail && e.datail !== {}) {
+					touch = e.datail;
+				} else {
+					return {
+						touchX: 0,
+						touchY: 0
+					}
+				}
+				return {
+					touchX: touch.clientX,
+					touchY: touch.clientY
+				};
+			},
+			// ---------nvue独有的方法----------------
+			//列表滚动时触发
+			_nOnScroll(e) {
+				this.nListIsDragging = e.isDragging;
+			},
+			//下拉刷新完成时触发
+			_nOnRrefresh() {
+				this.nRefresherLoading = true;
+				this.refresherStatus = 2;
+				this._doRefresherLoad();
+			},
+			//下拉刷新中
+			_nOnPullingdown(e) {
+				if (!this.nListIsDragging) {
+					return;
+				}
+				const viewHeight = e.viewHeight;
+				const pullingDistance = e.pullingDistance;
+				if (pullingDistance >= viewHeight) {
+					this.refresherStatus = 1;
+				} else {
+					this.refresherStatus = 0;
+				}
+				//console.log(e);
 			}
 		},
 	};
@@ -1480,11 +1658,26 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		align-items: center;
 	}
 
+	.custom-refresher-left {
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		flex-direction: row;
+		align-items: center;
+	}
+
 	.custom-refresher-left-image {
 		width: 30rpx;
 		height: 30rpx;
-		margin-top: 10rpx;
+		/* margin-top: 10rpx; */
 		margin-right: 8rpx;
+		/* #ifdef APP-NVUE */
+		width: 35rpx;
+		height: 35rpx;
+		transition-duration: .2s;
+		transition-property: transform;
+		transform: rotate(180deg);
+		/* #endif */
 	}
 
 	.custom-refresher-arrow-top {
@@ -1493,6 +1686,10 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		-webkitanimation: refresher-arrow-top 0.25s linear;
 		animation-fill-mode: forwards;
 		-webkit-animation-fill-mode: forwards;
+		/* #endif */
+
+		/* #ifdef APP-NVUE */
+		transform: rotate(0deg);
 		/* #endif */
 	}
 
@@ -1503,10 +1700,28 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		animation-fill-mode: forwards;
 		-webkit-animation-fill-mode: forwards;
 		/* #endif */
+		/* #ifdef APP-NVUE */
+		transform: rotate(180deg);
+		/* #endif */
 	}
 
 	.custom-refresher-right {
 		font-size: 24rpx;
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.custom-refresher-right-text {
+		/* #ifdef APP-NVUE */
+		font-size: 28rpx;
+		height: 40px;
+		line-height: 40px;
+		/* #endif */
+		color: #555555
 	}
 
 	.custom-refresher-right-black {
@@ -1530,18 +1745,26 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 
 	.loading-more-line-loading-image {
 		margin-right: 8rpx;
+		/* #ifdef APP-NVUE */
+		width: 14px;
+		height: 14px;
+		/* #endif */
+		/* #ifndef APP-NVUE */
 		width: 28rpx;
 		height: 28rpx;
-		/* #ifndef APP-NVUE */
 		animation: loading-flower 1s steps(12) infinite;
 		/* #endif */
 	}
 
 	.loading-more-line-loading-custom-image {
 		margin-right: 8rpx;
+		/* #ifdef APP-NVUE */
+		width: 14px;
+		height: 14px;
+		/* #endif */
+		/* #ifndef APP-NVUE */
 		width: 28rpx;
 		height: 28rpx;
-		/* #ifndef APP-NVUE */
 		animation: loading-circle 1s linear infinite;
 		/* #endif */
 	}
@@ -1568,6 +1791,13 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 		border-top-color: #ffffff;
 	}
 
+	.loading-more-text {
+		/* #ifdef APP-NVUE */
+		font-size: 30rpx;
+		margin: 0rpx 10rpx;
+		/* #endif */
+	}
+
 	.loading-more-text-black {
 		color: #a4a4a4;
 	}
@@ -1588,6 +1818,14 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 
 	.loading-more-line-white {
 		background-color: #cccccc;
+	}
+
+	.n-refresh-container {
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		justify-content: center;
+		width: 750rpx;
 	}
 
 	@keyframes loading-flower {

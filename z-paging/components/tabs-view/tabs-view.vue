@@ -2,7 +2,7 @@
 	<view class="segment">
 		<view class="segment-item" v-for="(title,index) in items" :key="index" :style="{width:itemWidth}" @click="itemClick(index)">
 			<view class="title-container">
-				<view class="title" :style="{color:currentIndex===index?'#007AFF':'darkgray'}">{{title}}</view>
+				<text class="title" :style="{color:currentIndex===index?'#007AFF':'darkgray'}">{{title}}</text>
 			</view>
 			<view class="line" :style="{'background-color':currentIndex===index?'#007AFF':'white'}"></view>
 		</view>
@@ -46,7 +46,6 @@
 
 	.segment {
 		background-color: white;
-		height: 100%;
 		height: 80rpx;
 		/* #ifndef APP-NVUE */
 		display: flex;
@@ -60,12 +59,18 @@
 	}
 
 	.segment-item {
-		height: 100%;
+		height: 80rpx;
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.title-container {
 		width: 100%;
-		height: calc(100% - 2px);
+		height: 76rpx;
 		/* #ifndef APP-NVUE */
 		display: flex;
 		/* #endif */
@@ -76,11 +81,12 @@
 
 	.title {
 		width: 100%;
+		font-size: 30rpx;
+		text-align: center;
 	}
 
 	.line {
 		height: 2px;
 		width: 70%;
-		margin-left: 15%;
 	}
 </style>

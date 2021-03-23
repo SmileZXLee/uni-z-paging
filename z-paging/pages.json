@@ -48,7 +48,16 @@
 			}
 
 		}
-	],
+	    ,{
+            "path" : "pages/nvue-demo/nvue-demo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "nvue演示",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "z-paging",

@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<!-- 这里设置了z-paging加载时禁止自动调用reload方法，自行控制何时reload（懒加载），同时允许touchmove事件冒泡，否则无法横向滚动切换tab -->
-		<z-paging ref="paging" @query="queryList" :list.sync="dataList" :use-custom-refresher="true" :mounted-auto-call-reload="false" :touchmove-propagation-enabled="true" style="height: 100%;">
+		<z-paging ref="paging" @query="queryList" :list.sync="dataList" :mounted-auto-call-reload="false" :refresher-angle-enable-change-continued="false" :touchmove-propagation-enabled="true" style="height: 100%;">
 			<empty-view slot="empty"></empty-view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
@@ -59,7 +59,7 @@
 				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
 				//模拟请求服务器获取分页数据，请替换成自己的网络请求
 				this.$request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
-					this.$refs.paging.addData(data);
+					this.$refs.paging.complete(data);
 					this.firstLoaded = true;
 				})
 			},

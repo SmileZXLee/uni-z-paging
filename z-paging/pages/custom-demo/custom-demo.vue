@@ -2,9 +2,9 @@
 <template>
 	<view class="content">
 		<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
-		<z-paging ref="paging" :refresher-threshold="80" :use-custom-refresher="true" @query="queryList"
+		<z-paging ref="paging" :default-page-size="3400" :refresher-threshold="80" @query="queryList"
 			:list.sync="dataList" :refresher-status.sync="refresherStatus" style="height: calc(100% - 80rpx);">
-			<!-- 自定义下拉刷新view(如果use-custom-refresher设置为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
+			<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
 			<custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>
 			<!-- 自定义没有更多数据view -->
 			<custom-nomore slot="loadingMoreNoMore"></custom-nomore>
@@ -45,7 +45,7 @@
 				//模拟请求服务器获取分页数据，请替换成自己的网络请求
 				this.$request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
 					//将请求的结果数组传递给z-paging
-					this.$refs.paging.addData(data);
+					this.$refs.paging.complete(data);
 				})
 			},
 			itemClick(item) {

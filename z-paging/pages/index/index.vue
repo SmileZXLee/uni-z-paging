@@ -26,6 +26,10 @@
 			<view>聊天记录模式演示</view>
 			<view>chat-history-demo.vue</view>
 		</view>
+		<view class="demo-view item-blue" @click="nvueDemoClick">
+			<view>nvue演示</view>
+			<view>nvue-demo.vue</view>
+		</view>
 	</view>
 </template>
 
@@ -61,6 +65,11 @@
 				chatHistoryDemoClick(){
 					uni.navigateTo({
 						url: '../chat-history-demo/chat-history-demo'
+					})
+				},
+				nvueDemoClick(){
+					uni.navigateTo({
+						url: '../nvue-demo/nvue-demo'
 					})
 				}
 			}
