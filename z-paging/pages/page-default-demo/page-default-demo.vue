@@ -70,7 +70,7 @@
 	需手动调用doLoadMore方法，因为z-paging未固定高度时，其内部的scroll-view的scrolltolower事件无法被触发 */
 	.item {
 		position: relative;
-		height: 100rpx;
+		height: 150rpx;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;

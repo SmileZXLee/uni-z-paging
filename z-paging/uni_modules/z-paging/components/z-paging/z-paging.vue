@@ -235,8 +235,8 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	</view>
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
-	<list ref="n-list" :show-scrollbar="showScrollbar" :loadmoreoffset="lowerThreshold" :scrollable="scrollEnable"
-		@loadmore="_onLoadingMore('toBottom')" @scroll="_nOnScroll">
+	<div ref="n-list" is="list" :show-scrollbar="showScrollbar" :loadmoreoffset="lowerThreshold"
+		:scrollable="scrollEnable" @loadmore="_onLoadingMore('toBottom')" @scroll="_nOnScroll">
 		<refresh class="n-refresh" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
 			@pullingdown="_nOnPullingdown">
 			<div class="n-refresh-container">
@@ -246,7 +246,8 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 						<image v-if="refresherStatus!==2" :class="refresherLeftImageClass"
 							:style="[{'transform': 'rotate(180deg)','filter' :defaultThemeStyle==='white'?'brightness(10)':''}]"
 							:src="base64Arrow"></image>
-						<loading-indicator v-else :animating="true" class="custom-refresher-left-image"></loading-indicator>
+						<loading-indicator v-else :animating="true" class="custom-refresher-left-image">
+						</loading-indicator>
 					</div>
 					<div
 						:class="defaultThemeStyle==='white'?'custom-refresher-right custom-refresher-right-white':'custom-refresher-right custom-refresher-right-black'">
@@ -306,11 +307,12 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					v-if="showLoadingMoreNoMoreLine&&loadingStatus===2"></text>
 			</div>
 		</cell>
-	</list>
+	</div>
 	<!-- #endif -->
 </template>
 
 <script>
+	const systemInfo = uni.getSystemInfoSync();
 	const commonDelayTime = 100;
 	const base64Arrow =
 		'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkBAMAAACCzIhnAAAAD1BMVEVHcExRUVFMTExRUVFRUVE9CdWsAAAABHRSTlMAjjrY9ZnUjwAAAQFJREFUWMPt2MsNgzAMgGEEE1B1gKJmAIRYoCH7z9RCXrabh33iYktcIv35EEg5ZBh07pvxJU6MFSPOSRnjnBUjUsaciRUjMsb4xIoRCWNiYsUInzE5sWKEyxiYWDbyefqHx1zIeiYTk7mQYziTYecxHvEJjwmIT3hMQELCYSISEg4TkZj0mYTEpM8kJCU9JiMp6TEZyUmbAUhO2gxAQNJiIAKSFgMRmNQZhMCkziAEJTUGIyipMRjBSZkhCE7KDEFIUmTeGCHJxWz0zXaE0GTCG8ZFtEaS347r/1fe11YyHYVfubxayfjoHmc0YYwmmmiiiSaaaKLJ7ckyz5ve+dw3Xw2emdwm9xSbAAAAAElFTkSuQmCC';
@@ -321,7 +323,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	 * @description 【uni-app自动分页器】超简单，低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view等。
 	 * @tutorial https://github.com/SmileZXLee/uni-z-paging
 	 * @property {Number|String} default-page-no 自定义pageNo，默认为1
-	 * @property {Number|String} default-page-size 自定义pageSize，默认为15
+	 * @property {Number|String} default-page-size 自定义pageSize，默认为10
 	 * @property {Object} paging-style 设置z-paging的style，部分平台可能无法直接修改组件的style，可使用此属性代替
 	 * @property {Boolean} auto-height z-paging是否自动高度，若自动高度则会自动铺满屏幕，默认为否
 	 * @property {String} auto-height-addition z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数
@@ -455,11 +457,11 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					this.pageNo = newVal;
 				},
 			},
-			//自定义pageSize，默认为15
+			//自定义pageSize，默认为10
 			defaultPageSize: {
 				type: [Number, String],
 				default: function() {
-					return 15;
+					return 10;
 				},
 			},
 			//设置z-paging的style，部分平台可能无法直接修改组件的style，可使用此属性代替
@@ -893,7 +895,6 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				if (newVal !== 0 && oldVal === 0) {
 					this.refresherLeftImageClass = 'custom-refresher-left-image custom-refresher-arrow-top';
 				}
-
 				if (newVal !== oldVal) {
 					this.$emit('refresherStatusChange', newVal);
 					this.$emit('update:refresherStatus', newVal);
@@ -1441,7 +1442,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					const scrollViewTotalH = scrollViewNode[0].top + scrollViewNode[0].height;
 					if (scrollViewTotalH > this.systemInfo.windowHeight + 100) {
 						console.error(
-							'[z-paging]检测到z-paging的高度超出页面高度，这将导致滚动出现���常，请确保z-paging有确定的高度(如果通过百���比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}，此时z-paging的百分比高度才能生效。详情参照demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
+							'[z-paging]检测到z-paging的高度超出页面高度，�������将导致滚动出现���常，请确保z-paging有确定的高度(如果通过百���比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}，此时z-paging的百分比高度才能生效。详情参照demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
 						);
 					}
 				} catch (e) {
@@ -1592,7 +1593,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			},
 			//下拉刷新中
 			_nOnPullingdown(e) {
-				if (!this.nListIsDragging) {
+				if (systemInfo.platform === 'ios' && !this.nListIsDragging) {
 					return;
 				}
 				const viewHeight = e.viewHeight;
@@ -1602,7 +1603,6 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				} else {
 					this.refresherStatus = 0;
 				}
-				//console.log(e);
 			}
 		},
 	};
@@ -1669,14 +1669,13 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	.custom-refresher-left-image {
 		width: 30rpx;
 		height: 30rpx;
-		/* margin-top: 10rpx; */
+		transform: rotate(180deg);
 		margin-right: 8rpx;
 		/* #ifdef APP-NVUE */
 		width: 35rpx;
 		height: 35rpx;
 		transition-duration: .2s;
 		transition-property: transform;
-		transform: rotate(180deg);
 		/* #endif */
 	}
 
@@ -1706,7 +1705,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 	}
 
 	.custom-refresher-right {
-		font-size: 24rpx;
+		font-size: 26rpx;
 		/* #ifndef APP-NVUE */
 		display: flex;
 		/* #endif */
@@ -1734,7 +1733,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 
 	.load-more-container {
 		height: 80rpx;
-		font-size: 25rpx;
+		font-size: 26rpx;
 		/* #ifndef APP-NVUE */
 		display: flex;
 		/* #endif */
@@ -1745,26 +1744,18 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 
 	.loading-more-line-loading-image {
 		margin-right: 8rpx;
-		/* #ifdef APP-NVUE */
-		width: 14px;
-		height: 14px;
-		/* #endif */
-		/* #ifndef APP-NVUE */
 		width: 28rpx;
 		height: 28rpx;
+		/* #ifndef APP-NVUE */
 		animation: loading-flower 1s steps(12) infinite;
 		/* #endif */
 	}
 
 	.loading-more-line-loading-custom-image {
 		margin-right: 8rpx;
-		/* #ifdef APP-NVUE */
-		width: 14px;
-		height: 14px;
-		/* #endif */
-		/* #ifndef APP-NVUE */
 		width: 28rpx;
 		height: 28rpx;
+		/* #ifndef APP-NVUE */
 		animation: loading-circle 1s linear infinite;
 		/* #endif */
 	}

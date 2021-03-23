@@ -82,7 +82,7 @@
 
 	.item {
 		position: relative;
-		height: 120rpx;
+		height: 200rpx;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;

@@ -3,7 +3,7 @@
 	<view class="container">
 		<view class="main">
 			<image class="main-image" src="/static/nodata.png"></image>
-			<view class="mian-title">{{emptyText}}</view>
+			<text class="mian-title">{{emptyText}}</text>
 		</view>
 	</view>
 </template>
@@ -20,7 +20,7 @@
 			emptyText: {
 				type: String,
 				default: function() {
-					return '没有数据哦~'
+					return '没有数据1哦~'
 				}
 			},
 		}
@@ -29,12 +29,18 @@
 
 <style scoped>
 	.container{
+		/* #ifndef APP-NVUE */
 		position: fixed;
 		top: 0;
 		left: 0;
 		width: 100%;
 		height: 100%;
 		display: flex;
+		/* #endif */
+		/* #ifdef APP-NVUE */
+		flex: 1;
+		height: 1200rpx;
+		/* #endif */
 		align-items: center;
 		justify-content: center;
 	}

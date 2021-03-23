@@ -73,7 +73,7 @@
 
 	.item {
 		position: relative;
-		height: 100rpx;
+		height: 150rpx;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;

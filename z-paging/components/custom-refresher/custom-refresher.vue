@@ -2,7 +2,7 @@
 	<view class="refresher">
 		<!-- 这里的图片请换成自己项目的图片 -->
 		<image class="refresher-image" mode="aspectFit" src="http://www.zxlee.cn/github/uni-z-paging/refresher_loading.gif"></image>
-		<view class="refresher-text">{{statusText}}</view>
+		<text class="refresher-text">{{statusText}}</text>
 	</view>
 </template>
 
@@ -33,7 +33,9 @@
 <style scoped>
 	.refresher{
 		height: 100%;
+		/* #ifndef APP-NVUE */
 		display: flex;
+		/* #endif */
 		flex-direction: column;
 		align-items: center;
 	}
