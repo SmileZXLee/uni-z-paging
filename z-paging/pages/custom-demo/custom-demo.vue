@@ -2,7 +2,7 @@
 <template>
 	<view class="content">
 		<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
-		<z-paging ref="paging" :default-page-size="3400" :refresher-threshold="80" @query="queryList"
+		<z-paging ref="paging" :refresher-threshold="80" @query="queryList"
 			:list.sync="dataList" :refresher-status.sync="refresherStatus" style="height: calc(100% - 80rpx);">
 			<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
 			<custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>
@@ -12,7 +12,7 @@
 			<empty-view slot="empty"></empty-view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
-			<view>
+			<view class="list">
 				<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
 					<view class="item-title">{{item.title}}</view>
 					<view class="item-detail">{{item.detail}}</view>

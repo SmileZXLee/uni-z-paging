@@ -4,7 +4,7 @@
 			<view class="title-container">
 				<text class="title" :style="{color:currentIndex===index?'#007AFF':'darkgray'}">{{title}}</text>
 			</view>
-			<view class="line" :style="{'background-color':currentIndex===index?'#007AFF':'white'}"></view>
+			<view class="line" v-if="currentIndex===index"></view>
 		</view>
 	</view>
 </template>
@@ -27,7 +27,12 @@
 		},
 		computed: {
 			itemWidth() {
+				// #ifdef APP-NVUE
+				return (750 /  this.items.length) + 'rpx';
+				// #endif
+				// #ifndef APP-NVUE
 				return ((1.0 / this.items.length) * 100) + '%';
+				// #endif
 			}
 		},
 		methods: {
@@ -87,5 +92,6 @@
 	.line {
 		height: 2px;
 		width: 70%;
+		background-color: #007AFF;
 	}
 </style>

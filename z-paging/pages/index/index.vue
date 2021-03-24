@@ -80,19 +80,15 @@
 	}
 </script>
 
-<style>
-	page{
-		height: 100%;
-	}
+<style scoped>
 	.content {
-		height: 100%;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		padding-bottom: 30rpx;
 	}
 	.demo-view{
-		height: 260rpx;
+		height: 200rpx;
 		width: 90%;
 		display: flex;
 		flex-direction: column;

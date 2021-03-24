@@ -6,7 +6,7 @@
 			<empty-view slot="empty"></empty-view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
-			<view>
+			<view class="list">
 				<!-- 注意！！！！这里id必须绑定index，且格式为z-paging-${index}，格式不能变，否则会导致滑动到顶部加载更多数据时滚动位置不正确！！！！！！ -->
 				<view class="item" :id="`z-paging-${index}`" v-for="(item,index) in dataList" :key="index">
 					<view class="item-title" v-if="item.title.length<3">第{{item.title}}条聊天记录</view>

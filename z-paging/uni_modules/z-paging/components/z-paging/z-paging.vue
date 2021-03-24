@@ -447,7 +447,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				moveDistance: 0,
 				nRefresherLoading: false,
 				nListIsDragging: false,
-				nShowBottom: false
+				nShowBottom: true
 			};
 		},
 		props: {
@@ -1027,8 +1027,12 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			_reload() {
 				this.isAddedData = false;
 				this.pageNo = this.defaultPageNo;
-				this.nShowBottom = false;
-				this._startLoading();
+				// #ifdef APP-NVUE
+				if (systemInfo.platform !== 'ios') {
+					this.nShowBottom = false;
+				}
+				// #endif
+				this._startLoading(true);
 				this.firstPageLoaded = true;
 				this.isTotalChangeFromAddData = false;
 				this.totalData = [];
@@ -1223,15 +1227,17 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				}
 			},
 			//处理开始加载更多状态
-			_startLoading() {
-				this.loadingStatus = 1;
+			_startLoading(isReload = false) {
+				if(!isReload){
+					this.loadingStatus = 1;
+				}
 				this.loading = true;
 			},
 			//处理开始加载更多
 			_doLoadingMore() {
 				if (this.pageNo >= this.defaultPageNo && this.loadingStatus !== 2) {
 					this.pageNo++;
-					this._startLoading();
+					this._startLoading(false);
 					if (this.isLocalPaging) {
 						this._localPagingQueryList(this.pageNo, this.defaultPageSize, this.localPagingLoadingTime, (
 							res) => {
@@ -1261,7 +1267,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					return;
 				}
 				this.isUserReload = false;
-				this._startLoading();
+				this._startLoading(true);
 				this.refresherTriggered = true;
 				if (this.useChatRecordMode) {
 					this._onLoadingMore('click')
@@ -1453,7 +1459,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					const scrollViewTotalH = scrollViewNode[0].top + scrollViewNode[0].height;
 					if (scrollViewTotalH > this.systemInfo.windowHeight + 100) {
 						console.error(
-							'[z-paging]检测到z-paging的高度超出页面高度，�������将导致滚动出现���常，请确保z-paging有确定的高度(如果通过百���比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}，此时z-paging的百分比高度才能生效。详情参照demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
+							'[z-paging]检测到z-paging的高度超出页面高度，这将导致滚动出现异常，请确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}，此时z-paging的百分比高度才能生效。详情参照demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
 						);
 					}
 				} catch (e) {

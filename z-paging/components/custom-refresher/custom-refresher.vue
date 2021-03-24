@@ -40,9 +40,9 @@
 		align-items: center;
 	}
 	.refresher-image{
-		margin-top: 10px;
-		height: 50px;
-		width: 50px;
+		margin-top: 10rpx;
+		height: 45px;
+		width: 45px;
 	}
 	.refresher-text{
 		margin-top: 10rpx;

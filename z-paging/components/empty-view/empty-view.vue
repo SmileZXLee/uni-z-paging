@@ -3,7 +3,12 @@
 	<view class="container">
 		<view class="main">
 			<image class="main-image" src="/static/nodata.png"></image>
+			<!-- #ifdef APP-NVUE -->
 			<text class="mian-title">{{emptyText}}</text>
+			<!-- #endif -->
+			<!-- #ifndef APP-NVUE -->
+			<view class="mian-title">{{emptyText}}</view>
+			<!-- #endif -->
 		</view>
 	</view>
 </template>
@@ -20,7 +25,7 @@
 			emptyText: {
 				type: String,
 				default: function() {
-					return '没有数据1哦~'
+					return '没有数据哦~'
 				}
 			},
 		}
