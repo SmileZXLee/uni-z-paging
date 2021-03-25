@@ -52,8 +52,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 			:refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
 			@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"
 			@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
-			<view class="paging-main" catchtouchmove="true"
-				:style="[{'transform': refresherTransform,'transition': refresherTransition}]">
+			<view class="paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
 				<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
 					:style="[{'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
@@ -971,6 +970,19 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					}, commonDelayTime)
 				}
 			},
+			//重新设置列表数据，调用此方法不会影响pageNo和pageSize，也不会触发请求。适用场景：当需要删除列表中某一项时，将删除对应项后的数组通过此方法传递给z-paging，注意不要直接修改page中:list.sync绑定的数组！！
+			resetTotalData(data){
+				if(data == undefined){
+					console.error('[z-paging]方法resetTotalData参数缺失！');
+					return;
+				}
+				this.isTotalChangeFromAddData = true;
+				let dataType = Object.prototype.toString.call(data);
+				if (dataType !== '[object Array]') {
+					data = [data];
+				}
+				this.totalData = data;
+			},
 			//设置本地分页数据，请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging作分页处理（若调用了此方法，则上拉加载更多时内部会自动分页，不会触发@query所绑定的事件）
 			setLocalPaging(data, success = true) {
 				this.isLocalPaging = true;
@@ -1598,7 +1610,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 					touchY: touch.clientY
 				};
 			},
-			// ---------nvue独有的方法----------------
+			// ------------nvue独有的方法----------------
 			//列表滚动时触发
 			_nOnScroll(e) {
 				this.nListIsDragging = e.isDragging;

@@ -1,3 +1,6 @@
+## 1.4.5（2021-03-25）
+* 移除“catchtouchmove”，消除小程序上拖动时“does not have a method "true" to handle event "touchmove".”的警告提示。<br>
+* 修复下拉刷新时同时也会触发加载更多的动画的问题。
 ## 1.4.4（2021-03-23）
 * 兼容nvue，nvue中使用list和refresh代替scroll-view和自定义的下拉刷新，提高在长列表中的表现。<br>
 * vue中默认启用自定义下拉刷新。
