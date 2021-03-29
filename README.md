@@ -294,17 +294,3 @@
 | addChatRecordData    | 添加聊天记录，`use-chat-record-mode`为true时有效             | value1:需要添加的聊天数据，可以是一条数据或一组数据；value2:是否滚动到底部，不填默认为true；value3:是否使用动画滚动到底部，不填默认为true |
 | addDataFromTop       | 从顶部添加数据，不会影响分页的pageNo和pageSize               | value1:需要添加的数据，可以是一条数据或一组数据；value2:是否滚动到顶部，不填默认为true；value3:是否使用动画滚动到顶部，不填默认为true |
 | resetTotalData       | 重新设置列表数据，调用此方法不会影响pageNo和pageSize，也不会触发请求。适用场景：当需要删除列表中某一项时，将删除对应项后的数组通过此方法传递给z-paging。(当出现类似的需要修改列表数组的场景时，请使用此方法，请勿直接修改page中:list.sync绑定的数组) | Value1:修改后的列表数组                                      |
-
-|      |      |      |
-| ---- | ---- | ---- |
-|      |      |      |
-|      |      |      |
-|      |      |      |
-|      |      |      |
-|      |      |      |
-|      |      |      |
-|      |      |      |
-|      |      |      |
-|      |      |      |
-|      |      |      |
-|      |      |      |
