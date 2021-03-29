@@ -2,7 +2,7 @@
 
 > 【uni-app自动分页器】超简单，低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view，支持吸顶效果等。
 
-## 在DCloud插件市场中访问：https://ext.dcloud.net.cn/plugin?id=3935
+## 在DCloud插件市场中访问：[https://ext.dcloud.net.cn/plugin?name=z-paging](https://ext.dcloud.net.cn/plugin?name=z-paging)
 
 ### 反馈qq群(点击加群)：[790460711](https://jq.qq.com/?_wv=1027&k=vU2fKZZH)
 
@@ -11,6 +11,20 @@
 | App  |  h5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 字节小程序 | QQ小程序 |
 | :--: | :--: | :--------: | :----------: | :--------: | :--------: | :------: |
 |  √   |  √   |     √      |      √       |     √      |     √      |    √     |
+
+### 预览
+
+***
+
+|                 自定义下拉刷新效果+分页演示                  |                      吸顶效果+分页演示                       |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+| ![](http://www.zxlee.cn/github/uni-z-paging/uni-z-paging.gif) | ![](http://www.zxlee.cn/github/uni-z-paging/uni-z-paging2.gif) |
+
+|                   滑动切换选项卡+分页演示                    |                    聊天记录模式+分页演示                     |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+| ![](http://www.zxlee.cn/github/uni-z-paging/z-paging-demo3.gif) | ![](http://www.zxlee.cn/github/uni-z-paging/z-paging-demo4.gif) |
+
+***
 
 ### 功能&特点
 
@@ -104,10 +118,6 @@
     }
 </style>
 ```
-
-| 自定义下拉刷新效果演示                                       | 吸顶效果演示                                                 |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| ![](http://www.zxlee.cn/github/uni-z-paging/uni-z-paging.gif) | ![](http://www.zxlee.cn/github/uni-z-paging/uni-z-paging2.gif) |
 
 ## 设置自定义emptyView组件
 
@@ -283,3 +293,18 @@
 | updatePageScrollTop  | 当使用页面滚动(z-paging不固定高度)并且自定义下拉刷新时，请在页面的onPageScroll中调用此方法，告知z-paging当前的pageScrollTop，否则会导致在任意位置都可以下拉刷新 |                                                              |
 | addChatRecordData    | 添加聊天记录，`use-chat-record-mode`为true时有效             | value1:需要添加的聊天数据，可以是一条数据或一组数据；value2:是否滚动到底部，不填默认为true；value3:是否使用动画滚动到底部，不填默认为true |
 | addDataFromTop       | 从顶部添加数据，不会影响分页的pageNo和pageSize               | value1:需要添加的数据，可以是一条数据或一组数据；value2:是否滚动到顶部，不填默认为true；value3:是否使用动画滚动到顶部，不填默认为true |
+| resetTotalData       | 重新设置列表数据，调用此方法不会影响pageNo和pageSize，也不会触发请求。适用场景：当需要删除列表中某一项时，将删除对应项后的数组通过此方法传递给z-paging。(当出现类似的需要修改列表数组的场景时，请使用此方法，请勿直接修改page中:list.sync绑定的数组) | Value1:修改后的列表数组                                      |
+
+|      |      |      |
+| ---- | ---- | ---- |
+|      |      |      |
+|      |      |      |
+|      |      |      |
+|      |      |      |
+|      |      |      |
+|      |      |      |
+|      |      |      |
+|      |      |      |
+|      |      |      |
+|      |      |      |
+|      |      |      |
