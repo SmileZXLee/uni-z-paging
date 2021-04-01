@@ -1,3 +1,7 @@
+## 1.4.7（2021-03-31）
+新增`scrollIntoViewById`，支持滚动到指定view
+## 1.4.6（2021-03-27）
+修复nvue中部分安卓设备下拉刷新闪退的问题
 ## 1.4.5（2021-03-25）
 * 移除“catchtouchmove”，消除小程序上拖动时“does not have a method "true" to handle event "touchmove".”的警告提示。<br>
 * 修复下拉刷新时同时也会触发加载更多的动画的问题。

@@ -1,9 +1,8 @@
-<!-- 普通模式演示 -->
+<!-- 聊天记录模式演示 -->
 <template>
 	<view class="content">
 		<z-paging ref="paging" @query="queryList" :use-chat-record-mode="true" :use-page-scroll="true"
 			:list.sync="dataList" style="height: 100%">
-			<empty-view slot="empty"></empty-view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view class="list">

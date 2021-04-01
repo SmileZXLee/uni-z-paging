@@ -1,0 +1,68 @@
+<!-- 滑动切换选项卡演示(nvue) -->
+<!-- 注意：此tab-view仅为z-paging的demo演示之用，未作兼容与细节处理，不建议直接使用，建议使用第三方成熟的tab-view -->
+<template>
+	<view class="content">
+		<tabs-view @change="tabChange" :current="swiperCurrent" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
+		<swiper class="swiper" :current="swiperCurrent" @change="onswiperchange" @transition="transition" @animationfinish="animationfinish" @onAnimationEnd="animationfinish">
+			<swiper-item class="swiper-item" v-for="(item, index) in list" :key="index">
+				<scroll-tab-swiper-item-n :tabIndex="index" :currentIndex="swiperCurrent"></scroll-tab-swiper-item-n>
+			</swiper-item>
+		</swiper>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				list: [{
+					name: '测试1'
+				}, {
+					name: '测试2'
+				}, {
+					name: '测试3'
+				}, {
+					name: '测试4'
+				}],
+				// 因为内部的滑动机制限制，请将tabs组件和swiper组件的current用不同变量赋值
+				current: 0, // tabs组件的current值，表示当前活动的tab选项
+				swiperCurrent: 0, // swiper组件的current值，表示当前那个swiper-item是活动的
+			};
+		},
+		methods: {
+			// tabs通知swiper切换
+			tabChange(index) {
+				this.swiperCurrent = index;
+			},
+			// swiper-item左右移动，通知tabs的滑块跟随移动
+			transition(e) {
+				let dx = e.detail.dx;
+			},
+			onswiperchange(e) {
+			  // #ifndef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
+			  let index = e.target.current || e.detail.current;
+			  this.tabChange(index);
+			  // #endif
+			},
+			animationfinish(e) {
+				let current = e.detail.current;
+				this.swiperCurrent = current;
+				this.current = current;
+			}
+		}
+	}
+</script>
+
+<style>
+	.content {
+		background-color: white;
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+	}
+	.swiper {
+		flex: 1;
+	}
+</style>

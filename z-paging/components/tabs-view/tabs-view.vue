@@ -1,3 +1,4 @@
+<!-- 注意：此tab-view仅为z-paging的demo演示之用，未作兼容与细节处理，不建议直接使用，建议使用第三方成熟的tab-view -->
 <template name="tabs-view">
 	<view class="segment">
 		<view class="segment-item" v-for="(title,index) in items" :key="index" :style="{width:itemWidth}" @click="itemClick(index)">
@@ -21,8 +22,19 @@
 			items: {
 				type: Array,
 				default: function() {
-					return []
+					return [];
 				}
+			},
+			current: {
+				type: Number,
+				default: function() {
+					return 0;
+				}
+			}
+		},
+		watch: {
+			current(newVal){
+				this.currentIndex = newVal;
 			}
 		},
 		computed: {

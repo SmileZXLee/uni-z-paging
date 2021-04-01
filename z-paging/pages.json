@@ -57,6 +57,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/scroll-tab-swiper-demo/scroll-tab-swiper-demo-n",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "滑动切换选项卡演示(nvue)",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

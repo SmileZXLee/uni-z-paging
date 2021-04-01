@@ -1,0 +1,28 @@
+/* z-paging
+github地址:https://github.com/SmileZXLee/uni-z-paging
+dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
+反馈QQ群：790460711
+
+静态css资源 */
+
+.loading-more-line-loading-image {
+	margin-right: 8rpx;
+	width: 28rpx;
+	height: 28rpx;
+	/* #ifndef APP-NVUE */
+	animation: loading-flower 1s steps(12) infinite;
+	/* #endif */
+	color: #666666;
+}
+
+@keyframes loading-flower {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+
+	to {
+		-webkit-transform: rotate(1turn);
+		transform: rotate(1turn);
+	}
+}
