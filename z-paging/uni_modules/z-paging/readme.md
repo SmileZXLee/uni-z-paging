@@ -6,6 +6,12 @@
 
 ### 反馈qq群(点击加群)：[790460711](https://jq.qq.com/?_wv=1027&k=vU2fKZZH)
 
+### 平台兼容性
+
+| App  |  h5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 字节小程序 | QQ小程序 |
+| :--: | :--: | :--------: | :----------: | :--------: | :--------: | :------: |
+|  √   |  √   |     √      |      √       |     √      |     √      |    √     |
+
 ### 预览
 
 ***
@@ -226,6 +232,8 @@
 |           show-loading-more-no-more-line            |            是否显示没有更多数据的分割线，默认为是            |    Boolean     |          true          |                            false                             |
 |       loading-more-no-more-line-custom-style        |              自定义底部没有更多数据的分割线样式              |     Object     |           -            |                              -                               |
 |                   hide-empty-view                   |                     是否强制隐藏空数据图                     |    Boolean     |         false          |                             true                             |
+|                   empty-view-text                   |                       空数据图描述文字                       |     String     |      没有数据哦~       |                                                              |
+|                   empty-view-img                    |           空数据图图片，默认使用z-paging内置的图片           |     String     |           -            |                              -                               |
 |          auto-hide-empty-view-when-loading          |            加载中时是否自动隐藏空数据图，默认为是            |    Boolean     |          true          |                            false                             |
 |                   show-scrollbar                    |                      控制是否出现滚动条                      |    Boolean     |         false          |                             true                             |
 |            scroll-to-top-bounce-enabled             | iOS设备上滚动到顶部时是否允许回弹效果。关闭回弹效果后可使滚动到顶部后立即下拉可立即触发下拉刷新，但是有吸顶view时滚动到顶部时可能出现抖动。 |    Boolean     |          true          |                            false                             |

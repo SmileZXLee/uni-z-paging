@@ -1,45 +1,8 @@
 <!-- z-paging -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
+<!-- 获取文档和示例请访问上方dcloud地址 -->
 <!-- 反馈QQ群：790460711 -->
-
-<!-- 使用方法 -->
-<!-- 
-1.在html中：
-其中@query绑定js中分页请求的方法，:list.sync绑定列表for循环的list.
-<paging @query="getList" :list.sync="list" ref="paging" style="height: 100%;">
-	这里面写需要分页的list，由于slot有数量限制，建议在这里面的外层套一层非循环创建的view，如:
-	<view class="data-list">
-		<view class="data-item" v-for="(item,index) in list" :key="index"></view>
-	</view>
-</paging>
-2.在js的method中：
-书写请求分页的方法
-getList(pageNo,pagSize){
-	//拿到分页组件传递过来的pageNo和pageSize和其他需要的参数，传给服务器
-	//在请求成功的回调里面拿到服务器返回的数据，调用以下方法即可(假设res.data.list为服务器返回列表)：
-	this.$refs.paging.complete(res.data.list);
-	//如果请求失败，可以书写以下代码：
-	this.$refs.paging.complete(false);
-}
-3.如果要重新加载分页数据(如下拉刷新):
-在js中调用
-```js
-this.$refs.paging.reload();
-```
-注意：如果需要在在Page的onLoad()方法中使用（默认自动会调用），请加一个setTimeOut或nextTick再调用
-```js
-setTimeout(()=>{
-	this.$refs.paging.reload();
-},1)
-```
-4.注意事项：
-a、因分页组件是通过@scrolltolower来判断滚动到底部的，因此z-paging需要有固定的高度，才可以触发滚动到底部事件，
-若未确定其高度而是根据具体内容将其撑高，则它永远滚动不到底部，因为它不存在[底部]的概念，因为它会无限[长高]。
-b、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突
-c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲突，这将导致使用滑动切换tab时无法横向切换，若您需要横向切换功能，请设置`touchmove-propagation-enabled`为true以允许冒泡；
-若此时下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true。或者在当前page的根view中添加@touchmove.stop.prevent (因uni无法动态控制是否允许冒泡，因此只能使用此方法，若您有更好的解决方案可以通过顶部github或dcloud插件市场联系我，不胜感激！)
- -->
 <template name="z-paging">
 	<!-- #ifndef APP-NVUE -->
 	<view v-if="!touchmovePropagationEnabled&&finalRefresherEnabled&&!usePageScroll" class="z-paging-content"
@@ -1237,16 +1200,6 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				this.refresherTriggered = 'restore';
 				this.$emit('onRestore');
 			},
-			//获取主题样式的class
-			_getThemeStyleClass(cls) {
-				if (this.defaultThemeStyle === 'black') {
-					return `${cls} ${cls}-black`;
-				}
-				if (this.defaultThemeStyle === 'white') {
-					return `${cls} ${cls}-white`;
-				}
-				return cls;
-			},
 			//拖拽开始
 			_refresherTouchstart(e) {
 				if (this._getRefresherTouchDisabled()) {
@@ -1359,7 +1312,6 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 				}
 				this.$emit('onRestore');
 				// #ifdef APP-NVUE
-
 				setTimeout(() => {
 					this.$nextTick(() => {
 						this.nShowBottom = true;
@@ -1583,7 +1535,7 @@ c、z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲�
 
 <style scoped>
 	@import "./z-paging-static.css";
-
+	
 	.z-paging-content,
 	.scroll-view {
 		/* #ifndef APP-NVUE */
