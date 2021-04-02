@@ -47,7 +47,7 @@
 						</z-paging-empty-view>
 					</view>
 					<!-- 主体内容 -->
-					<view class="paging-container-content">
+					<view class="paging-container-content" :style="[pagingContentStyle]">
 						<slot />
 					</view>
 					<!-- 上拉加载更多view -->
@@ -111,7 +111,7 @@
 						</z-paging-empty-view>
 					</view>
 					<!-- 主体内容 -->
-					<view class="paging-container-content">
+					<view class="paging-container-content" :style="[pagingContentStyle]">
 						<slot />
 					</view>
 					<!-- 上拉加载更多view -->
@@ -184,6 +184,7 @@
 	 * @property {Number|String} default-page-no 自定义pageNo，默认为1
 	 * @property {Number|String} default-page-size 自定义pageSize，默认为10
 	 * @property {Object} paging-style 设置z-paging的style，部分平台可能无法直接修改组件的style，可使用此属性代替
+	 * @property {Object} paging-content-style 设置z-paging的容器(插槽的父view)的style
 	 * @property {Boolean} auto-height z-paging是否自动高度，若自动高度则会自动铺满屏幕，默认为否
 	 * @property {String} auto-height-addition z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数
 	 * @property {String} default-theme-style loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
@@ -325,6 +326,13 @@
 			},
 			//设置z-paging的style，部分平台可能无法直接修改组件的style，可使用此属性代替
 			pagingStyle: {
+				type: Object,
+				default: function() {
+					return {};
+				},
+			},
+			//设置z-paging的容器(插槽的父view)的style
+			pagingContentStyle: {
 				type: Object,
 				default: function() {
 					return {};
@@ -713,6 +721,13 @@
 				this.$emit('update:list', newVal);
 				this.firstPageLoaded = false;
 				this.isTotalChangeFromAddData = false;
+				this.$nextTick(() => {
+					this._getNodeClientRect('.paging-container-content').then((res) => {
+						if (res != '' && res != undefined && res.length) {
+							this.$emit('pagingContentHeightChanged', res[0].height);
+						}
+					});
+				})
 			},
 			currentData(newVal, oldVal) {
 				this._currentDataChange(newVal, oldVal);
@@ -913,6 +928,14 @@
 					return;
 				}
 				this.pageScrollTop = value;
+			},
+			//更新z-paging内置scroll-view的scrollTop
+			updateScrollViewScrollTop(scrollTop, animate=true) {
+				this.privateScrollWithAnimation = animate;
+				this.scrollTop = this.oldScrollTop;
+				this.$nextTick(() => {
+					this.scrollTop = scrollTop;
+				});
 			},
 			//私有的重新加载分页数据方法
 			_reload() {
@@ -1535,7 +1558,7 @@
 
 <style scoped>
 	@import "./z-paging-static.css";
-	
+
 	.z-paging-content,
 	.scroll-view {
 		/* #ifndef APP-NVUE */

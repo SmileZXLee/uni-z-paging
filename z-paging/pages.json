@@ -29,8 +29,8 @@
 		}, {
 			"path": "pages/page-default-demo/page-default-demo",
 			"style": {
-				"navigationBarTitleText": "页面自带下拉刷新和onReachBottom事件结合使用示例",
-				"enablePullDownRefresh": true
+				"navigationBarTitleText": "使用页面滚动示例",
+				"enablePullDownRefresh": false
 			}
 
 		}, {
@@ -62,6 +62,15 @@
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "滑动切换选项卡演示(nvue)",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/sticky-and-scroll-tab-demo/sticky-and-scroll-tab-demo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
             

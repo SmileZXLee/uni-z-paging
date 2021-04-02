@@ -71,7 +71,7 @@
 		font-size: 30rpx;
 		color: darkgray;
 		border-bottom: #eeeeee solid 1px;
-		z-index: 100;
+		z-index: 1000;
 	}
 
 	.segment-item {

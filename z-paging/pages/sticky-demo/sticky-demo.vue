@@ -3,7 +3,7 @@
 	<view class="content">
 		<!-- 此处为了让reload时不自动滚动到顶部，需要设置auto-clean-list-when-reload和auto-scroll-to-top-when-reload为false，即在reload时关闭自动清空数组和自动滚动到顶部 -->
 		<z-paging ref="paging" :auto-clean-list-when-reload="false" :auto-scroll-to-top-when-reload="false"
-		 :refresher-threshold="80" :use-custom-refresher="true" :refresher-status.sync="refresherStatus" @query="queryList"
+		 :refresher-threshold="80" :refresher-status.sync="refresherStatus" @query="queryList"
 		 :list.sync="dataList" style="height: 100%;">
 			<view class="banner-view" style="height: 250rpx;">
 				<view style="font-size: 40rpx;font-weight: 700;">这是一个banner</view>

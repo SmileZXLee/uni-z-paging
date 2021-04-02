@@ -1,8 +1,7 @@
 <template>
 	<view class="content">
 		<!-- 这里设置了z-paging加载时禁止自动调用reload方法，自行控制何时reload（懒加载），同时允许touchmove事件冒泡，否则无法横向滚动切换tab -->
-		<z-paging ref="paging" @query="queryList" :list.sync="dataList" :mounted-auto-call-reload="false" :refresher-angle-enable-change-continued="false" :touchmove-propagation-enabled="true" style="height: 100%;">
-			<empty-view slot="empty"></empty-view>
+		<z-paging @scroll="scroll" @pagingContentHeightChanged="pagingContentHeightChanged" :use-page-scroll="false"  :auto-clean-list-when-reload="false" :refresher-enabled="false" ref="paging" @query="queryList" :list.sync="dataList" :mounted-auto-call-reload="false" :refresher-angle-enable-change-continued="false" :touchmove-propagation-enabled="true" style="height: 100%;">
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view>
@@ -21,7 +20,8 @@
 		data() {
 			return {
 				dataList: [],
-				firstLoaded: false
+				firstLoaded: false,
+				height: 0
 			}
 		},
 		props:{
@@ -36,17 +36,27 @@
 				default: function(){
 					return 0
 				}
-			},
+			}
 		},
 		watch: {
 			currentIndex: {
 				handler(newVal) {
 					if(newVal === this.tabIndex){
+						if(this.height > 0){
+							this.$emit('pagingContentHeightChanged',this.height);
+						}
 						//懒加载，当滑动到当前的item时，才去加载
 						if(!this.firstLoaded){
+							// #ifdef MP-TOUTIAO
+							setTimeout(()=>{
+								this.$refs.paging.reload();
+							},10)
+							// #endif
+							// #ifndef MP-TOUTIAO
 							this.$nextTick(()=>{
 								this.$refs.paging.reload();
 							})
+							// #endif
 						}
 					}
 				},
@@ -63,8 +73,21 @@
 					this.firstLoaded = true;
 				})
 			},
+			reload(){
+				this.$refs.paging.reload();
+			},
+			doLoadMore(){
+				this.$refs.paging.doLoadMore();
+			},
 			itemClick(item) {
 				console.log('点击了', item.title);
+			},
+			scroll(e){
+				this.$emit('scroll',e);
+			},
+			pagingContentHeightChanged(height){
+				this.$emit('pagingContentHeightChanged',height);
+				this.height = height;
 			}
 		}
 	}

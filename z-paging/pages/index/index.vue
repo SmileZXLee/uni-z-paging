@@ -14,8 +14,7 @@
 			<view>scroll-tab-swiper-demo.vue</view>
 		</view>
 		<view class="demo-view item-red" @click="pageDefaultDemoClick">
-			<view>页面自带下拉刷新和</view>
-			<view>onReachBottom事件结合使用示例</view>
+			<view>使用页面滚动示例</view>
 			<view>page-default-demo.vue</view>
 		</view>
 		<view class="demo-view item-blue" @click="stickyDemoClick">
@@ -59,7 +58,7 @@
 				},
 				stickyDemoClick(){
 					uni.navigateTo({
-						url: '../sticky-demo/sticky-demo'
+						url: '../sticky-and-scroll-tab-demo/sticky-and-scroll-tab-demo'
 					})
 				},
 				chatHistoryDemoClick(){
