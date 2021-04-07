@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<!-- 这里设置了z-paging加载时禁止自动调用reload方法，自行控制何时reload（懒加载），同时允许touchmove事件冒泡，否则无法横向滚动切换tab -->
-		<z-paging @scroll="scroll" @pagingContentHeightChanged="pagingContentHeightChanged" :use-page-scroll="false"  :auto-clean-list-when-reload="false" :refresher-enabled="false" ref="paging" @query="queryList" :list.sync="dataList" :mounted-auto-call-reload="false" :refresher-angle-enable-change-continued="false" :touchmove-propagation-enabled="true" style="height: 100%;">
+		<z-paging @scroll="scroll" @pagingContentHeightChanged="pagingContentHeightChanged" :use-page-scroll="true"  :auto-clean-list-when-reload="false" :refresher-enabled="false" ref="paging" @query="queryList" :list.sync="dataList" :mounted-auto-call-reload="false" :refresher-angle-enable-change-continued="false" :touchmove-propagation-enabled="true" style="height: 100%;">
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view>
@@ -81,9 +81,6 @@
 			},
 			itemClick(item) {
 				console.log('点击了', item.title);
-			},
-			scroll(e){
-				this.$emit('scroll',e);
 			},
 			pagingContentHeightChanged(height){
 				this.$emit('pagingContentHeightChanged',height);

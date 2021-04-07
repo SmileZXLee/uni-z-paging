@@ -70,7 +70,7 @@
             "path" : "pages/sticky-and-scroll-tab-demo/sticky-and-scroll-tab-demo",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "滑动切换选项卡+吸顶演示",
                 "enablePullDownRefresh": false
             }
             

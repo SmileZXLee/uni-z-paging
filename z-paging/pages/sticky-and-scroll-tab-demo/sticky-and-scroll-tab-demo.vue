@@ -1,12 +1,12 @@
-<!-- 滚动吸附效果演示 -->
+<!-- 滑动切换选项卡+吸顶演示（待完善） -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" @scroll="scroll" @scrolltolower="scrolltolower" :hide-empty-view="true" :refresher-threshold="80"
+		<z-paging ref="paging" @scrolltolower="scrolltolower" :hide-empty-view="true" :refresher-threshold="80"
 			:refresher-status.sync="refresherStatus" @query="queryList" style="height: 100%;"
 			:paging-content-style="{height:pagingContentHeight}">
 			<!-- 自定义下拉刷新view -->
 			<custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>
-			<view class="paging-content">
+			<view class="paging-content"  :style="[{height: swiperHeight}]">
 				<view class="banner-view" style="height: 250rpx;">
 					<view style="font-size: 40rpx;font-weight: 700;">这是一个banner</view>
 					<view style="font-size: 24rpx;margin-top: 5rpx;">下方tab滚动时可吸附在顶部</view>
@@ -19,7 +19,7 @@
 				<swiper class="swiper" :current="swiperCurrent" @transition="transition"
 					@animationfinish="animationfinish">
 					<swiper-item class="swiper-item" v-for="(item, index) in list" :key="index">
-						<sticky-and-scroll-tab-item ref="swiperItem" @scroll="scroll"
+						<sticky-and-scroll-tab-item ref="swiperItem"
 							@pagingContentHeightChanged="pagingContentHeightChanged" :tabIndex="index"
 							:currentIndex="swiperCurrent"></sticky-and-scroll-tab-item>
 					</swiper-item>
@@ -35,6 +35,8 @@
 			return {
 				refresherStatus: 0,
 				pagingContentHeight: '100%',
+				oldPagingContentHeight: '100%',
+				swiperHeight: '100%',
 				scrollTopMap: {},
 				list: [{
 					name: '测试1'
@@ -55,16 +57,13 @@
 				this.$refs.swiperItem[this.current].reload();
 				this.$refs.paging.complete([]);
 			},
-			scroll(e){
-				this.scrollTopMap[this.current] = e.detail.scrollTop;
-			},
 			scrolltolower(e) {
 				this.$refs.swiperItem[this.current].doLoadMore();
 			},
 			pagingContentHeightChanged(height) {
 				if (height > 0) {
 					this.pagingContentHeight = height + uni.upx2px(250) + uni.upx2px(80) + uni.upx2px(80) + 'px';
-					//this.pagingContentHeight = '100%'
+					this.oldPagingContentHeight = this.pagingContentHeight;
 				}
 			},
 			// tabs通知swiper切换

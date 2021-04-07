@@ -36,7 +36,7 @@
 				//模拟请求服务器获取分页数据，请替换成自己的网络请求
 				this.$request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
 					//将请求的结果数组传递给z-paging
-					this.$refs.paging.complete(data);
+					this.$refs.paging.complete([]);
 				})
 			},
 			itemClick(item) {

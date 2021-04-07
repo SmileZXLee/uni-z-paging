@@ -5,14 +5,14 @@
 
 <!-- 空数据占位view -->
 <template>
-	<view class="container">
-		<view class="main">
-			<image class="main-image" :src="emptyViewImg"></image>
+	<view class="zp-container">
+		<view class="zp-main">
+			<image class="zp-main-image" :src="emptyViewImg"></image>
 			<!-- #ifdef APP-NVUE -->
-			<text class="mian-title">{{emptyViewText}}</text>
+			<text class="zp-mian-title">{{emptyViewText}}</text>
 			<!-- #endif -->
 			<!-- #ifndef APP-NVUE -->
-			<view class="mian-title">{{emptyViewText}}</view>
+			<view class="zp-mian-title">{{emptyViewText}}</view>
 			<!-- #endif -->
 		</view>
 	</view>
@@ -46,7 +46,7 @@
 </script>
 
 <style scoped>
-	.container {
+	.zp-container {
 		/* #ifndef APP-NVUE */
 		position: fixed;
 		top: 0;
@@ -63,17 +63,17 @@
 		justify-content: center;
 	}
 
-	.main {
+	.zp-main {
 		z-index: 1000;
 	}
 
-	.main-image {
+	.zp-main-image {
 		margin-top: -200rpx;
 		width: 200rpx;
 		height: 200rpx;
 	}
 
-	.mian-title {
+	.zp-mian-title {
 		font-size: 26rpx;
 		color: #aaaaaa;
 		text-align: center;

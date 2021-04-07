@@ -1,4 +1,4 @@
-let listCount = 224;
+let listCount = 24;
 let loadingTime = 500;
 /* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件 */
 function queryList(pageNo,pageSize,type,callback){

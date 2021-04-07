@@ -7,7 +7,7 @@
 	<!-- #ifndef APP-NVUE -->
 	<view v-if="!touchmovePropagationEnabled&&finalRefresherEnabled&&!usePageScroll" class="z-paging-content"
 		:style="[pagingStyle]" @touchmove.stop.prevent>
-		<scroll-view class="scroll-view" :style="[scrollViewStyle]" :scroll-top="scrollTop"
+		<scroll-view class="zp-scroll-view" :style="[scrollViewStyle]" :scroll-top="scrollTop"
 			:scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
 			:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
 			:scroll-into-view="scrollIntoView" :lower-threshold="lowerThreshold"
@@ -16,7 +16,7 @@
 			:refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
 			@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"
 			@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
-			<view class="paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
+			<view class="zp-paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
 				<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
 					:style="[{'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
@@ -28,26 +28,26 @@
 							:refresherRefreshingText="refresherRefreshingText"></z-paging-refresh>
 					</view>
 				</view>
-				<view class="paging-container">
+				<view class="zp-paging-container">
 					<slot v-if="useChatRecordMode&&$slots.chatLoading&&loadingStatus!==2&&realTotalData.length"
 						name="chatLoading" />
 					<view v-else-if="useChatRecordMode&&loadingStatus!==2&&realTotalData.length"
-						class="chat-record-loading-container">
+						class="zp-chat-record-loading-container">
 						<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
-							:class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
+							:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
 						<image v-else :src="base64Flower" class="chat-record-loading-custom-image">
 						</image>
 					</view>
-					<slot v-if="$slots.loading&&!firstPageLoaded&&loading" name="loading" />
+					<slot v-if="$slots.loading&&!firstPageLoaded&&!pagingLoaded&&loading" name="loading" />
 					<!-- 空数据图 -->
-					<view class="empty-view"
+					<view class="zp-empty-view"
 						v-if="!totalData.length&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
 						<slot v-if="$slots.empty" name="empty" />
 						<z-paging-empty-view v-else :emptyViewImg="emptyViewImg" :emptyViewText="emptyViewText">
 						</z-paging-empty-view>
 					</view>
 					<!-- 主体内容 -->
-					<view class="paging-container-content" :style="[pagingContentStyle]">
+					<view class="zp-paging-container-content" :style="[pagingContentStyle]">
 						<slot />
 					</view>
 					<!-- 上拉加载更多view -->
@@ -71,7 +71,7 @@
 	 4.使用小程序中的template is将重复代码复用，然后使用v-if来隐藏或显示两个不同的“paging-main”，但uni中不支持此写法。
 	 【如果有更优解决方案可以发送邮件到admin.zxlee.cn或加入qq群790460711提出您的想法，感谢！！！】 -->
 	<view v-else class="z-paging-content" :style="[pagingStyle]">
-		<scroll-view class="scroll-view" :style="[scrollViewStyle]" :scroll-top="scrollTop"
+		<scroll-view class="zp-scroll-view" :style="[scrollViewStyle]" :scroll-top="scrollTop"
 			:scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
 			:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
 			:scroll-into-view="scrollIntoView" :lower-threshold="lowerThreshold"
@@ -80,7 +80,7 @@
 			:refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
 			@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"
 			@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
-			<view class="paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
+			<view class="zp-paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
 				<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
 					:style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
@@ -92,26 +92,26 @@
 							:refresherRefreshingText="refresherRefreshingText"></z-paging-refresh>
 					</view>
 				</view>
-				<view class="paging-container">
+				<view class="zp-paging-container">
 					<slot v-if="useChatRecordMode&&$slots.chatLoading&&loadingStatus!==2&&realTotalData.length"
 						name="chatLoading" />
 					<view v-else-if="useChatRecordMode&&loadingStatus!==2&&realTotalData.length"
-						class="chat-record-loading-container">
+						class="zp-chat-record-loading-container">
 						<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
-							:class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
-						<image v-else :src="base64Flower" class="chat-record-loading-custom-image">
+							:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
+						<image v-else :src="base64Flower" class="zp-chat-record-loading-custom-image">
 						</image>
 					</view>
-					<slot v-if="$slots.loading&&!firstPageLoaded&&loading" name="loading" />
+					<slot v-if="$slots.loading&&!firstPageLoaded&&!pagingLoaded&&loading" name="loading" />
 					<!-- 空数据图 -->
-					<view class="empty-view"
+					<view class="zp-empty-view"
 						v-if="!totalData.length&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
 						<slot v-if="$slots.empty" name="empty" />
 						<z-paging-empty-view v-else :emptyViewImg="emptyViewImg" :emptyViewText="emptyViewText">
 						</z-paging-empty-view>
 					</view>
 					<!-- 主体内容 -->
-					<view class="paging-container-content" :style="[pagingContentStyle]">
+					<view class="zp-paging-container-content" :style="[pagingContentStyle]">
 						<slot />
 					</view>
 					<!-- 上拉加载更多view -->
@@ -128,11 +128,11 @@
 	</view>
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
-	<view ref="n-list" class="n-list" is="list" :show-scrollbar="showScrollbar" :loadmoreoffset="lowerThreshold"
+	<view ref="n-list" class="zp-n-list" :is="finalNvueListIs" :show-scrollbar="showScrollbar" :loadmoreoffset="lowerThreshold"
 		:scrollable="scrollEnable" @loadmore="_onLoadingMore('toBottom')" @scroll="_nOnScroll">
-		<refresh class="n-refresh" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
+		<refresh class="zp-n-refresh" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
 			@pullingdown="_nOnPullingdown">
-			<view class="n-refresh-container">
+			<view class="zp-n-refresh-container">
 				<!-- 下拉刷新view -->
 				<slot v-if="$slots.refresher" name="refresher" />
 				<z-paging-refresh v-else :refresherStatus="refresherStatus" :defaultThemeStyle="defaultThemeStyle"
@@ -145,15 +145,15 @@
 			<slot v-if="useChatRecordMode&&$slots.chatLoading&&loadingStatus!==2&&realTotalData.length"
 				name="chatLoading" />
 			<view v-else-if="useChatRecordMode&&loadingStatus!==2&&realTotalData.length"
-				class="chat-record-loading-container">
+				class="zp-chat-record-loading-container">
 				<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
-					:class="defaultThemeStyle==='white'?'loading-more-text loading-more-text-white':'loading-more-text loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
-				<image v-else :src="base64Flower" class="chat-record-loading-custom-image">
+					:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
+				<image v-else :src="base64Flower" class="zp-chat-record-loading-custom-image">
 				</image>
 			</view>
-			<slot v-if="$slots.loading&&!firstPageLoaded&&loading" name="loading" />
+			<slot v-if="$slots.loading&&!firstPageLoaded&&!pagingLoaded&&loading" name="loading" />
 			<!-- 空数据图 -->
-			<view class="empty-view"
+			<view class="zp-empty-view"
 				v-if="!totalData.length&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
 				<slot v-if="$slots.empty" name="empty" />
 				<z-paging-empty-view v-else :emptyViewImg="emptyViewImg" :emptyViewText="emptyViewText">
@@ -270,6 +270,7 @@
 				refresherTriggered: false,
 				loading: false,
 				firstPageLoaded: false,
+				pagingLoaded: false,
 				loaded: false,
 				isUserReload: true,
 				scrollEnable: true,
@@ -678,7 +679,14 @@
 					return false;
 					//#endif
 				}
-			}
+			},
+			//nvue中修改列表类型，可选值有list和waterfall，默认为list
+			nvueListIs: {
+				type: String,
+				default: function() {
+					return 'list';
+				}
+			},
 		},
 		mounted() {
 			if (this.mountedAutoCallReload) {
@@ -722,7 +730,7 @@
 				this.firstPageLoaded = false;
 				this.isTotalChangeFromAddData = false;
 				this.$nextTick(() => {
-					this._getNodeClientRect('.paging-container-content').then((res) => {
+					this._getNodeClientRect('.zp-paging-container-content').then((res) => {
 						if (res != '' && res != undefined && res.length) {
 							this.$emit('pagingContentHeightChanged', res[0].height);
 						}
@@ -818,6 +826,12 @@
 					loadingMoreFailText: this.loadingMoreFailText,
 					loadingMoreText: this.loadingMoreText
 				};
+			},
+			finalNvueListIs(){
+				if(this.nvueListIs === 'list' || this.nvueListIs === 'waterfall'){
+					return this.nvueListIs;
+				}
+				return 'list';
 			}
 		},
 		methods: {
@@ -969,13 +983,16 @@
 				} else if (dataType !== '[object Array]') {
 					data = [];
 					let methodStr = isLocal ? 'setLocalPaging' : 'addData';
-					console.error(`[z-paging]:${methodStr}参数类型不正确，第一个参数类型必须为Array!`);
+					if(dataType !== 'undefined'){
+						console.error(`[z-paging]:${methodStr}参数类型不正确，第一个参数类型必须为Array!`);
+					}
 				}
 				if (this.refresherTriggered) {
 					this.refresherTriggered = false;
 				}
 				setTimeout(() => {
 					this._refresherEnd();
+					this.pagingLoaded = true;
 				}, commonDelayTime)
 				if (success) {
 					this.loadingStatus = 0;
@@ -1097,8 +1114,8 @@
 					this.privateScrollWithAnimation = animate;
 					let pagingContainerH = 0;
 					let scrollViewH = 0;
-					const pagingContainerNode = await this._getNodeClientRect('.paging-container');
-					const scrollViewNode = await this._getNodeClientRect('.scroll-view');
+					const pagingContainerNode = await this._getNodeClientRect('.zp-paging-container');
+					const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
 					if (pagingContainerNode != '' && pagingContainerNode != undefined && pagingContainerNode.length) {
 						pagingContainerH = pagingContainerNode[0].height;
 					}
@@ -1123,7 +1140,7 @@
 					}
 					const node = await this._getNodeClientRect('#' + sel, false);
 					if (node != '' && node != undefined && node.length) {
-						const nodeTop = node[0].top;
+						let nodeTop = node[0].top;
 						this.scrollTop = this.oldScrollTop;
 						this.$nextTick(() => {
 							if (this.usePageScroll) {
@@ -1369,8 +1386,8 @@
 				try {
 					let pagingContainerH = 0;
 					let scrollViewH = 0;
-					const pagingContainerNode = await this._getNodeClientRect('.paging-container-content');
-					const scrollViewNode = await this._getNodeClientRect('.scroll-view');
+					const pagingContainerNode = await this._getNodeClientRect('.zp-paging-container-content');
+					const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
 					if (pagingContainerNode != '' && pagingContainerNode != undefined && pagingContainerNode.length) {
 						pagingContainerH = pagingContainerNode[0].height;
 					}
@@ -1385,7 +1402,7 @@
 			//检测z-paging是否超出了页面高度
 			async _checkScrollViewOutOfPage() {
 				try {
-					const scrollViewNode = await this._getNodeClientRect('.scroll-view');
+					const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
 					const scrollViewTotalH = scrollViewNode[0].top + scrollViewNode[0].height;
 					if (scrollViewTotalH > this.systemInfo.windowHeight + 100) {
 						console.error(
@@ -1399,8 +1416,8 @@
 			//检测z-paging是否要全屏覆盖(当使用页面滚动并且不满全屏时，默认z-paging需要铺满全屏，避免数据过少时内部的empty-view无法正确展示)
 			async _checkScrollViewShouldFullHeight() {
 				try {
-					const scrollViewNode = await this._getNodeClientRect('.scroll-view');
-					const pagingContainerNode = await this._getNodeClientRect('.paging-container-content');
+					const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
+					const pagingContainerNode = await this._getNodeClientRect('.zp-paging-container-content');
 					const scrollViewHeight = pagingContainerNode[0].height;
 					const scrollViewTop = scrollViewNode[0].top;
 					if (this.isAddedData && scrollViewHeight + scrollViewTop <= this.systemInfo.windowHeight + 10) {
@@ -1560,14 +1577,14 @@
 	@import "./z-paging-static.css";
 
 	.z-paging-content,
-	.scroll-view {
+	.zp-scroll-view {
 		/* #ifndef APP-NVUE */
 		width: 100%;
 		height: 100%;
 		/* #endif */
 	}
 
-	.paging-main {
+	.zp-paging-main {
 		height: 100%;
 		/* #ifndef APP-NVUE */
 		display: flex;
@@ -1575,12 +1592,12 @@
 		flex-direction: column;
 	}
 
-	.paging-container {
+	.zp-paging-container {
 		flex: 1;
 		position: relative;
 	}
 
-	.chat-record-loading-container {
+	.zp-chat-record-loading-container {
 		/* #ifndef APP-NVUE */
 		display: flex;
 		/* #endif */
@@ -1591,7 +1608,7 @@
 		font-size: 26rpx;
 	}
 
-	.chat-record-loading-custom-image {
+	.zp-chat-record-loading-custom-image {
 		width: 35rpx;
 		height: 35rpx;
 		/* #ifndef APP-NVUE */
@@ -1599,7 +1616,7 @@
 		/* #endif */
 	}
 
-	.custom-refresher-container {
+	.zp-custom-refresher-container {
 		/* #ifndef APP-NVUE */
 		display: flex;
 		/* #endif */
@@ -1608,7 +1625,7 @@
 		align-items: center;
 	}
 
-	.n-refresh-container {
+	.zp-n-refresh-container {
 		/* #ifndef APP-NVUE */
 		display: flex;
 		/* #endif */

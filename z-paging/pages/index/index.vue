@@ -58,7 +58,7 @@
 				},
 				stickyDemoClick(){
 					uni.navigateTo({
-						url: '../sticky-and-scroll-tab-demo/sticky-and-scroll-tab-demo'
+						url: '../sticky-demo/sticky-demo'
 					})
 				},
 				chatHistoryDemoClick(){
