@@ -128,8 +128,11 @@
 	</view>
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
-	<view ref="n-list" class="zp-n-list" :is="finalNvueListIs" :show-scrollbar="showScrollbar" :loadmoreoffset="lowerThreshold"
-		:scrollable="scrollEnable" @loadmore="_onLoadingMore('toBottom')" @scroll="_nOnScroll">
+	<view ref="n-list" class="zp-n-list" :is="finalNvueListIs" alwaysScrollableVertical="true"
+		:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar" :loadmoreoffset="lowerThreshold"
+		:scrollable="scrollEnable" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
+		:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap"
+		@loadmore="_onLoadingMore('toBottom')" @scroll="_nOnScroll">
 		<refresh class="zp-n-refresh" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
 			@pullingdown="_nOnPullingdown">
 			<view class="zp-n-refresh-container">
@@ -141,7 +144,7 @@
 			</view>
 		</refresh>
 		<slot />
-		<cell>
+		<view :is="finalNvueListIs==='waterfall'?'header':'cell'">
 			<slot v-if="useChatRecordMode&&$slots.chatLoading&&loadingStatus!==2&&realTotalData.length"
 				name="chatLoading" />
 			<view v-else-if="useChatRecordMode&&loadingStatus!==2&&realTotalData.length"
@@ -169,7 +172,7 @@
 					v-else-if="_shouldShowLoading('loadingMoreCustom')" :config="zPagingLoadMoreConfig">
 				</z-paging-load-more>
 			</templete>
-		</cell>
+		</view>
 	</view>
 	<!-- #endif -->
 </template>
@@ -193,7 +196,7 @@
 	 * @property {Boolean} auto-scroll-to-top-when-reload reload时自动滚动到顶部，默认为是
 	 * @property {Boolean} auto-clean-list-when-reload reload时立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
 	 * @property {Boolean} use-custom-refresher 是否使用自定义的下拉刷新，默认为是，即使用z-paging的下拉刷新。设置为false即代表使用uni scroll-view自带的下拉刷新，h5、App、微信小程序以外的平台不支持uni scroll-view自带的下拉刷新
-	 * @property {Number|String} refresher-fps 自定义下拉刷新下拉帧率，默认为30，过高可能会出现抖动问题(use-custom-refresher为true时生效)
+	 * @property {Number|String} refresher-fps 自定义下拉刷新下拉帧率，默认为40，过高可能会出现抖动问题(use-custom-refresher为true时生效)
 	 * @property {Number|String} refresher-max-angle 自定义下拉刷新允许触发的最大下拉角度，默认为40度，当下拉角度小于设定值时，自定义下拉刷新动画不会被触发
 	 * @property {Boolean} refresher-angle-enable-change-continued 自定义下拉刷新的角度由未达到最大角度变到达到最大角度时，是否继续下拉刷新手势，默认为是，在tab横向切换时建议设置为否
 	 * @property {String} refresher-default-text 自定义下拉刷新默认状态下的文字(use-custom-refresher为true时生效)
@@ -233,6 +236,8 @@
 	 * @property {Number|String} local-paging-loading-time 本地分页时上拉加载更多延迟时间，单位为毫秒，默认200毫秒
 	 * @property {Boolean} use-chat-record-mode 使用聊天记录模式，默认为否
 	 * @property {Boolean} touchmove-propagation-enabled 是否允许touchmove事件冒泡，默认为否，禁止冒泡可避免一些情况下下拉刷新时页面其他元素跟着下移，若您使用横向滑动切换选项卡，则需要将此属性设置为true，否则无法横向滑动
+	 * @property {String} nvue-list-is nvue中修改列表类型，可选值有list和waterfall，默认为list
+	 * @property {Object} nvue-waterfall-config nvue waterfall配置，仅在nvue中且nvueListIs=waterfall时有效，配置参数详情参见：https://uniapp.dcloud.io/component/waterfall
 	 * @event {Function} addData 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认为是)
 	 * @event {Function} setLocalPaging 设置本地分页，请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging作分页处理（若调用了此方法，则上拉加载更多时内部会自动分页，不会触发@query所绑定的事件）
 	 * @event {Function} reload 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果(animate为true时会展示下拉刷新动画，默认为false)
@@ -304,7 +309,8 @@
 				loadingMoreDefaultSlot: null,
 				nRefresherLoading: false,
 				nListIsDragging: false,
-				nShowBottom: true
+				nShowBottom: true,
+				nFixFreezing: false
 			};
 		},
 		props: {
@@ -395,11 +401,11 @@
 					return true;
 				},
 			},
-			//自定义下拉刷新下拉帧率，默认为30，过高可能会出现抖动问题(use-custom-refresher为true时生效)
+			//自定义下拉刷新下拉帧率，默认为40，过高可能会出现抖动问题(use-custom-refresher为true时生效)
 			refresherFps: {
 				type: [Number, String],
 				default: function() {
-					return 30;
+					return 40;
 				},
 			},
 			//自定义下拉刷新允许触发的最大下拉角度，默认为40度，当下拉角度小于设定值时，自定义下拉刷新动画不会被触发
@@ -687,6 +693,13 @@
 					return 'list';
 				}
 			},
+			//nvue waterfall配置，仅在nvue中且nvueListIs=waterfall时有效，配置参数详情参见：https://uniapp.dcloud.io/component/waterfall
+			nvueWaterfallConfig: {
+				type: Object,
+				default: function() {
+					return {};
+				}
+			},
 		},
 		mounted() {
 			if (this.mountedAutoCallReload) {
@@ -827,11 +840,28 @@
 					loadingMoreText: this.loadingMoreText
 				};
 			},
-			finalNvueListIs(){
-				if(this.nvueListIs === 'list' || this.nvueListIs === 'waterfall'){
-					return this.nvueListIs;
+			finalNvueListIs() {
+				const nvueListIsLowerCase = this.nvueListIs.toLowerCase();
+				if (nvueListIsLowerCase === 'list' || nvueListIsLowerCase === 'waterfall') {
+					return nvueListIsLowerCase;
 				}
 				return 'list';
+			},
+			nWaterfallColumnCount() {
+				return 2;
+				return this._getNvueWaterfallSingleConfig('column-count', 'auto');
+			},
+			nWaterfallColumnWidth() {
+				return this._getNvueWaterfallSingleConfig('column-width', 'auto');
+			},
+			nWaterfallColumnGap() {
+				return this._getNvueWaterfallSingleConfig('column-gap', 'normal');
+			},
+			nWaterfallLeftGap() {
+				return this._getNvueWaterfallSingleConfig('left-gap', 0);
+			},
+			nWaterfallRightGap() {
+				return this._getNvueWaterfallSingleConfig('right-gap', 0);
 			}
 		},
 		methods: {
@@ -944,12 +974,17 @@
 				this.pageScrollTop = value;
 			},
 			//更新z-paging内置scroll-view的scrollTop
-			updateScrollViewScrollTop(scrollTop, animate=true) {
+			updateScrollViewScrollTop(scrollTop, animate = true) {
 				this.privateScrollWithAnimation = animate;
 				this.scrollTop = this.oldScrollTop;
 				this.$nextTick(() => {
 					this.scrollTop = scrollTop;
 				});
+			},
+			//设置nvue List的specialEffects
+			setListSpecialEffects(args) {
+				this.nFixFreezing = args !== {};
+				this.$refs["n-list"].setSpecialEffects(args);
 			},
 			//私有的重新加载分页数据方法
 			_reload() {
@@ -983,7 +1018,7 @@
 				} else if (dataType !== '[object Array]') {
 					data = [];
 					let methodStr = isLocal ? 'setLocalPaging' : 'addData';
-					if(dataType !== 'undefined'){
+					if (dataType !== '[object Undefined]') {
 						console.error(`[z-paging]:${methodStr}参数类型不正确，第一个参数类型必须为Array!`);
 					}
 				}
@@ -1548,6 +1583,7 @@
 			// ------------nvue独有的方法----------------
 			//列表滚动时触发
 			_nOnScroll(e) {
+				this.$emit('scroll', e);
 				this.nListIsDragging = e.isDragging;
 			},
 			//下拉刷新刷新中
@@ -1568,6 +1604,14 @@
 				} else {
 					this.refresherStatus = 0;
 				}
+			},
+			//获取nvue waterfall单项配置
+			_getNvueWaterfallSingleConfig(key, defaultValue) {
+				const value = this.nvueWaterfallConfig[key];
+				if (value) {
+					return value;
+				}
+				return defaultValue;
 			}
 		},
 	};
