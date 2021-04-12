@@ -1,0 +1,19 @@
+/* z-paging
+github地址:https://github.com/SmileZXLee/uni-z-paging
+dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
+反馈QQ群：790460711
+
+//使用wxs处理下拉刷新transform */
+
+function refresherTransformChanged(newValue, oldValue, ownerInstance, instance){
+	instance.requestAnimationFrame(function() {
+		instance.setStyle({
+			transform: newValue,
+			'-webkit-transform': newValue
+		})
+	})
+}
+
+module.exports = {
+	refresherTransformChanged: refresherTransformChanged
+}

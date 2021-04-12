@@ -1,3 +1,7 @@
+## 1.4.9（2021-04-09）
+1.修复 scrollToView无效的问题<br>
+2.修复slot="loading"时，下拉刷新会出现loading的问题<br>
+3.nvue支持瀑布流，支持`setListSpecialEffects`
 ## 1.4.8（2021-04-01）
 1.代码重构，使结构更清晰。<br>
 2.内置empty-view

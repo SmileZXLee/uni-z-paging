@@ -16,7 +16,15 @@
 			:refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
 			@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"
 			@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
-			<view class="zp-paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
+			<view class="zp-paging-main" <!-- #ifndef APP-VUE || MP-WEIXIN || H5 -->
+				
+				<!-- #endif -->
+				<!-- #ifdef APP-VUE || MP-WEIXIN || H5 -->
+				:style="[{'transition': refresherTransition}]"
+				:change:prop="paging.refresherTransformChanged"
+				:prop="refresherTransform"
+				<!-- #endif -->
+				>
 				<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
 					:style="[{'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
@@ -80,7 +88,15 @@
 			:refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
 			@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"
 			@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
-			<view class="zp-paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]">
+			<view class="zp-paging-main" <!-- #ifndef APP-VUE || MP-WEIXIN || H5 -->
+				:style="[{'transform': refresherTransform,'transition': refresherTransition}]"
+				<!-- #endif -->
+				<!-- #ifdef APP-VUE || MP-WEIXIN || H5 -->
+				:style="[{'transition': refresherTransition}]"
+				:change:prop="paging.refresherTransformChanged"
+				:prop="refresherTransform"
+				<!-- #endif -->
+				>
 				<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
 					:style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
@@ -176,7 +192,7 @@
 	</view>
 	<!-- #endif -->
 </template>
-
+<script src="./z-paging-refresh.wxs" module="paging" lang="wxs"></script>
 <script>
 	const systemInfo = uni.getSystemInfoSync();
 	const commonDelayTime = 100;
@@ -310,7 +326,8 @@
 				nRefresherLoading: false,
 				nListIsDragging: false,
 				nShowBottom: true,
-				nFixFreezing: false
+				nFixFreezing: false,
+				refresherStatusChangedFunc: null
 			};
 		},
 		props: {
@@ -801,6 +818,15 @@
 				if (newVal !== oldVal) {
 					this.$emit('refresherStatusChange', newVal);
 					this.$emit('update:refresherStatus', newVal);
+					if (this.refresherStatusChangedFunc) {
+						this.refresherStatusChangedFunc(newVal);
+					}
+				}
+			},
+			refresherTransform(newVal, oldVal) {
+				if (newVal != oldVal) {
+					//console.log(paging)
+					//paging.updateTransform(newVal);
 				}
 			}
 		},
@@ -985,6 +1011,9 @@
 			setListSpecialEffects(args) {
 				this.nFixFreezing = args !== {};
 				this.$refs["n-list"].setSpecialEffects(args);
+			},
+			handleRefresherStatusChanged(func) {
+				this.refresherStatusChangedFunc = func;
 			},
 			//私有的重新加载分页数据方法
 			_reload() {
@@ -1344,11 +1373,15 @@
 				if (this._getRefresherTouchDisabled()) {
 					return;
 				}
-				this.refresherReachMaxAngle = true;
 				const touch = this._getCommonTouch(e);
 				let refresherTouchendY = touch.touchY;
 				let moveDistance = refresherTouchendY - this.refresherTouchstartY;
 				moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
+				this._handleRefresherTouchend(moveDistance);
+			},
+			//进一步处理拖拽结束结果
+			_handleRefresherTouchend(moveDistance) {
+				this.refresherReachMaxAngle = true;
 				if (moveDistance < 0 && this.usePageScroll && this.useCustomRefresher && this.pageScrollTop === -1) {
 					console.error(
 						'[z-paging]usePageScroll为true并且自定义下拉刷新时必须在page滚动时通过调用z-paging组件的updatePageScrollTop方法设置当前的scrollTop'
@@ -1398,7 +1431,9 @@
 			},
 			//模拟用户手动触发下拉刷新
 			_doRefresherRefreshAnimate() {
+				// #ifndef APP-VUE || MP-WEIXIN || H5
 				this.refresherTransform = `translateY(${this.refresherThreshold}px)`;
+				// #endif
 				this.moveDistance = this.refresherThreshold;
 				this.refresherStatus = 2;
 				this.isTouchmoving = true;
@@ -1612,6 +1647,13 @@
 					return value;
 				}
 				return defaultValue;
+			},
+			// ------------wxs相关----------------
+			_wxsUpdateIsTouchmoving(isTouchmoving) {
+				this.isTouchmoving = isTouchmoving;
+			},
+			_wxsUpdateRefresherStatus(refresherStatus) {
+				this.refresherStatus = refresherStatus;
 			}
 		},
 	};
