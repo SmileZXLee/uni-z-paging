@@ -129,8 +129,9 @@ function _getRefresherTouchDisabled(e,instance) {
 	var refresherEnabled = _getIsTrue(dataset.refresherenabled);
 	var useCustomRefresher = _getIsTrue(dataset.usecustomrefresher);
 	var usePageScroll = _getIsTrue(dataset.usepagescroll);
-	var pageScrollTop = _getIsTrue(dataset.pagescrolltop);
+	var pageScrollTop = parseFloat(dataset.pagescrolltop);
 	var scrollTop = parseFloat(dataset.scrolltop);
+	console.log('pageScrollTop',pageScrollTop,dataset.usepagescroll,useCustomRefresher)
 	var res = loading || useChatRecordMode || !refresherEnabled || !useCustomRefresher || (
 		usePageScroll && useCustomRefresher && pageScrollTop > 10) || (!(usePageScroll && useCustomRefresher) && (
 		scrollTop >
@@ -147,7 +148,7 @@ function _getAngleIsInRange(e, touch, state, dataset) {
 	if (!lastRefresherTouchmove) {
 		return true;
 	}
-	console.log('refresherAngleEnableChangeContinued',dataset.refresherangleenablechangecontinued)
+	console.log('refresherAngleEnableChangeContinued',refresherAngleEnableChangeContinued)
 	if (refresherMaxAngle >= 0 && refresherMaxAngle <= 90 && lastRefresherTouchmove && lastRefresherTouchmove.touchY <=
 		touch.touchY) {
 		if (!refresherAngleEnableChangeContinued && moveDistance < 1 && !refresherReachMaxAngle) {
@@ -173,9 +174,7 @@ function _getAngleIsInRange(e, touch, state, dataset) {
 }
 
 function _getIsTrue(value) {
-	if(value == undefined){
-		return false;
-	}
+	value = (typeof(value) === 'string' ? JSON.parse(value) : value) || false;
 	return value == true || value == 'true';
 }
 

@@ -29,7 +29,7 @@
 			:data-loading="loading" :data-useChatRecordMode="useChatRecordMode" 
 			:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="pageScrollTop"
 			:data-scrollTop="scrollTop" :data-refresherMaxAngle="refresherMaxAngle" :data-refresherAngleEnableChangeContinued="refresherAngleEnableChangeContinued"
-			:data-isTouchmoving="isTouchmoving"
+			:data-isTouchmoving="isTouchmoving" :data-usePageScroll="usePageScroll"
 			<!-- #endif -->
 			>
 				<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
@@ -107,7 +107,7 @@
 			:data-loading="loading" :data-useChatRecordMode="useChatRecordMode" 
 			:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="pageScrollTop"
 			:data-scrollTop="scrollTop" :data-refresherMaxAngle="refresherMaxAngle" :data-refresherAngleEnableChangeContinued="refresherAngleEnableChangeContinued"
-			:data-isTouchmoving="isTouchmoving"
+			:data-isTouchmoving="isTouchmoving" :data-usePageScroll="usePageScroll"
 			<!-- #endif -->
 			>
 				<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
@@ -162,7 +162,7 @@
 		:scrollable="scrollEnable" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 		:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap"
 		@loadmore="_onLoadingMore('toBottom')" @scroll="_nOnScroll">
-		<refresh class="zp-n-refresh" :display="nRefresherLoading&&refresherEnabled?'show':'hide'" @refresh="_nOnRrefresh"
+		<refresh class="zp-n-refresh" v-if="refresherEnabled" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
 			@pullingdown="_nOnPullingdown">
 			<view class="zp-n-refresh-container">
 				<!-- 下拉刷新view -->
@@ -344,7 +344,6 @@
 				nListIsDragging: false,
 				nShowBottom: true,
 				nFixFreezing: false,
-				refresherStatusChangedFunc: null,
 				wxsPropType: ''
 			};
 		},
@@ -836,10 +835,6 @@
 				if (newVal !== oldVal) {
 					this.$emit('refresherStatusChange', newVal);
 					this.$emit('update:refresherStatus', newVal);
-					// if(this.refresherStatusChangedFunc){
-					// 	this.refresherStatusChangedFunc(newVal);
-					// }
-					
 				}
 			}
 		},
@@ -1286,6 +1281,7 @@
 				}
 			},
 			_scroll(e) {
+				
 				this.$emit('scroll', e);
 				this.oldScrollTop = e.detail.scrollTop;
 				if (!this.scrollToTopBounceEnabled && e.detail.scrollTop < 0) {
