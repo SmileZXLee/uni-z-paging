@@ -1,19 +1,187 @@
-/* z-paging
-github地址:https://github.com/SmileZXLee/uni-z-paging
-dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
-反馈QQ群：790460711
+function propObserver(newValue, oldValue, ownerInstance, instance) {
+	var state = ownerInstance.getState();
+	state.currentInstance = instance;
+	var dataset = instance.getDataset();
+	var loading = dataset.loading == true;
+	if (newValue.indexOf('end') != -1) {
+		_setTransform('translateY(0px)', instance)
+		state.moveDistance = 0;
+	} else if (newValue.indexOf('begin') != -1) {
+		var refresherThreshold = instance.getDataset().refresherthreshold
+		_setTransformValue(refresherThreshold,instance, state);
+	}
+}
 
-//使用wxs处理下拉刷新transform */
+function touchstart(e, ownerInstance) {
+	var instance = ownerInstance.getState().currentInstance;
+	var state = instance.getState();
+	if (_getRefresherTouchDisabled(e,instance)) {
+		return;
+	}
+	var touch = _getCommonTouch(e);
+	state.startY = touch.touchY;
+	state.lastRefresherTouchmove = touch;
+	ownerInstance.callMethod('_handleRefresherTouchstart', touch);
+}
 
-function refresherTransformChanged(newValue, oldValue, ownerInstance, instance){
+function touchmove(e, ownerInstance) {
+	var touch = _getCommonTouch(e);
+	var instance = ownerInstance.getState().currentInstance;
+	var dataset = instance.getDataset();
+	var refresherThreshold = dataset.refresherthreshold
+	var state = instance.getState();
+	if (_getRefresherTouchDisabled(e,instance)) {
+		return;
+	}
+	if (!_getAngleIsInRange(e, touch, state, dataset)) {
+		return;
+	}
+	var moveDistance = _getMoveDistance(e, instance);
+	if (moveDistance < 0) {
+		return;
+	}
+	_setTransformValue(moveDistance, instance, state);
+	ownerInstance.callMethod('_handleRefresherTouchmove', moveDistance, touch);
+	return false;
+}
+
+function touchend(e, ownerInstance) {
+	var instance = ownerInstance.getState().currentInstance;
+	var state = instance.getState();
+	if (_getRefresherTouchDisabled(e,instance)) {
+		return;
+	}
+	state.refresherReachMaxAngle = true;
+	
+	var isTouchmoving = _getIsTrue(instance.getDataset().istouchmoving);
+	if (!isTouchmoving) {
+		return;
+	}
+	var refresherThreshold = instance.getDataset().refresherthreshold
+	var moveDistance = _getMoveDistance(e, instance);
+	ownerInstance.callMethod('_handleRefresherTouchend', moveDistance);
+	if (moveDistance >= refresherThreshold) {
+		moveDistance = refresherThreshold;
+	}
+	_setTransformValue(moveDistance, instance, state)
+}
+
+
+function _setTransformValue(value, instance, state) {
+	value = value || 0;
+	state.moveDistance = value;
+	_setTransform('translateY(' + value + 'px)', instance);
+}
+
+function _setTransform(transform, instance) {
 	instance.requestAnimationFrame(function() {
 		instance.setStyle({
-			transform: newValue,
-			'-webkit-transform': newValue
+			transform: transform,
+			'-webkit-transform': transform
 		})
 	})
+
+}
+
+function _getMoveDistance(e, instance) {
+	var state = instance.getState()
+	var refresherThreshold = instance.getDataset().refresherthreshold
+	var touch = _getCommonTouch(e);
+	var moveDistance = touch.touchY - state.startY;
+	moveDistance = _getFinalRefresherMoveDistance(moveDistance, refresherThreshold);
+	return moveDistance;
+}
+
+function _getCommonTouch(e) {
+	var touch = null;
+	if (e.touches && e.touches.length) {
+		touch = e.touches[0];
+	} else if (e.changedTouches && e.changedTouches.length) {
+		touch = e.changedTouches[0];
+	} else if (e.datail && e.datail !== {}) {
+		touch = e.datail;
+	} else {
+		return {
+			touchX: 0,
+			touchY: 0
+		}
+	}
+	return {
+		touchX: touch.clientX,
+		touchY: touch.clientY
+	};
+}
+
+function _getFinalRefresherMoveDistance(moveDistance, refresherThreshold) {
+	refresherThreshold = parseFloat(refresherThreshold);
+	moveDistance = moveDistance * 0.7;
+	if (moveDistance >= refresherThreshold) {
+		moveDistance = refresherThreshold + (moveDistance - refresherThreshold) * 0.3;
+	}
+	return moveDistance;
+}
+
+
+function _getRefresherTouchDisabled(e,instance) {
+	var dataset = instance.getDataset();
+	var loading = dataset.loading == true;
+	var useChatRecordMode = dataset.useChatRecordMode || false;
+	var refresherEnabled = _getIsTrue(dataset.refresherenabled);
+	var useCustomRefresher = _getIsTrue(dataset.usecustomrefresher);
+	var usePageScroll = _getIsTrue(dataset.usepagescroll);
+	var pageScrollTop = _getIsTrue(dataset.pagescrolltop);
+	var scrollTop = parseFloat(dataset.scrolltop);
+	var res = loading || useChatRecordMode || !refresherEnabled || !useCustomRefresher || (
+		usePageScroll && useCustomRefresher && pageScrollTop > 10) || (!(usePageScroll && useCustomRefresher) && (
+		scrollTop >
+		10))
+	return res;
+}
+
+function _getAngleIsInRange(e, touch, state, dataset) {
+	var refresherMaxAngle = dataset.refreshermaxangle;
+	var refresherAngleEnableChangeContinued = _getIsTrue(dataset.refresherangleenablechangecontinued);
+	var lastRefresherTouchmove = state.lastRefresherTouchmove;
+	var moveDistance = state.moveDistance;
+	var refresherReachMaxAngle = state.refresherReachMaxAngle;
+	if (!lastRefresherTouchmove) {
+		return true;
+	}
+	console.log('refresherAngleEnableChangeContinued',dataset.refresherangleenablechangecontinued)
+	if (refresherMaxAngle >= 0 && refresherMaxAngle <= 90 && lastRefresherTouchmove && lastRefresherTouchmove.touchY <=
+		touch.touchY) {
+		if (!refresherAngleEnableChangeContinued && moveDistance < 1 && !refresherReachMaxAngle) {
+			return false;
+		}
+		var x = Math.abs(touch.touchX - lastRefresherTouchmove.touchX);
+		var y = Math.abs(touch.touchY - lastRefresherTouchmove.touchY);
+		var z = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+		if (x && y) {
+			var angle = Math.asin(y / z) / Math.PI * 180;
+			console.log('angle', angle, refresherMaxAngle)
+			if (angle < refresherMaxAngle) {
+				state.lastRefresherTouchmove = touch;
+				state.refresherReachMaxAngle = false;
+				console.log('挡掉了')
+				return false;
+			}
+		}
+	}
+	state.lastRefresherTouchmove = touch;
+	state.refresherReachMaxAngle = true;
+	return true;
+}
+
+function _getIsTrue(value) {
+	if(value == undefined){
+		return false;
+	}
+	return value == true || value == 'true';
 }
 
 module.exports = {
-	refresherTransformChanged: refresherTransformChanged
+	touchstart: touchstart,
+	touchmove: touchmove,
+	touchend: touchend,
+	propObserver: propObserver
 }

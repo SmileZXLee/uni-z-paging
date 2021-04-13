@@ -14,17 +14,24 @@
 			:refresher-enabled="finalRefresherEnabled&&!useCustomRefresher" :refresher-threshold="refresherThreshold"
 			:refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
 			:refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
-			@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"
-			@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
-			<view class="zp-paging-main" <!-- #ifndef APP-VUE || MP-WEIXIN || H5 -->
-				
-				<!-- #endif -->
-				<!-- #ifdef APP-VUE || MP-WEIXIN || H5 -->
-				:style="[{'transition': refresherTransition}]"
-				:change:prop="paging.refresherTransformChanged"
-				:prop="refresherTransform"
-				<!-- #endif -->
-				>
+			@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"  
+			<!-- #ifndef APP-VUE || MP-WEIXIN || H5 -->
+			@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend"
+			<!-- #endif -->
+			<!-- #ifdef APP-VUE || MP-WEIXIN || H5 -->
+			@touchstart="paging.touchstart" @touchmove="paging.touchmove" @touchend="paging.touchend"
+			<!-- #endif -->
+			>	
+			<view class="zp-paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]"
+			<!-- #ifdef APP-VUE || MP-WEIXIN || H5 -->
+			:change:prop="paging.propObserver" :prop="wxsPropType"
+			:data-refresherThreshold="refresherThreshold" :data-moveDistance="moveDistance"
+			:data-loading="loading" :data-useChatRecordMode="useChatRecordMode" 
+			:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="pageScrollTop"
+			:data-scrollTop="scrollTop" :data-refresherMaxAngle="refresherMaxAngle" :data-refresherAngleEnableChangeContinued="refresherAngleEnableChangeContinued"
+			:data-isTouchmoving="isTouchmoving"
+			<!-- #endif -->
+			>
 				<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
 					:style="[{'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
@@ -87,16 +94,22 @@
 			:refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
 			:refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
 			@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"
-			@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend">
-			<view class="zp-paging-main" <!-- #ifndef APP-VUE || MP-WEIXIN || H5 -->
-				:style="[{'transform': refresherTransform,'transition': refresherTransition}]"
-				<!-- #endif -->
-				<!-- #ifdef APP-VUE || MP-WEIXIN || H5 -->
-				:style="[{'transition': refresherTransition}]"
-				:change:prop="paging.refresherTransformChanged"
-				:prop="refresherTransform"
-				<!-- #endif -->
-				>
+			<!-- #ifndef APP-VUE || MP-WEIXIN || H5 -->
+			@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend"
+			<!-- #endif -->
+			<!-- #ifdef APP-VUE || MP-WEIXIN || H5 -->
+			@touchstart="paging.touchstart" @touchmove="paging.touchmove" @touchend="paging.touchend"
+			<!-- #endif -->>
+			<view class="zp-paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]"
+			<!-- #ifdef APP-VUE || MP-WEIXIN || H5 -->
+			:change:prop="paging.propObserver" :prop="wxsPropType"
+			:data-refresherThreshold="refresherThreshold" :data-moveDistance="moveDistance"
+			:data-loading="loading" :data-useChatRecordMode="useChatRecordMode" 
+			:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="pageScrollTop"
+			:data-scrollTop="scrollTop" :data-refresherMaxAngle="refresherMaxAngle" :data-refresherAngleEnableChangeContinued="refresherAngleEnableChangeContinued"
+			:data-isTouchmoving="isTouchmoving"
+			<!-- #endif -->
+			>
 				<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
 					:style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
@@ -149,7 +162,7 @@
 		:scrollable="scrollEnable" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 		:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap"
 		@loadmore="_onLoadingMore('toBottom')" @scroll="_nOnScroll">
-		<refresh class="zp-n-refresh" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
+		<refresh class="zp-n-refresh" :display="nRefresherLoading&&refresherEnabled?'show':'hide'" @refresh="_nOnRrefresh"
 			@pullingdown="_nOnPullingdown">
 			<view class="zp-n-refresh-container">
 				<!-- 下拉刷新view -->
@@ -192,7 +205,11 @@
 	</view>
 	<!-- #endif -->
 </template>
-<script src="./z-paging-refresh.wxs" module="paging" lang="wxs"></script>
+<script
+    src="./z-paging-refresh.wxs"
+    module="paging"
+    lang="wxs"
+></script>
 <script>
 	const systemInfo = uni.getSystemInfoSync();
 	const commonDelayTime = 100;
@@ -327,7 +344,8 @@
 				nListIsDragging: false,
 				nShowBottom: true,
 				nFixFreezing: false,
-				refresherStatusChangedFunc: null
+				refresherStatusChangedFunc: null,
+				wxsPropType: ''
 			};
 		},
 		props: {
@@ -818,15 +836,10 @@
 				if (newVal !== oldVal) {
 					this.$emit('refresherStatusChange', newVal);
 					this.$emit('update:refresherStatus', newVal);
-					if (this.refresherStatusChangedFunc) {
-						this.refresherStatusChangedFunc(newVal);
-					}
-				}
-			},
-			refresherTransform(newVal, oldVal) {
-				if (newVal != oldVal) {
-					//console.log(paging)
-					//paging.updateTransform(newVal);
+					// if(this.refresherStatusChangedFunc){
+					// 	this.refresherStatusChangedFunc(newVal);
+					// }
+					
 				}
 			}
 		},
@@ -910,6 +923,7 @@
 				if (!this.useChatRecordMode) {
 					return;
 				}
+				this.isTotalChangeFromAddData = true;
 				this.totalData = this.totalData.concat(data);
 				if (toBottom) {
 					setTimeout(() => {
@@ -1012,7 +1026,7 @@
 				this.nFixFreezing = args !== {};
 				this.$refs["n-list"].setSpecialEffects(args);
 			},
-			handleRefresherStatusChanged(func) {
+			handleRefresherStatusChanged(func){
 				this.refresherStatusChangedFunc = func;
 			},
 			//私有的重新加载分页数据方法
@@ -1309,10 +1323,14 @@
 				if (this._getRefresherTouchDisabled()) {
 					return;
 				}
+				const touch = this._getCommonTouch(e);
+				this._handleRefresherTouchend(touch);
+			},
+			//进一步处理拖拽开始结果
+			_handleRefresherTouchstart(touch){
 				if (!this.loading) {
 					this.isTouchmoving = false;
 				}
-				const touch = this._getCommonTouch(e);
 				this.refresherTransition = 'transform .1s linear';
 				this.refresherTouchstartY = touch.touchY;
 				this.$emit('refresherTouchstart', this.refresherTouchstartY);
@@ -1351,12 +1369,17 @@
 							return;
 						}
 					}
+					moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
+					this._handleRefresherTouchmove(moveDistance,touch);
 				}
+				
+			},
+			//进一步处理拖拽中结果
+			_handleRefresherTouchmove(moveDistance,touch){
 				this.refresherReachMaxAngle = true;
 				if (!this.isTouchmoving) {
 					this.isTouchmoving = true;
 				}
-				moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
 				if (moveDistance >= this.refresherThreshold) {
 					this.refresherStatus = 1;
 				} else {
@@ -1370,7 +1393,7 @@
 			},
 			//拖拽结束
 			_refresherTouchend(e) {
-				if (this._getRefresherTouchDisabled()) {
+				if (this._getRefresherTouchDisabled() || !this.isTouchmoving) {
 					return;
 				}
 				const touch = this._getCommonTouch(e);
@@ -1380,7 +1403,10 @@
 				this._handleRefresherTouchend(moveDistance);
 			},
 			//进一步处理拖拽结束结果
-			_handleRefresherTouchend(moveDistance) {
+			_handleRefresherTouchend(moveDistance){
+				if(!this.isTouchmoving){
+					return;
+				}
 				this.refresherReachMaxAngle = true;
 				if (moveDistance < 0 && this.usePageScroll && this.useCustomRefresher && this.pageScrollTop === -1) {
 					console.error(
@@ -1388,7 +1414,9 @@
 					)
 				}
 				if (moveDistance >= this.refresherThreshold && this.refresherStatus === 1) {
+					// #ifndef APP-VUE || MP-WEIXIN || H5
 					this.refresherTransform = `translateY(${this.refresherThreshold}px)`;
+					// #endif
 					this.moveDistance = this.refresherThreshold;
 					this.refresherStatus = 2;
 					this._doRefresherLoad();
@@ -1404,6 +1432,9 @@
 			//下拉刷新结束
 			_refresherEnd(shouldEndLoadingDelay = true) {
 				this.refresherTransform = 'translateY(0px)';
+				// #ifdef APP-VUE || MP-WEIXIN || H5
+				this.wxsPropType = 'end' + (new Date()).getTime();
+				// #endif
 				this.moveDistance = 0;
 				if (this.refresherEndBounceEnabled) {
 					this.refresherTransition = 'transform 0.3s cubic-bezier(0.19,1.64,0.42,0.72)';
@@ -1431,8 +1462,9 @@
 			},
 			//模拟用户手动触发下拉刷新
 			_doRefresherRefreshAnimate() {
-				// #ifndef APP-VUE || MP-WEIXIN || H5
 				this.refresherTransform = `translateY(${this.refresherThreshold}px)`;
+				// #ifdef APP-VUE || MP-WEIXIN || H5
+				this.wxsPropType = 'begin' + (new Date()).getTime();
 				// #endif
 				this.moveDistance = this.refresherThreshold;
 				this.refresherStatus = 2;
@@ -1647,13 +1679,6 @@
 					return value;
 				}
 				return defaultValue;
-			},
-			// ------------wxs相关----------------
-			_wxsUpdateIsTouchmoving(isTouchmoving) {
-				this.isTouchmoving = isTouchmoving;
-			},
-			_wxsUpdateRefresherStatus(refresherStatus) {
-				this.refresherStatus = refresherStatus;
 			}
 		},
 	};

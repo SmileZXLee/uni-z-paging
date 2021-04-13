@@ -10,14 +10,8 @@
 	export default {
 		data() {
 			return {
-				status: 0
+				
 			};
-		},
-		mounted() {
-			console.log(this.$parent)
-			// this.$parent.handleRefresherStatusChanged((e)=>{
-			// 	console.log('状态改变了',e)
-			// })
 		},
 		computed: {
 			statusText(){
@@ -25,10 +19,13 @@
 				return statusTextArr[this.status];
 			}
 		},
-		methods:{
-			updateRefresherStatus(status){
-				this.status = status;
-			}
+		props: {
+			status: {
+				type: Number,
+				default: function() {
+					return 0;
+				},
+			},
 		}
 	}
 </script>
