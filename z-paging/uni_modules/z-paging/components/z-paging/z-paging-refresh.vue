@@ -1,4 +1,4 @@
-<!-- z-paging -->
+<!-- z-paging V1.5.0-->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
 <!-- 反馈QQ群：790460711 -->

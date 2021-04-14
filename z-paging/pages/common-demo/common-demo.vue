@@ -13,6 +13,7 @@
 				</view>
 			</view>
 		</z-paging>
+		
 	</view>
 </template>
 

@@ -1,4 +1,4 @@
-<!-- z-paging -->
+<!-- z-paging V1.5.0 -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
 <!-- 获取文档和示例请访问上方dcloud地址 -->
@@ -19,13 +19,13 @@
 			@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend"
 			<!-- #endif -->
 			<!-- #ifdef APP-VUE || MP-WEIXIN || H5 -->
-			@touchstart="paging.touchstart" @touchmove="paging.touchmove" @touchend="paging.touchend"
+			@touchstart="paging.touchstart" @touchmove="paging.touchmove" @touchend="paging.touchend" @touchcancel="paging.touchend"
 			<!-- #endif -->
 			>	
 			<view class="zp-paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]"
 			<!-- #ifdef APP-VUE || MP-WEIXIN || H5 -->
 			:change:prop="paging.propObserver" :prop="wxsPropType"
-			:data-refresherThreshold="refresherThreshold" :data-moveDistance="moveDistance"
+			:data-refresherThreshold="refresherThreshold"
 			:data-loading="loading" :data-useChatRecordMode="useChatRecordMode" 
 			:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="pageScrollTop"
 			:data-scrollTop="scrollTop" :data-refresherMaxAngle="refresherMaxAngle" :data-refresherAngleEnableChangeContinued="refresherAngleEnableChangeContinued"
@@ -56,7 +56,7 @@
 					<slot v-if="$slots.loading&&!firstPageLoaded&&!pagingLoaded&&loading" name="loading" />
 					<!-- 空数据图 -->
 					<view class="zp-empty-view"
-						v-if="!totalData.length&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
+						v-if="!totalData.length&&isAddedData&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
 						<slot v-if="$slots.empty" name="empty" />
 						<z-paging-empty-view v-else :emptyViewImg="emptyViewImg" :emptyViewText="emptyViewText">
 						</z-paging-empty-view>
@@ -98,12 +98,12 @@
 			@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend"
 			<!-- #endif -->
 			<!-- #ifdef APP-VUE || MP-WEIXIN || H5 -->
-			@touchstart="paging.touchstart" @touchmove="paging.touchmove" @touchend="paging.touchend"
+			@touchstart="paging.touchstart" @touchmove="paging.touchmove" @touchend="paging.touchend" @touchcancel="paging.touchend"
 			<!-- #endif -->>
 			<view class="zp-paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]"
 			<!-- #ifdef APP-VUE || MP-WEIXIN || H5 -->
 			:change:prop="paging.propObserver" :prop="wxsPropType"
-			:data-refresherThreshold="refresherThreshold" :data-moveDistance="moveDistance"
+			:data-refresherThreshold="refresherThreshold"
 			:data-loading="loading" :data-useChatRecordMode="useChatRecordMode" 
 			:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="pageScrollTop"
 			:data-scrollTop="scrollTop" :data-refresherMaxAngle="refresherMaxAngle" :data-refresherAngleEnableChangeContinued="refresherAngleEnableChangeContinued"
@@ -134,7 +134,7 @@
 					<slot v-if="$slots.loading&&!firstPageLoaded&&!pagingLoaded&&loading" name="loading" />
 					<!-- 空数据图 -->
 					<view class="zp-empty-view"
-						v-if="!totalData.length&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
+						v-if="!totalData.length&&isAddedData&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
 						<slot v-if="$slots.empty" name="empty" />
 						<z-paging-empty-view v-else :emptyViewImg="emptyViewImg" :emptyViewText="emptyViewText">
 						</z-paging-empty-view>
@@ -186,7 +186,7 @@
 			<slot v-if="$slots.loading&&!firstPageLoaded&&!pagingLoaded&&loading" name="loading" />
 			<!-- 空数据图 -->
 			<view class="zp-empty-view"
-				v-if="!totalData.length&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
+				v-if="!totalData.length&&isAddedData&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
 				<slot v-if="$slots.empty" name="empty" />
 				<z-paging-empty-view v-else :emptyViewImg="emptyViewImg" :emptyViewText="emptyViewText">
 				</z-paging-empty-view>
@@ -288,7 +288,7 @@
 	import zStatic from './z-paging-static'
 	import zPagingRefresh from './z-paging-refresh'
 	import zPagingLoadMore from './z-paging-load-more'
-	import zPagingEmptyView from './z-paging-empty-view'
+	import zPagingEmptyView from '../z-paging-empty-view/z-paging-empty-view'
 	export default {
 		name: "z-paging",
 		components: {
@@ -1381,11 +1381,13 @@
 				} else {
 					this.refresherStatus = 0;
 				}
+				// #ifndef APP-VUE || MP-WEIXIN || H5
 				this.scrollEnable = false;
 				this.refresherTransform = `translateY(${moveDistance}px)`;
+				this.lastRefresherTouchmove = touch;
+				// #endif
 				this.moveDistance = moveDistance;
 				this.$emit('refresherTouchmove', moveDistance);
-				this.lastRefresherTouchmove = touch;
 			},
 			//拖拽结束
 			_refresherTouchend(e) {

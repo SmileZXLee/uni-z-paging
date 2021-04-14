@@ -1,3 +1,10 @@
+// z-paging V1.5.0
+// github地址:https://github.com/SmileZXLee/uni-z-paging
+// dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
+// 反馈QQ群：790460711
+
+//h5、app-vue、小程序上使用wxs实现自定义下拉刷新，减少逻辑层与视图层的通信折损，提升性能
+
 function propObserver(newValue, oldValue, ownerInstance, instance) {
 	var state = ownerInstance.getState();
 	state.currentInstance = instance;
@@ -8,14 +15,14 @@ function propObserver(newValue, oldValue, ownerInstance, instance) {
 		state.moveDistance = 0;
 	} else if (newValue.indexOf('begin') != -1) {
 		var refresherThreshold = instance.getDataset().refresherthreshold
-		_setTransformValue(refresherThreshold,instance, state);
+		_setTransformValue(refresherThreshold, instance, state);
 	}
 }
 
 function touchstart(e, ownerInstance) {
 	var instance = ownerInstance.getState().currentInstance;
 	var state = instance.getState();
-	if (_getRefresherTouchDisabled(e,instance)) {
+	if (_getRefresherTouchDisabled(e, instance)) {
 		return;
 	}
 	var touch = _getCommonTouch(e);
@@ -30,7 +37,7 @@ function touchmove(e, ownerInstance) {
 	var dataset = instance.getDataset();
 	var refresherThreshold = dataset.refresherthreshold
 	var state = instance.getState();
-	if (_getRefresherTouchDisabled(e,instance)) {
+	if (_getRefresherTouchDisabled(e, instance)) {
 		return;
 	}
 	if (!_getAngleIsInRange(e, touch, state, dataset)) {
@@ -41,25 +48,40 @@ function touchmove(e, ownerInstance) {
 		return;
 	}
 	_setTransformValue(moveDistance, instance, state);
-	ownerInstance.callMethod('_handleRefresherTouchmove', moveDistance, touch);
+	var oldRefresherStatus = state.refresherStatus;
+	if (moveDistance >= refresherThreshold) {
+		state.refresherStatus = 1;
+	} else {
+		state.refresherStatus = 0;
+	}
+	if(oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus){
+		console.log('_handleRefresherTouchmove');
+		ownerInstance.callMethod('_handleRefresherTouchmove', moveDistance, touch);
+	}
 	return false;
 }
 
 function touchend(e, ownerInstance) {
+	var touch = _getCommonTouch(e);
 	var instance = ownerInstance.getState().currentInstance;
+	var dataset = instance.getDataset();
 	var state = instance.getState();
-	if (_getRefresherTouchDisabled(e,instance)) {
+	if (_getRefresherTouchDisabled(e, instance)) {
 		return;
 	}
 	state.refresherReachMaxAngle = true;
-	
+
 	var isTouchmoving = _getIsTrue(instance.getDataset().istouchmoving);
 	if (!isTouchmoving) {
 		return;
 	}
+	var oldMoveDistance = state.moveDistance;
 	var refresherThreshold = instance.getDataset().refresherthreshold
 	var moveDistance = _getMoveDistance(e, instance);
 	ownerInstance.callMethod('_handleRefresherTouchend', moveDistance);
+	if (oldMoveDistance < refresherThreshold) {
+		return;
+	}
 	if (moveDistance >= refresherThreshold) {
 		moveDistance = refresherThreshold;
 	}
@@ -122,16 +144,15 @@ function _getFinalRefresherMoveDistance(moveDistance, refresherThreshold) {
 }
 
 
-function _getRefresherTouchDisabled(e,instance) {
+function _getRefresherTouchDisabled(e, instance) {
 	var dataset = instance.getDataset();
-	var loading = dataset.loading == true;
-	var useChatRecordMode = dataset.useChatRecordMode || false;
+	var loading = _getIsTrue(dataset.loading);
+	var useChatRecordMode = _getIsTrue(dataset.usechatrecordmode);
 	var refresherEnabled = _getIsTrue(dataset.refresherenabled);
 	var useCustomRefresher = _getIsTrue(dataset.usecustomrefresher);
 	var usePageScroll = _getIsTrue(dataset.usepagescroll);
 	var pageScrollTop = parseFloat(dataset.pagescrolltop);
 	var scrollTop = parseFloat(dataset.scrolltop);
-	console.log('pageScrollTop',pageScrollTop,dataset.usepagescroll,useCustomRefresher)
 	var res = loading || useChatRecordMode || !refresherEnabled || !useCustomRefresher || (
 		usePageScroll && useCustomRefresher && pageScrollTop > 10) || (!(usePageScroll && useCustomRefresher) && (
 		scrollTop >
@@ -148,7 +169,6 @@ function _getAngleIsInRange(e, touch, state, dataset) {
 	if (!lastRefresherTouchmove) {
 		return true;
 	}
-	console.log('refresherAngleEnableChangeContinued',refresherAngleEnableChangeContinued)
 	if (refresherMaxAngle >= 0 && refresherMaxAngle <= 90 && lastRefresherTouchmove && lastRefresherTouchmove.touchY <=
 		touch.touchY) {
 		if (!refresherAngleEnableChangeContinued && moveDistance < 1 && !refresherReachMaxAngle) {
@@ -159,17 +179,15 @@ function _getAngleIsInRange(e, touch, state, dataset) {
 		var z = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 		if (x && y) {
 			var angle = Math.asin(y / z) / Math.PI * 180;
-			console.log('angle', angle, refresherMaxAngle)
 			if (angle < refresherMaxAngle) {
 				state.lastRefresherTouchmove = touch;
 				state.refresherReachMaxAngle = false;
-				console.log('挡掉了')
 				return false;
 			}
 		}
 	}
 	state.lastRefresherTouchmove = touch;
-	state.refresherReachMaxAngle = true;
+	//state.refresherReachMaxAngle = true;
 	return true;
 }
 
