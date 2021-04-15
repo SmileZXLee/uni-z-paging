@@ -36,7 +36,14 @@
 					:style="[{'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
 						<!-- 下拉刷新view -->
-						<slot v-if="$slots.refresher" name="refresher" />
+						<slot 
+						<!-- #ifdef MP-WEIXIN -->
+						v-if="zScopedSlots.refresher"
+						<!-- #endif -->
+						<!-- #ifndef MP-WEIXIN -->
+						v-if="$scopedSlots.refresher"
+						<!-- #endif -->
+						:refresherStatus="refresherStatus" name="refresher" />
 						<z-paging-refresh v-else :refresherStatus="refresherStatus"
 							:defaultThemeStyle="defaultThemeStyle" :refresherDefaultText="refresherDefaultText"
 							:refresherPullingText="refresherPullingText"
@@ -114,7 +121,7 @@
 					:style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
 						<!-- 下拉刷新view -->
-						<slot v-if="$slots.refresher" name="refresher" />
+						<slot v-if="$slots.refresher" :refresherStatus="refresherStatus" name="refresher" />
 						<z-paging-refresh v-else :refresherStatus="refresherStatus"
 							:defaultThemeStyle="defaultThemeStyle" :refresherDefaultText="refresherDefaultText"
 							:refresherPullingText="refresherPullingText"
@@ -166,7 +173,7 @@
 			@pullingdown="_nOnPullingdown">
 			<view class="zp-n-refresh-container">
 				<!-- 下拉刷新view -->
-				<slot v-if="$slots.refresher" name="refresher" />
+				<slot v-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
 				<z-paging-refresh v-else :refresherStatus="refresherStatus" :defaultThemeStyle="defaultThemeStyle"
 					:refresherDefaultText="refresherDefaultText" :refresherPullingText="refresherPullingText"
 					:refresherRefreshingText="refresherRefreshingText"></z-paging-refresh>
@@ -874,6 +881,10 @@
 					loadingMoreText: this.loadingMoreText
 				};
 			},
+			zScopedSlots(){
+				console.log('this.$scopedSlots',this.$scopedSlots)
+				return this.$scopedSlots;
+			},
 			finalNvueListIs() {
 				const nvueListIsLowerCase = this.nvueListIs.toLowerCase();
 				if (nvueListIsLowerCase === 'list' || nvueListIsLowerCase === 'waterfall') {
@@ -1243,6 +1254,9 @@
 				if (this.useChatRecordMode && type !== 'loadingMoreLoading') {
 					return false;
 				}
+				if(!this.$slots){
+					return true;
+				}
 				if (type === 'loadingMoreDefault') {
 					return this.loadingStatus === 0 && this.$slots.loadingMoreDefaul;
 				} else if (type === 'loadingMoreLoading') {
@@ -1281,7 +1295,6 @@
 				}
 			},
 			_scroll(e) {
-				
 				this.$emit('scroll', e);
 				this.oldScrollTop = e.detail.scrollTop;
 				if (!this.scrollToTopBounceEnabled && e.detail.scrollTop < 0) {
@@ -1320,7 +1333,7 @@
 					return;
 				}
 				const touch = this._getCommonTouch(e);
-				this._handleRefresherTouchend(touch);
+				this._handleRefresherTouchstart(touch);
 			},
 			//进一步处理拖拽开始结果
 			_handleRefresherTouchstart(touch){
@@ -1334,6 +1347,7 @@
 			},
 			//拖拽中
 			_refresherTouchmove(e) {
+				console.log('_refresherTouchmove',this)
 				const currentTimeStamp = (new Date()).getTime();
 				if (this.pullDownTimeStamp && currentTimeStamp - this.pullDownTimeStamp <= this.pullDownDisTimeStamp) {
 					return;
@@ -1365,9 +1379,9 @@
 							return;
 						}
 					}
-					moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
-					this._handleRefresherTouchmove(moveDistance,touch);
 				}
+				moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
+				this._handleRefresherTouchmove(moveDistance,touch);
 				
 			},
 			//进一步处理拖拽中结果
@@ -1384,6 +1398,7 @@
 				// #ifndef APP-VUE || MP-WEIXIN || H5
 				this.scrollEnable = false;
 				this.refresherTransform = `translateY(${moveDistance}px)`;
+				console.log('this.refresherTransform',this.refresherTransform)
 				this.lastRefresherTouchmove = touch;
 				// #endif
 				this.moveDistance = moveDistance;
@@ -1429,7 +1444,9 @@
 			},
 			//下拉刷新结束
 			_refresherEnd(shouldEndLoadingDelay = true) {
+				// #ifndef APP-VUE || MP-WEIXIN || H5
 				this.refresherTransform = 'translateY(0px)';
+				// #endif
 				// #ifdef APP-VUE || MP-WEIXIN || H5
 				this.wxsPropType = 'end' + (new Date()).getTime();
 				// #endif

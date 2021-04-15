@@ -35,7 +35,7 @@ function touchmove(e, ownerInstance) {
 	var touch = _getCommonTouch(e);
 	var instance = ownerInstance.getState().currentInstance;
 	var dataset = instance.getDataset();
-	var refresherThreshold = dataset.refresherthreshold
+	var refresherThreshold = dataset.refresherthreshold;
 	var state = instance.getState();
 	if (_getRefresherTouchDisabled(e, instance)) {
 		return;
@@ -54,8 +54,7 @@ function touchmove(e, ownerInstance) {
 	} else {
 		state.refresherStatus = 0;
 	}
-	if(oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus){
-		console.log('_handleRefresherTouchmove');
+	if (oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus) {
 		ownerInstance.callMethod('_handleRefresherTouchmove', moveDistance, touch);
 	}
 	return false;

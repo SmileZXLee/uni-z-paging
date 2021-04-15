@@ -3,9 +3,9 @@
 	<view class="content">
 		<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 		<z-paging ref="paging" :refresher-threshold="80" @query="queryList"
-			:list.sync="dataList" :refresher-status.sync="refresherStatus" style="height: calc(100% - 80rpx);">
+			:list.sync="dataList" style="height: calc(100% - 80rpx);">
 			<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
-			<custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>
+			<custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus"></custom-refresher>
 			<!-- 自定义没有更多数据view -->
 			<custom-nomore slot="loadingMoreNoMore"></custom-nomore>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
@@ -26,8 +26,7 @@
 		data() {
 			return {
 				dataList: [],
-				tabIndex: 0,
-				refresherStatus: 0
+				tabIndex: 0
 			}
 		},
 		methods: {
