@@ -60,7 +60,7 @@
 						<image v-else :src="base64Flower" class="chat-record-loading-custom-image">
 						</image>
 					</view>
-					<slot v-if="$slots.loading&&!firstPageLoaded&&!pagingLoaded&&loading" name="loading" />
+					<slot v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" name="loading" />
 					<!-- 空数据图 -->
 					<view class="zp-empty-view"
 						v-if="!totalData.length&&isAddedData&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
@@ -121,7 +121,14 @@
 					:style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
 						<!-- 下拉刷新view -->
-						<slot v-if="$slots.refresher" :refresherStatus="refresherStatus" name="refresher" />
+						<slot 
+						<!-- #ifdef MP-WEIXIN -->
+						v-if="zScopedSlots.refresher"
+						<!-- #endif -->
+						<!-- #ifndef MP-WEIXIN -->
+						v-if="$scopedSlots.refresher"
+						<!-- #endif -->
+						:refresherStatus="refresherStatus" name="refresher" />
 						<z-paging-refresh v-else :refresherStatus="refresherStatus"
 							:defaultThemeStyle="defaultThemeStyle" :refresherDefaultText="refresherDefaultText"
 							:refresherPullingText="refresherPullingText"
@@ -138,7 +145,7 @@
 						<image v-else :src="base64Flower" class="zp-chat-record-loading-custom-image">
 						</image>
 					</view>
-					<slot v-if="$slots.loading&&!firstPageLoaded&&!pagingLoaded&&loading" name="loading" />
+					<slot v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" name="loading" />
 					<!-- 空数据图 -->
 					<view class="zp-empty-view"
 						v-if="!totalData.length&&isAddedData&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
@@ -190,7 +197,7 @@
 				<image v-else :src="base64Flower" class="zp-chat-record-loading-custom-image">
 				</image>
 			</view>
-			<slot v-if="$slots.loading&&!firstPageLoaded&&!pagingLoaded&&loading" name="loading" />
+			<slot v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" name="loading" />
 			<!-- 空数据图 -->
 			<view class="zp-empty-view"
 				v-if="!totalData.length&&isAddedData&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
@@ -235,6 +242,7 @@
 	 * @property {Boolean} mounted-auto-call-reload z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
 	 * @property {Boolean} auto-scroll-to-top-when-reload reload时自动滚动到顶部，默认为是
 	 * @property {Boolean} auto-clean-list-when-reload reload时立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
+	 * @property {Boolean} show-refresher-when-reload 调用reload方法时自动显示下拉刷新view，默认为否
 	 * @property {Boolean} use-custom-refresher 是否使用自定义的下拉刷新，默认为是，即使用z-paging的下拉刷新。设置为false即代表使用uni scroll-view自带的下拉刷新，h5、App、微信小程序以外的平台不支持uni scroll-view自带的下拉刷新
 	 * @property {Number|String} refresher-fps 自定义下拉刷新下拉帧率，默认为40，过高可能会出现抖动问题(use-custom-refresher为true时生效)
 	 * @property {Number|String} refresher-max-angle 自定义下拉刷新允许触发的最大下拉角度，默认为40度，当下拉角度小于设定值时，自定义下拉刷新动画不会被触发
@@ -263,6 +271,7 @@
 	 * @property {String} empty-view-text 空数据图描述文字，默认为“没有数据哦~”
 	 * @property {String} empty-view-img 空数据图图片，默认使用z-paging内置的图片
 	 * @property {Boolean} auto-hide-empty-view-when-loading 加载中时是否自动隐藏空数据图，默认为是
+	 * @property {Boolean} auto-hide-loading-after-first-loaded 第一次加载后自动隐藏loading slot，默认为是
 	 * @property {Boolean} show-scrollbar 在设置滚动条位置时使用动画过渡，默认为否
 	 * @property {Boolean} scroll-to-top-bounce-enabled iOS设备上滚动到顶部时是否允许回弹效果，默认为是。关闭回弹效果后可使滚动到顶部与下拉刷新更连贯，但是有吸顶view时滚动到顶部时可能出现抖动。
 	 * @property {Boolean} scroll-with-animation 控制是否出现滚动条，默认为否
@@ -433,6 +442,13 @@
 				type: Boolean,
 				default: function() {
 					return true;
+				},
+			},
+			//调用reload方法时自动显示下拉刷新view，默认为否
+			showRefresherWhenReload: {
+				type: Boolean,
+				default: function() {
+					return false;
 				},
 			},
 			//是否使用自定义的下拉刷新，默认为是，即使用z-paging的下拉刷新。设置为false即代表使用uni scroll-view自带的下拉刷新，h5、App、微信小程序以外的平台不支持uni scroll-view自带的下拉刷新
@@ -626,6 +642,13 @@
 			},
 			//加载中时是否自动隐藏空数据图，默认为是
 			autoHideEmptyViewWhenLoading: {
+				type: Boolean,
+				default: function() {
+					return true;
+				},
+			},
+			//第一次加载后自动隐藏loading slot，默认为是
+			autoHideLoadingAfterFirstLoaded: {
 				type: Boolean,
 				default: function() {
 					return true;
@@ -971,7 +994,7 @@
 				})
 			},
 			//重新加载分页数据，pageNo会恢复为默认值，相当于下拉刷新的效果(animate为true时会展示下拉刷新动画，默认为false)
-			reload(animate = false) {
+			reload(animate = this.showRefresherWhenReload) {
 				this.isUserReload = true;
 				if (animate) {
 					if (this.useCustomRefresher) {
