@@ -16,7 +16,7 @@
 			:refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
 			@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"  
 			<!-- #ifndef APP-VUE || MP-WEIXIN || H5 -->
-			@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend"
+			@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend" @touchcancel="_refresherTouchend"
 			<!-- #endif -->
 			<!-- #ifdef APP-VUE || MP-WEIXIN || H5 -->
 			@touchstart="paging.touchstart" @touchmove="paging.touchmove" @touchend="paging.touchend" @touchcancel="paging.touchend"
@@ -37,13 +37,16 @@
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
 						<!-- 下拉刷新view -->
 						<slot 
-						<!-- #ifdef MP-WEIXIN -->
+						<!-- #ifdef MP-WEIXIN || MP-QQ  -->
 						v-if="zScopedSlots.refresher"
 						<!-- #endif -->
-						<!-- #ifndef MP-WEIXIN -->
+						<!-- #ifndef MP-WEIXIN || MP-QQ -->
 						v-if="$scopedSlots.refresher"
 						<!-- #endif -->
-						:refresherStatus="refresherStatus" name="refresher" />
+						<!-- #ifndef MP-QQ -->
+						:refresherStatus="refresherStatus"
+						<!-- #endif -->
+						name="refresher" />
 						<z-paging-refresh v-else :refresherStatus="refresherStatus"
 							:defaultThemeStyle="defaultThemeStyle" :refresherDefaultText="refresherDefaultText"
 							:refresherPullingText="refresherPullingText"
@@ -122,13 +125,16 @@
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
 						<!-- 下拉刷新view -->
 						<slot 
-						<!-- #ifdef MP-WEIXIN -->
+						<!-- #ifdef MP-WEIXIN || MP-QQ  -->
 						v-if="zScopedSlots.refresher"
 						<!-- #endif -->
-						<!-- #ifndef MP-WEIXIN -->
+						<!-- #ifndef MP-WEIXIN || MP-QQ -->
 						v-if="$scopedSlots.refresher"
 						<!-- #endif -->
-						:refresherStatus="refresherStatus" name="refresher" />
+						<!-- #ifndef MP-QQ -->
+						:refresherStatus="refresherStatus"
+						<!-- #endif -->
+						name="refresher" />
 						<z-paging-refresh v-else :refresherStatus="refresherStatus"
 							:defaultThemeStyle="defaultThemeStyle" :refresherDefaultText="refresherDefaultText"
 							:refresherPullingText="refresherPullingText"
@@ -905,7 +911,6 @@
 				};
 			},
 			zScopedSlots(){
-				console.log('this.$scopedSlots',this.$scopedSlots)
 				return this.$scopedSlots;
 			},
 			finalNvueListIs() {
@@ -1370,7 +1375,6 @@
 			},
 			//拖拽中
 			_refresherTouchmove(e) {
-				console.log('_refresherTouchmove',this)
 				const currentTimeStamp = (new Date()).getTime();
 				if (this.pullDownTimeStamp && currentTimeStamp - this.pullDownTimeStamp <= this.pullDownDisTimeStamp) {
 					return;
@@ -1421,7 +1425,6 @@
 				// #ifndef APP-VUE || MP-WEIXIN || H5
 				this.scrollEnable = false;
 				this.refresherTransform = `translateY(${moveDistance}px)`;
-				console.log('this.refresherTransform',this.refresherTransform)
 				this.lastRefresherTouchmove = touch;
 				// #endif
 				this.moveDistance = moveDistance;

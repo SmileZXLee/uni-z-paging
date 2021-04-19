@@ -71,11 +71,13 @@
 		margin-top: -200rpx;
 		width: 200rpx;
 		height: 200rpx;
+		z-index: 1000;
 	}
 
 	.zp-mian-title {
 		font-size: 26rpx;
 		color: #aaaaaa;
 		text-align: center;
+		z-index: 1000;
 	}
 </style>
