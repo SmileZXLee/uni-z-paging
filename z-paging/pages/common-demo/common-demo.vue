@@ -2,8 +2,8 @@
 <template>
 	<view class="content">
 		<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
+		<!-- 注：支付宝小程序请通过：:paging-style="{'height':'calc(100% - 80rpx)'}" 设置高度 -->
 		<z-paging ref="paging" @query="queryList" :list.sync="dataList" style="height: calc(100% - 80rpx);">
-			<custom-nomore slot="empty"></custom-nomore>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view class="list">
@@ -14,7 +14,6 @@
 				</view>
 			</view>
 		</z-paging>
-		
 	</view>
 </template>
 

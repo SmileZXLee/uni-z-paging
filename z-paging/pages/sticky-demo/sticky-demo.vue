@@ -14,6 +14,8 @@
 				<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			</view>
 			<!-- 自定义下拉刷新view -->
+			<!-- 注意注意注意！！如果您的项目不是QQ小程序或字节跳动小程序，:status="refresherStatus有更简化的写法，请参阅custom-demo.vue -->
+			
 			<custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view>

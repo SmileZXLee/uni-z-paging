@@ -1,4 +1,11 @@
-<!-- z-paging V1.5.0 -->
+ <!--                        _             
+  ____     _ __   __ _  __ _(_)_ __   __ _ 
+ |_  /____| '_ \ / _` |/ _` | | '_ \ / _` |
+  / /_____| |_) | (_| | (_| | | | | | (_| |
+ /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
+          |_|          |___/         |___/ 
+V1.5.0
+-- >
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
 <!-- 获取文档和示例请访问上方dcloud地址 -->
@@ -37,17 +44,17 @@
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
 						<!-- 下拉刷新view -->
 						<slot 
-						<!-- #ifdef MP-WEIXIN || MP-QQ  -->
+						<!-- #ifdef MP-WEIXIN || MP-QQ || MP-TOUTIAO  -->
 						v-if="zScopedSlots.refresher"
 						<!-- #endif -->
-						<!-- #ifndef MP-WEIXIN || MP-QQ -->
+						<!-- #ifndef MP-WEIXIN || MP-QQ || MP-TOUTIAO -->
 						v-if="$scopedSlots.refresher"
 						<!-- #endif -->
 						<!-- #ifndef MP-QQ -->
 						:refresherStatus="refresherStatus"
 						<!-- #endif -->
 						name="refresher" />
-						<z-paging-refresh v-else :refresherStatus="refresherStatus"
+						<z-paging-refresh  v-else :style="[{'height': `${refresherThreshold}px`}]" :refresherStatus="refresherStatus"
 							:defaultThemeStyle="defaultThemeStyle" :refresherDefaultText="refresherDefaultText"
 							:refresherPullingText="refresherPullingText"
 							:refresherRefreshingText="refresherRefreshingText"></z-paging-refresh>
@@ -76,6 +83,7 @@
 						<slot />
 					</view>
 					<!-- 上拉加载更多view -->
+					<!-- #ifndef MP-ALIPAY -->
 					<slot v-if="_shouldShowLoading('loadingMoreDefault')" name="loadingMoreDefault" />
 					<slot v-else-if="_shouldShowLoading('loadingMoreLoading')" name="loadingMoreLoading" />
 					<slot v-else-if="_shouldShowLoading('loadingMoreNoMore')" name="loadingMoreNoMore" />
@@ -83,6 +91,19 @@
 					<z-paging-load-more @click.native="_onLoadingMore('click')"
 						v-else-if="_shouldShowLoading('loadingMoreCustom')" :config="zPagingLoadMoreConfig">
 					</z-paging-load-more>
+					<!-- #endif -->
+					<!-- #ifdef MP-ALIPAY -->
+					<slot v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
+						name="loadingMoreDefault" />
+					<slot v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled"
+						name="loadingMoreLoading" />
+					<slot v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled&&!useChatRecordMode"
+						name="loadingMoreNoMore" />
+					<slot v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
+						name="loadingMoreFail" />
+					<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode" :config="zPagingLoadMoreConfig">
+					</z-paging-load-more>
+					<!-- #endif -->
 				</view>
 			</view>
 		</scroll-view>
@@ -125,17 +146,17 @@
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
 						<!-- 下拉刷新view -->
 						<slot 
-						<!-- #ifdef MP-WEIXIN || MP-QQ  -->
+						<!-- #ifdef MP-WEIXIN || MP-QQ || MP-TOUTIAO  -->
 						v-if="zScopedSlots.refresher"
 						<!-- #endif -->
-						<!-- #ifndef MP-WEIXIN || MP-QQ -->
+						<!-- #ifndef MP-WEIXIN || MP-QQ || MP-TOUTIAO -->
 						v-if="$scopedSlots.refresher"
 						<!-- #endif -->
 						<!-- #ifndef MP-QQ -->
 						:refresherStatus="refresherStatus"
 						<!-- #endif -->
 						name="refresher" />
-						<z-paging-refresh v-else :refresherStatus="refresherStatus"
+						<z-paging-refresh v-else :style="[{'height': `${refresherThreshold}px`}]" :refresherStatus="refresherStatus"
 							:defaultThemeStyle="defaultThemeStyle" :refresherDefaultText="refresherDefaultText"
 							:refresherPullingText="refresherPullingText"
 							:refresherRefreshingText="refresherRefreshingText"></z-paging-refresh>
@@ -164,13 +185,27 @@
 						<slot />
 					</view>
 					<!-- 上拉加载更多view -->
+					<!-- #ifndef MP-ALIPAY -->
 					<slot v-if="_shouldShowLoading('loadingMoreDefault')" name="loadingMoreDefault" />
 					<slot v-else-if="_shouldShowLoading('loadingMoreLoading')" name="loadingMoreLoading" />
-					<slot ref="test" v-else-if="_shouldShowLoading('loadingMoreNoMore')" name="loadingMoreNoMore" />
+					<slot v-else-if="_shouldShowLoading('loadingMoreNoMore')" name="loadingMoreNoMore" />
 					<slot v-else-if="_shouldShowLoading('loadingMoreFail')" name="loadingMoreFail" />
 					<z-paging-load-more @click.native="_onLoadingMore('click')"
 						v-else-if="_shouldShowLoading('loadingMoreCustom')" :config="zPagingLoadMoreConfig">
 					</z-paging-load-more>
+					<!-- #endif -->
+					<!-- #ifdef MP-ALIPAY -->
+					<slot v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
+						name="loadingMoreDefault" />
+					<slot v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled"
+						name="loadingMoreLoading" />
+					<slot v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled&&!useChatRecordMode"
+						name="loadingMoreNoMore" />
+					<slot v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
+						name="loadingMoreFail" />
+					<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode" :config="zPagingLoadMoreConfig">
+					</z-paging-load-more>
+					<!-- #endif -->
 				</view>
 			</view>
 		</scroll-view>
@@ -1283,7 +1318,7 @@
 					return false;
 				}
 				if(!this.$slots){
-					return true;
+					return false;
 				}
 				if (type === 'loadingMoreDefault') {
 					return this.loadingStatus === 0 && this.$slots.loadingMoreDefaul;
@@ -1618,8 +1653,7 @@
 				return this.loading || this.useChatRecordMode || !this.refresherEnabled || !this.useCustomRefresher || (
 					this.usePageScroll && this
 					.useCustomRefresher && this
-					.pageScrollTop > 10) || (!(this.usePageScroll && this.useCustomRefresher) && (this.scrollTop >
-					10 || checkOldScrollTop));
+					.pageScrollTop > 10) || (!(this.usePageScroll && this.useCustomRefresher) && checkOldScrollTop);
 			},
 			//本地分页请求
 			_localPagingQueryList(pageNo, pageSize, localPagingLoadingTime, callback) {

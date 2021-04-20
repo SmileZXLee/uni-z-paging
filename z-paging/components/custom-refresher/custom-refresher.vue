@@ -1,7 +1,7 @@
 <template>
 	<view class="refresher">
 		<!-- 这里的图片请换成自己项目的图片 -->
-		<image class="refresher-image" mode="aspectFit" src="http://www.zxlee.cn/github/uni-z-paging/refresher_loading.gif"></image>
+		<image class="refresher-image" mode="aspectFit" src="@/static/refresher_loading.gif"></image>
 		<text class="refresher-text">{{statusText}}</text>
 	</view>
 </template>
@@ -15,7 +15,7 @@
 		},
 		computed: {
 			statusText(){
-				var statusTextArr = ['哎呀，用点力继续下拉！','拉疼我啦，松手刷新~~','正在努力刷新中...']
+				const statusTextArr = ['哎呀，用点力继续下拉！','拉疼我啦，松手刷新~~','正在努力刷新中...'];
 				return statusTextArr[this.status];
 			}
 		},
