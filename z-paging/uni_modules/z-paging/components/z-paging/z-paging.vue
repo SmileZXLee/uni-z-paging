@@ -22,15 +22,15 @@ V1.5.0
 			:refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
 			:refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
 			@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"  
-			<!-- #ifndef APP-VUE || MP-WEIXIN || H5 -->
+			<!-- #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5 -->
 			@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend" @touchcancel="_refresherTouchend"
 			<!-- #endif -->
-			<!-- #ifdef APP-VUE || MP-WEIXIN || H5 -->
+			<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 			@touchstart="paging.touchstart" @touchmove="paging.touchmove" @touchend="paging.touchend" @touchcancel="paging.touchend"
 			<!-- #endif -->
 			>	
 			<view class="zp-paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]"
-			<!-- #ifdef APP-VUE || MP-WEIXIN || H5 -->
+			<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 			:change:prop="paging.propObserver" :prop="wxsPropType"
 			:data-refresherThreshold="refresherThreshold"
 			:data-loading="loading" :data-useChatRecordMode="useChatRecordMode" 
@@ -125,14 +125,14 @@ V1.5.0
 			:refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
 			:refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
 			@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"
-			<!-- #ifndef APP-VUE || MP-WEIXIN || H5 -->
+			<!-- #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5 -->
 			@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend"
 			<!-- #endif -->
-			<!-- #ifdef APP-VUE || MP-WEIXIN || H5 -->
+			<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 			@touchstart="paging.touchstart" @touchmove="paging.touchmove" @touchend="paging.touchend" @touchcancel="paging.touchend"
 			<!-- #endif -->>
 			<view class="zp-paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]"
-			<!-- #ifdef APP-VUE || MP-WEIXIN || H5 -->
+			<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 			:change:prop="paging.propObserver" :prop="wxsPropType"
 			:data-refresherThreshold="refresherThreshold"
 			:data-loading="loading" :data-useChatRecordMode="useChatRecordMode" 
@@ -1457,7 +1457,7 @@ V1.5.0
 				} else {
 					this.refresherStatus = 0;
 				}
-				// #ifndef APP-VUE || MP-WEIXIN || H5
+				// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 				this.scrollEnable = false;
 				this.refresherTransform = `translateY(${moveDistance}px)`;
 				this.lastRefresherTouchmove = touch;
@@ -1488,7 +1488,7 @@ V1.5.0
 					)
 				}
 				if (moveDistance >= this.refresherThreshold && this.refresherStatus === 1) {
-					// #ifndef APP-VUE || MP-WEIXIN || H5
+					// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 					this.refresherTransform = `translateY(${this.refresherThreshold}px)`;
 					// #endif
 					this.moveDistance = this.refresherThreshold;
@@ -1505,10 +1505,10 @@ V1.5.0
 			},
 			//下拉刷新结束
 			_refresherEnd(shouldEndLoadingDelay = true) {
-				// #ifndef APP-VUE || MP-WEIXIN || H5
+				// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 				this.refresherTransform = 'translateY(0px)';
 				// #endif
-				// #ifdef APP-VUE || MP-WEIXIN || H5
+				// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
 				this.wxsPropType = 'end' + (new Date()).getTime();
 				// #endif
 				this.moveDistance = 0;
@@ -1539,7 +1539,7 @@ V1.5.0
 			//模拟用户手动触发下拉刷新
 			_doRefresherRefreshAnimate() {
 				this.refresherTransform = `translateY(${this.refresherThreshold}px)`;
-				// #ifdef APP-VUE || MP-WEIXIN || H5
+				// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
 				this.wxsPropType = 'begin' + (new Date()).getTime();
 				// #endif
 				this.moveDistance = this.refresherThreshold;
