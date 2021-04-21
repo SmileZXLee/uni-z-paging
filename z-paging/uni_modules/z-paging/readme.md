@@ -5,16 +5,22 @@
 ### 功能&特点
 
 * 【配置简单】仅需两步（绑定网络请求方法、绑定分页结果数组）轻松完成完整下拉刷新，上拉加载更多功能。
-* 【低耦合，低侵入】在page中无需处理任何分页相关逻辑，无需在data中定义任何分页相关变量，全由z-paging内部处理。
+* 【低耦合，低侵入】分页自动管理。在page中无需处理任何分页相关逻辑，无需在data中定义任何分页相关变量，全由z-paging内部处理。
 * 【超灵活，支持各种类型自定义】支持自定义下拉刷新，自定义上拉加载更多，自带自定义下拉刷新效果，及其他数十种自定义属性。
 * 【功能丰富】支持自定义且自动管理空数据图，支持主题模式切换，支持本地分页，支持聊天分页模式，支持吸顶效果，支持内部scroll-view滚动与页面滚动，支持一键滚动到顶部等诸多功能。
-* 【多平台兼容，细致，流畅】支持nvue，支持h5、app及各家小程序，多处细节优化，给您精致流畅的体验。
+* 【多平台兼容，细致，流畅】支持nvue，支持h5、app及各家小程序；在app-vue、微信小程序、QQ小程序、h5上使用wxs实现下拉刷新，大幅提升性能。多处细节优化，给您精致流畅的体验。
 
 ### 反馈qq群(点击加群)：[790460711](https://jq.qq.com/?_wv=1027&k=vU2fKZZH)
 
 #### 关于自动引入组件
 
 > `z-paging` 支持[easycom组件规范](https://uniapp.dcloud.io/component/README?id=easycom组件规范)，无需引用和注册组件即可直接使用，在正在运行的项目中导入`z-paging`可能会提示：`Unknown custom element：<z-paging> - did you register the component corrently?... `，此时需要重新运行项目即可。
+
+### 平台兼容性
+
+| App  |  h5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 字节小程序 | QQ小程序 |
+| :--: | :--: | :--------: | :----------: | :--------: | :--------: | :------: |
+|  √   |  √   |     √      |      √       |     √      |     √      |    √     |
 
 ### 预览
 
@@ -201,6 +207,7 @@
 |              mounted-auto-call-reload               | `z-paging` `mounted`后自动调用`reload`方法(`mounted`后自动调用接口) |    Boolean     |          true          |                            false                             |
 |           auto-scroll-to-top-when-reload            |                    reload时自动滚动到顶部                    |    Boolean     |          true          |                            false                             |
 |             auto-clean-list-when-reload             | reload时立即自动清空原list，若立即自动清空，则在reload之后、请求回调之前页面是空白的 |    Boolean     |          true          |                            false                             |
+|             show-refresher-when-reload              |             调用reload方法时自动显示下拉刷新view             |    Boolean     |         false          |                             true                             |
 |                use-custom-refresher                 | 是否使用自定义的下拉刷新，默认为是，即使用z-paging的下拉刷新。设置为false即代表使用uni scroll-view自带的下拉刷新，h5、App、微信小程序以外的平台不支持uni scroll-view自带的下拉刷新 |    Boolean     |          true          | h5、App、微信小程序以外的平台设置为false时，无法使用下拉刷新 |
 |                    refresher-fps                    | 自定义下拉刷新下拉帧率，默认为40，过高可能会出现抖动问题(use-custom-refresher为true时生效) | Number\|String |           40           |                              -                               |
 |                 refresher-max-angle                 | 自定义下拉刷新允许触发的最大下拉角度，默认为40度，当下拉角度小于设定值时，自定义下拉刷新动画不会被触发。(值小于0或大于90时，代表不受角度限制) | Number\|String |           40           |                             0-90                             |
@@ -229,6 +236,7 @@
 |                   empty-view-text                   |                       空数据图描述文字                       |     String     |      没有数据哦~       |                                                              |
 |                   empty-view-img                    |           空数据图图片，默认使用z-paging内置的图片           |     String     |           -            |                              -                               |
 |          auto-hide-empty-view-when-loading          |            加载中时是否自动隐藏空数据图，默认为是            |    Boolean     |          true          |                            false                             |
+|        auto-hide-loading-after-first-loaded         |               第一次加载后自动隐藏loading slot               |    Boolean     |          true          |                            false                             |
 |                   show-scrollbar                    |                      控制是否出现滚动条                      |    Boolean     |         false          |                             true                             |
 |            scroll-to-top-bounce-enabled             | iOS设备上滚动到顶部时是否允许回弹效果。关闭回弹效果后可使滚动到顶部后立即下拉可立即触发下拉刷新，但是有吸顶view时滚动到顶部时可能出现抖动。 |    Boolean     |          true          |                            false                             |
 |                scroll-with-animation                |                在设置滚动条位置时使用动画过渡                |    Boolean     |         false          |                             true                             |
@@ -250,7 +258,7 @@
 | 名称               | 说明                                                         |
 | :----------------- | ------------------------------------------------------------ |
 | empty              | 自定义空数据占位view                                         |
-| loading            | 自定义页面reload时的加载view，注意：这个slot仅会在第一次加载时显示 |
+| loading            | 自定义页面reload时的加载view，注意：这个slot默认仅会在第一次加载时显示，若需要每次reload时都显示，需要将`auto-hide-loading-after-first-loaded`设置为false |
 | refresher          | 自定义下拉刷新view，设置后则不使用uni自带的下拉刷新view和z-paging自定义的下拉刷新view。此view的style必须设置为`height:100%` (use-custom-refresher为true时生效) |
 | chatLoading        | 使用聊天记录模式时自定义顶部加载更多view，`use-chat-record-mode`为true时有效 |
 | loadingMoreDefault | 自定义滑动到底部"默认"状态的view                             |

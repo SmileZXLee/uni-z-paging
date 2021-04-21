@@ -1,3 +1,10 @@
+## 1.5.0（2021-04-20）
+1.在App-vue、微信小程序、QQ小程序、h5中使用wxs实现自定义下拉刷新，减少视图层与逻辑层通信折损，大幅提升性能。<br>
+2.简化自定义下拉刷新view的配置步骤，在page的data中无需定义一个过渡的refresherStatus变量，减少耦合。<br>
+3.修复在支付宝小程序、字节跳动小程序中的兼容问题。<br>
+4.修复在调用 scrollToBottom或者scrollIntoViewById方法后，下拉刷新无效的问题。<br>
+5.修复empty插槽页面加载后，网络请求前展示，导致闪一下的问题。<br>
+6.其他细节优化及调整。
 ## 1.4.9（2021-04-09）
 1.修复 scrollToView无效的问题<br>
 2.修复slot="loading"时，下拉刷新会出现loading的问题<br>

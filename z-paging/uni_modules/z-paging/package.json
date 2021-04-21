@@ -1,14 +1,14 @@
 {
   "id": "z-paging",
   "displayName": "超简单、低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)",
-  "version": "1.4.9",
-  "description": "【兼容nvue】多平台兼容，支持自定义下拉刷新、上拉加载更多，支持自动管理空数据图，支持聊天分页等等",
+  "version": "1.5.0",
+  "description": "【使用wxs实现，兼容nvue】多平台兼容，支持自定义下拉刷新、上拉加载更多，支持自动管理空数据图，支持聊天分页等等",
   "keywords": [
     "分页器",
-    "Pagination",
+    "nvue",
+    "wxs",
     "自定义下拉刷新",
-    "自定义上拉加载",
-    "吸顶"
+    "自定义上拉加载"
 ],
   "repository": "https://github.com/SmileZXLee/uni-z-paging",
   "engines": {

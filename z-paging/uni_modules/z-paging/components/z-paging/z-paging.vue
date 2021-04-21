@@ -107,6 +107,9 @@ V1.5.0
 				</view>
 			</view>
 		</scroll-view>
+		<view v-if="showBackToTopClass" :class="backToTopClass" :style="[backToTopStyle]" @click.stop="scrollToTop(backToTopWithAnimate)">
+			<image class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop"></image>
+		</view>  
 	</view>
 	<!-- 此处的代码和上方完全一样，复制了一份，因为在uni上暂时没找到动态控制是否阻止冒泡的方案；
 	尝试过以下方案：
@@ -209,6 +212,9 @@ V1.5.0
 				</view>
 			</view>
 		</scroll-view>
+		<view v-if="showBackToTopClass" :class="backToTopClass" :style="[backToTopStyle]" @click.stop="scrollToTop(backToTopWithAnimate)">
+			<image class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop"></image>
+		</view>
 	</view>
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
@@ -313,6 +319,11 @@ V1.5.0
 	 * @property {String} empty-view-img 空数据图图片，默认使用z-paging内置的图片
 	 * @property {Boolean} auto-hide-empty-view-when-loading 加载中时是否自动隐藏空数据图，默认为是
 	 * @property {Boolean} auto-hide-loading-after-first-loaded 第一次加载后自动隐藏loading slot，默认为是
+	 * @property {Boolean} auto-show-back-to-top 自动显示点击返回顶部按钮，默认为否
+	 * @property {Number} back-to-top-threshold 点击返回顶部按钮显示/隐藏的阈值(滚动距离)，单位为px，默认为200px
+	 * @property {String} back-to-top-img 点击返回顶部按钮的自定义图片地址，默认使用z-paging内置的图片
+	 * @property {Boolean} back-to-top-with-animate 点击返回顶部按钮返回到顶部时是否展示过渡动画，默认为是
+	 * @property {Object} back-to-top-style 点击返回顶部按钮的自定义样式
 	 * @property {Boolean} show-scrollbar 在设置滚动条位置时使用动画过渡，默认为否
 	 * @property {Boolean} scroll-to-top-bounce-enabled iOS设备上滚动到顶部时是否允许回弹效果，默认为是。关闭回弹效果后可使滚动到顶部与下拉刷新更连贯，但是有吸顶view时滚动到顶部时可能出现抖动。
 	 * @property {Boolean} scroll-with-animation 控制是否出现滚动条，默认为否
@@ -357,6 +368,7 @@ V1.5.0
 			return {
 				base64Arrow: zStatic.base64Arrow,
 				base64Flower: zStatic.base64Flower,
+				base64BackToTop: zStatic.base64BackToTop,
 				systemInfo: {},
 				currentData: [],
 				totalData: [],
@@ -393,10 +405,12 @@ V1.5.0
 				isAddedData: false,
 				isTotalChangeFromAddData: false,
 				privateRefresherEnabled: -1,
-				privateScrollWithAnimation: false,
+				privateScrollWithAnimation: -1,
 				chatRecordLoadingMoreText: '',
 				moveDistance: 0,
 				loadingMoreDefaultSlot: null,
+				backToTopClass: 'zp-back-to-top zp-back-to-top-hide',
+				showBackToTopClass: false,
 				nRefresherLoading: false,
 				nListIsDragging: false,
 				nShowBottom: true,
@@ -695,6 +709,41 @@ V1.5.0
 					return true;
 				},
 			},
+			//自动显示点击返回顶部按钮，默认为否
+			autoShowBackToTop: {
+				type: Boolean,
+				default: function() {
+					return false;
+				},
+			},
+			//点击返回顶部按钮显示/隐藏的阈值(滚动距离)，单位为px，默认为200px
+			backToTopThreshold: {
+				type: Number,
+				default: function() {
+					return 200;
+				},
+			},
+			//点击返回顶部按钮的自定义图片地址，默认使用z-paging内置的图片
+			backToTopImg: {
+				type: String,
+				default: function() {
+					return '';
+				},
+			},
+			//点击返回顶部按钮返回到顶部时是否展示过渡动画，默认为是
+			backToTopWithAnimate: {
+				type: Boolean,
+				default: function() {
+					return true;
+				},
+			},
+			//点击返回顶部按钮的自定义样式
+			backToTopStyle: {
+				type: Object,
+				default: function() {
+					return {};
+				},
+			},
 			//控制是否出现滚动条，默认为否
 			showScrollbar: {
 				type: Boolean,
@@ -862,13 +911,17 @@ V1.5.0
 				this.$emit('loadingStatusChange', newVal);
 			},
 			oldScrollTop(newVal, oldVal) {
-				this.$emit('scrollTopChange', newVal);
-				this.$emit('update:scrollTop', newVal);
+				if(!this.usePageScroll){
+					this.$emit('scrollTopChange', newVal);
+					this.$emit('update:scrollTop', newVal);
+					this._checkShouldShowBackToTop(newVal, oldVal);
+				}
 			},
 			pageScrollTop(newVal, oldVal) {
 				if (this.usePageScroll) {
 					this.$emit('scrollTopChange', newVal);
 					this.$emit('update:scrollTop', newVal);
+					this._checkShouldShowBackToTop(newVal, oldVal);
 				}
 			},
 			defaultThemeStyle: {
@@ -923,8 +976,10 @@ V1.5.0
 				return this.privateRefresherEnabled === 1;
 			},
 			finalScrollWithAnimation() {
-				if (this.useChatRecordMode) {
-					return this.privateScrollWithAnimation;
+				if (this.privateScrollWithAnimation !== -1) {
+					const scrollWithAnimation = this.privateScrollWithAnimation === 1;
+					this.privateScrollWithAnimation = -1;
+					return scrollWithAnimation;
 				}
 				return this.scrollWithAnimation;
 			},
@@ -1084,10 +1139,11 @@ V1.5.0
 			},
 			//更新z-paging内置scroll-view的scrollTop
 			updateScrollViewScrollTop(scrollTop, animate = true) {
-				this.privateScrollWithAnimation = animate;
+				this.privateScrollWithAnimation = animate ? 1 : 0;
 				this.scrollTop = this.oldScrollTop;
 				this.$nextTick(() => {
 					this.scrollTop = scrollTop;
+					this.oldScrollTop = this.scrollTop;
 				});
 			},
 			//设置nvue List的specialEffects
@@ -1185,7 +1241,7 @@ V1.5.0
 						const idIndex = newVal.length;
 						this.totalData = newVal.concat(this.totalData);
 						if (this.pageNo !== this.defaultPageNo) {
-							this.privateScrollWithAnimation = false;
+							this.privateScrollWithAnimation = 0;
 							let delayTime = 200;
 							//#ifdef H5
 							delayTime = 0;
@@ -1240,10 +1296,11 @@ V1.5.0
 					});
 					return;
 				}
-				this.privateScrollWithAnimation = animate;
+				this.privateScrollWithAnimation = animate ? 1 : 0;
 				this.scrollTop = this.oldScrollTop;
 				this.$nextTick(() => {
 					this.scrollTop = 0;
+					this.oldScrollTop = this.scrollTop;
 				});
 			},
 			//滚动到底部
@@ -1258,7 +1315,7 @@ V1.5.0
 					return;
 				}
 				try {
-					this.privateScrollWithAnimation = animate;
+					this.privateScrollWithAnimation = animate ? 1 : 0;
 					let pagingContainerH = 0;
 					let scrollViewH = 0;
 					const pagingContainerNode = await this._getNodeClientRect('.zp-paging-container');
@@ -1273,6 +1330,7 @@ V1.5.0
 						this.scrollTop = this.oldScrollTop;
 						this.$nextTick(() => {
 							this.scrollTop = pagingContainerH - scrollViewH;
+							this.oldScrollTop = this.scrollTop;
 						});
 					}
 				} catch (e) {
@@ -1289,6 +1347,7 @@ V1.5.0
 					if (node != '' && node != undefined && node.length) {
 						let nodeTop = node[0].top;
 						this.scrollTop = this.oldScrollTop;
+						this.privateScrollWithAnimation = animate ? 1 : 0;
 						this.$nextTick(() => {
 							if (this.usePageScroll) {
 								uni.pageScrollTo({
@@ -1296,9 +1355,9 @@ V1.5.0
 									duration: animate ? 100 : 0
 								});
 							} else {
-								this.privateScrollWithAnimation = animate;
 								nodeTop = nodeTop + this.scrollTop;
 								this.scrollTop = nodeTop - offset;
+								this.oldScrollTop = this.scrollTop;
 							}
 							if (finishCallback) {
 								finishCallback();
@@ -1400,9 +1459,6 @@ V1.5.0
 			},
 			//进一步处理拖拽开始结果
 			_handleRefresherTouchstart(touch){
-				if (!this.loading) {
-					this.isTouchmoving = false;
-				}
 				this.refresherTransition = 'transform .1s linear';
 				this.refresherTouchstartY = touch.touchY;
 				this.$emit('refresherTouchstart', this.refresherTouchstartY);
@@ -1722,6 +1778,33 @@ V1.5.0
 					touchY: touch.clientY
 				};
 			},
+			//判断是否要显示返回顶部按钮
+			_checkShouldShowBackToTop(newVal, oldVal){
+				if(!this.autoShowBackToTop){
+					if(this.showBackToTopClass){
+						this.showBackToTopClass = false;
+					}
+					return;
+				}
+				if(newVal !== oldVal){
+					if(newVal > this.backToTopThreshold){
+						if(!this.showBackToTopClass){
+							this.showBackToTopClass = true;
+							setTimeout(()=>{
+								this.backToTopClass = 'zp-back-to-top zp-back-to-top-show';
+							},300)
+							
+						}
+					}else{
+						if(this.showBackToTopClass){
+							this.backToTopClass = 'zp-back-to-top zp-back-to-top-hide';
+							setTimeout(()=>{
+								this.showBackToTopClass = false;
+							},300)
+						}
+					}
+				}
+			},
 			// ------------nvue独有的方法----------------
 			//列表滚动时触发
 			_nOnScroll(e) {
@@ -1769,6 +1852,10 @@ V1.5.0
 		height: 100%;
 		/* #endif */
 	}
+	
+	.z-paging-content{
+		position: relative;
+	}
 
 	.zp-paging-main {
 		height: 100%;
@@ -1809,6 +1896,31 @@ V1.5.0
 		flex-direction: row;
 		justify-content: center;
 		align-items: center;
+	}
+	
+	.zp-back-to-top{
+		width: 70rpx;
+		height: 70rpx;
+		z-index: 999;
+		position: fixed;
+		bottom: 150rpx;
+		right: 50rpx;
+		transition-duration: .3s;
+		transition-property: opacity;
+	}
+	
+	.zp-back-to-top-show{
+		opacity: 1;
+	}
+	
+	.zp-back-to-top-hide{
+		opacity: 0;
+	}
+	
+	.zp-back-to-top-img{
+		width: 100%;
+		height: 100%;
+		z-index: 999;
 	}
 
 	.zp-n-refresh-container {
