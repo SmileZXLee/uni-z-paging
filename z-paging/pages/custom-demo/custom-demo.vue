@@ -3,7 +3,7 @@
 	<view class="content">
 		<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 		<!-- 注：支付宝小程序请通过：:paging-style="{'height':'calc(100% - 80rpx)'}" 设置高度 -->
-		<z-paging ref="paging" :refresher-threshold="80" @query="queryList"
+		<z-paging ref="paging" :auto-show-back-to-top="true" :refresher-threshold="80" @query="queryList"
 			:list.sync="dataList" style="height: calc(100% - 80rpx);">
 			<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
 			

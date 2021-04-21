@@ -32,7 +32,7 @@ V1.5.0
 			<view class="zp-paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]"
 			<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 			:change:prop="paging.propObserver" :prop="wxsPropType"
-			:data-refresherThreshold="refresherThreshold"
+			:data-refresherThreshold="refresherThreshold" :data-wxsIsScrollTopInTopRange="wxsIsScrollTopInTopRange"
 			:data-loading="loading" :data-useChatRecordMode="useChatRecordMode" 
 			:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="pageScrollTop"
 			:data-scrollTop="scrollTop" :data-refresherMaxAngle="refresherMaxAngle" :data-refresherAngleEnableChangeContinued="refresherAngleEnableChangeContinued"
@@ -137,7 +137,7 @@ V1.5.0
 			<view class="zp-paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]"
 			<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 			:change:prop="paging.propObserver" :prop="wxsPropType"
-			:data-refresherThreshold="refresherThreshold"
+			:data-refresherThreshold="refresherThreshold" :data-wxsIsScrollTopInTopRange="wxsIsScrollTopInTopRange"
 			:data-loading="loading" :data-useChatRecordMode="useChatRecordMode" 
 			:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="pageScrollTop"
 			:data-scrollTop="scrollTop" :data-refresherMaxAngle="refresherMaxAngle" :data-refresherAngleEnableChangeContinued="refresherAngleEnableChangeContinued"
@@ -404,6 +404,7 @@ V1.5.0
 				realTotalData: [],
 				isAddedData: false,
 				isTotalChangeFromAddData: false,
+				isTouchEnded: false,
 				privateRefresherEnabled: -1,
 				privateScrollWithAnimation: -1,
 				chatRecordLoadingMoreText: '',
@@ -415,7 +416,8 @@ V1.5.0
 				nListIsDragging: false,
 				nShowBottom: true,
 				nFixFreezing: false,
-				wxsPropType: ''
+				wxsPropType: '',
+				wxsIsScrollTopInTopRange: true
 			};
 		},
 		props: {
@@ -916,6 +918,10 @@ V1.5.0
 					this.$emit('update:scrollTop', newVal);
 					this._checkShouldShowBackToTop(newVal, oldVal);
 				}
+				const wxsIsScrollTopInTopRange = newVal < 5;
+				if(this.wxsIsScrollTopInTopRange !== wxsIsScrollTopInTopRange){
+					this.wxsIsScrollTopInTopRange = wxsIsScrollTopInTopRange;
+				}
 			},
 			pageScrollTop(newVal, oldVal) {
 				if (this.usePageScroll) {
@@ -1277,6 +1283,7 @@ V1.5.0
 			},
 			//当滚动到顶部时
 			_scrollToUpper() {
+				this.oldScrollTop = 0;
 				if (!this.useChatRecordMode) {
 					return;
 				}
@@ -1459,6 +1466,10 @@ V1.5.0
 			},
 			//进一步处理拖拽开始结果
 			_handleRefresherTouchstart(touch){
+				if (!this.loading && this.isTouchEnded) {
+					this.isTouchmoving = false;
+				}
+				this.isTouchEnded = false;
 				this.refresherTransition = 'transform .1s linear';
 				this.refresherTouchstartY = touch.touchY;
 				this.$emit('refresherTouchstart', this.refresherTouchstartY);
@@ -1508,6 +1519,7 @@ V1.5.0
 				if (!this.isTouchmoving) {
 					this.isTouchmoving = true;
 				}
+				this.isTouchEnded = false;
 				if (moveDistance >= this.refresherThreshold) {
 					this.refresherStatus = 1;
 				} else {
@@ -1543,6 +1555,7 @@ V1.5.0
 						'[z-paging]usePageScroll为true并且自定义下拉刷新时必须在page滚动时通过调用z-paging组件的updatePageScrollTop方法设置当前的scrollTop'
 					)
 				}
+				this.isTouchEnded = true;
 				if (moveDistance >= this.refresherThreshold && this.refresherStatus === 1) {
 					// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 					this.refresherTransform = `translateY(${this.refresherThreshold}px)`;
@@ -1702,10 +1715,7 @@ V1.5.0
 			},
 			//判断touch手势是否要触发
 			_getRefresherTouchDisabled() {
-				let checkOldScrollTop = false;
-				//#ifdef MP-TOUTIAO
-				checkOldScrollTop = this.oldScrollTop > 10;
-				//#endif
+				let checkOldScrollTop = this.oldScrollTop > 5;
 				return this.loading || this.useChatRecordMode || !this.refresherEnabled || !this.useCustomRefresher || (
 					this.usePageScroll && this
 					.useCustomRefresher && this

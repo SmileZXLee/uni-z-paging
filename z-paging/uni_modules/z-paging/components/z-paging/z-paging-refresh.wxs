@@ -3,7 +3,7 @@
 // dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 // 反馈QQ群：790460711
 
-//h5、app-vue、小程序上使用wxs实现自定义下拉刷新，减少逻辑层与视图层的通信折损，提升性能
+//微信小程序、QQ小程序、app-vue、h5上使用wxs实现自定义下拉刷新，减少逻辑层与视图层的通信折损，提升性能
 
 function propObserver(newValue, oldValue, ownerInstance, instance) {
 	var state = ownerInstance.getState();
@@ -154,9 +154,11 @@ function _getRefresherTouchDisabled(e, instance) {
 	var useCustomRefresher = _getIsTrue(dataset.usecustomrefresher);
 	var usePageScroll = _getIsTrue(dataset.usepagescroll);
 	var pageScrollTop = parseFloat(dataset.pagescrolltop);
+	var wxsIsScrollTopInTopRange = _getIsTrue(dataset.wxsisscrolltopintoprange);
 	var scrollTop = parseFloat(dataset.scrolltop);
 	var res = loading || useChatRecordMode || !refresherEnabled || !useCustomRefresher || (
-		usePageScroll && useCustomRefresher && pageScrollTop > 10);
+		usePageScroll && useCustomRefresher && pageScrollTop > 10) || (!(
+		usePageScroll && useCustomRefresher) && !wxsIsScrollTopInTopRange);
 	return res;
 }
 

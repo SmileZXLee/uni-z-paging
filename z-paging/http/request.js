@@ -12,7 +12,9 @@ function queryList(pageNo,pageSize,type,callback){
 	console.log('%c\n----------请求开始--------','color:green;');
 	console.info(`请求参数：【pageNo:${pageNo},pageSize:${pageSize}】`)
 	console.log('%c----------请求结束--------\n','color:green;');
-	
+	uni.showLoading({
+		title: '加载中...'
+	})
 	if(pageNo == 0){
 		pageNo = 1;
 	}
