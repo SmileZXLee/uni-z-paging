@@ -75,6 +75,17 @@
             }
             
         }
+        ,{
+            "path" : "pages/auto-height-demo/auto-height-demo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "自动高度(无需计算z-paging高度)演示",
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

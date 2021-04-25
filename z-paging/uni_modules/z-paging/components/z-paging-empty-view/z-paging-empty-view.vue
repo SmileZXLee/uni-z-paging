@@ -1,9 +1,9 @@
-<!-- z-paging V1.5.0 -->
+<!-- z-paging V1.5.3 -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
 <!-- 反馈QQ群：790460711 -->
 
-<!-- 空数据占位view，此组件支持easycom，可以在项目中直接引用 -->
+<!-- 空数据占位view，此组件支持easycom规范，可以在项目中直接引用 -->
 <template>
 	<view class="zp-container">
 		<view class="zp-main">

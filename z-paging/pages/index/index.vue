@@ -1,34 +1,23 @@
 <template>
-	<view class="content">
-		<view class="demo-view item-blue" @click="commonDemoClick">
-			<view>普通模式演示</view>
-			<view>common-demo.vue</view>
-		</view>
-		<view class="demo-view item-red" @click="customDemoClick">
-			<view>自定义下拉刷新与上拉加载演示</view>
-			<view>custom-demo.vue</view>
-		</view>
-		<view class="demo-view item-blue" @click="scrollTabSwiperDemoClick">
-			<view>滑动切换选项卡演示</view>
-			<view>（使用了uView的tabsSwiper组件）</view>
-			<view>scroll-tab-swiper-demo.vue</view>
-		</view>
-		<view class="demo-view item-red" @click="pageDefaultDemoClick">
-			<view>使用页面滚动示例</view>
-			<view>page-default-demo.vue</view>
-		</view>
-		<view class="demo-view item-blue" @click="stickyDemoClick">
-			<view>滚动吸附效果演示</view>
-			<view>sticky-demo.vue</view>
-		</view>
-		<view class="demo-view item-red" @click="chatHistoryDemoClick">
-			<view>聊天记录模式演示</view>
-			<view>chat-history-demo.vue</view>
-		</view>
-		<view class="demo-view item-blue" @click="nvueDemoClick">
-			<view>nvue演示</view>
-			<view>nvue-demo.vue</view>
-		</view>
+	<view class="content" style="height: 100%;">
+		<z-paging style="width: 100%;height: 100%;" ref="paging" @query="queryList" :refresher-threshold="60"
+			:hide-empty-view="true" :mounted-auto-call-reload="false" :use-page-scroll="true">
+			<view slot="refresher" style="height: 100%;display: flex;justify-content: center;align-items: center;">
+				<image style="width: 300rpx;height: 60rpx;" src="../../static/logo_loading.gif"></image>
+			</view>
+			<view class="demo-list">
+				<view class="demo-item" v-for="(item,index) in list" :key="index" @click="itemClick(item)">
+					<view class="demo-item-main">
+						<view class="demo-item-title">{{item.title}}</view>
+						<view class="demo-item-subtitle" v-if="item.subTitle.length">({{item.subTitle}})</view>
+						<view class="demo-item-file">
+							<text>{{item.file + '.vue'}}</text>
+						</view>
+					</view>
+					<image class="demo-item-more-img" src="../../static/more_icon.png"></image>
+				</view>
+			</view>
+		</z-paging>
 	</view>
 </template>
 
@@ -36,75 +25,103 @@
 	export default {
 		data() {
 			return {
-				commonDemoClick(){
-					uni.navigateTo({
-						url: '../common-demo/common-demo'
-					})
-				},
-				customDemoClick(){
-					uni.navigateTo({
-						url: '../custom-demo/custom-demo'
-					})
-				},
-				scrollTabSwiperDemoClick(){
-					uni.navigateTo({
-						url: '../scroll-tab-swiper-demo/scroll-tab-swiper-demo'
-					})
-				},
-				pageDefaultDemoClick(){
-					uni.navigateTo({
-						url: '../page-default-demo/page-default-demo'
-					})
-				},
-				stickyDemoClick(){
-					uni.navigateTo({
-						url: '../sticky-demo/sticky-demo'
-					})
-				},
-				chatHistoryDemoClick(){
-					uni.navigateTo({
-						url: '../chat-history-demo/chat-history-demo'
-					})
-				},
-				nvueDemoClick(){
-					uni.navigateTo({
-						url: '../nvue-demo/nvue-demo'
-					})
-				}
+				list: [{
+						title: '普通模式演示',
+						file: 'common-demo',
+						subTitle: ''
+					},
+					{
+						title: '自定义下拉刷新与上拉加载演示',
+						file: 'custom-demo',
+						subTitle: ''
+					},
+					{
+						title: '滑动切换选项卡演示',
+						file: 'scroll-tab-swiper-demo',
+						subTitle: '使用了uView的tabsSwiper组件'
+					},
+					{
+						title: '使用页面滚动示例',
+						file: 'page-default-demo',
+						subTitle: ''
+					},
+					{
+						title: '滚动吸附效果演示',
+						file: 'sticky-demo',
+						subTitle: ''
+					},
+					{
+						title: '自动高度(无需计算z-paging高度)演示',
+						file: 'auto-height-demo',
+						subTitle: '含自定义导航栏场景处理'
+					},
+					{
+						title: '聊天记录模式演示',
+						file: 'chat-history-demo',
+						subTitle: ''
+					},
+					{
+						title: 'nvue演示',
+						file: 'nvue-demo',
+						subTitle: ''
+					}
+				]
 			}
 		},
 		methods: {
-			
+			queryList() {
+				// 注意，即使只使用下拉刷新，不使用上拉加载更多，即使下拉不进行网络请求，也要在queryList中调用this.$refs.paging.complete();
+				// 以告知z-paging下拉刷新结束，这样才可以开始下一次的下拉刷新
+				setTimeout(() => {
+					this.$refs.paging.complete();
+				}, 1500)
+			},
+			itemClick(item) {
+				uni.navigateTo({
+					url: `../${item.file}/${item.file}`
+				})
+			}
 		}
 	}
 </script>
 
 <style scoped>
-	.content {
+	.demo-item {
 		display: flex;
-		flex-direction: column;
 		align-items: center;
-		padding-bottom: 30rpx;
+		border-bottom: #eeeeee solid 1px;
+		padding: 20rpx 30rpx;
 	}
-	.demo-view{
-		height: 200rpx;
-		width: 90%;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		border-radius: 20rpx;
-		font-size: 30rpx;
-		margin-top: 30rpx;
+
+	.demo-item-main {
+		flex: 1;
 	}
-	.item-blue{
-		color: #89b6f7;
-		background: linear-gradient(to right, #ffffff 0%, #deebfd 100%);
-		box-shadow: 0 0  20rpx #deebfd;
+
+	.demo-item-main>view:not(:last-child) {
+		margin-bottom: 10rpx;
 	}
-	.item-red{
-		background: linear-gradient(to right, #ffffff 0%, #f9d8ce 100%);
-		color: #ed9272;
-		box-shadow: 0 0  20rpx #f9d8ce;
+
+	.demo-item-more-img {
+		width: 24rpx;
+		height: 24rpx;
+	}
+
+	.demo-item-title {
+		font-size: 32rpx;
+		font-weight: bold;
+	}
+
+	.demo-item-subtitle {
+		font-size: 26rpx;
+		color: #666666;
+	}
+
+	.demo-item-file>text {
+		background-color: #007AFF;
+		color: white;
+		font-size: 24rpx;
+		padding: 5rpx 10rpx;
+		border-radius: 8rpx;
+
 	}
 </style>

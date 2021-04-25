@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V1.5.2
+V1.5.3
 -- >
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
@@ -14,7 +14,9 @@ V1.5.2
 	<!-- #ifndef APP-NVUE -->
 	<view class="z-paging-content"
 		:style="[pagingStyle]">
-		<scroll-view class="zp-scroll-view" :style="[scrollViewStyle]" :scroll-top="scrollTop"
+		<!-- 顶部固定的slot -->
+		<slot v-if="!usePageScroll&&$slots.top" name="top"></slot>
+		<scroll-view :class="!usePageScroll&&$slots.top?'zp-scroll-view zp-scroll-view-fix-height':'zp-scroll-view'" :style="[scrollViewStyle]" :scroll-top="scrollTop"
 			:scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
 			:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
 			:scroll-into-view="scrollIntoView" :lower-threshold="lowerThreshold"
@@ -38,7 +40,7 @@ V1.5.2
 			:data-scrollTop="scrollTop" :data-refresherMaxAngle="refresherMaxAngle" :data-refresherAngleEnableChangeContinued="refresherAngleEnableChangeContinued"
 			:data-isTouchmoving="isTouchmoving" :data-usePageScroll="usePageScroll"
 			<!-- #endif -->
-			>
+			>	
 				<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
 					:style="[{'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
@@ -67,7 +69,7 @@ V1.5.2
 						class="zp-chat-record-loading-container">
 						<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
 							:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
-						<image v-else :src="base64Flower" class="chat-record-loading-custom-image">
+						<image v-else :src="base64Flower" class="zp-chat-record-loading-custom-image">
 						</image>
 					</view>
 					<slot v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" name="loading" />
@@ -740,6 +742,7 @@ V1.5.2
 			},
 		},
 		mounted() {
+			this.wxsPropType = (new Date()).getTime().toString();
 			if (this.mountedAutoCallReload) {
 				this.reload();
 			}
@@ -782,7 +785,7 @@ V1.5.2
 				this.isTotalChangeFromAddData = false;
 				this.$nextTick(() => {
 					this._getNodeClientRect('.zp-paging-container-content').then((res) => {
-						if (res != '' && res != undefined && res.length) {
+						if (res) {
 							this.$emit('pagingContentHeightChanged', res[0].height);
 						}
 					});
@@ -1164,6 +1167,7 @@ V1.5.2
 			},
 			//当滚动到顶部时
 			_scrollToUpper() {
+				console.log('滚动到顶部')
 				this.oldScrollTop = 0;
 				if (!this.useChatRecordMode) {
 					return;
@@ -1208,10 +1212,10 @@ V1.5.2
 					let scrollViewH = 0;
 					const pagingContainerNode = await this._getNodeClientRect('.zp-paging-container');
 					const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
-					if (pagingContainerNode != '' && pagingContainerNode != undefined && pagingContainerNode.length) {
+					if (pagingContainerNode) {
 						pagingContainerH = pagingContainerNode[0].height;
 					}
-					if (scrollViewNode != '' && scrollViewNode != undefined && scrollViewNode.length) {
+					if (scrollViewNode) {
 						scrollViewH = scrollViewNode[0].height;
 					}
 					if (pagingContainerH > scrollViewH) {
@@ -1232,7 +1236,7 @@ V1.5.2
 						sel = sel.replace('#', '');
 					}
 					const node = await this._getNodeClientRect('#' + sel, false);
-					if (node != '' && node != undefined && node.length) {
+					if (node) {
 						let nodeTop = node[0].top;
 						this.scrollTop = this.oldScrollTop;
 						this.privateScrollWithAnimation = animate ? 1 : 0;
@@ -1431,7 +1435,7 @@ V1.5.2
 					return;
 				}
 				this.refresherReachMaxAngle = true;
-				if (moveDistance < 0 && this.usePageScroll && this.useCustomRefresher && this.pageScrollTop === -1) {
+				if (moveDistance < 0 && this.usePageScroll && this.loadingMoreEnabled && this.useCustomRefresher && this.pageScrollTop === -1) {
 					console.error(
 						'[z-paging]usePageScroll为true并且自定义下拉刷新时必须在page滚动时通过调用z-paging组件的updatePageScrollTop方法设置当前的scrollTop'
 					)
@@ -1516,10 +1520,10 @@ V1.5.2
 					let scrollViewH = 0;
 					const pagingContainerNode = await this._getNodeClientRect('.zp-paging-container-content');
 					const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
-					if (pagingContainerNode != '' && pagingContainerNode != undefined && pagingContainerNode.length) {
+					if (pagingContainerNode) {
 						pagingContainerH = pagingContainerNode[0].height;
 					}
-					if (scrollViewNode != '' && scrollViewNode != undefined && scrollViewNode.length) {
+					if (scrollViewNode) {
 						scrollViewH = scrollViewNode[0].height;
 					}
 					this.showLoadingMore = pagingContainerH >= scrollViewH;
@@ -1531,11 +1535,13 @@ V1.5.2
 			async _checkScrollViewOutOfPage() {
 				try {
 					const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
-					const scrollViewTotalH = scrollViewNode[0].top + scrollViewNode[0].height;
-					if (scrollViewTotalH > this.systemInfo.windowHeight + 100) {
-						console.error(
-							'[z-paging]检测到z-paging的高度超出页面高度，这将导致滚动出现异常，请确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}，此时z-paging的百分比高度才能生效。详情参照demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
-						);
+					if (scrollViewNode){
+						const scrollViewTotalH = scrollViewNode[0].top + scrollViewNode[0].height;
+						if (scrollViewTotalH > this.systemInfo.windowHeight + 100) {
+							console.error(
+								'[z-paging]检测到z-paging的高度超出页面高度，这将导致滚动出现异常，请确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}，此时z-paging的百分比高度才能生效。详情参照demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
+							);
+						}
 					}
 				} catch (e) {
 
@@ -1546,6 +1552,9 @@ V1.5.2
 				try {
 					const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
 					const pagingContainerNode = await this._getNodeClientRect('.zp-paging-container-content');
+					if (!scrollViewNode || !pagingContainerNode){
+						return;
+					}
 					const scrollViewHeight = pagingContainerNode[0].height;
 					const scrollViewTop = scrollViewNode[0].top;
 					if (this.isAddedData && scrollViewHeight + scrollViewTop <= this.systemInfo.windowHeight + 10) {
@@ -1563,12 +1572,14 @@ V1.5.2
 					if (shouldFullHeight) {
 						let finalScrollViewNode = scrollViewNode ? scrollViewNode : await this._getNodeClientRect(
 							'.scroll-view');
-						const scrollViewTop = finalScrollViewNode[0].top;
-						const scrollViewHeight = this.systemInfo.windowHeight - scrollViewTop;
-						let additionHeight = this._convertTextToPx(this.autoHeightAddition);
-						this.scrollViewStyle = {
-							height: scrollViewHeight + additionHeight + 'px'
-						};
+						if(finalScrollViewNode){
+							const scrollViewTop = finalScrollViewNode[0].top;
+							const scrollViewHeight = this.systemInfo.windowHeight - scrollViewTop;
+							let additionHeight = this._convertTextToPx(this.autoHeightAddition);
+							this.scrollViewStyle = {
+								height: scrollViewHeight + additionHeight + 'px'
+							};
+						}
 					} else {
 						this.scrollViewStyle = {};
 					}
@@ -1580,7 +1591,7 @@ V1.5.2
 			_getNodeClientRect(select, inThis = true) {
 				// #ifdef APP-NVUE
 				return new Promise((resolve, reject) => {
-					reject(null);
+					resolve(false);
 				});
 				return;					
 				// #endif
@@ -1596,7 +1607,11 @@ V1.5.2
 				res.select(select).boundingClientRect();
 				return new Promise((resolve, reject) => {
 					res.exec(data => {
-						resolve(data);
+						if(data && data != '' && data != undefined && data.length){
+							resolve(data);
+						}else{
+							resolve(false);
+						}
 					});
 				});
 			},
@@ -1752,6 +1767,18 @@ V1.5.2
 	
 	.z-paging-content{
 		position: relative;
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		flex-direction: column;
+	}
+	
+	.zp-scroll-view{
+		flex: 1;
+	}
+	
+	.zp-scroll-view-fix-height{
+		height: 0px;
 	}
 
 	.zp-paging-main {
