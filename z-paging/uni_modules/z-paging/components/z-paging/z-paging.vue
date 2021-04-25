@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V1.5.0
+V1.5.2
 -- >
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
@@ -12,8 +12,8 @@ V1.5.0
 <!-- 反馈QQ群：790460711 -->
 <template name="z-paging">
 	<!-- #ifndef APP-NVUE -->
-	<view v-if="!touchmovePropagationEnabled&&finalRefresherEnabled&&!usePageScroll" class="z-paging-content"
-		:style="[pagingStyle]" @touchmove.stop.prevent>
+	<view class="z-paging-content"
+		:style="[pagingStyle]">
 		<scroll-view class="zp-scroll-view" :style="[scrollViewStyle]" :scroll-top="scrollTop"
 			:scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
 			:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
@@ -111,111 +111,6 @@ V1.5.0
 			<image class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop"></image>
 		</view>  
 	</view>
-	<!-- 此处的代码和上方完全一样，复制了一份，因为在uni上暂时没找到动态控制是否阻止冒泡的方案；
-	尝试过以下方案：
-	 1.通过event.stopPropagation()来阻止冒泡，因为事件返回的event对象并非浏览器的evnet对象，因此uni只支持使用修饰符阻止冒泡；
-	 2.参照了uni的scrollView的源码，使用addEventListener来添加touch事件，并在touch事件中获取到浏览器event对象调用event.stopPropagation()来阻止冒泡，
-	 但因在uni中使用ref无法获取view等对象而放弃，进而使用uni.createSelectorQuery()查找指定view，但在小程序中无法获取浏览器dom对象，因此也不可行。
-	 3.在最上面盖一个透明view并添加touch相关手势，但会影响底下view的点击等事件，因此它们不属于父子关系，而是兄弟关系，手势点击无法向上传递。
-	 4.使用小程序中的template is将重复代码复用，然后使用v-if来隐藏或显示两个不同的“paging-main”，但uni中不支持此写法。
-	 【如果有更优解决方案可以发送邮件到admin.zxlee.cn或加入qq群790460711提出您的想法，感谢！！！】 -->
-	<view v-else class="z-paging-content" :style="[pagingStyle]">
-		<scroll-view class="zp-scroll-view" :style="[scrollViewStyle]" :scroll-top="scrollTop"
-			:scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
-			:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
-			:scroll-into-view="scrollIntoView" :lower-threshold="lowerThreshold"
-			:refresher-enabled="finalRefresherEnabled&&!useCustomRefresher" :refresher-threshold="refresherThreshold"
-			:refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
-			:refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
-			@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh"
-			<!-- #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5 -->
-			@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend"
-			<!-- #endif -->
-			<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
-			@touchstart="paging.touchstart" @touchmove="paging.touchmove" @touchend="paging.touchend" @touchcancel="paging.touchend"
-			<!-- #endif -->>
-			<view class="zp-paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]"
-			<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
-			:change:prop="paging.propObserver" :prop="wxsPropType"
-			:data-refresherThreshold="refresherThreshold" :data-wxsIsScrollTopInTopRange="wxsIsScrollTopInTopRange"
-			:data-loading="loading" :data-useChatRecordMode="useChatRecordMode" 
-			:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="pageScrollTop"
-			:data-scrollTop="scrollTop" :data-refresherMaxAngle="refresherMaxAngle" :data-refresherAngleEnableChangeContinued="refresherAngleEnableChangeContinued"
-			:data-isTouchmoving="isTouchmoving" :data-usePageScroll="usePageScroll"
-			<!-- #endif -->
-			>
-				<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
-					:style="[{'height': `${refresherThreshold}px`,'margin-top': `-${refresherThreshold}px`,'background-color': refresherBackground}]">
-					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
-						<!-- 下拉刷新view -->
-						<slot 
-						<!-- #ifdef MP-WEIXIN || MP-QQ || MP-TOUTIAO  -->
-						v-if="zScopedSlots.refresher"
-						<!-- #endif -->
-						<!-- #ifndef MP-WEIXIN || MP-QQ || MP-TOUTIAO -->
-						v-if="$scopedSlots.refresher"
-						<!-- #endif -->
-						<!-- #ifndef MP-QQ -->
-						:refresherStatus="refresherStatus"
-						<!-- #endif -->
-						name="refresher" />
-						<z-paging-refresh v-else :style="[{'height': `${refresherThreshold}px`}]" :refresherStatus="refresherStatus"
-							:defaultThemeStyle="defaultThemeStyle" :refresherDefaultText="refresherDefaultText"
-							:refresherPullingText="refresherPullingText"
-							:refresherRefreshingText="refresherRefreshingText"></z-paging-refresh>
-					</view>
-				</view>
-				<view class="zp-paging-container">
-					<slot v-if="useChatRecordMode&&$slots.chatLoading&&loadingStatus!==2&&realTotalData.length"
-						name="chatLoading" />
-					<view v-else-if="useChatRecordMode&&loadingStatus!==2&&realTotalData.length"
-						class="zp-chat-record-loading-container">
-						<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
-							:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
-						<image v-else :src="base64Flower" class="zp-chat-record-loading-custom-image">
-						</image>
-					</view>
-					<slot v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" name="loading" />
-					<!-- 空数据图 -->
-					<view class="zp-empty-view"
-						v-if="!totalData.length&&isAddedData&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
-						<slot v-if="$slots.empty" name="empty" />
-						<z-paging-empty-view v-else :emptyViewImg="emptyViewImg" :emptyViewText="emptyViewText">
-						</z-paging-empty-view>
-					</view>
-					<!-- 主体内容 -->
-					<view class="zp-paging-container-content" :style="[pagingContentStyle]">
-						<slot />
-					</view>
-					<!-- 上拉加载更多view -->
-					<!-- #ifndef MP-ALIPAY -->
-					<slot v-if="_shouldShowLoading('loadingMoreDefault')" name="loadingMoreDefault" />
-					<slot v-else-if="_shouldShowLoading('loadingMoreLoading')" name="loadingMoreLoading" />
-					<slot v-else-if="_shouldShowLoading('loadingMoreNoMore')" name="loadingMoreNoMore" />
-					<slot v-else-if="_shouldShowLoading('loadingMoreFail')" name="loadingMoreFail" />
-					<z-paging-load-more @click.native="_onLoadingMore('click')"
-						v-else-if="_shouldShowLoading('loadingMoreCustom')" :config="zPagingLoadMoreConfig">
-					</z-paging-load-more>
-					<!-- #endif -->
-					<!-- #ifdef MP-ALIPAY -->
-					<slot v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
-						name="loadingMoreDefault" />
-					<slot v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled"
-						name="loadingMoreLoading" />
-					<slot v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled&&!useChatRecordMode"
-						name="loadingMoreNoMore" />
-					<slot v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
-						name="loadingMoreFail" />
-					<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode" :config="zPagingLoadMoreConfig">
-					</z-paging-load-more>
-					<!-- #endif -->
-				</view>
-			</view>
-		</scroll-view>
-		<view v-if="showBackToTopClass" :class="backToTopClass" :style="[backToTopStyle]" @click.stop="scrollToTop(backToTopWithAnimate)">
-			<image class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop"></image>
-		</view>
-	</view>
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
 	<view ref="n-list" class="zp-n-list" :is="finalNvueListIs" alwaysScrollableVertical="true"
@@ -293,7 +188,7 @@ V1.5.0
 	 * @property {Boolean} use-custom-refresher 是否使用自定义的下拉刷新，默认为是，即使用z-paging的下拉刷新。设置为false即代表使用uni scroll-view自带的下拉刷新，h5、App、微信小程序以外的平台不支持uni scroll-view自带的下拉刷新
 	 * @property {Number|String} refresher-fps 自定义下拉刷新下拉帧率，默认为40，过高可能会出现抖动问题(use-custom-refresher为true时生效)
 	 * @property {Number|String} refresher-max-angle 自定义下拉刷新允许触发的最大下拉角度，默认为40度，当下拉角度小于设定值时，自定义下拉刷新动画不会被触发
-	 * @property {Boolean} refresher-angle-enable-change-continued 自定义下拉刷新的角度由未达到最大角度变到达到最大角度时，是否继续下拉刷新手势，默认为是，在tab横向切换时建议设置为否
+	 * @property {Boolean} refresher-angle-enable-change-continued 自定义下拉刷新的角度由未达到最大角度变到达到最大角度时，是否继续下拉刷新手势，默认为否
 	 * @property {String} refresher-default-text 自定义下拉刷新默认状态下的文字(use-custom-refresher为true时生效)
 	 * @property {String} refresher-pulling-text 自定义下拉刷新松手立即刷新状态下的文字(use-custom-refresher为true时生效)
 	 * @property {String} refresher-refreshing-text 自定义下拉刷新刷新中状态下的文字(use-custom-refresher为true时生效)
@@ -336,7 +231,6 @@ V1.5.0
 	 * @property {String} refresher-background 设置自定义下拉刷新区域背景颜色
 	 * @property {Number|String} local-paging-loading-time 本地分页时上拉加载更多延迟时间，单位为毫秒，默认200毫秒
 	 * @property {Boolean} use-chat-record-mode 使用聊天记录模式，默认为否
-	 * @property {Boolean} touchmove-propagation-enabled 是否允许touchmove事件冒泡，默认为否，禁止冒泡可避免一些情况下下拉刷新时页面其他元素跟着下移，若您使用横向滑动切换选项卡，则需要将此属性设置为true，否则无法横向滑动
 	 * @property {String} nvue-list-is nvue中修改列表类型，可选值有list和waterfall，默认为list
 	 * @property {Object} nvue-waterfall-config nvue waterfall配置，仅在nvue中且nvueListIs=waterfall时有效，配置参数详情参见：https://uniapp.dcloud.io/component/waterfall
 	 * @event {Function} addData 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认为是)
@@ -529,11 +423,11 @@ V1.5.0
 					return 40;
 				},
 			},
-			//自定义下拉刷新的角度由未达到最大角度变到达到最大角度时，是否继续下拉刷新手势，默认为是，在tab横向切换时建议设置为否
+			//自定义下拉刷新的角度由未达到最大角度变到达到最大角度时，是否继续下拉刷新手势，默认为否
 			refresherAngleEnableChangeContinued: {
 				type: Boolean,
 				default: function() {
-					return true;
+					return false;
 				},
 			},
 			//自定义下拉刷新默认状态下的文字(use-custom-refresher为true时生效)
@@ -641,11 +535,11 @@ V1.5.0
 					return "加载失败，点击重新加载";
 				},
 			},
-			//当没有更多数据且分页内容未超出z-paging时是否隐藏没有更多数据的view，默认为是
+			//当没有更多数据且分页内容未超出z-paging时是否隐藏没有更多数据的view，默认为否
 			hideLoadingMoreWhenNoMoreAndInsideOfPaging: {
 				type: Boolean,
 				default: function() {
-					return true;
+					return false;
 				},
 			},
 			//是否显示默认的加载更多text，默认为是
@@ -830,18 +724,6 @@ V1.5.0
 					return false;
 				}
 			},
-			//是否允许touchmove事件冒泡，默认为否，禁止冒泡可避免一些情况下下拉刷新时页面其他元素跟着下移，若您使用横向滑动切换选项卡，则需要将此属性设置为true，否则无法横向滑动
-			touchmovePropagationEnabled: {
-				type: Boolean,
-				default: function() {
-					//#ifdef MP-TOUTIAO
-					return true;
-					//#endif
-					//#ifndef MP-TOUTIAO
-					return false;
-					//#endif
-				}
-			},
 			//nvue中修改列表类型，可选值有list和waterfall，默认为list
 			nvueListIs: {
 				type: String,
@@ -1017,7 +899,6 @@ V1.5.0
 				return 'list';
 			},
 			nWaterfallColumnCount() {
-				return 2;
 				return this._getNvueWaterfallSingleConfig('column-count', 'auto');
 			},
 			nWaterfallColumnWidth() {
@@ -1697,6 +1578,12 @@ V1.5.0
 			},
 			//获取节点尺寸
 			_getNodeClientRect(select, inThis = true) {
+				// #ifdef APP-NVUE
+				return new Promise((resolve, reject) => {
+					reject(null);
+				});
+				return;					
+				// #endif
 				let res = null;
 				if (inThis) {
 					res = uni.createSelectorQuery().in(this);
@@ -1914,7 +1801,7 @@ V1.5.0
 		z-index: 999;
 		position: fixed;
 		bottom: 150rpx;
-		right: 50rpx;
+		right: 40rpx;
 		transition-duration: .3s;
 		transition-property: opacity;
 	}

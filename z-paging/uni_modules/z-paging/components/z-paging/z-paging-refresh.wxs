@@ -1,4 +1,4 @@
-// z-paging V1.5.0
+// z-paging V1.5.2
 // github地址:https://github.com/SmileZXLee/uni-z-paging
 // dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 // 反馈QQ群：790460711
@@ -61,6 +61,7 @@ function touchmove(e, ownerInstance) {
 	if (oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus || !isTouchmoving) {
 		ownerInstance.callMethod('_handleRefresherTouchmove', moveDistance, touch);
 	}
+	return false;
 }
 
 function touchend(e, ownerInstance) {
@@ -171,9 +172,8 @@ function _getAngleIsInRange(e, touch, state, dataset) {
 	if (!lastRefresherTouchmove) {
 		return true;
 	}
-	if (refresherMaxAngle >= 0 && refresherMaxAngle <= 90 && lastRefresherTouchmove && lastRefresherTouchmove.touchY <=
-		touch.touchY) {
-		if (!refresherAngleEnableChangeContinued && moveDistance < 1 && !refresherReachMaxAngle) {
+	if (refresherMaxAngle >= 0 && refresherMaxAngle <= 90 && lastRefresherTouchmove) {
+		if (!refresherAngleEnableChangeContinued && refresherReachMaxAngle != null && !refresherReachMaxAngle) {
 			return false;
 		}
 		var x = Math.abs(touch.touchX - lastRefresherTouchmove.touchX);

@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
-		<!-- 这里设置了z-paging加载时禁止自动调用reload方法，自行控制何时reload（懒加载），同时允许touchmove事件冒泡，否则无法横向滚动切换tab -->
-		<z-paging ref="paging" @query="queryList" :list.sync="dataList" :mounted-auto-call-reload="false" :refresher-angle-enable-change-continued="false" :touchmove-propagation-enabled="true" style="flex: 1;">
+		<!-- 这里设置了z-paging加载时禁止自动调用reload方法，自行控制何时reload（懒加载）-->
+		<z-paging ref="paging" @query="queryList" :list.sync="dataList" :mounted-auto-call-reload="false" style="flex: 1;">
 			<!-- 请使用template，不要使用block！！！ -->
 			<template v-for="(item,index) in dataList">
 				<!-- #ifdef APP-NVUE -->

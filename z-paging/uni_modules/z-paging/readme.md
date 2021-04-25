@@ -8,7 +8,7 @@
 * 【低耦合，低侵入】分页自动管理。在page中无需处理任何分页相关逻辑，无需在data中定义任何分页相关变量，全由z-paging内部处理。
 * 【超灵活，支持各种类型自定义】支持自定义下拉刷新，自定义上拉加载更多，自带自定义下拉刷新效果，及其他数十种自定义属性。
 * 【功能丰富】支持自定义且自动管理空数据图，支持主题模式切换，支持本地分页，支持聊天分页模式，支持吸顶效果，支持内部scroll-view滚动与页面滚动，支持一键滚动到顶部等诸多功能。
-* 【多平台兼容，细致，流畅】支持nvue，支持h5、app及各家小程序；在app-vue、微信小程序、QQ小程序、h5上使用wxs实现下拉刷新，大幅提升性能。多处细节优化，给您精致流畅的体验。
+* 【多平台兼容，细致，流畅】支持nvue，支持h5、app及各家小程序；在app-vue、h5、微信小程序上使用wxs实现下拉刷新，多处细节优化，给您精致流畅的体验。
 
 ### 反馈qq群(点击加群)：[790460711](https://jq.qq.com/?_wv=1027&k=vU2fKZZH)
 
@@ -70,7 +70,6 @@
 * 【使用内置scroll-view滚动时】请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突，计算z-paging高度比较麻烦时，建议通过`flex:1`给z-paging设置样式，其父view需要开启`flex`。
 * 【使用内置scroll-view滚动时】如果设置了z-paging的height为100%（让z-paging的高度等于当前页面有效高度），则它的父view高度也必须为100%(或者其他确定的高度)，若z-paging的所有父节点高度都为100%，则同时也必须设置`page{height:100%}`才有效果，`page{height:100%}`建议写在App.vue中。(因为page默认没有确定的高度，如果page未设置确定的高度，则其内部的所有view设置`height:100%`都是无效的，因为未设置确定高度则代表着这个view会无限`长高`，因此子view即使设置了`height:100%`，也同样是无限`长高`，无法限制其高度小于或等于当前页面有效的高度)。
 * 【使用页面滚动时】使用z-paging内置的scroll-view滚动性能不及使用页面的滚动。若您要使用页面的滚动，请勿固定z-paging的高度，并且必须设置`use-page-scroll`为true，否则将导致页面无法滚动。
-* 【使用横向滑动切换tab时】z-paging默认会禁止所有touchmove事件冒泡以避免下拉刷新冲突，这将导致使用滑动切换tab时无法横向切换，若您需要横向切换功能，请设置`touchmove-propagation-enabled`为true以允许冒泡；若此时下拉刷新是页面也跟着下拉，需要在pages.json中设置页面的"disableScroll":true或在page的根节点中添加`@touchmove.stop.prevent`，详情可查看demo。
 * 【出现实际上有更多数据，而显示没有更多数据时】默认的pageSize(每页显示数量)为10，如果您服务端不需要传pageSize(例如有默认的pageSize：8)，则您需要将默认的pageSize改成您与后端约定好的（8），若没有修改，则z-paging会认为传给服务端的pageSize是10，而服务端只返回了8条，因此会直接判定为没有更多数据。
 * 【若页面无法滚动】请检查z-paging是否有固定的高度；若您想使用页面滚动而非z-paging内置的scroll-view的滚动，请设置`use-page-scroll`为true。
 
@@ -211,7 +210,7 @@
 |                use-custom-refresher                 | 是否使用自定义的下拉刷新，默认为是，即使用z-paging的下拉刷新。设置为false即代表使用uni scroll-view自带的下拉刷新，h5、App、微信小程序以外的平台不支持uni scroll-view自带的下拉刷新 |    Boolean     |          true          | h5、App、微信小程序以外的平台设置为false时，无法使用下拉刷新 |
 |                    refresher-fps                    | 自定义下拉刷新下拉帧率，默认为40，过高可能会出现抖动问题(use-custom-refresher为true时生效) | Number\|String |           40           |                              -                               |
 |                 refresher-max-angle                 | 自定义下拉刷新允许触发的最大下拉角度，默认为40度，当下拉角度小于设定值时，自定义下拉刷新动画不会被触发。(值小于0或大于90时，代表不受角度限制) | Number\|String |           40           |                             0-90                             |
-|       refresher-angle-enable-change-continued       | 自定义下拉刷新的角度由未达到最大角度变到达到最大角度时，是否继续下拉刷新手势，默认为是，在tab横向切换时建议设置为否 |    Boolean     |          true          |                            false                             |
+|       refresher-angle-enable-change-continued       | 自定义下拉刷新的角度由未达到最大角度变到达到最大角度时，是否继续下拉刷新手势 |    Boolean     |         false          |                             true                             |
 |               refresher-default-text                | 自定义下拉刷新默认状态下的文字(use-custom-refresher为true时生效) |     String     |      继续下拉刷新      |                              -                               |
 |               refresher-pulling-text                | 自定义下拉刷新松手立即刷新状态下的文字(use-custom-refresher为true时生效) |     String     |      松开立即刷新      |                              -                               |
 |              refresher-refreshing-text              | 自定义下拉刷新刷新中状态下的文字(use-custom-refresher为true时生效) |     String     |      正在刷新...       |                              -                               |
@@ -227,7 +226,7 @@
 |              loading-more-loading-text              |                    滑动到底部"加载中"文字                    |     String     |      正在加载...       |                              -                               |
 |              loading-more-no-more-text              |                   滑动到底部"没有更多"文字                   |     String     |       没有更多了       |                              -                               |
 |               loading-more-fail-text                |                   滑动到底部"加载失败"文字                   |     String     | 加载失败，点击重新加载 |                              -                               |
-| hide-loading-more-when-no-more-and-inside-of-paging | 当没有更多数据且分页内容未超出z-paging时是否隐藏没有更多数据的view |    Boolean     |          true          |                            false                             |
+| hide-loading-more-when-no-more-and-inside-of-paging | 当没有更多数据且分页内容未超出z-paging时是否隐藏没有更多数据的view |    Boolean     |         false          |                             true                             |
 |           show-loading-more-no-more-view            |                  是否显示没有更多数据的view                  |    Boolean     |          true          |                            false                             |
 |           show-default-loading-more-text            |                  是否显示默认的加载更多text                  |    Boolean     |          true          |                            false                             |
 |           show-loading-more-no-more-line            |            是否显示没有更多数据的分割线，默认为是            |    Boolean     |          true          |                            false                             |
@@ -237,6 +236,11 @@
 |                   empty-view-img                    |           空数据图图片，默认使用z-paging内置的图片           |     String     |           -            |                              -                               |
 |          auto-hide-empty-view-when-loading          |            加载中时是否自动隐藏空数据图，默认为是            |    Boolean     |          true          |                            false                             |
 |        auto-hide-loading-after-first-loaded         |               第一次加载后自动隐藏loading slot               |    Boolean     |          true          |                            false                             |
+|                auto-show-back-to-top                |            自动显示点击返回顶部按钮(nvue暂不支持)            |    Boolean     |         false          |                             true                             |
+|                back-to-top-threshold                |     点击返回顶部按钮显示/隐藏的阈值(滚动距离)，单位为px      |     Number     |         200px          |                              -                               |
+|                   back-to-top-img                   |               点击返回顶部按钮的自定义图片地址               |     String     |   z-paging内置的图片   |                              -                               |
+|              back-to-top-with-animate               |         点击返回顶部按钮返回到顶部时是否展示过渡动画         |    Boolean     |          true          |                            false                             |
+|                  back-to-top-style                  |                 点击返回顶部按钮的自定义样式                 |     Object     |           {}           |                              -                               |
 |                   show-scrollbar                    |                      控制是否出现滚动条                      |    Boolean     |         false          |                             true                             |
 |            scroll-to-top-bounce-enabled             | iOS设备上滚动到顶部时是否允许回弹效果。关闭回弹效果后可使滚动到顶部后立即下拉可立即触发下拉刷新，但是有吸顶view时滚动到顶部时可能出现抖动。 |    Boolean     |          true          |                            false                             |
 |                scroll-with-animation                |                在设置滚动条位置时使用动画过渡                |    Boolean     |         false          |                             true                             |
@@ -249,7 +253,6 @@
 |                refresher-background                 |                设置自定义下拉刷新区域背景颜色                |     String     |    #FFFFFF00(透明)     |                              -                               |
 |              local-paging-loading-time              |          本地分页时上拉加载更多延迟时间，单位为毫秒          | Number\|String |          200           |                              -                               |
 |                use-chat-record-mode                 | 使用聊天记录模式，为保证良好的体验，建议同时开启页面滚动(设置`use-page-scroll`为true) |    Boolean     |         false          |                             true                             |
-|            touchmove-propagation-enabled            | 是否允许touchmove事件冒泡，默认为否，禁止冒泡可避免一些情况下下拉刷新时页面其他元素跟着下移，若您使用横向滑动切换选项卡，则需要将此属性设置为true，否则无法横向滑动。 |    Boolean     |         false          |                             true                             |
 |                    nvue-list-is                     |   nvue中修改列表类型，可选值有list和waterfall，默认为list    |     String     |          list          |                          waterfall                           |
 |                nvue-waterfall-config                | nvue waterfall配置，仅在nvue中且nvueListIs=waterfall时有效，如：{'column-gap': 20}，配置参数详情参见：[https://uniapp.dcloud.io/component/waterfall](https://uniapp.dcloud.io/component/waterfall) |     Object     |           -            |                              -                               |
 
