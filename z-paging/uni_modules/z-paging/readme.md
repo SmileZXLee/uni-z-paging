@@ -16,12 +16,6 @@
 
 > `z-paging` 支持[easycom组件规范](https://uniapp.dcloud.io/component/README?id=easycom组件规范)，无需引用和注册组件即可直接使用，在正在运行的项目中导入`z-paging`可能会提示：`Unknown custom element：<z-paging> - did you register the component corrently?... `，此时需要重新运行项目即可。
 
-### 平台兼容性
-
-| App  |  h5  | 微信小程序 | 支付宝小程序 | 百度小程序 | 字节小程序 | QQ小程序 |
-| :--: | :--: | :--------: | :----------: | :--------: | :--------: | :------: |
-|  √   |  √   |     √      |      √       |     √      |     √      |    √     |
-
 ### 预览
 
 ***
@@ -263,6 +257,7 @@
 | empty              | 自定义空数据占位view                                         |
 | loading            | 自定义页面reload时的加载view，注意：这个slot默认仅会在第一次加载时显示，若需要每次reload时都显示，需要将`auto-hide-loading-after-first-loaded`设置为false |
 | refresher          | 自定义下拉刷新view，设置后则不使用uni自带的下拉刷新view和z-paging自定义的下拉刷新view。此view的style必须设置为`height:100%` (use-custom-refresher为true时生效) |
+| top                | 可以将自定义导航栏、tab-view等需要固定的元素放入slot="top"的view中，无需计算z-paging高度，仅需设置其高度为100%，铺满屏幕即可。注：nvue和使用页面滚动时无效，因为它们无需考虑高度计算问题。 |
 | chatLoading        | 使用聊天记录模式时自定义顶部加载更多view，`use-chat-record-mode`为true时有效 |
 | loadingMoreDefault | 自定义滑动到底部"默认"状态的view                             |
 | loadingMoreLoading | 自定义滑动到底部"加载中"状态的view                           |

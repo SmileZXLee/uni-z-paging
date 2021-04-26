@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V1.5.3
+V1.5.4
 -- >
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
@@ -37,7 +37,7 @@ V1.5.3
 			:data-refresherThreshold="refresherThreshold" :data-wxsIsScrollTopInTopRange="wxsIsScrollTopInTopRange"
 			:data-loading="loading" :data-useChatRecordMode="useChatRecordMode" 
 			:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="pageScrollTop"
-			:data-scrollTop="scrollTop" :data-refresherMaxAngle="refresherMaxAngle" :data-refresherAngleEnableChangeContinued="refresherAngleEnableChangeContinued"
+			:data-scrollTop="scrollTop" :data-refresherMaxAngle="refresherMaxAngle" :data-refresherAecc="refresherAngleEnableChangeContinued"
 			:data-isTouchmoving="isTouchmoving" :data-usePageScroll="usePageScroll"
 			<!-- #endif -->
 			>	
@@ -902,7 +902,7 @@ V1.5.3
 				return 'list';
 			},
 			nWaterfallColumnCount() {
-				return this._getNvueWaterfallSingleConfig('column-count', 'auto');
+				return this._getNvueWaterfallSingleConfig('column-count', 2);
 			},
 			nWaterfallColumnWidth() {
 				return this._getNvueWaterfallSingleConfig('column-width', 'auto');
@@ -1069,6 +1069,9 @@ V1.5.3
 			_addData(data, success, isLocal) {
 				this.isAddedData = true;
 				this.isTotalChangeFromAddData = true;
+				if (!this.useCustomRefresher){
+					uni.stopPullDownRefresh();
+				}
 				let dataType = Object.prototype.toString.call(data);
 				if (dataType === '[object Boolean]') {
 					success = data;
@@ -1167,7 +1170,6 @@ V1.5.3
 			},
 			//当滚动到顶部时
 			_scrollToUpper() {
-				console.log('滚动到顶部')
 				this.oldScrollTop = 0;
 				if (!this.useChatRecordMode) {
 					return;

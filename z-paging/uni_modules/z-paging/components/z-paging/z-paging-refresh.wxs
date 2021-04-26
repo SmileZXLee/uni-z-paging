@@ -1,9 +1,9 @@
-// z-paging V1.5.3
+// z-paging
 // github地址:https://github.com/SmileZXLee/uni-z-paging
 // dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 // 反馈QQ群：790460711
 
-//微信小程序、QQ小程序、app-vue、h5上使用wxs实现自定义下拉刷新，减少逻辑层与视图层的通信折损，提升性能
+//微信小程序、QQ小程序、app-vue、h5上使用wxs实现自定义下拉刷新，降低逻辑层与视图层的通信折损，提升性能
 
 function propObserver(newValue, oldValue, ownerInstance, instance) {
 	var state = ownerInstance.getState();
@@ -165,7 +165,7 @@ function _getRefresherTouchDisabled(e, instance) {
 
 function _getAngleIsInRange(e, touch, state, dataset) {
 	var refresherMaxAngle = dataset.refreshermaxangle;
-	var refresherAngleEnableChangeContinued = _getIsTrue(dataset.refresherangleenablechangecontinued);
+	var refresherAecc = _getIsTrue(dataset.refresheraecc);
 	var lastRefresherTouchmove = state.lastRefresherTouchmove;
 	var moveDistance = state.moveDistance;
 	var refresherReachMaxAngle = state.refresherReachMaxAngle;
@@ -173,7 +173,7 @@ function _getAngleIsInRange(e, touch, state, dataset) {
 		return true;
 	}
 	if (refresherMaxAngle >= 0 && refresherMaxAngle <= 90 && lastRefresherTouchmove) {
-		if (!refresherAngleEnableChangeContinued && refresherReachMaxAngle != null && !refresherReachMaxAngle) {
+		if (!refresherAecc && refresherReachMaxAngle != null && !refresherReachMaxAngle) {
 			return false;
 		}
 		var x = Math.abs(touch.touchX - lastRefresherTouchmove.touchX);
@@ -189,7 +189,6 @@ function _getAngleIsInRange(e, touch, state, dataset) {
 		}
 	}
 	state.lastRefresherTouchmove = touch;
-	//state.refresherReachMaxAngle = true;
 	return true;
 }
 

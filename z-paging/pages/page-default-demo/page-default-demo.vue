@@ -3,7 +3,8 @@
 	<view class="content">
 		<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 		<!-- 此时使用了页面的滚动，z-paging不需要有确定的高度，use-page-scroll需要设置为true -->
-		<z-paging ref="paging" @query="queryList" :list.sync="dataList" :use-page-scroll="true">
+		<!-- 注意注意！！这里的ref必须设置且必须等于"paging"，否则mixin方法无效 -->
+		<z-paging ref="paging" :auto-show-back-to-top="true" @query="queryList" :list.sync="dataList" :use-page-scroll="true">
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view>
@@ -18,21 +19,16 @@
 </template>
 
 <script>
+	//使用页面滚动时引入此mixin，用于监听和处理onPullDownRefresh等页面生命周期方法(如果全局引入了，就不要这一步，全局引入示例见main.js)
+	import ZPagingMixin from '@/uni_modules/z-paging/components/z-paging/z-paging-mixin'
 	export default {
+		//注意这一步不要漏掉，必须注册mixins(如果全局引入了，就不要这一步，全局引入示例见main.js)
+		mixins: [ZPagingMixin],
 		data() {
 			return {
 				dataList: [],
 				tabIndex: 0
 			}
-		},
-		// 当页面滚动到底部时，手动触发doLoadMore方法
-		onReachBottom() {
-			this.$refs.paging.doLoadMore();
-		},
-		//如果需要使用页面滚动并且使用自定义下拉刷新，则需要监听页面滚动并将滚动的scrollTop告知z-paging，因为z-paging需要知道当前滚动到什么地方以确认下拉时是否要触发下拉刷新
-		onPageScroll(e) {
-			//如果use-custom-refresher为true(默认为true)，则必须调用，若为false，代表使用系统的下拉刷新，可以省略这一步
-			this.$refs.paging.updatePageScrollTop(e.scrollTop)
 		},
 		methods: {
 			tabChange(index){
@@ -56,8 +52,7 @@
 </script>
 
 <style>
-	/* 这种情况无需确定z-paging的高度，内部元素会自动将其撑高，当滚动到页面底部时，
-	需手动调用doLoadMore方法，因为z-paging未固定高度时，其内部的scroll-view的scrolltolower事件无法被触发 */
+	/* 这种情况无需确定z-paging的高度，内部元素会自动将其撑高 */
 	.item {
 		position: relative;
 		height: 150rpx;
