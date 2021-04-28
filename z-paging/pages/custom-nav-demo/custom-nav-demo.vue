@@ -1,11 +1,10 @@
-<!-- 自动高度(无需计算z-paging高度)演示，含自定义导航栏场景处理 -->
+<!-- 自定义导航栏演示 -->
 <!--  此demo使用了uView的Navbar 自定义导航栏 https://uviewui.com/components/navbar.html -->
 <template>
-	<!-- 注意：z-paging的父view依然需要有固定的高度，比如设置高度为100% -->
 	<view class="content">
-		<!-- z-paging依然要设置高度为100%，填充满页面即可 -->
-		<z-paging ref="paging" @query="queryList" :list.sync="dataList" style="height: 100%;">
-			<!-- 将不需要参与滚动的部分，放在slot="top"的view中，如果只有一个标签，可以直接在此标签上写slot="top" -->
+		<!-- 这里的fixed建议设置为true，设置为true则无需设置z-paging的高度及其父view的高度 -->
+		<z-paging ref="paging" @query="queryList" :fixed="true" :list.sync="dataList" style="height: 100%;">
+			<!-- 将不需要参与滚动的部分，放在slot="top"的view中，如果只有一个标签，可以直接在此标签上写slot="top"，将自定义的导航栏放到里面即可 -->
 			<view slot="top">
 				<u-navbar :background="{'background-color': '#007AFF'}">
 					<view class="slot-wrap" style="color: white;font-size: 26rpx;" @click="backClick">
@@ -63,25 +62,6 @@
 </script>
 
 <style>
-	/* 注意，1、父节点需要固定高度，z-paging的height:100%才会生效 */
-	/* 注意，2、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突 */
-	
-	/*如果有scoped，page的css设置建议放在App.vue中 */
-	page {
-		height: 100%;
-	}
-	
-	.custom-nav{
-		background-color: red;
-	}
-
-	.content {
-		height: 100%;
-		/* 父节点建议开启flex布局 */
-		display: flex;
-		flex-direction: column;
-	}
-	
 	.item {
 		position: relative;
 		height: 150rpx;

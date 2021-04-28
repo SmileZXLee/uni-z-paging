@@ -1,10 +1,11 @@
 <!-- 使用页面滚动示例(无需设置z-paging的高度) -->
 <template>
 	<view class="content">
-		<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 		<!-- 此时使用了页面的滚动，z-paging不需要有确定的高度，use-page-scroll需要设置为true -->
 		<!-- 注意注意！！这里的ref必须设置且必须等于"paging"，否则mixin方法无效 -->
-		<z-paging ref="paging" :auto-show-back-to-top="true" @query="queryList" :list.sync="dataList" :use-page-scroll="true">
+		<z-paging ref="paging" @query="queryList" :list.sync="dataList" :use-page-scroll="true">
+			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
+			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view>
@@ -54,6 +55,7 @@
 <style>
 	/* 这种情况无需确定z-paging的高度，内部元素会自动将其撑高 */
 	.item {
+		z-index: 1;
 		position: relative;
 		height: 150rpx;
 		display: flex;
@@ -63,6 +65,7 @@
 	}
 
 	.item-detail {
+		z-index: 1;
 		padding: 5rpx 15rpx;
 		border-radius: 10rpx;
 		font-size: 28rpx;

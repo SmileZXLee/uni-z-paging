@@ -69,7 +69,6 @@
 </script>
 
 <style>
-	
 	.content {
 		background-color: white;
 		position: absolute;

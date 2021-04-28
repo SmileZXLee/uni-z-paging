@@ -37,7 +37,7 @@
 					},
 					{
 						title: '滑动切换选项卡演示',
-						file: 'scroll-tab-swiper-demo',
+						file: 'scroll-tab-swiper-demo-n',
 						subTitle: '使用了uView的tabsSwiper组件'
 					},
 					{
@@ -51,9 +51,9 @@
 						subTitle: ''
 					},
 					{
-						title: '自动高度(无需计算z-paging高度)演示',
-						file: 'auto-height-demo',
-						subTitle: '含自定义导航栏场景处理'
+						title: '自定义导航栏演示',
+						file: 'custom-nav-demo',
+						subTitle: '使用了uView的自定义导航栏组件'
 					},
 					{
 						title: '聊天记录模式演示',

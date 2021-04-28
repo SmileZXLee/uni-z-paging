@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V1.5.4
+V1.5.6
 -- >
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
@@ -12,11 +12,16 @@ V1.5.4
 <!-- 反馈QQ群：790460711 -->
 <template name="z-paging">
 	<!-- #ifndef APP-NVUE -->
-	<view class="z-paging-content"
-		:style="[pagingStyle]">
+	<view :class="!usePageScroll&&fixed?'z-paging-content z-paging-content-fixed':'z-paging-content'"
+		:style="[finalPagingStyle]">
 		<!-- 顶部固定的slot -->
 		<slot v-if="!usePageScroll&&$slots.top" name="top"></slot>
-		<scroll-view :class="!usePageScroll&&$slots.top?'zp-scroll-view zp-scroll-view-fix-height':'zp-scroll-view'" :style="[scrollViewStyle]" :scroll-top="scrollTop"
+		<view class="zp-page-scroll-top" v-else-if="usePageScroll&&$slots.top" :style="[{'top': `${windowTop}px`}]">
+			<slot name="top"></slot>
+		</view>
+		<scroll-view 
+			:class="!usePageScroll&&$slots.top?'zp-scroll-view zp-scroll-view-flex1 zp-scroll-view-fix-height':usePageScroll?'zp-scroll-view':'zp-scroll-view zp-scroll-view-flex1'" 
+			:style="[scrollViewStyle]" :scroll-top="scrollTop"
 			:scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
 			:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
 			:scroll-into-view="scrollIntoView" :lower-threshold="lowerThreshold"
@@ -183,6 +188,7 @@ V1.5.4
 	 * @property {String} auto-height-addition z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数
 	 * @property {String} default-theme-style loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
 	 * @property {Boolean} use-page-scroll 使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
+	 * @property {Boolean} fixed z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为否(当使用内置scroll-view滚动时有效)
 	 * @property {Boolean} mounted-auto-call-reload z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
 	 * @property {Boolean} auto-scroll-to-top-when-reload reload时自动滚动到顶部，默认为是
 	 * @property {Boolean} auto-clean-list-when-reload reload时立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
@@ -371,6 +377,13 @@ V1.5.4
 			},
 			//使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
 			usePageScroll: {
+				type: Boolean,
+				default: function() {
+					return false;
+				}
+			},
+			//z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为否(当使用内置scroll-view滚动时有效)
+			fixed: {
 				type: Boolean,
 				default: function() {
 					return false;
@@ -753,6 +766,7 @@ V1.5.4
 				}
 				this.loaded = true;
 			})
+			this.updatePageScrollTopHeight();
 		},
 		watch: {
 			totalData(newVal, oldVal) {
@@ -901,6 +915,24 @@ V1.5.4
 				}
 				return 'list';
 			},
+			finalPagingStyle(){
+				let pagingStyle = this.pagingStyle;
+				const windowTop = this.systemInfo.windowTop;
+				const windowBottom = this.systemInfo.windowBottom;
+				if(!this.usePageScroll && this.fixed){
+					if(windowTop && windowTop !== undefined){
+						pagingStyle.top = windowTop + 'px';
+					}
+					if(windowBottom && windowBottom !== undefined){
+						pagingStyle.bottom = windowBottom + 'px';
+					}
+				}
+				return pagingStyle;
+			},
+			windowTop(){
+				const windowTop = this.systemInfo.windowTop;
+				return windowTop && windowTop !== undefined ? windowTop : 0;
+			},
 			nWaterfallColumnCount() {
 				return this._getNvueWaterfallSingleConfig('column-count', 2);
 			},
@@ -1026,6 +1058,17 @@ V1.5.4
 					return;
 				}
 				this.pageScrollTop = value;
+			},
+			//当使用页面滚动并且设置了slot="top"时，默认初次加载会自动获取其高度，并使内部容器下移，当slot="top"的view高度动态改变时，在其高度需要更新时调用此方法
+			updatePageScrollTopHeight(){
+				this.$nextTick(()=>{
+					this._getNodeClientRect('.zp-page-scroll-top').then((res) => {
+						if (res) {
+							const pageScrollTopHeight = res[0].height;
+							this.$set(this.scrollViewStyle, 'margin-top', `${pageScrollTopHeight}px`);
+						}
+					});
+				})
 			},
 			//更新z-paging内置scroll-view的scrollTop
 			updateScrollViewScrollTop(scrollTop, animate = true) {
@@ -1439,7 +1482,7 @@ V1.5.4
 				this.refresherReachMaxAngle = true;
 				if (moveDistance < 0 && this.usePageScroll && this.loadingMoreEnabled && this.useCustomRefresher && this.pageScrollTop === -1) {
 					console.error(
-						'[z-paging]usePageScroll为true并且自定义下拉刷新时必须在page滚动时通过调用z-paging组件的updatePageScrollTop方法设置当前的scrollTop'
+						'[z-paging]usePageScroll为true并且自定义下拉刷新时必须引入mixin或在page滚动时通过调用z-paging组件的updatePageScrollTop方法设置当前的scrollTop'
 					)
 				}
 				this.isTouchEnded = true;
@@ -1541,7 +1584,7 @@ V1.5.4
 						const scrollViewTotalH = scrollViewNode[0].top + scrollViewNode[0].height;
 						if (scrollViewTotalH > this.systemInfo.windowHeight + 100) {
 							console.error(
-								'[z-paging]检测到z-paging的高度超出页面高度，这将导致滚动出现异常，请确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}，此时z-paging的百分比高度才能生效。详情参照demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
+								'[z-paging]检测到z-paging的高度超出页面高度，这将导致滚动出现异常，请设置【:fixed="true"】或【确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}】，此时z-paging的百分比高度才能生效。详情参照demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
 							);
 						}
 					}
@@ -1578,12 +1621,11 @@ V1.5.4
 							const scrollViewTop = finalScrollViewNode[0].top;
 							const scrollViewHeight = this.systemInfo.windowHeight - scrollViewTop;
 							let additionHeight = this._convertTextToPx(this.autoHeightAddition);
-							this.scrollViewStyle = {
-								height: scrollViewHeight + additionHeight + 'px'
-							};
+							this.$set(this.scrollViewStyle, 'height', scrollViewHeight + additionHeight + 'px');
 						}
 					} else {
-						this.scrollViewStyle = {};
+						
+						this.$delete(this.scrollViewStyle, 'height');
 					}
 				} catch (e) {
 
@@ -1775,7 +1817,30 @@ V1.5.4
 		flex-direction: column;
 	}
 	
-	.zp-scroll-view{
+	.z-paging-content-fixed{
+		position: fixed;
+		/* #ifndef APP-NVUE */
+		height: auto;
+		width: auto;
+		/* #endif */
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+	}
+	
+	.zp-page-scroll-top{
+		/* #ifndef APP-NVUE */
+		width: auto; 
+		/* #endif */
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 999;
+	}
+	
+	.zp-scroll-view-flex1{
 		flex: 1;
 	}
 	
@@ -1830,7 +1895,7 @@ V1.5.4
 		z-index: 999;
 		position: fixed;
 		bottom: 150rpx;
-		right: 40rpx;
+		right: 30rpx;
 		transition-duration: .3s;
 		transition-property: opacity;
 	}

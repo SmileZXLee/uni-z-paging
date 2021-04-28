@@ -58,7 +58,7 @@
             
         }
         ,{
-            "path" : "pages/scroll-tab-swiper-demo/scroll-tab-swiper-demo-n",
+            "path" : "pages/scroll-tab-swiper-demo-n/scroll-tab-swiper-demo-n",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "滑动切换选项卡演示(nvue)",
@@ -76,10 +76,10 @@
             
         }
         ,{
-            "path" : "pages/auto-height-demo/auto-height-demo",
+            "path" : "pages/custom-nav-demo/custom-nav-demo",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "自动高度(无需计算z-paging高度)演示",
+                "navigationBarTitleText": "自定义导航栏演示",
 				"navigationStyle": "custom",
 				"navigationBarTextStyle": "white",
                 "enablePullDownRefresh": false

@@ -1,9 +1,10 @@
 <!-- 普通模式演示 -->
 <template>
 	<view class="content">
-		<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
-		<!-- 注：支付宝小程序请通过：:paging-style="{'height':'calc(100% - 80rpx)'}" 设置高度 -->
-		<z-paging ref="paging" @query="queryList" :list.sync="dataList" style="height: calc(100% - 80rpx);">
+		<!-- 非页面滚动时这里的fixed建议设置为true，则无需设置z-paging的高度及其父view的高度 -->
+		<z-paging ref="paging" @query="queryList" :fixed="true" :list.sync="dataList">
+			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
+			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view class="list">
@@ -48,21 +49,6 @@
 </script>
 
 <style>
-	/* 注意，1、父节点需要固定高度，z-paging的height:100%才会生效 */
-	/* 注意，2、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突 */
-	
-	/*如果有scoped，page的css设置建议放在App.vue中 */
-	page {
-		height: 100%;
-	}
-
-	.content {
-		height: 100%;
-		/* 父节点建议开启flex布局 */
-		display: flex;
-		flex-direction: column;
-	}
-	
 	.item {
 		position: relative;
 		height: 150rpx;
