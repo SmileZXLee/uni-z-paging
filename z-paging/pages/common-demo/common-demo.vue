@@ -1,6 +1,7 @@
 <!-- 普通模式演示 -->
 <template>
 	<view class="content">
+		<!-- 注：支付宝小程序请通过：:paging-style="{'height':'calc(100% - 80rpx)'}" 设置高度 -->
 		<!-- 非页面滚动时这里的fixed建议设置为true，则无需设置z-paging的高度及其父view的高度 -->
 		<z-paging ref="paging" @query="queryList" :fixed="true" :list.sync="dataList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->

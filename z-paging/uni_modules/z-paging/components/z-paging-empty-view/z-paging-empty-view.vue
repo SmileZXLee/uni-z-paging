@@ -65,6 +65,12 @@
 
 	.zp-main {
 		z-index: 1000;
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		flex-direction: column;
+		align-items: center;
+		
 	}
 
 	.zp-main-image {

@@ -37,7 +37,7 @@
 					},
 					{
 						title: '滑动切换选项卡演示',
-						file: 'scroll-tab-swiper-demo-n',
+						file: 'scroll-tab-swiper-demo',
 						subTitle: '使用了uView的tabsSwiper组件'
 					},
 					{

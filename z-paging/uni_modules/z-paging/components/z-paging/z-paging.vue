@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V1.5.6
+V1.5.7
 -- >
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
@@ -80,7 +80,7 @@ V1.5.6
 					<slot v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" name="loading" />
 					<!-- 空数据图 -->
 					<view class="zp-empty-view"
-						v-if="!totalData.length&&isAddedData&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
+						v-if="!totalData.length&&(autoHideEmptyViewWhenLoading?isAddedData:true)&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
 						<slot v-if="$slots.empty" name="empty" />
 						<z-paging-empty-view v-else :emptyViewImg="emptyViewImg" :emptyViewText="emptyViewText">
 						</z-paging-empty-view>
@@ -149,7 +149,7 @@ V1.5.6
 			<slot v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" name="loading" />
 			<!-- 空数据图 -->
 			<view class="zp-empty-view"
-				v-if="!totalData.length&&isAddedData&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
+				v-if="!totalData.length&&(autoHideEmptyViewWhenLoading?isAddedData:true)&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
 				<slot v-if="$slots.empty" name="empty" />
 				<z-paging-empty-view v-else :emptyViewImg="emptyViewImg" :emptyViewText="emptyViewText">
 				</z-paging-empty-view>
