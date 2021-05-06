@@ -7,6 +7,7 @@
 			<!-- 请使用template，不要使用block！！！ -->
 			<template v-for="(item,index) in dataList">
 				<!-- #ifdef APP-NVUE -->
+				<!-- 在nvue中，z-paging中插入的列表item必须是cell，必须使用cell包住，因为在nvue中，z-paging使用的是nvue的list组件。 -->
 				<cell class="item" :key="item.title" @click="itemClick(item)">
 					<text class="item-title">{{item.title}}</text>
 					<text class="item-detail">{{item.detail}}</text>

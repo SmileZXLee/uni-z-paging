@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V1.5.7
+V1.5.8
 -- >
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
@@ -51,10 +51,10 @@ V1.5.7
 					<view :style="[{'height': `${refresherThreshold}px`,'background-color': refresherBackground}]">
 						<!-- 下拉刷新view -->
 						<slot 
-						<!-- #ifdef MP-WEIXIN || MP-QQ || MP-TOUTIAO  -->
+						<!-- #ifdef MP-WEIXIN || MP-QQ || MP-TOUTIAO || MP-BAIDU  -->
 						v-if="zScopedSlots.refresher"
 						<!-- #endif -->
-						<!-- #ifndef MP-WEIXIN || MP-QQ || MP-TOUTIAO -->
+						<!-- #ifndef MP-WEIXIN || MP-QQ || MP-TOUTIAO || MP-BAIDU -->
 						v-if="$scopedSlots.refresher"
 						<!-- #endif -->
 						<!-- #ifndef MP-QQ -->
@@ -174,8 +174,35 @@ V1.5.7
     lang="wxs"
 ></script>
 <script>
+	import zStatic from './z-paging-static'
+	import zPagingRefresh from './z-paging-refresh'
+	import zPagingLoadMore from './z-paging-load-more'
+	import zPagingEmptyView from '../z-paging-empty-view/z-paging-empty-view'
+	import main from '@/main.js'
+	
 	const systemInfo = uni.getSystemInfoSync();
 	const commonDelayTime = 100;
+	const config = main['z-paging-config'];
+	
+	//获取默认配置信息
+	function _getConfig(key, defaultValue) {
+		if (!config){
+			return defaultValue;
+		}
+		let value = config[toKebab(key)];
+		if (value === undefined) {
+			value = config[key];
+		}
+		if (value !== undefined) {
+			return value;
+		}
+		return defaultValue;
+	}
+	//驼峰转短横线
+	function toKebab(value) {
+	  return value.replace(/([A-Z])/g,"-$1").toLowerCase();
+	}
+	
 	/**
 	 * z-paging 分页组件
 	 * @description 【uni-app自动分页器】超简单，低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view等。
@@ -255,10 +282,6 @@ V1.5.7
 	 * @event {Function} scroll 滚动时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY}
 	 * @example <z-paging ref="paging" @query="queryList" :list.sync="dataList"></z-paging>
 	 */
-	import zStatic from './z-paging-static'
-	import zPagingRefresh from './z-paging-refresh'
-	import zPagingLoadMore from './z-paging-load-more'
-	import zPagingEmptyView from '../z-paging-empty-view/z-paging-empty-view'
 	export default {
 		name: "z-paging",
 		components: {
@@ -326,9 +349,7 @@ V1.5.7
 			//自定义pageNo，默认为1
 			defaultPageNo: {
 				type: [Number, String],
-				default: function() {
-					return 1;
-				},
+				default: _getConfig('defaultPageNo',1),
 				observer: function(newVal, oldVal) {
 					this.pageNo = newVal;
 				},
@@ -336,421 +357,317 @@ V1.5.7
 			//自定义pageSize，默认为10
 			defaultPageSize: {
 				type: [Number, String],
-				default: function() {
-					return 10;
-				},
+				default: _getConfig('defaultPageSize',10),
 			},
 			//设置z-paging的style，部分平台可能无法直接修改组件的style，可使用此属性代替
 			pagingStyle: {
 				type: Object,
 				default: function() {
-					return {};
+					return _getConfig('pagingStyle',{});
 				},
 			},
 			//设置z-paging的容器(插槽的父view)的style
 			pagingContentStyle: {
 				type: Object,
 				default: function() {
-					return {};
+					return _getConfig('pagingContentStyle',{});
 				},
 			},
 			//z-paging是否自动高度，若自动高度则会自动铺满屏幕
 			autoHeight: {
 				type: Boolean,
-				default: function() {
-					return false;
-				},
+				default: _getConfig('autoHeight',false)
 			},
 			//z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，若需要减少高度，则传负数
 			autoHeightAddition: {
 				type: String,
-				default: function() {
-					return '0px';
-				},
+				default: _getConfig('autoHeightAddition','0px')
 			},
 			//loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
 			defaultThemeStyle: {
 				type: String,
 				default: function() {
-					return 'black';
+					return _getConfig('defaultThemeStyle','black');
 				}
 			},
 			//使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
 			usePageScroll: {
 				type: Boolean,
-				default: function() {
-					return false;
-				}
+				default: _getConfig('usePageScroll',false)
 			},
 			//z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为否(当使用内置scroll-view滚动时有效)
 			fixed: {
 				type: Boolean,
-				default: function() {
-					return false;
-				}
+				default: _getConfig('fixed',false)
 			},
 			//z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
 			mountedAutoCallReload: {
 				type: Boolean,
-				default: function() {
-					return true;
-				},
+				default: _getConfig('mountedAutoCallReload',true)
 			},
 			//reload时自动滚动到顶部，默认为是
 			autoScrollToTopWhenReload: {
 				type: Boolean,
-				default: function() {
-					return true;
-				}
+				default: _getConfig('autoScrollToTopWhenReload',true)
 			},
 			//reload时立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
 			autoCleanListWhenReload: {
 				type: Boolean,
-				default: function() {
-					return true;
-				},
+				default: _getConfig('autoCleanListWhenReload',true)
 			},
 			//调用reload方法时自动显示下拉刷新view，默认为否
 			showRefresherWhenReload: {
 				type: Boolean,
-				default: function() {
-					return false;
-				},
+				default: _getConfig('showRefresherWhenReload',false)
 			},
 			//是否使用自定义的下拉刷新，默认为是，即使用z-paging的下拉刷新。设置为false即代表使用uni scroll-view自带的下拉刷新，h5、App、微信小程序以外的平台不支持uni scroll-view自带的下拉刷新
 			useCustomRefresher: {
 				type: Boolean,
-				default: function() {
-					return true;
-				},
+				default: _getConfig('useCustomRefresher',true)
 			},
 			//自定义下拉刷新下拉帧率，默认为40，过高可能会出现抖动问题(use-custom-refresher为true时生效)
 			refresherFps: {
 				type: [Number, String],
-				default: function() {
-					return 40;
-				},
+				default: _getConfig('refresherFps',40)
 			},
 			//自定义下拉刷新允许触发的最大下拉角度，默认为40度，当下拉角度小于设定值时，自定义下拉刷新动画不会被触发
 			refresherMaxAngle: {
 				type: [Number, String],
-				default: function() {
-					return 40;
-				},
+				default: _getConfig('refresherMaxAngle',40)
 			},
 			//自定义下拉刷新的角度由未达到最大角度变到达到最大角度时，是否继续下拉刷新手势，默认为否
 			refresherAngleEnableChangeContinued: {
 				type: Boolean,
-				default: function() {
-					return false;
-				},
+				default: _getConfig('refresherAngleEnableChangeContinued',false)
 			},
 			//自定义下拉刷新默认状态下的文字(use-custom-refresher为true时生效)
 			refresherDefaultText: {
 				type: String,
-				default: function() {
-					return "继续下拉刷新";
-				},
+				default: _getConfig('refresherDefaultText','继续下拉刷新')
 			},
 			//自定义下拉刷新松手立即刷新状态下的文字(use-custom-refresher为true时生效)
 			refresherPullingText: {
 				type: String,
-				default: function() {
-					return "松开立即刷新";
-				},
+				default: _getConfig('refresherPullingText','松开立即刷新')
 			},
 			//自定义下拉刷新刷新中状态下的文字(use-custom-refresher为true时生效)
 			refresherRefreshingText: {
 				type: String,
-				default: function() {
-					return "正在刷新...";
-				},
+				default: _getConfig('refresherRefreshingText','正在刷新...')
 			},
 			//是否开启自定义下拉刷新刷新结束回弹效果，默认为是(use-custom-refresher为true时生效)
 			refresherEndBounceEnabled: {
 				type: Boolean,
-				default: function() {
-					return true;
-				},
+				default: _getConfig('refresherEndBounceEnabled',true)
 			},
 			//自定义底部加载更多文字
 			loadingMoreText: {
 				type: String,
-				default: function() {
-					return "";
-				},
+				default: _getConfig('loadingMoreText','')
 			},
 			//自定义底部加载更多样式
 			loadingMoreCustomStyle: {
 				type: Object,
-				default () {
-					return {}
+				default: function () {
+					return _getConfig('loadingMoreCustomStyle',{});
 				}
 			},
 			//自定义底部加载更多加载中动画样式
 			loadingMoreLoadingIconCustomStyle: {
 				type: Object,
-				default () {
-					return {}
+				default: function () {
+					return _getConfig('loadingMoreLoadingIconCustomStyle',{});
 				}
 			},
 			//自定义底部加载更多加载中动画图标类型，可选flower或circle，默认为flower
 			loadingMoreLoadingIconType: {
 				type: String,
-				default () {
-					return 'flower';
-				}
+				default: _getConfig('loadingMoreLoadingIconType','flower')
 			},
 			//自定义底部加载更多加载中动画图标图片
 			loadingMoreLoadingIconCustomImage: {
 				type: String,
-				default () {
-					return '';
-				}
+				default: _getConfig('loadingMoreLoadingIconCustomImage','')
 			},
 			//是否启用加载更多数据(含滑动到底部加载更多数据和点击加载更多数据)，默认为是
 			loadingMoreEnabled: {
 				type: Boolean,
-				default: function() {
-					return true;
-				},
+				default: _getConfig('loadingMoreEnabled',true)
 			},
 			//是否启用滑动到底部加载更多数据，默认为是
 			toBottomLoadingMoreEnabled: {
 				type: Boolean,
-				default: function() {
-					return true;
-				},
+				default: _getConfig('toBottomLoadingMoreEnabled',true)
 			},
 			//滑动到底部"默认"文字，默认为【点击加载更多】
 			loadingMoreDefaultText: {
 				type: String,
-				default: function() {
-					return "点击加载更多";
-				},
+				default: _getConfig('loadingMoreDefaultText','点击加载更多')
 			},
 			//滑动到底部"加载中"文字，默认为【正在加载...】
 			loadingMoreLoadingText: {
 				type: String,
-				default: function() {
-					return "正在加载...";
-				},
+				default: _getConfig('loadingMoreLoadingText','正在加载...')
 			},
 			//滑动到底部"没有更多"文字，默认为【没有更多了】
 			loadingMoreNoMoreText: {
 				type: String,
-				default: function() {
-					return "没有更多了";
-				},
+				default: _getConfig('loadingMoreNoMoreText','没有更多了')
 			},
 			//滑动到底部"加载失败"文字，默认为【加载失败，点击重新加载】
 			loadingMoreFailText: {
 				type: String,
-				default: function() {
-					return "加载失败，点击重新加载";
-				},
+				default: _getConfig('loadingMoreFailText','加载失败，点击重新加载')
 			},
 			//当没有更多数据且分页内容未超出z-paging时是否隐藏没有更多数据的view，默认为否
 			hideLoadingMoreWhenNoMoreAndInsideOfPaging: {
 				type: Boolean,
-				default: function() {
-					return false;
-				},
+				default: _getConfig('hideLoadingMoreWhenNoMoreAndInsideOfPaging',false)
 			},
 			//是否显示默认的加载更多text，默认为是
 			showDefaultLoadingMoreText: {
 				type: Boolean,
-				default: function() {
-					return true;
-				},
+				default: _getConfig('showDefaultLoadingMoreText',true)
 			},
 			//是否显示没有更多数据的view
 			showLoadingMoreNoMoreView: {
 				type: Boolean,
-				default: function() {
-					return true;
-				},
+				default: _getConfig('showLoadingMoreNoMoreView',true)
 			},
 			//是否显示没有更多数据的分割线，默认为是
 			showLoadingMoreNoMoreLine: {
 				type: Boolean,
-				default: function() {
-					return true;
-				},
+				default: _getConfig('showLoadingMoreNoMoreLine',true)
 			},
 			//自定义底部没有更多数据的分割线样式
 			loadingMoreNoMoreLineCustomStyle: {
 				type: Object,
 				default: function() {
-					return {};
+					return _getConfig('loadingMoreNoMoreLineCustomStyle',{});
 				},
 			},
 			//是否强制隐藏空数据图，默认为否
 			hideEmptyView: {
 				type: Boolean,
-				default: function() {
-					return false;
-				},
+				default: _getConfig('hideEmptyView',false)
 			},
 			//空数据图描述文字，默认为“没有数据哦~”
 			emptyViewText: {
 				type: String,
-				default: function() {
-					return '没有数据哦~';
-				},
+				default: _getConfig('emptyViewText','没有数据哦~')
 			},
 			//空数据图图片，默认使用z-paging内置的图片
 			emptyViewImg: {
 				type: String,
-				default: function() {
-					return zStatic.base64Empty;
-				},
+				default: _getConfig('emptyViewImg',zStatic.base64Empty)
 			},
 			//加载中时是否自动隐藏空数据图，默认为是
 			autoHideEmptyViewWhenLoading: {
 				type: Boolean,
-				default: function() {
-					return true;
-				},
+				default: _getConfig('autoHideEmptyViewWhenLoading',true)
 			},
 			//第一次加载后自动隐藏loading slot，默认为是
 			autoHideLoadingAfterFirstLoaded: {
 				type: Boolean,
-				default: function() {
-					return true;
-				},
+				default: _getConfig('autoHideLoadingAfterFirstLoaded',true)
 			},
 			//自动显示点击返回顶部按钮，默认为否
 			autoShowBackToTop: {
 				type: Boolean,
-				default: function() {
-					return false;
-				},
+				default: _getConfig('autoShowBackToTop',false)
 			},
 			//点击返回顶部按钮显示/隐藏的阈值(滚动距离)，单位为px，默认为200px
 			backToTopThreshold: {
 				type: Number,
-				default: function() {
-					return 200;
-				},
+				default: _getConfig('backToTopThreshold',200)
 			},
 			//点击返回顶部按钮的自定义图片地址，默认使用z-paging内置的图片
 			backToTopImg: {
 				type: String,
-				default: function() {
-					return '';
-				},
+				default: _getConfig('backToTopImg','')
 			},
 			//点击返回顶部按钮返回到顶部时是否展示过渡动画，默认为是
 			backToTopWithAnimate: {
 				type: Boolean,
-				default: function() {
-					return true;
-				},
+				default: _getConfig('backToTopWithAnimate',true)
 			},
 			//点击返回顶部按钮的自定义样式
 			backToTopStyle: {
 				type: Object,
 				default: function() {
-					return {};
+					return _getConfig('backToTopStyle',{});
 				},
 			},
 			//控制是否出现滚动条，默认为否
 			showScrollbar: {
 				type: Boolean,
-				default: function() {
-					return false;
-				},
+				default: _getConfig('showScrollbar',false)
 			},
 			//iOS设备上滚动到顶部时是否允许回弹效果，默认为是。关闭回弹效果后可使滚动到顶部与下拉刷新更连贯，但是有吸顶view时滚动到顶部时可能出现抖动。
 			scrollToTopBounceEnabled: {
 				type: Boolean,
-				default: function() {
-					return true;
-				},
+				default: _getConfig('scrollToTopBounceEnabled',true)
 			},
 			//在设置滚动条位置时使用动画过渡，默认为否
 			scrollWithAnimation: {
 				type: Boolean,
-				default: function() {
-					return false;
-				},
+				default: _getConfig('scrollWithAnimation',false)
 			},
 			//值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素
 			scrollIntoView: {
 				type: String,
-				default: function() {
-					return '';
-				},
+				default: _getConfig('scrollIntoView','')
 			},
 			//距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为50
 			lowerThreshold: {
 				type: Number,
-				default: function() {
-					return 50;
-				},
+				default: _getConfig('lowerThreshold',50)
 			},
 			//iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向，默认为否
 			enableBackToTop: {
 				type: Boolean,
-				default: function() {
-					return false;
-				},
+				default: _getConfig('enableBackToTop',false)
 			},
 			//是否开启自定义下拉刷新，默认为是
 			refresherEnabled: {
 				type: Boolean,
-				default: function() {
-					return true;
-				},
+				default: _getConfig('refresherEnabled',true)
 			},
 			//设置自定义下拉刷新阈值，默认为45
 			refresherThreshold: {
 				type: Number,
-				default: function() {
-					return 45;
-				},
+				default: _getConfig('refresherThreshold',45)
 			},
 			//设置系统下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式，默认为black
 			refresherDefaultStyle: {
 				type: String,
-				default: function() {
-					return "";
-				}
+				default: _getConfig('refresherDefaultStyle','black')
 			},
 			//设置自定义下拉刷新区域背景颜色
 			refresherBackground: {
 				type: String,
-				default: function() {
-					return "#ffffff00";
-				}
+				default: _getConfig('refresherBackground','#ffffff00')
 			},
 			//本地分页时上拉加载更多延迟时间，单位为毫秒，默认200毫秒
 			localPagingLoadingTime: {
 				type: [Number, String],
-				default: function() {
-					return 200;
-				}
+				default: _getConfig('localPagingLoadingTime',200)
 			},
 			//使用聊天记录模式，默认为否
 			useChatRecordMode: {
 				type: Boolean,
-				default: function() {
-					return false;
-				}
+				default: _getConfig('useChatRecordMode',false)
 			},
 			//nvue中修改列表类型，可选值有list和waterfall，默认为list
 			nvueListIs: {
 				type: String,
-				default: function() {
-					return 'list';
-				}
+				default: _getConfig('nvueListIs','list')
 			},
 			//nvue waterfall配置，仅在nvue中且nvueListIs=waterfall时有效，配置参数详情参见：https://uniapp.dcloud.io/component/waterfall
 			nvueWaterfallConfig: {
 				type: Object,
 				default: function() {
-					return {};
+					return _getConfig('nvueWaterfallConfig',{});
 				}
 			},
 		},
@@ -1062,12 +979,18 @@ V1.5.7
 			//当使用页面滚动并且设置了slot="top"时，默认初次加载会自动获取其高度，并使内部容器下移，当slot="top"的view高度动态改变时，在其高度需要更新时调用此方法
 			updatePageScrollTopHeight(){
 				this.$nextTick(()=>{
-					this._getNodeClientRect('.zp-page-scroll-top').then((res) => {
-						if (res) {
-							const pageScrollTopHeight = res[0].height;
-							this.$set(this.scrollViewStyle, 'margin-top', `${pageScrollTopHeight}px`);
-						}
-					});
+					let delayTime = 0;
+					// #ifdef MP-BAIDU
+					delayTime = 10;
+					// #endif
+					setTimeout(()=>{
+						this._getNodeClientRect('.zp-page-scroll-top').then((res) => {
+							if (res) {
+								const pageScrollTopHeight = res[0].height;
+								this.$set(this.scrollViewStyle, 'marginTop', `${pageScrollTopHeight}px`);
+							}
+						});
+					},delayTime)
 				})
 			},
 			//更新z-paging内置scroll-view的scrollTop
@@ -1213,7 +1136,9 @@ V1.5.7
 			},
 			//当滚动到顶部时
 			_scrollToUpper() {
-				this.oldScrollTop = 0;
+				this.$nextTick(()=>{
+					this.oldScrollTop = 0;
+				})
 				if (!this.useChatRecordMode) {
 					return;
 				}
