@@ -19,7 +19,7 @@
 </template>
 
 <script>
-	import zStatic from '../z-paging/z-paging-static'
+	import zStatic from '../z-paging/js/z-paging-static'
 	export default {
 		data() {
 			return {

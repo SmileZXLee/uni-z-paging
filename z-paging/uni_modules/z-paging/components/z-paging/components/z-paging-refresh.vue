@@ -30,7 +30,7 @@
 	</view>
 </template>
 <script>
-	import zStatic from './z-paging-static'
+	import zStatic from '../js/z-paging-static'
 	export default {
 		name: 'z-paging-refresh',
 		data() {
@@ -62,7 +62,7 @@
 </script>
 
 <style scoped>
-	@import "./z-paging-static.css";
+	@import "../css/z-paging-static.css";
 	.zp-custom-refresher-container {
 		/* #ifndef APP-NVUE */
 		display: flex;

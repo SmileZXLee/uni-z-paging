@@ -21,7 +21,7 @@
 
 <script>
 	//使用页面滚动时引入此mixin，用于监听和处理onPullDownRefresh等页面生命周期方法(如果全局引入了，就不要这一步，全局引入示例见main.js)
-	import ZPagingMixin from '@/uni_modules/z-paging/components/z-paging/z-paging-mixin'
+	import ZPagingMixin from '@/uni_modules/z-paging/components/z-paging/js/z-paging-mixin'
 	export default {
 		//注意这一步不要漏掉，必须注册mixins(如果全局引入了，就不要这一步，全局引入示例见main.js)
 		mixins: [ZPagingMixin],
