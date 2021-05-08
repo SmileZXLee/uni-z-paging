@@ -1,5 +1,5 @@
 <template>
-	<view class="refresher">
+	<view class="refresher-container">
 		<!-- 这里的图片请换成自己项目的图片 -->
 		<image class="refresher-image" mode="aspectFit" src="@/static/refresher_loading.gif"></image>
 		<text class="refresher-text">{{statusText}}</text>
@@ -31,13 +31,17 @@
 </script>
 
 <style scoped>
-	.refresher{
-		height: 100%;
+	.refresher-container{
 		/* #ifndef APP-NVUE */
+		height: 100%;
 		display: flex;
+		/* #endif */
+		/* #ifdef APP-NVUE */
+		height: 140rpx;
 		/* #endif */
 		flex-direction: column;
 		align-items: center;
+		justify-content: center;
 	}
 	.refresher-image{
 		margin-top: 10rpx;

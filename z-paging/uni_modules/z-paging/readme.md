@@ -8,7 +8,7 @@
 * 【低耦合，低侵入】分页自动管理。在page中无需处理任何分页相关逻辑，无需在data中定义任何分页相关变量，全由z-paging内部处理。
 * 【超灵活，支持各种类型自定义】支持自定义下拉刷新，自定义上拉加载更多，自带自定义下拉刷新效果，及其他数十种自定义属性。
 * 【功能丰富】支持自定义且自动管理空数据图，支持主题模式切换，支持本地分页，支持聊天分页模式，支持吸顶效果，支持内部scroll-view滚动与页面滚动，支持一键滚动到顶部等诸多功能。
-* 【多平台兼容，细致，流畅】支持nvue，支持h5、app及各家小程序；在app-vue、h5、微信小程序上使用wxs实现下拉刷新，多处细节优化，给您精致流畅的体验。
+* 【多平台兼容，细致，流畅】支持nvue，支持h5、app及各家小程序；在app-vue、h5、微信小程序、QQ小程序上使用wxs实现下拉刷新，大幅提升性能。多处细节优化，给您精致流畅的体验。
 
 ### 反馈qq群(点击加群)：[790460711](https://jq.qq.com/?_wv=1027&k=vU2fKZZH)
 
@@ -47,7 +47,7 @@
 ```html
 <template>
     <view class="content">
-        <z-paging ref="paging" @query="queryList" :fixed="true" :list.sync="dataList">
+        <z-paging ref="paging" fixed @query="queryList" :list.sync="dataList">
             <!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
             <view>
                 <view class="item" v-for="(item,index) in dataList">
@@ -88,10 +88,9 @@
 * 设置自定义emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理
 
 ```html
-<z-paging ref="paging" @query="queryList" :fixed="true" :list.sync="dataList">
+<z-paging ref="paging" fixed @query="queryList" :list.sync="dataList">
     <!-- 设置自己的emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
     <empty-view slot="empty"></empty-view>
-
     <view>
         <view class="item" v-for="(item,index) in dataList">
             <view class="item-title">{{item.title}}</view>
@@ -105,10 +104,9 @@
 * 以修改【没有更多了】状态描述文字为例(将默认的"没有更多了"修改为"我也是有底线的！")
 
 ```html
-<z-paging ref="paging" loading-more-no-more-text="我也是有底线的！" @query="queryList" :fixed="true" :list.sync="dataList">
+<z-paging ref="paging" fixed loading-more-no-more-text="我也是有底线的！" @query="queryList" :list.sync="dataList">
     <!-- 设置自己的emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
     <empty-view slot="empty"></empty-view>
-
     <view>
         <view class="item" v-for="(item,index) in dataList">
             <view class="item-title">{{item.title}}</view>
@@ -122,9 +120,11 @@
 * `use-custom-refresher`需要设置为true(默认为true)，此时将不会使用uni自带的下拉刷新，转为使用z-paging自定义的下拉刷新，通过slot可以插入开发者自定义的下拉刷新view。
 
 ```html
-<z-paging ref="paging" :fixed="true" :refresher-threshold="80" :use-custom-refresher="true" @query="queryList" :list.sync="dataList" :refresher-status.sync="refresherStatus">
-  <!-- 自定义下拉刷新view，若不设置，则使用z-paging自带的下拉刷新view -->
-  <custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>
+<z-paging ref="paging" fixed :refresher-threshold="80" @query="queryList" :list.sync="dataList">
+  <!-- 自定义下拉刷新view -->
+  <!-- 注意注意注意！！QQ小程序或字节跳动小程序中自定义下拉刷新不支持slot-scope，将导致custom-refresher无法显示 -->
+	<!-- 如果是QQ小程序或字节跳动小程序，请参照demo中的sticky-demo.vue中的写法，此处使用slot-scope是为了减少data中无关变量声明，降低依赖 -->
+	<custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus"></custom-refresher>
   <!-- 设置自定义emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
   <empty-view slot="empty"></empty-view>
   <!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
@@ -143,7 +143,7 @@
 * 以修改【没有更多了】状态描述view为例
 
 ```html
-<z-paging ref="paging" @query="queryList" :fixed="true" :list.sync="dataList">
+<z-paging ref="paging" fixed @query="queryList" :list.sync="dataList">
     <view>
         <view class="item" v-for="(item,index) in dataList">
             <view class="item-title">{{item.title}}</view>
@@ -179,18 +179,17 @@
 
 ## Props 
 
-##### 【全局配置（非必须）】支持在`main.js`中全局配置`z-paging`各属性的默认值：
+#### 支持全局配置(统一配置所有的z-paging，非必须)
+
+* 在路径`@/uni_modules/z-paging`下创建`z-paging-config.js`(与z-paging目录下的readme.md同级)，`z-paging-config.js`中的内容如下所示。
 
 ```json
 module.exports = {
-	//key必须为z-paging-config
-	'z-paging-config': {
-		//配置分页默认pageSize为15
-		'default-page-size': '15',
-		//配置空数据图默认描述文字为：空空如也~~
-		'empty-view-text': '空空如也~~',
-		//...
-	}
+	//配置分页默认pageSize为15
+	'default-page-size': '15',
+	//配置空数据图默认描述文字为：空空如也~~
+	'empty-view-text': '空空如也~~',
+	//...
 }
 ```
 
@@ -202,8 +201,8 @@ module.exports = {
 |                  default-page-size                  |                自定义pageSize(每页显示多少条)                | Number\|String |           15           |                              -                               |
 |                        fixed                        | z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为否(当使用内置scroll-view滚动时有效) |    Boolean     |         false          |                             true                             |
 |                    paging-style                     | 设置z-paging的style，部分平台可能无法直接修改组件的style，可使用此属性代替 |     Object     |           -            |                              -                               |
-|                     auto-height                     | z-paging是否自动高度，若自动高度则会自动铺满屏幕，不需要设置父view为100%等操作。（注意：自动高度可能并不准确，因为其计算方式是获取窗口【注意这里是“窗口”，不是“页面”，也就是只要您的项目包含了tabbar，所有页面的可用高度都减去了tabbar的高度】的可用高度【不包含导航栏和tabbar的高度】- z-paging与可用视图顶部的距离），可以通过`auto-height-addition`进行调整。 |    Boolean     |         false          |                             true                             |
-|                auto-height-addition                 | z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数。如"-10rpx"，"10.5px" |     String     |          0px           |                              -                               |
+|                     auto-height                     | (建议使用fixed代替)z-paging是否自动高度，若自动高度则会自动铺满屏幕，不需要设置父view为100%等操作。（注意：自动高度可能并不准确，因为其计算方式是获取窗口【注意这里是“窗口”，不是“页面”，也就是只要您的项目包含了tabbar，所有页面的可用高度都减去了tabbar的高度】的可用高度【不包含导航栏和tabbar的高度】- z-paging与可用视图顶部的距离），可以通过`auto-height-addition`进行调整。 |    Boolean     |         false          |                             true                             |
+|                auto-height-addition                 | (建议使用fixed代替)z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数。如"-10rpx"，"10.5px" |     String     |          0px           |                              -                               |
 |                 default-theme-style                 | loading(下拉刷新、上拉加载更多)的主题样式，支持black，white  |     String     |         black          |                            white                             |
 |                   use-page-scroll                   | 使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略繁琐 |    Boolean     |         false          |                             true                             |
 |              mounted-auto-call-reload               | `z-paging` `mounted`后自动调用`reload`方法(`mounted`后自动调用接口) |    Boolean     |          true          |                            false                             |

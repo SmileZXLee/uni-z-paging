@@ -17,17 +17,4 @@ const app = new Vue({
 })
 app.$mount()
 
-//全局配置z-paging的props默认值，无需在每个页面重复配置
-/*
-module.exports = {
-	//key必须为z-paging-config
-	'z-paging-config': {
-		//配置分页默认pageSize为15
-		'default-page-size': '15',
-		//配置空数据图默认描述文字为：空空如也~~
-		'empty-view-text': '空空如也~~',
-		//...
-	}
-}
-*/
 

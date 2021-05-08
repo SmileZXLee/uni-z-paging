@@ -47,41 +47,49 @@
 				"enablePullDownRefresh": false
 			}
 
-		}
-	    ,{
-            "path" : "pages/nvue-demo/nvue-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "nvue演示",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/scroll-tab-swiper-demo-n/scroll-tab-swiper-demo-n",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "滑动切换选项卡演示(nvue)",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/sticky-and-scroll-tab-demo/sticky-and-scroll-tab-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "滑动切换选项卡+吸顶演示",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/custom-nav-demo/custom-nav-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "自定义导航栏演示",
+		}, {
+			"path": "pages/scroll-tab-swiper-demo-n/scroll-tab-swiper-demo-n",
+			"style": {
+				"navigationBarTitleText": "滑动切换选项卡演示(nvue)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/sticky-and-scroll-tab-demo/sticky-and-scroll-tab-demo",
+			"style": {
+				"navigationBarTitleText": "滑动切换选项卡+吸顶演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/custom-nav-demo/custom-nav-demo",
+			"style": {
+				"navigationBarTitleText": "自定义导航栏演示",
 				"navigationStyle": "custom",
 				"navigationBarTextStyle": "white",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/common-demo-n/common-demo-n",
+			"style": {
+				"navigationBarTitleText": "普通模式演示(nvue)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/custom-demo-n/custom-demo-n",
+			"style": {
+				"navigationBarTitleText": "自定义下拉刷新与上拉加载演示(nvue)",
+				"enablePullDownRefresh": false
+			}
+
+		}
+	    ,{
+            "path" : "pages/sticky-demo-n/sticky-demo-n",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "滚动吸附效果演示(nvue)",
                 "enablePullDownRefresh": false
             }
             
@@ -92,5 +100,6 @@
 		"navigationBarTitleText": "z-paging",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
+
 	}
 }

@@ -1,4 +1,4 @@
-<!-- 聊天记录模式演示 -->
+<!-- 聊天记录模式演示(vue) -->
 <template>
 	<view class="content">
 		<z-paging ref="paging" @query="queryList" :use-chat-record-mode="true" :use-page-scroll="true"

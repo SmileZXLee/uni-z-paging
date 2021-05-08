@@ -1,7 +1,6 @@
 <template>
-	<view class="content" style="height: 100%;">
-		<z-paging style="width: 100%;height: 100%;" ref="paging" @query="queryList" :refresher-threshold="60"
-			:hide-empty-view="true" :mounted-auto-call-reload="false" :use-page-scroll="true">
+	<view class="content">
+		<z-paging ref="paging" fixed @query="queryList" :refresher-threshold="60" :hide-empty-view="true" :mounted-auto-call-reload="false">
 			<view slot="refresher" style="height: 100%;display: flex;justify-content: center;align-items: center;">
 				<image style="width: 300rpx;height: 60rpx;" src="../../static/logo_loading.gif"></image>
 			</view>
@@ -11,7 +10,8 @@
 						<view class="demo-item-title">{{item.title}}</view>
 						<view class="demo-item-subtitle" v-if="item.subTitle.length">({{item.subTitle}})</view>
 						<view class="demo-item-file">
-							<text>{{item.file + '.vue'}}</text>
+							<text v-if="item.title.indexOf('nvue')===-1">{{item.file + '.vue'}}</text>
+							<text v-else style="background-color: #01c301;">{{item.file + '.nvue'}}</text>
 						</view>
 					</view>
 					<image class="demo-item-more-img" src="../../static/more_icon.png"></image>
@@ -59,20 +59,42 @@
 						title: '聊天记录模式演示',
 						file: 'chat-history-demo',
 						subTitle: ''
+					}
+				],
+				listNvue: [{
+						title: '普通模式演示(nvue)',
+						file: 'common-demo-n',
+						subTitle: ''
 					},
 					{
-						title: 'nvue演示',
-						file: 'nvue-demo',
+						title: '自定义下拉刷新与上拉加载演示(nvue)',
+						file: 'custom-demo-n',
+						subTitle: ''
+					},
+					{
+						title: '滑动切换选项卡演示(nvue)',
+						file: 'scroll-tab-swiper-demo-n',
+						subTitle: ''
+					},
+					{
+						title: '滚动吸附效果演示(nvue)',
+						file: 'sticky-demo-n',
 						subTitle: ''
 					}
 				]
 			}
+		},
+		mounted (){
+			// #ifdef APP-PLUS
+			this.list = this.list.concat(this.listNvue);
+			// #endif
 		},
 		methods: {
 			queryList() {
 				// 注意，即使只使用下拉刷新，不使用上拉加载更多，即使下拉不进行网络请求，也要在queryList中调用this.$refs.paging.complete();
 				// 以告知z-paging下拉刷新结束，这样才可以开始下一次的下拉刷新
 				setTimeout(() => {
+					//1.5秒之后停止刷新动画
 					this.$refs.paging.complete();
 				}, 1500)
 			},
@@ -80,6 +102,7 @@
 				uni.navigateTo({
 					url: `../${item.file}/${item.file}`
 				})
+				
 			}
 		}
 	}

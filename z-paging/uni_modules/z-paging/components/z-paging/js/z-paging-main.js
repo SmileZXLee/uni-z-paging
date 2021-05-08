@@ -7,11 +7,17 @@ import zStatic from './z-paging-static'
 import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
-import main from '@/main.js'
 
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
-const config = main['z-paging-config'];
+let config = null;
+try {
+	const contextKeys = require.context('@/uni_modules/z-paging', false, /\z-paging-config$/).keys();
+	if (contextKeys.length) {
+		const suffix = '.js';
+		config = require('@/uni_modules/z-paging/z-paging-config' + suffix);
+	}
+} catch {}
 
 //获取默认配置信息
 function _getConfig(key, defaultValue) {

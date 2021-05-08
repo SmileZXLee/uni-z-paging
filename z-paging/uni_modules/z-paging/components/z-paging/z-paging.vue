@@ -4,12 +4,13 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V1.5.9
+V1.6.0
 -- >
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
 <!-- 获取文档和示例请访问上方dcloud地址 -->
 <!-- 反馈QQ群：790460711 -->
+
 <template name="z-paging">
 	<!-- #ifndef APP-NVUE -->
 	<view :class="!usePageScroll&&fixed?'z-paging-content z-paging-content-fixed':'z-paging-content'"

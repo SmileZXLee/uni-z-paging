@@ -1,7 +1,9 @@
 <template>
 	<view class="content">
 		<!-- 这里设置了z-paging加载时禁止自动调用reload方法，自行控制何时reload（懒加载）-->
-		<z-paging @scroll="scroll" @pagingContentHeightChanged="pagingContentHeightChanged" :use-page-scroll="true"  :auto-clean-list-when-reload="false" :refresher-enabled="false" ref="paging" @query="queryList" :list.sync="dataList" :mounted-auto-call-reload="false" style="height: 100%;">
+		<z-paging @scroll="scroll" @pagingContentHeightChanged="pagingContentHeightChanged" :use-page-scroll="true"
+			:auto-clean-list-when-reload="false" :refresher-enabled="false" ref="paging" @query="queryList"
+			:list.sync="dataList" :mounted-auto-call-reload="false" style="height: 100%;">
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view>
@@ -24,16 +26,16 @@
 				height: 0
 			}
 		},
-		props:{
+		props: {
 			tabIndex: {
 				type: Number,
-				default: function(){
+				default: function() {
 					return 0
 				}
 			},
 			currentIndex: {
 				type: Number,
-				default: function(){
+				default: function() {
 					return 0
 				}
 			}
@@ -41,19 +43,19 @@
 		watch: {
 			currentIndex: {
 				handler(newVal) {
-					if(newVal === this.tabIndex){
-						if(this.height > 0){
-							this.$emit('pagingContentHeightChanged',this.height);
+					if (newVal === this.tabIndex) {
+						if (this.height > 0) {
+							this.$emit('pagingContentHeightChanged', this.height);
 						}
 						//懒加载，当滑动到当前的item时，才去加载
-						if(!this.firstLoaded){
+						if (!this.firstLoaded) {
 							// #ifdef MP-TOUTIAO
-							setTimeout(()=>{
+							setTimeout(() => {
 								this.$refs.paging.reload();
-							},10)
+							}, 10)
 							// #endif
 							// #ifndef MP-TOUTIAO
-							this.$nextTick(()=>{
+							this.$nextTick(() => {
 								this.$refs.paging.reload();
 							})
 							// #endif
@@ -73,17 +75,17 @@
 					this.firstLoaded = true;
 				})
 			},
-			reload(){
+			reload() {
 				this.$refs.paging.reload();
 			},
-			doLoadMore(){
+			doLoadMore() {
 				this.$refs.paging.doLoadMore();
 			},
 			itemClick(item) {
 				console.log('点击了', item.title);
 			},
-			pagingContentHeightChanged(height){
-				this.$emit('pagingContentHeightChanged',height);
+			pagingContentHeightChanged(height) {
+				this.$emit('pagingContentHeightChanged', height);
 				this.height = height;
 			}
 		}
@@ -99,7 +101,7 @@
 		display: flex;
 		flex-direction: column;
 	}
-	
+
 	.item {
 		position: relative;
 		height: 150rpx;

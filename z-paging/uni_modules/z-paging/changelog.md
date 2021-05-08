@@ -1,3 +1,13 @@
+## 1.6.0（2021-05-07）
+1.调整z-paging目录结构，请注意，由此版本起，mixin路径修改为`@/uni_modules/z-paging/components/z-paging/js/z-paging-mixin`。<br>
+2.因在nvue中引入`main.js`会导致App Relunch，进而导致绑定的点击事件多次绑定，因此调整`z-paging`全局配置的目录为：`@/uni_modules/z-paging/z-paging-config.js`。具体参见readme。<br>
+3.修复在百度小程序上自定义下拉刷新view未生效的问题。<br>
+4.新增自定义下拉刷新与滑动切换的nvue demo，将demo运行至手机上即可体验。
+## 1.5.9（2021-05-07）
+1.调整z-paging目录结构，请注意，由此版本起，mixin路径修改为`@/uni_modules/z-paging/components/z-paging/js/z-paging-mixin`。<br>
+2.因在nvue中引入`main.js`会导致App Relunch，进而导致绑定的点击事件多次绑定，因此调整`z-paging`全局配置的目录为：`@/uni_modules/z-paging/z-paging-config.js`。具体参见readme。<br>
+3.修复在百度小程序上自定义下拉刷新view未生效的问题。<br>
+4.新增自定义下拉刷新与滑动切换的nvue demo，将demo运行至手机上即可体验。
 ## 1.5.8（2021-05-06）
 支持props全局配置
 ## 1.5.7（2021-05-02）

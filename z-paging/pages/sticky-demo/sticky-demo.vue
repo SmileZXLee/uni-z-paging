@@ -2,7 +2,7 @@
 <template>
 	<view class="content">
 		<!-- 此处为了让reload时不自动滚动到顶部，需要设置auto-clean-list-when-reload和auto-scroll-to-top-when-reload为false，即在reload时关闭自动清空数组和自动滚动到顶部 -->
-		<z-paging ref="paging" :auto-clean-list-when-reload="false" :auto-scroll-to-top-when-reload="false"
+		<z-paging ref="paging" fixed :auto-clean-list-when-reload="false" :auto-scroll-to-top-when-reload="false"
 		 :refresher-threshold="80" :refresher-status.sync="refresherStatus" @query="queryList"
 		 :list.sync="dataList" style="height: 100%;">
 			<view class="banner-view" style="height: 250rpx;">
@@ -60,21 +60,6 @@
 </script>
 
 <style>
-	/* 注意，1、父节点需要固定高度，z-paging的height:100%才会生效 */
-	/* 注意，2、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突 */
-
-	/*如果有scoped，page的css设置建议放在App.vue中 */
-	page {
-		height: 100%;
-	}
-
-	.content {
-		height: 100%;
-		/* 父节点建议开启flex布局 */
-		display: flex;
-		flex-direction: column;
-	}
-
 	.banner-view {
 		background-color: #007AFF;
 		color: white;

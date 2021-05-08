@@ -1,0 +1,105 @@
+<!-- 自定义下拉刷新与上拉加载演示(nvue) -->
+<template>
+	<view class="content">
+		<z-paging class="paging" ref="paging" @query="queryList" :list.sync="dataList">
+			<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
+			<custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus">
+			</custom-refresher>
+			<!-- 用cell包住的view会跟着滚动 -->
+			<cell>
+				<view class="banner-view" style="height: 250rpx;">
+					<text style="font-size: 40rpx;font-weight: 700;color: white;">这是一个banner</text>
+					<text style="font-size: 24rpx;margin-top: 5rpx;color: white;">下方tab滚动时可吸附在顶部</text>
+				</view>
+			</cell>
+			<!-- 用header包住的view会吸顶 -->
+			<header>
+				<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
+			</header>
+			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内，并用header(吸顶)或cell包住 -->
+			<!-- 请使用template，不要使用block！！！ -->
+			<template v-for="(item,index) in dataList">
+				<cell class="item" :key="item.title" @click="itemClick(item)">
+					<text class="item-title">{{item.title}}</text>
+					<text class="item-detail">{{item.detail}}</text>
+					<view class="item-line"></view>
+				</cell>
+			</template>
+		</z-paging>
+	</view>
+</template>
+
+<script>
+	import request from '../../http/request.js'
+	export default {
+		data() {
+			return {
+				dataList: [],
+				tabIndex: 0
+			}
+		},
+		methods: {
+			tabChange(index) {
+				this.tabIndex = index;
+				//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
+				this.$refs.paging.reload();
+			},
+			queryList(pageNo, pageSize) {
+				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
+				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
+				//模拟请求服务器获取分页数据，请替换成自己的网络请求
+				request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
+					//将请求的结果数组传递给z-paging
+					this.$refs.paging.complete(data);
+				})
+			},
+			itemClick(item) {
+				console.log('点击了', item.title);
+			}
+		}
+	}
+</script>
+
+<style>
+	.content {
+		background-color: white;
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+	}
+
+	.banner-view {
+		background-color: #007AFF;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.item {
+		flex-direction: row;
+		position: relative;
+		height: 150rpx;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0rpx 30rpx;
+	}
+
+	.item-detail {
+		padding: 5rpx 15rpx;
+		border-radius: 10rpx;
+		font-size: 28rpx;
+		color: white;
+		background-color: #007AFF;
+	}
+
+	.item-line {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 1px;
+		background-color: #eeeeee;
+	}
+</style>
