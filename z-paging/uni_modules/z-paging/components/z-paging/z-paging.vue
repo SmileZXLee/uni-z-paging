@@ -123,7 +123,7 @@ V1.6.2
 	<!-- #ifdef APP-NVUE -->
 	<view ref="n-list" class="zp-n-list" :is="finalNvueListIs" alwaysScrollableVertical="true"
 		:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar" :loadmoreoffset="lowerThreshold"
-		:scrollable="scrollEnable" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
+		:scrollable="scrollEnable" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 		:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap"
 		@loadmore="_onLoadingMore('toBottom')" @scroll="_nOnScroll">
 		<refresh class="zp-n-refresh" v-if="refresherEnabled&&(useChatRecordMode?(loadingStatus!==2&&realTotalData.length):true)" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"

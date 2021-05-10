@@ -520,6 +520,13 @@ export default {
 				return _getConfig('nvueWaterfallConfig', {});
 			}
 		},
+		//nvue 控制是否回弹效果，iOS不支持动态修改
+		nvueBounce: {
+			type: Boolean,
+			default: function() {
+				return _getConfig('nvueBounce', true);
+			}
+		},
 	},
 	mounted() {
 		this.wxsPropType = (new Date()).getTime().toString();
