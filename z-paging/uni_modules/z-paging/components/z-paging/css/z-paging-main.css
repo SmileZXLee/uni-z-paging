@@ -67,11 +67,14 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 .zp-chat-record-loading-container {
 	/* #ifndef APP-NVUE */
 	display: flex;
+	width: 100%;
+	/* #endif */
+	/* #ifdef APP-NVUE */
+	width: 750rpx;
 	/* #endif */
 	align-items: center;
 	justify-content: center;
 	height: 60rpx;
-	width: 100%;
 	font-size: 26rpx;
 }
 

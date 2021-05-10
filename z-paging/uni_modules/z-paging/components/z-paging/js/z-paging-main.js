@@ -556,9 +556,9 @@ export default {
 				})
 			}
 			if (!this.usePageScroll && (this.pageNo === this.defaultPageNo || this.defaultPageNo + 1)) {
-				this.$nextTick(() => {
+				setTimeout(() => {
 					this._checkScrollViewOutOfPage();
-				})
+				}, commonDelayTime)
 			}
 			this.realTotalData = newVal;
 			this.$emit('update:list', newVal);
@@ -805,7 +805,7 @@ export default {
 				this.nRefresherLoading = true;
 				// #endif
 			} else {
-				this._refresherEnd(false);
+				this._refresherEnd(false, false);
 			}
 			this._reload();
 		},
@@ -926,10 +926,16 @@ export default {
 			if (this.refresherTriggered) {
 				this.refresherTriggered = false;
 			}
+			let delayTime = commonDelayTime;
+			// #ifdef APP-NVUE
+			if (this.useChatRecordMode) {
+				delayTime = 0
+			}
+			// #endif
 			setTimeout(() => {
-				this._refresherEnd();
+				this._refresherEnd(true, true);
 				this.pagingLoaded = true;
-			}, commonDelayTime)
+			}, delayTime)
 			if (success) {
 				this.loadingStatus = 0;
 				if (isLocal) {
@@ -972,21 +978,25 @@ export default {
 			} else {
 				if (this.useChatRecordMode) {
 					const idIndex = newVal.length;
+					let idIndexStr = `z-paging-${idIndex}`;
+					//#ifdef APP-NVUE
+					idIndexStr = idIndex;
+					//#endif
 					this.totalData = newVal.concat(this.totalData);
 					if (this.pageNo !== this.defaultPageNo) {
 						this.privateScrollWithAnimation = 0;
 						let delayTime = 200;
-						//#ifdef H5
+						//#ifdef H5 || APP-NVUE
 						delayTime = 0;
 						//#endif
 						this.$emit('update:chatIndex', idIndex);
 						if (this.usePageScroll) {
-							this._scrollIntoView(`z-paging-${idIndex}`, 30, false, () => {
+							this._scrollIntoView(idIndexStr, 30, false, () => {
 								this.$emit('update:chatIndex', 0);
 							});
 						} else {
 							setTimeout(() => {
-								this._scrollIntoView(`z-paging-${idIndex}`, 30, false, () => {
+								this._scrollIntoView(idIndexStr, 30, false, () => {
 									this.$emit('update:chatIndex', 0);
 								});
 							}, delayTime)
@@ -1111,29 +1121,29 @@ export default {
 		},
 		//滚动到指定view
 		_scrollIntoView(sel, offset = 0, animate = false, finishCallback) {
-			// #ifdef APP-NVUE
-			const refs = this.$parent.$refs;
-			if (!refs) {
-				return;
-			}
-			const dataType = Object.prototype.toString.call(sel);
-			let el = null;
-			if (dataType === '[object Number]') {
-				const els = refs[`z-paging-${sel}`];
-				el = els ? els[0] : null;
-			} else {
-				el = sel;
-			}
-			if (el) {
-				weexDom.scrollToElement(el, {
-					offset: offset,
-					animated: animate
-				});
-			}
-			return;
-			// #endif
 			try {
 				this.$nextTick(() => {
+					// #ifdef APP-NVUE
+					const refs = this.$parent.$refs;
+					if (!refs) {
+						return;
+					}
+					const dataType = Object.prototype.toString.call(sel);
+					let el = null;
+					if (dataType === '[object Number]') {
+						const els = refs[`z-paging-${sel}`];
+						el = els ? els[0] : null;
+					} else {
+						el = sel;
+					}
+					if (el) {
+						weexDom.scrollToElement(el, {
+							offset: -offset,
+							animated: animate
+						});
+					}
+					return;
+					// #endif
 					if (sel.indexOf('#') != -1) {
 						sel = sel.replace('#', '');
 					}
@@ -1335,9 +1345,11 @@ export default {
 		},
 		//进一步处理拖拽结束结果
 		_handleRefresherTouchend(moveDistance) {
+			// #ifndef APP-PLUS || H5 || MP-WEIXIN
 			if (!this.isTouchmoving) {
 				return;
 			}
+			// #endif
 			this.refresherReachMaxAngle = true;
 			if (moveDistance < 0 && this.usePageScroll && this.loadingMoreEnabled && this.useCustomRefresher && this
 				.pageScrollTop === -1) {
@@ -1354,7 +1366,7 @@ export default {
 				this.refresherStatus = 2;
 				this._doRefresherLoad();
 			} else {
-				this._refresherEnd();
+				this._refresherEnd(true, false);
 				setTimeout(() => {
 					this.isTouchmoving = false;
 				}, commonDelayTime);
@@ -1363,7 +1375,7 @@ export default {
 			this.$emit('refresherTouchend', moveDistance);
 		},
 		//下拉刷新结束
-		_refresherEnd(shouldEndLoadingDelay = true) {
+		_refresherEnd(shouldEndLoadingDelay = true, fromAddData = false) {
 			// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 			this.refresherTransform = 'translateY(0px)';
 			// #endif
@@ -1371,7 +1383,7 @@ export default {
 			this.wxsPropType = 'end' + (new Date()).getTime();
 			// #endif
 			this.moveDistance = 0;
-			if (this.refresherEndBounceEnabled) {
+			if (this.refresherEndBounceEnabled && fromAddData) {
 				this.refresherTransition = 'transform 0.3s cubic-bezier(0.19,1.64,0.42,0.72)';
 			}
 			setTimeout(() => {
@@ -1624,6 +1636,7 @@ export default {
 		// ------------nvue独有的方法----------------
 		//列表滚动时触发
 		_nOnScroll(e) {
+			const contentOffsetY = e.contentOffset.y;
 			this.$emit('scroll', e);
 			this.nListIsDragging = e.isDragging;
 		},
@@ -1631,7 +1644,15 @@ export default {
 		_nOnRrefresh() {
 			this.nRefresherLoading = true;
 			this.refresherStatus = 2;
-			this._doRefresherLoad();
+			if (this.useChatRecordMode) {
+				this.doChatRecordLoadMore();
+			} else {
+				this._doRefresherLoad();
+			}
+			setTimeout(function() {
+				this.$refs["n-list"].resetLoadmore();
+				this.nRefresherLoading = false;
+			}, 10);
 		},
 		//下拉刷新下拉中
 		_nOnPullingdown(e) {

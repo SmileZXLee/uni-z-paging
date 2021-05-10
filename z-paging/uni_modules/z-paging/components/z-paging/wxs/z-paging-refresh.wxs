@@ -22,12 +22,19 @@ function propObserver(newValue, oldValue, ownerInstance, instance) {
 function touchstart(e, ownerInstance) {
 	var instance = ownerInstance.getState().currentInstance;
 	var state = instance.getState();
+	var dataset = instance.getDataset();
+	var isTouchEnded = state.isTouchEnded;
 	if (_getRefresherTouchDisabled(e, instance)) {
 		return;
 	}
 	var touch = _getCommonTouch(e);
+	var loading = _getIsTrue(dataset.loading);
 	state.startY = touch.touchY;
 	state.lastRefresherTouchmove = touch;
+	if (!loading && isTouchEnded) {
+		state.isTouchmoving = false;
+	}
+	state.isTouchEnded = false;
 	ownerInstance.callMethod('_handleRefresherTouchstart', touch);
 }
 
@@ -36,9 +43,9 @@ function touchmove(e, ownerInstance) {
 	var instance = ownerInstance.getState().currentInstance;
 	var dataset = instance.getDataset();
 	var refresherThreshold = dataset.refresherthreshold;
-	var isTouchmoving = _getIsTrue(instance.getDataset().istouchmoving);
 	var state = instance.getState();
 	if (_getRefresherTouchDisabled(e, instance)) {
+
 		return;
 	}
 	if (!_getAngleIsInRange(e, touch, state, dataset)) {
@@ -58,9 +65,11 @@ function touchmove(e, ownerInstance) {
 	} else {
 		state.refresherStatus = 0;
 	}
-	if (oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus || !isTouchmoving) {
+	state.isTouchmoving = true;
+	state.isTouchEnded = false;
+	if (oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus) {
 		ownerInstance.callMethod('_handleRefresherTouchmove', moveDistance, touch);
-	}
+	}parseFloat(this.maxprice)
 	return false;
 }
 
@@ -70,18 +79,25 @@ function touchend(e, ownerInstance) {
 	var dataset = instance.getDataset();
 	var state = instance.getState();
 	if (_getRefresherTouchDisabled(e, instance)) {
+		
 		return;
 	}
 	state.refresherReachMaxAngle = true;
-
-	var isTouchmoving = _getIsTrue(instance.getDataset().istouchmoving);
+	var isTouchmoving = state.isTouchmoving;
 	if (!isTouchmoving) {
 		return;
 	}
+	var oldRefresherStatus = state.refresherStatus;
 	var oldMoveDistance = state.moveDistance;
 	var refresherThreshold = instance.getDataset().refresherthreshold
 	var moveDistance = _getMoveDistance(e, instance);
+	if (!(moveDistance >= refresherThreshold && oldRefresherStatus === 1)) {
+		setTimeout(() => {
+			state.isTouchmoving = false;
+		}, 100);
+	}
 	ownerInstance.callMethod('_handleRefresherTouchend', moveDistance);
+	state.isTouchEnded = true;
 	if (oldMoveDistance < refresherThreshold) {
 		return;
 	}

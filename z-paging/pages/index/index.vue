@@ -80,6 +80,11 @@
 						title: '滚动吸附效果演示(nvue)',
 						file: 'sticky-demo-n',
 						subTitle: ''
+					},
+					{
+						title: '聊天记录模式演示(nvue)',
+						file: 'chat-history-demo-n',
+						subTitle: ''
 					}
 				]
 			}

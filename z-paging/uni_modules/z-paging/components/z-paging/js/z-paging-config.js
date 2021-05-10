@@ -5,9 +5,7 @@ const storageKey = 'Z-PAGING-CONFIG-STORAGE-KEY'
 function setConfig(value) {
 	try {
 		uni.setStorageSync(storageKey, value);
-	} catch {
-
-	}
+	} catch {}
 }
 
 function getConfig() {

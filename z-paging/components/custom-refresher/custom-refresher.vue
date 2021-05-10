@@ -37,7 +37,7 @@
 		display: flex;
 		/* #endif */
 		/* #ifdef APP-NVUE */
-		height: 140rpx;
+		height: 150rpx;
 		/* #endif */
 		flex-direction: column;
 		align-items: center;

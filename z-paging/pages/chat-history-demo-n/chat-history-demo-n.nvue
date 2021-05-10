@@ -1,28 +1,28 @@
-<!-- 聊天记录模式演示(vue) -->
+<!-- 聊天记录模式演示(nvue) -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" @query="queryList" :use-chat-record-mode="true" :use-page-scroll="true"
-			:list.sync="dataList">
+		<z-paging ref="paging" @query="queryList" :use-chat-record-mode="true" :list.sync="dataList">
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
-			<view class="list">
-				<!-- 注意！！！！这里id必须绑定index，且格式为z-paging-${index}，格式不能变，否则会导致滑动到顶部加载更多数据时滚动位置不正确！！！！！！ -->
-				<view class="item" :id="`z-paging-${index}`"
-					v-for="(item,index) in dataList" :key="index">
-					<view class="item-title" v-if="item.title.length<3">第{{item.title}}条聊天记录</view>
-					<view class="item-title" v-else>{{item.title}}</view>
-					<view class="item-detail">{{item.detail}}</view>
+			<template v-for="(item,index) in dataList">
+				<!-- 在nvue中，z-paging中插入的列表item必须是cell，必须使用cell包住，因为在nvue中，z-paging使用的是nvue的list组件。 -->
+				<!-- 注意！！！！这里ref必须绑定index，且格式为z-paging-${index}，格式不能变，否则会导致滑动到顶部加载更多数据时滚动位置不正确！！！！！！ -->
+				<cell class="item" :key="item.title" :ref="`z-paging-${index}`" @click="itemClick(item)">
+					<text class="item-title" v-if="item.title.length<3">第{{item.title}}条聊天记录</text>
+					<text class="item-title" v-else>{{item.title}}</text>
+					<text class="item-detail">{{item.detail}}</text>
 					<view class="item-line"></view>
-				</view>
-			</view>
+				</cell>
+			</template>
 		</z-paging>
 		<view class="add-chat-record" @click="addChatRecordClick">
-			新增
+			<text style="font-size: 28rpx;color: white;">新增</text>
 		</view>
 	</view>
 </template>
 
 <script>
+	import request from '../../http/request.js'
 	export default {
 		data() {
 			return {
@@ -31,24 +31,19 @@
 				newIndex: 0
 			}
 		},
-		onPageScroll(e) {
-			if (e.scrollTop < 10) {
-				this.$refs.paging.doChatRecordLoadMore();
-			}
-		},
 		methods: {
 			queryList(pageNo, pageSize) {
 				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
 				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
 				//模拟请求服务器获取分页数据，请替换成自己的网络请求
-				this.$request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
+				request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
 					//将请求的结果数组传递给z-paging
 					this.$refs.paging.complete(data);
 				})
 			},
 			addChatRecordClick(item) {
 				this.newIndex++;
-				this.$refs.paging.doChatRecordLoadMore({
+				this.$refs.paging.addChatRecordData({
 					'title': '新增数据' + this.newIndex,
 					'detail': '新增的聊天数据'
 				});
@@ -58,31 +53,37 @@
 </script>
 
 <style>
+	.content {
+		background-color: white;
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+	}
+
 	.add-chat-record {
 		position: fixed;
 		width: 80rpx;
 		height: 80rpx;
-		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 		background-color: red;
-		color: white;
-		font-size: 28rpx;
 		border-radius: 50%;
 		right: 30rpx;
 		bottom: 100rpx;
 	}
 
 	.item {
+		flex-direction: row;
 		position: relative;
-		height: 200rpx;
-		display: flex;
+		height: 150rpx;
 		align-items: center;
 		justify-content: space-between;
 		padding: 0rpx 30rpx;
 	}
-
+	
 	.item-detail {
 		padding: 5rpx 15rpx;
 		border-radius: 10rpx;
@@ -90,13 +91,13 @@
 		color: white;
 		background-color: #007AFF;
 	}
-
+	
 	.item-line {
 		position: absolute;
-		bottom: 0rpx;
-		left: 0rpx;
+		bottom: 0;
+		left: 0;
+		right: 0;
 		height: 1px;
-		width: 100%;
 		background-color: #eeeeee;
 	}
 </style>

@@ -94,6 +94,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/chat-history-demo-n/chat-history-demo-n",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "聊天记录模式演示(nvue)",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
