@@ -1,3 +1,8 @@
+## 1.6.1（2021-05-10）
+1.新增`safe-area-inset-bottom`属性，支持fixed时适配底部安全区域。<br>
+2.在nvue中，支持滚动到顶部、滚动到底部、滚动到指定view。<br>
+3.优化聊天记录模式闪动问题。<br>
+4.其他细节调整。
 ## 1.6.0（2021-05-07）
 1.调整z-paging目录结构，请注意，由此版本起，mixin路径修改为`@/uni_modules/z-paging/components/z-paging/js/z-paging-mixin`。<br>
 2.因在nvue中引入`main.js`会导致App Relunch，进而导致绑定的点击事件多次绑定，因此调整`z-paging`全局配置的目录为：`@/uni_modules/z-paging/z-paging-config.js`。具体参见readme。<br>

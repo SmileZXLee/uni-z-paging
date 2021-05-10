@@ -4,6 +4,7 @@
 // 反馈QQ群：790460711
 
 import zStatic from './z-paging-static'
+import zConfig from './z-paging-config'
 import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
@@ -11,6 +12,9 @@ import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 let config = null;
+// #ifdef APP-NVUE
+const weexDom = weex.requireModule('dom');
+// #endif
 try {
 	const contextKeys = require.context('@/uni_modules/z-paging', false, /\z-paging-config$/).keys();
 	if (contextKeys.length) {
@@ -21,6 +25,12 @@ try {
 
 //获取默认配置信息
 function _getConfig(key, defaultValue) {
+	if (!config) {
+		const temConfig = zConfig.getConfig();
+		if (zConfig && temConfig) {
+			config = temConfig;
+		}
+	}
 	if (!config) {
 		return defaultValue;
 	}
@@ -129,7 +139,7 @@ export default {
 			base64Arrow: zStatic.base64Arrow,
 			base64Flower: zStatic.base64Flower,
 			base64BackToTop: zStatic.base64BackToTop,
-			systemInfo: {},
+			systemInfo: null,
 			currentData: [],
 			totalData: [],
 			pageNo: 1,
@@ -234,6 +244,11 @@ export default {
 		fixed: {
 			type: Boolean,
 			default: _getConfig('fixed', false)
+		},
+		//是否开启底部安全区域适配
+		safeAreaInsetBottom: {
+			type: Boolean,
+			default: _getConfig('safeAreaInsetBottom', false)
 		},
 		//z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
 		mountedAutoCallReload: {
@@ -669,19 +684,34 @@ export default {
 		},
 		finalPagingStyle() {
 			let pagingStyle = this.pagingStyle;
+			if (!this.systemInfo) {
+				return pagingStyle;
+			}
 			const windowTop = this.systemInfo.windowTop;
 			const windowBottom = this.systemInfo.windowBottom;
+			let safeAreaBottom = 0;
+			// #ifdef APP-PLUS || H5 || MP-WEIXIN
+			safeAreaBottom = this.systemInfo.safeAreaInsets.bottom;
+			// #endif
 			if (!this.usePageScroll && this.fixed) {
 				if (windowTop && windowTop !== undefined) {
 					pagingStyle.top = windowTop + 'px';
 				}
+				let bottom = 0;
 				if (windowBottom && windowBottom !== undefined) {
-					pagingStyle.bottom = windowBottom + 'px';
+					bottom = windowBottom;
 				}
+				if (this.safeAreaInsetBottom) {
+					bottom += safeAreaBottom;
+				}
+				pagingStyle.bottom = bottom + 'px';
 			}
 			return pagingStyle;
 		},
 		windowTop() {
+			if (!this.systemInfo) {
+				return 0;
+			}
 			const windowTop = this.systemInfo.windowTop;
 			return windowTop && windowTop !== undefined ? windowTop : 0;
 		},
@@ -791,17 +821,25 @@ export default {
 		endRefresh() {
 			this.refresherTriggered = false;
 		},
-		//滚动到顶部，animate为是否展示滚动动画，默认为是
-		scrollToTop(animate) {
-			this._scrollToTop(animate);
+		//滚动到顶部，animate为是否展示滚动动画，默认为是；refs仅在nvue中需要传，若不传，默认为this.$parent.$refs
+		scrollToTop(animate, refs) {
+			this._scrollToTop(animate, refs);
 		},
-		//滚动到底部，animate为是否展示滚动动画，默认为是
-		scrollToBottom(animate) {
-			this._scrollToBottom(animate);
+		//滚动到底部，animate为是否展示滚动动画，默认为是；refs仅在nvue中需要传，若不传，默认为this.$parent.$refs
+		scrollToBottom(animate, refs) {
+			this._scrollToBottom(animate, refs);
 		},
-		//滚动到指定view。sel为需要滚动的view的id值，不包含"#"；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
+		//滚动到指定view(vue中有效)。sel为需要滚动的view的id值，不包含"#"；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
 		scrollIntoViewById(sel, offset, animate) {
 			this._scrollIntoView(sel, offset, animate);
+		},
+		//滚动到指定view(nvue中有效)。index为需要滚动的view的index(第几个)；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
+		scrollIntoViewByIndex(index, offset, animate) {
+			this._scrollIntoView(index, offset, animate);
+		},
+		//滚动到指定view(nvue中有效)。view为需要滚动的view(通过`this.$refs.xxx`获取)，不包含"#"；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
+		scrollIntoViewByView(view, offset, animate) {
+			this._scrollIntoView(view, offset, animate);
 		},
 		//当使用页面滚动并且自定义下拉刷新时，请在页面的onPageScroll中调用此方法，告知z-paging当前的pageScrollTop，否则会导致在任意位置都可以下拉刷新
 		updatePageScrollTop(value) {
@@ -874,7 +912,7 @@ export default {
 			if (!this.useCustomRefresher) {
 				uni.stopPullDownRefresh();
 			}
-			let dataType = Object.prototype.toString.call(data);
+			const dataType = Object.prototype.toString.call(data);
 			if (dataType === '[object Boolean]') {
 				success = data;
 				data = [];
@@ -941,13 +979,16 @@ export default {
 						//#ifdef H5
 						delayTime = 0;
 						//#endif
+						this.$emit('update:chatIndex', idIndex);
 						if (this.usePageScroll) {
-							this.$nextTick(() => {
-								this._scrollIntoView(`z-paging-${idIndex}`, 30);
-							})
+							this._scrollIntoView(`z-paging-${idIndex}`, 30, false, () => {
+								this.$emit('update:chatIndex', 0);
+							});
 						} else {
 							setTimeout(() => {
-								this._scrollIntoView(`z-paging-${idIndex}`, 30);
+								this._scrollIntoView(`z-paging-${idIndex}`, 30, false, () => {
+									this.$emit('update:chatIndex', 0);
+								});
 							}, delayTime)
 						}
 					} else {
@@ -984,7 +1025,23 @@ export default {
 			this._onLoadingMore('click');
 		},
 		//滚动到顶部
-		_scrollToTop(animate) {
+		_scrollToTop(animate, refs = null) {
+			// #ifdef APP-NVUE
+			if (!refs) {
+				refs = this.$parent.$refs;
+			}
+			if (!refs) {
+				return;
+			}
+			const el = refs[`z-paging-0`] ? refs[`z-paging-0`][0] : null;
+			if (el) {
+				weexDom.scrollToElement(el, {
+					offset: 0,
+					animated: animate
+				});
+			}
+			return;
+			// #endif
 			if (this.usePageScroll) {
 				this.$nextTick(() => {
 					uni.pageScrollTo({
@@ -1002,7 +1059,24 @@ export default {
 			});
 		},
 		//滚动到底部
-		async _scrollToBottom(animate = true) {
+		async _scrollToBottom(animate = true, refs = null) {
+			// #ifdef APP-NVUE
+			if (!refs) {
+				refs = this.$parent.$refs;
+			}
+			if (!refs) {
+				return;
+			}
+			const els = refs[`z-paging-${this.realTotalData.length - 1}`];
+			const el = els ? els[0] : null;
+			if (el) {
+				weexDom.scrollToElement(el, {
+					offset: 0,
+					animated: animate
+				});
+			}
+			return;
+			// #endif
 			if (this.usePageScroll) {
 				this.$nextTick(() => {
 					uni.pageScrollTo({
@@ -1036,32 +1110,56 @@ export default {
 			}
 		},
 		//滚动到指定view
-		async _scrollIntoView(sel, offset = 0, animate = false, finishCallback) {
+		_scrollIntoView(sel, offset = 0, animate = false, finishCallback) {
+			// #ifdef APP-NVUE
+			const refs = this.$parent.$refs;
+			if (!refs) {
+				return;
+			}
+			const dataType = Object.prototype.toString.call(sel);
+			let el = null;
+			if (dataType === '[object Number]') {
+				const els = refs[`z-paging-${sel}`];
+				el = els ? els[0] : null;
+			} else {
+				el = sel;
+			}
+			if (el) {
+				weexDom.scrollToElement(el, {
+					offset: offset,
+					animated: animate
+				});
+			}
+			return;
+			// #endif
 			try {
-				if (sel.indexOf('#') != -1) {
-					sel = sel.replace('#', '');
-				}
-				const node = await this._getNodeClientRect('#' + sel, false);
-				if (node) {
-					let nodeTop = node[0].top;
-					this.scrollTop = this.oldScrollTop;
-					this.privateScrollWithAnimation = animate ? 1 : 0;
-					this.$nextTick(() => {
-						if (this.usePageScroll) {
-							uni.pageScrollTo({
-								scrollTop: nodeTop - offset,
-								duration: animate ? 100 : 0
-							});
-						} else {
-							nodeTop = nodeTop + this.scrollTop;
-							this.scrollTop = nodeTop - offset;
-							this.oldScrollTop = this.scrollTop;
-						}
-						if (finishCallback) {
-							finishCallback();
+				this.$nextTick(() => {
+					if (sel.indexOf('#') != -1) {
+						sel = sel.replace('#', '');
+					}
+					this._getNodeClientRect('#' + sel, false).then((node) => {
+						if (node) {
+							let nodeTop = node[0].top;
+							this.scrollTop = this.oldScrollTop;
+							this.privateScrollWithAnimation = animate ? 1 : 0;
+							if (this.usePageScroll) {
+								uni.pageScrollTo({
+									scrollTop: nodeTop - offset,
+									duration: animate ? 100 : 0
+								});
+							} else {
+								nodeTop = nodeTop + this.scrollTop;
+								this.scrollTop = nodeTop - offset;
+								this.oldScrollTop = this.scrollTop;
+							}
+							if (finishCallback) {
+								finishCallback();
+							}
 						}
 					});
-				}
+				});
+
+
 			} catch (e) {
 
 			}

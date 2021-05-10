@@ -4,11 +4,11 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V1.6.0
+V1.6.1
 -- >
+<!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
-<!-- 获取文档和示例请访问上方dcloud地址 -->
 <!-- 反馈QQ群：790460711 -->
 
 <template name="z-paging">
