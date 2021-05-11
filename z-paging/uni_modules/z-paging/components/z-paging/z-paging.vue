@@ -23,7 +23,7 @@ V1.6.2
 		<scroll-view 
 			:class="!usePageScroll&&$slots.top?'zp-scroll-view zp-scroll-view-flex1 zp-scroll-view-fix-height':usePageScroll?'zp-scroll-view':'zp-scroll-view zp-scroll-view-flex1'" 
 			:style="[scrollViewStyle]" :scroll-top="scrollTop"
-			:scroll-y="!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
+			:scroll-y="scrollable&&!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
 			:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
 			:scroll-into-view="scrollIntoView" :lower-threshold="lowerThreshold"
 			:refresher-enabled="finalRefresherEnabled&&!useCustomRefresher" :refresher-threshold="refresherThreshold"
@@ -123,13 +123,13 @@ V1.6.2
 	<!-- #ifdef APP-NVUE -->
 	<view ref="n-list" class="zp-n-list" :is="finalNvueListIs" alwaysScrollableVertical="true"
 		:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar" :loadmoreoffset="lowerThreshold"
-		:scrollable="scrollEnable" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
+		:scrollable="scrollable&&scrollEnable" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 		:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap"
 		@loadmore="_onLoadingMore('toBottom')" @scroll="_nOnScroll">
 		<refresh class="zp-n-refresh" v-if="refresherEnabled&&(useChatRecordMode?(loadingStatus!==2&&realTotalData.length):true)" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
 			@pullingdown="_nOnPullingdown">
 			<view v-if="useChatRecordMode">
-				<view v-if="loadingStatus!==2&&realTotalData.length" style="background-color: red;">
+				<view v-if="loadingStatus!==2&&realTotalData.length">
 					<slot v-if="$slots.chatLoading"
 						name="chatLoading" />
 					<view v-else class="zp-chat-record-loading-container">

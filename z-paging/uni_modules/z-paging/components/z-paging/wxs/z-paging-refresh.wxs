@@ -69,7 +69,7 @@ function touchmove(e, ownerInstance) {
 	state.isTouchEnded = false;
 	if (oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus) {
 		ownerInstance.callMethod('_handleRefresherTouchmove', moveDistance, touch);
-	}parseFloat(this.maxprice)
+	}
 	return false;
 }
 
@@ -79,7 +79,6 @@ function touchend(e, ownerInstance) {
 	var dataset = instance.getDataset();
 	var state = instance.getState();
 	if (_getRefresherTouchDisabled(e, instance)) {
-		
 		return;
 	}
 	state.refresherReachMaxAngle = true;

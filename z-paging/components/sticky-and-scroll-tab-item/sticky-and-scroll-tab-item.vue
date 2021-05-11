@@ -1,9 +1,9 @@
 <template>
 	<view class="content">
 		<!-- 这里设置了z-paging加载时禁止自动调用reload方法，自行控制何时reload（懒加载）-->
-		<z-paging @scroll="scroll" @pagingContentHeightChanged="pagingContentHeightChanged" :use-page-scroll="true"
-			:auto-clean-list-when-reload="false" :refresher-enabled="false" ref="paging" @query="queryList"
-			:list.sync="dataList" :mounted-auto-call-reload="false" style="height: 100%;">
+		<z-paging @scroll="scroll" :scrollable="scrollable" :show-console-error="false" :scroll-to-top-bounce-enabled="false" :auto-clean-list-when-reload="false"
+			:refresher-enabled="false" ref="paging" @query="queryList" :list.sync="dataList"
+			:mounted-auto-call-reload="false" style="height: 100%;">
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view>
@@ -23,7 +23,10 @@
 			return {
 				dataList: [],
 				firstLoaded: false,
-				height: 0
+				height: 0,
+				scrollable: true,
+				completeFunc: null,
+				scrollCallback: null
 			}
 		},
 		props: {
@@ -44,9 +47,6 @@
 			currentIndex: {
 				handler(newVal) {
 					if (newVal === this.tabIndex) {
-						if (this.height > 0) {
-							this.$emit('pagingContentHeightChanged', this.height);
-						}
 						//懒加载，当滑动到当前的item时，才去加载
 						if (!this.firstLoaded) {
 							// #ifdef MP-TOUTIAO
@@ -73,20 +73,28 @@
 				this.$request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
 					this.$refs.paging.complete(data);
 					this.firstLoaded = true;
+					if(this.completeFunc){
+						this.completeFunc();
+					}
 				})
 			},
-			reload() {
-				this.$refs.paging.reload();
+			scroll(e){
+				if(this.scrollCallback){
+					this.scrollCallback(e.detail.scrollTop);
+				}
 			},
-			doLoadMore() {
-				this.$refs.paging.doLoadMore();
+			reload(completeFunc) {
+				this.completeFunc = completeFunc;
+				this.$refs.paging.reload();
 			},
 			itemClick(item) {
 				console.log('点击了', item.title);
 			},
-			pagingContentHeightChanged(height) {
-				this.$emit('pagingContentHeightChanged', height);
-				this.height = height;
+			updateScrollEnable(scrollable) {
+				this.scrollable = scrollable;
+			},
+			setScrollCallback(callback){
+				this.scrollCallback = callback;
 			}
 		}
 	}

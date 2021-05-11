@@ -1,12 +1,11 @@
 <!-- 滑动切换选项卡+吸顶演示（待完善） -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" @scrolltolower="scrolltolower" :hide-empty-view="true" :refresher-threshold="80"
-			:refresher-status.sync="refresherStatus" @query="queryList" style="height: 100%;"
-			:paging-content-style="{height:pagingContentHeight}">
+		<z-paging ref="paging" @scroll="scroll" :show-console-error="false" :hide-empty-view="true" :refresher-threshold="80"
+			:refresher-status.sync="refresherStatus" @query="queryList" :paging-content-style="{height:'calc(100% + 260rpx)'}">
 			<!-- 自定义下拉刷新view -->
 			<custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>
-			<view class="paging-content"  :style="[{height: swiperHeight}]">
+			<view class="paging-content">
 				<view class="banner-view" style="height: 250rpx;">
 					<view style="font-size: 40rpx;font-weight: 700;">这是一个banner</view>
 					<view style="font-size: 24rpx;margin-top: 5rpx;">下方tab滚动时可吸附在顶部</view>
@@ -19,9 +18,8 @@
 				<swiper class="swiper" :current="swiperCurrent" @transition="transition"
 					@animationfinish="animationfinish">
 					<swiper-item class="swiper-item" v-for="(item, index) in list" :key="index">
-						<sticky-and-scroll-tab-item ref="swiperItem"
-							@pagingContentHeightChanged="pagingContentHeightChanged" :tabIndex="index"
-							:currentIndex="swiperCurrent"></sticky-and-scroll-tab-item>
+						<sticky-and-scroll-tab-item ref="swiperItem" :tabIndex="index" :currentIndex="swiperCurrent">
+						</sticky-and-scroll-tab-item>
 					</swiper-item>
 				</swiper>
 			</view>
@@ -34,9 +32,6 @@
 		data() {
 			return {
 				refresherStatus: 0,
-				pagingContentHeight: '100%',
-				oldPagingContentHeight: '100%',
-				swiperHeight: '100%',
 				scrollTopMap: {},
 				list: [{
 					name: '测试1'
@@ -52,23 +47,26 @@
 				swiperCurrent: 0, // swiper组件的current值，表示当前那个swiper-item是活动的
 			}
 		},
+		onLoad() {
+
+		},
 		methods: {
 			queryList() {
-				this.$refs.swiperItem[this.current].reload();
-				this.$refs.paging.complete([]);
+				//触发了下拉刷新，通过当前tabIndex对应的列表下拉刷新
+				this.$refs.swiperItem[this.current].reload(() => {
+					this.$refs.paging.complete([]);
+				});
 			},
-			scrolltolower(e) {
-				this.$refs.swiperItem[this.current].doLoadMore();
+			scroll(e) {
+				const scrollTop = e.detail.scrollTop;
+				const stickyPx = uni.upx2px(250);
+				//this.$refs.swiperItem[this.current].updateScrollEnable(scrollTop >= stickyPx);
 			},
-			pagingContentHeightChanged(height) {
-				if (height > 0) {
-					this.pagingContentHeight = height + uni.upx2px(250) + uni.upx2px(80) + uni.upx2px(80) + 'px';
-					this.oldPagingContentHeight = this.pagingContentHeight;
-				}
-			},
+
 			// tabs通知swiper切换
 			tabsChange(index) {
 				this.swiperCurrent = index;
+				
 			},
 			// swiper-item左右移动，通知tabs的滑块跟随移动
 			transition(e) {
@@ -82,14 +80,13 @@
 				this.$refs.uTabs.setFinishCurrent(current);
 				this.swiperCurrent = current;
 				this.current = current;
-				
-				// const scrollTop = this.scrollTopMap[this.current];
-				// if(scrollTop){
-				// 	this.$refs.paging.updateScrollViewScrollTop(scrollTop, false);
-				// }else{
-				// 	this.$refs.paging.updateScrollViewScrollTop(0, false);
-				// }
-				
+				this.$refs.swiperItem[this.current].setScrollCallback((y)=>{
+					if(y < uni.upx2px(260)){
+						
+						console.log(y);
+					}
+					this.$refs.paging.updateScrollViewScrollTop(y,false);
+				})
 			}
 		}
 	}

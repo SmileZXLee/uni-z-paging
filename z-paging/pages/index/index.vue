@@ -49,6 +49,10 @@
 						title: '滚动吸附效果演示',
 						file: 'sticky-demo',
 						subTitle: ''
+					},{
+						title: '滑动切换选项卡+吸顶演示',
+						file: 'sticky-and-scroll-tab-demo',
+						subTitle: ''
 					},
 					{
 						title: '自定义导航栏演示',
