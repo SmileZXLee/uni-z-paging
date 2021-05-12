@@ -15,7 +15,6 @@
 					<view class="item-line"></view>
 				</view>
 			</view>
-			<view slot="bottom" style="height: 100rpx;background-color: red;">66666</view>
 		</z-paging>
 	</view>
 </template>

@@ -96,11 +96,11 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 }
 
 .zp-back-to-top {
-	width: 70rpx;
-	height: 70rpx;
+	width: 74rpx;
+	height: 74rpx;
 	z-index: 999;
 	position: fixed;
-	bottom: 150rpx;
+	bottom: 160rpx;
 	right: 30rpx;
 	transition-duration: .3s;
 	transition-property: opacity;

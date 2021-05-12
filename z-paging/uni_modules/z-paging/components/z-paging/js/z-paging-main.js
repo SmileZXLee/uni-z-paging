@@ -182,7 +182,7 @@ export default {
 			loadingMoreDefaultSlot: null,
 			backToTopClass: 'zp-back-to-top zp-back-to-top-hide',
 			showBackToTopClass: false,
-			nRefresherLoading: false,
+			nRefresherLoading: true,
 			nListIsDragging: false,
 			nShowBottom: true,
 			nFixFreezing: false,
@@ -1715,7 +1715,6 @@ export default {
 				setTimeout(() => {
 					this._getNodeClientRect(node).then((res) => {
 						if (res) {
-
 							let pageScrollNodeHeight = res[0].height;
 							if (type === 'bottom') {
 								if (this.safeAreaInsetBottom) {
@@ -1733,7 +1732,7 @@ export default {
 			})
 		},
 		// ------------nvue独有的方法----------------
-		//列表滚动时���发
+		//列表滚动时触发
 		_nOnScroll(e) {
 			const contentOffsetY = e.contentOffset.y;
 			this.$emit('scroll', e);

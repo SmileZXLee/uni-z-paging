@@ -21,7 +21,7 @@ V1.6.2
 			<slot name="top"></slot>
 		</view>
 		<scroll-view 
-			:class="!usePageScroll&&$slots.top?'zp-scroll-view zp-scroll-view-flex1 zp-scroll-view-fix-height':usePageScroll?'zp-scroll-view':'zp-scroll-view zp-scroll-view-flex1'" 
+			:class="!usePageScroll&&($slots.top||$slots.bottom)?'zp-scroll-view zp-scroll-view-flex1 zp-scroll-view-fix-height':usePageScroll?'zp-scroll-view':'zp-scroll-view zp-scroll-view-flex1'" 
 			:style="[scrollViewStyle]" :scroll-top="scrollTop"
 			:scroll-y="scrollable&&!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
 			:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
@@ -45,6 +45,7 @@ V1.6.2
 			:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="pageScrollTop"
 			:data-scrollTop="scrollTop" :data-refresherMaxAngle="refresherMaxAngle" 
 			:data-refresherAecc="refresherAngleEnableChangeContinued" :data-usePageScroll="usePageScroll"
+			:data-oldIsTouchmoving="isTouchmoving"
 			<!-- #endif -->
 			>	
 				<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"

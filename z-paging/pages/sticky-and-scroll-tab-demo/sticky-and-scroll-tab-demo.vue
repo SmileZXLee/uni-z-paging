@@ -1,8 +1,9 @@
 <!-- 滑动切换选项卡+吸顶演示（待完善） -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" @scroll="scroll" :show-console-error="false" :hide-empty-view="true" :refresher-threshold="80"
-			:refresher-status.sync="refresherStatus" @query="queryList" :paging-content-style="{height:'calc(100% + 260rpx)'}">
+		<z-paging ref="paging" @scroll="scroll" :show-console-error="false" :hide-empty-view="true"
+			:refresher-threshold="80" :refresher-status.sync="refresherStatus" @query="queryList"
+			:paging-content-style="{height:'calc(100% + 260rpx)'}">
 			<!-- 自定义下拉刷新view -->
 			<custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>
 			<view class="paging-content">
@@ -48,7 +49,11 @@
 			}
 		},
 		onLoad() {
-
+			this.$nextTick(() => {
+				this.$refs.swiperItem[this.current].setScrollCallback((y) => {
+					this.$refs.paging.updateScrollViewScrollTop(y, false);
+				})
+			})
 		},
 		methods: {
 			queryList() {
@@ -66,7 +71,7 @@
 			// tabs通知swiper切换
 			tabsChange(index) {
 				this.swiperCurrent = index;
-				
+
 			},
 			// swiper-item左右移动，通知tabs的滑块跟随移动
 			transition(e) {
@@ -80,12 +85,8 @@
 				this.$refs.uTabs.setFinishCurrent(current);
 				this.swiperCurrent = current;
 				this.current = current;
-				this.$refs.swiperItem[this.current].setScrollCallback((y)=>{
-					if(y < uni.upx2px(260)){
-						
-						console.log(y);
-					}
-					this.$refs.paging.updateScrollViewScrollTop(y,false);
+				this.$refs.swiperItem[this.current].setScrollCallback((y) => {
+					this.$refs.paging.updateScrollViewScrollTop(y, false);
 				})
 			}
 		}

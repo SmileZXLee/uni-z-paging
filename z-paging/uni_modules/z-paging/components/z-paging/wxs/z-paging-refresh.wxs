@@ -59,18 +59,20 @@ function touchmove(e, ownerInstance) {
 	}
 	_setTransformValue(moveDistance, instance, state);
 	var oldRefresherStatus = state.refresherStatus;
+	var oldIsTouchmoving = _getIsTrue(state.oldistouchmoving);
+	var isTouchmoving = state.isTouchmoving;
 	if (moveDistance >= refresherThreshold) {
 		state.refresherStatus = 1;
 	} else {
 		state.refresherStatus = 0;
 	}
-	if(!state.isTouchmoving){
+	if(!isTouchmoving){
 		state.isTouchmoving = true;
 	}
 	if(state.isTouchEnded){
 		state.isTouchEnded = false;
 	}
-	if (oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus) {
+	if (oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus || oldIsTouchmoving != isTouchmoving) {
 		ownerInstance.callMethod('_handleRefresherTouchmove', moveDistance, touch);
 	}
 	return false;

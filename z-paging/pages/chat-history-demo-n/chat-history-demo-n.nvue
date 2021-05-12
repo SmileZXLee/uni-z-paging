@@ -7,6 +7,7 @@
 			<template v-for="(item,index) in dataList">
 				<!-- 在nvue中，z-paging中插入的列表item必须是cell，必须使用cell包住，因为在nvue中，z-paging使用的是nvue的list组件。 -->
 				<!-- 注意！！！！这里ref必须绑定index，且格式为z-paging-${index}，格式不能变，否则会导致滑动到顶部加载更多数据时滚动位置不正确！！！！！！ -->
+				<!-- style="transform:rotate(180deg);"必须写，必须写！！！ -->
 				<cell style="transform:rotate(180deg);" class="item" :key="item.title" :ref="`z-paging-${index}`" @click="itemClick(item)">
 					<text class="item-title" v-if="item.title.length<3">第{{item.title}}条聊天记录</text>
 					<text class="item-title" v-else>{{item.title}}</text>

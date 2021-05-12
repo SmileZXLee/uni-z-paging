@@ -4,6 +4,7 @@
 			<view slot="refresher" style="height: 100%;display: flex;justify-content: center;align-items: center;">
 				<image style="width: 300rpx;height: 60rpx;" src="../../static/logo_loading.gif"></image>
 			</view>
+			<!-- <view class="tip-bottom" slot="top">z-paging.com</view> -->
 			<view class="demo-list">
 				<view class="demo-item" v-for="(item,index) in list" :key="index" @click="itemClick(item)">
 					<view class="demo-item-main">
@@ -17,6 +18,10 @@
 					<image class="demo-item-more-img" src="../../static/more_icon.png"></image>
 				</view>
 			</view>
+			<!-- #ifndef APP-PLUS -->
+			<view class="demo-nvue-tip">- 将此demo运行至App上可体验nvue页面效果 -</view>
+			<!-- #endif -->
+			<!-- <view class="tip-bottom" slot="bottom">z-paging.com</view> -->
 		</z-paging>
 	</view>
 </template>
@@ -49,11 +54,13 @@
 						title: '滚动吸附效果演示',
 						file: 'sticky-demo',
 						subTitle: ''
-					},{
-						title: '滑动切换选项卡+吸顶演示',
-						file: 'sticky-and-scroll-tab-demo',
-						subTitle: ''
-					},
+					}
+					// ,{
+					// 	title: '滑动切换选项卡+吸顶演示',
+					// 	file: 'sticky-and-scroll-tab-demo',
+					// 	subTitle: ''
+					// }
+					,
 					{
 						title: '自定义导航栏演示',
 						file: 'custom-nav-demo',
@@ -94,9 +101,7 @@
 			}
 		},
 		mounted (){
-			// #ifdef APP-PLUS
 			this.list = this.list.concat(this.listNvue);
-			// #endif
 		},
 		methods: {
 			queryList() {
@@ -154,6 +159,18 @@
 		font-size: 24rpx;
 		padding: 5rpx 10rpx;
 		border-radius: 8rpx;
-
+	}
+	.demo-nvue-tip{
+		width: 100%;
+		padding: 20rpx;
+		color: #aaaaaa;
+		font-size: 24rpx;
+		text-align: center;
+	}
+	.tip-bottom{
+		background-color: #007AFF;
+		color: white;
+		padding: 20rpx 0rpx;
+		text-align: center;
 	}
 </style>
