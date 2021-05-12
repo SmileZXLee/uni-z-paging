@@ -21,6 +21,6 @@ function getConfig() {
 }
 
 module.exports = {
-	setConfig: setConfig,
-	getConfig: getConfig
+	setConfig,
+	getConfig
 };

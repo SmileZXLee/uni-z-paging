@@ -45,7 +45,6 @@ function touchmove(e, ownerInstance) {
 	var refresherThreshold = dataset.refresherthreshold;
 	var state = instance.getState();
 	if (_getRefresherTouchDisabled(e, instance)) {
-
 		return;
 	}
 	if (!_getAngleIsInRange(e, touch, state, dataset)) {
@@ -65,8 +64,12 @@ function touchmove(e, ownerInstance) {
 	} else {
 		state.refresherStatus = 0;
 	}
-	state.isTouchmoving = true;
-	state.isTouchEnded = false;
+	if(!state.isTouchmoving){
+		state.isTouchmoving = true;
+	}
+	if(state.isTouchEnded){
+		state.isTouchEnded = false;
+	}
 	if (oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus) {
 		ownerInstance.callMethod('_handleRefresherTouchmove', moveDistance, touch);
 	}

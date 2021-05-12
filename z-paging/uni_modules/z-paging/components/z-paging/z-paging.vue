@@ -115,32 +115,24 @@ V1.6.2
 				</view>
 			</view>
 		</scroll-view>
+		<slot v-if="!usePageScroll&&$slots.bottom" name="bottom"></slot>
+		<view class="zp-page-scroll-bottom" v-else-if="usePageScroll&&$slots.bottom" :style="[{'bottom': `${windowBottom}px`}]">
+			<slot name="bottom"></slot>
+		</view>
 		<view v-if="showBackToTopClass" :class="backToTopClass" :style="[backToTopStyle]" @click.stop="scrollToTop(backToTopWithAnimate)">
 			<image class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop"></image>
 		</view>  
 	</view>
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
-	<view ref="n-list" class="zp-n-list" :is="finalNvueListIs" alwaysScrollableVertical="true"
+	<view ref="n-list" :class="useChatRecordMode?'zp-n-list zp-n-view-reverse':'zp-n-list'" :is="finalNvueListIs" alwaysScrollableVertical="true"
 		:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar" :loadmoreoffset="lowerThreshold"
 		:scrollable="scrollable&&scrollEnable" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 		:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap"
-		@loadmore="_onLoadingMore('toBottom')" @scroll="_nOnScroll">
-		<refresh class="zp-n-refresh" v-if="refresherEnabled&&(useChatRecordMode?(loadingStatus!==2&&realTotalData.length):true)" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
+		@loadmore="_nOnLoadmore" @scroll="_nOnScroll">
+		<refresh class="zp-n-refresh" v-if="refresherEnabled&&!useChatRecordMode" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
 			@pullingdown="_nOnPullingdown">
-			<view v-if="useChatRecordMode">
-				<view v-if="loadingStatus!==2&&realTotalData.length">
-					<slot v-if="$slots.chatLoading"
-						name="chatLoading" />
-					<view v-else class="zp-chat-record-loading-container">
-						<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
-							:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
-						<image v-else :src="base64Flower" class="zp-chat-record-loading-custom-image">
-						</image>
-					</view>
-				</view>
-			</view>
-			<view v-else class="zp-n-refresh-container">
+			<view class="zp-n-refresh-container">
 				<!-- 下拉刷新view -->
 				<slot v-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
 				<z-paging-refresh v-else :refresherStatus="refresherStatus" :defaultThemeStyle="defaultThemeStyle"
@@ -150,11 +142,11 @@ V1.6.2
 		</refresh>
 		<slot />
 		<!-- 全屏 -->
-		<view v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" :is="finalNvueListIs==='waterfall'?'header':'cell'">
+		<view :class="useChatRecordMode?'zp-n-view-reverse':''" v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" :is="finalNvueListIs==='waterfall'?'header':'cell'">
 			<slot name="loading" />
 		</view>
 		<!-- 空数据图 -->
-		<view v-if="!totalData.length&&(autoHideEmptyViewWhenLoading?isAddedData:true)&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)" :is="finalNvueListIs==='waterfall'?'header':'cell'">
+		<view :class="useChatRecordMode?'zp-n-view-reverse':''" v-if="!totalData.length&&(autoHideEmptyViewWhenLoading?isAddedData:true)&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)" :is="finalNvueListIs==='waterfall'?'header':'cell'">
 			<view class="zp-empty-view">
 				<slot v-if="$slots.empty" name="empty" />
 				<z-paging-empty-view v-else :emptyViewImg="emptyViewImg" :emptyViewText="emptyViewText">
@@ -162,14 +154,31 @@ V1.6.2
 			</view>
 		</view>
 		<!-- 上拉加载更多view -->
-		<view v-if="nShowBottom&&!useChatRecordMode" :is="finalNvueListIs==='waterfall'?'header':'cell'">
-			<slot v-if="_shouldShowLoading('loadingMoreDefault')" name="loadingMoreDefault" />
-			<slot v-else-if="_shouldShowLoading('loadingMoreLoading')" name="loadingMoreLoading" />
-			<slot v-else-if="_shouldShowLoading('loadingMoreNoMore')" name="loadingMoreNoMore" />
-			<slot v-else-if="_shouldShowLoading('loadingMoreFail')" name="loadingMoreFail" />
-			<z-paging-load-more @click.native="_onLoadingMore('click')"
-				v-else-if="_shouldShowLoading('loadingMoreCustom')" :config="zPagingLoadMoreConfig">
-			</z-paging-load-more>
+		<view v-if="nShowBottom" :is="finalNvueListIs==='waterfall'?'header':'cell'">
+			<view v-if="useChatRecordMode">
+				<view v-if="loadingStatus!==2&&realTotalData.length">
+					<slot v-if="$slots.chatLoading"
+						name="chatLoading" />
+					<view v-else class="zp-chat-record-loading-container">
+						<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
+							:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
+						<view>
+							<loading-indicator v-if="loadingStatus===1" :animating="true"
+								class="zp-loading-more-line-loading-image">
+							</loading-indicator>
+						</view>
+					</view>
+				</view>
+			</view>
+			<view v-else>
+				<slot v-if="_shouldShowLoading('loadingMoreDefault')" name="loadingMoreDefault" />
+				<slot v-else-if="_shouldShowLoading('loadingMoreLoading')" name="loadingMoreLoading" />
+				<slot v-else-if="_shouldShowLoading('loadingMoreNoMore')" name="loadingMoreNoMore" />
+				<slot v-else-if="_shouldShowLoading('loadingMoreFail')" name="loadingMoreFail" />
+				<z-paging-load-more @click.native="_onLoadingMore('click')"
+					v-else-if="_shouldShowLoading('loadingMoreCustom')" :config="zPagingLoadMoreConfig">
+				</z-paging-load-more>
+			</view>
 		</view>
 	</view>
 	<!-- #endif -->

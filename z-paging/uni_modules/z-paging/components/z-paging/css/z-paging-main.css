@@ -32,12 +32,12 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 	right: 0;
 }
 
-.zp-page-scroll-top {
+.zp-page-scroll-top,
+.zp-page-scroll-bottom {
 	/* #ifndef APP-NVUE */
 	width: auto;
 	/* #endif */
 	position: fixed;
-	top: 0;
 	left: 0;
 	right: 0;
 	z-index: 999;
@@ -126,4 +126,8 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 	/* #endif */
 	justify-content: center;
 	width: 750rpx;
+}
+
+.zp-n-view-reverse {
+	transform: rotate(180deg);
 }

@@ -558,6 +558,7 @@ export default {
 			this.loaded = true;
 		})
 		this.updatePageScrollTopHeight();
+		this.updatePageScrollBottomHeight();
 	},
 	watch: {
 		totalData(newVal, oldVal) {
@@ -565,7 +566,7 @@ export default {
 				oldVal.length) {
 				return;
 			}
-			newVal = [].concat(newVal);
+			newVal = [...newVal];
 			if (!this.usePageScroll && this.loadingStatus === 2 && this.hideLoadingMoreWhenNoMoreAndInsideOfPaging &&
 				newVal.length) {
 				this.$nextTick(() => {
@@ -713,10 +714,6 @@ export default {
 			}
 			const windowTop = this.systemInfo.windowTop;
 			const windowBottom = this.systemInfo.windowBottom;
-			let safeAreaBottom = 0;
-			// #ifdef APP-PLUS || H5 || MP-WEIXIN
-			safeAreaBottom = this.systemInfo.safeAreaInsets.bottom;
-			// #endif
 			if (!this.usePageScroll && this.fixed) {
 				if (windowTop && windowTop !== undefined) {
 					pagingStyle.top = windowTop + 'px';
@@ -726,18 +723,38 @@ export default {
 					bottom = windowBottom;
 				}
 				if (this.safeAreaInsetBottom) {
-					bottom += safeAreaBottom;
+					bottom += this.safeAreaBottom;
 				}
 				pagingStyle.bottom = bottom + 'px';
 			}
 			return pagingStyle;
+		},
+		safeAreaBottom() {
+			if (!this.systemInfo) {
+				return 0;
+			}
+			let safeAreaBottom = 0;
+			// #ifdef APP-PLUS || H5 || MP-WEIXIN
+			safeAreaBottom = this.systemInfo.safeAreaInsets.bottom || 0;
+			// #endif
+			return safeAreaBottom;
 		},
 		windowTop() {
 			if (!this.systemInfo) {
 				return 0;
 			}
 			const windowTop = this.systemInfo.windowTop;
-			return windowTop && windowTop !== undefined ? windowTop : 0;
+			return windowTop || 0;
+		},
+		windowBottom() {
+			if (!this.systemInfo) {
+				return 0;
+			}
+			let windowBottom = this.systemInfo.windowBottom || 0;
+			if (this.safeAreaInsetBottom) {
+				windowBottom += this.safeAreaBottom;
+			}
+			return windowBottom;
 		},
 		nWaterfallColumnCount() {
 			return this._getNvueWaterfallSingleConfig('column-count', 2);
@@ -776,11 +793,21 @@ export default {
 				return;
 			}
 			this.isTotalChangeFromAddData = true;
-			this.totalData = this.totalData.concat(data);
+			//#ifndef APP-NVUE
+			this.totalData = [...this.totalData, ...data];
+			//#endif
+			//#ifdef APP-NVUE
+			this.totalData = [...data, ...this.totalData];
+			//#endif
 			if (toBottom) {
 				setTimeout(() => {
+					//#ifndef APP-NVUE
 					this._scrollToBottom(toBottomWithAnimate);
+					//#endif
 				}, commonDelayTime)
+				//#ifdef APP-NVUE
+				this._scrollToTop(toBottomWithAnimate);
+				//#endif
 			}
 		},
 		//从顶部添加数据，不会影响分页的pageNo和pageSize
@@ -789,7 +816,7 @@ export default {
 			if (dataType !== '[object Array]') {
 				data = [data];
 			}
-			this.totalData = data.concat(this.totalData);
+			this.totalData = [...data, ...this.totalData];
 			if (toTop) {
 				setTimeout(() => {
 					this._scrollToTop(toTopWithAnimate);
@@ -877,21 +904,11 @@ export default {
 		},
 		//当使用页面滚动并且设置了slot="top"时，默认初次加载会自动获取其高度，并使内部容器下移，当slot="top"的view高度动态改变时，在其高度需要更新时调用此方法
 		updatePageScrollTopHeight() {
-			this.$nextTick(() => {
-				let delayTime = 0;
-				// #ifdef MP-BAIDU
-				delayTime = 10;
-				// #endif
-				setTimeout(() => {
-					this._getNodeClientRect('.zp-page-scroll-top').then((res) => {
-						if (res) {
-							const pageScrollTopHeight = res[0].height;
-							this.$set(this.scrollViewStyle, 'marginTop',
-								`${pageScrollTopHeight}px`);
-						}
-					});
-				}, delayTime)
-			})
+			this._updatePageScrollTopOrBottomHeight('top');
+		},
+		//当使用页面滚动并且设置了slot="bottom"时，默认初次加载会自动获取其高度，并使内部容器下移，当slot="bottom"的view高度动态改变时，在其高度需要更新时调用此方法
+		updatePageScrollBottomHeight() {
+			this._updatePageScrollTopOrBottomHeight('bottom');
 		},
 		//更新z-paging内置scroll-view的scrollTop
 		updateScrollViewScrollTop(scrollTop, animate = true) {
@@ -927,11 +944,13 @@ export default {
 			if (this.autoScrollToTopWhenReload) {
 				this._scrollToTop();
 			}
+			// #ifndef APP-NVUE
 			if (!this.usePageScroll && this.useChatRecordMode) {
 				if (this.showConsoleError) {
 					console.warn('[z-paging]使用聊天记录模式时，建议使用页面滚动，可将usePageScroll设置为true以启用页面滚动！！');
 				}
 			}
+			// #endif
 		},
 		//私有的处理服务端返回的数组方法
 		_addData(data, success, isLocal) {
@@ -985,10 +1004,12 @@ export default {
 		},
 		//当前数据改变时调用
 		_currentDataChange(newVal, oldVal) {
-			newVal = [].concat(newVal);
+			newVal = [...newVal];
+			// #ifndef APP-NVUE
 			if (this.useChatRecordMode) {
 				newVal.reverse();
 			}
+			// #endif
 			if (this.pageNo === this.defaultPageNo) {
 				this.totalData = [];
 			}
@@ -1001,22 +1022,25 @@ export default {
 			if (!this.totalData.length) {
 				this.totalData = newVal;
 				if (this.useChatRecordMode) {
+					// #ifndef APP-NVUE
 					this.$nextTick(() => {
 						this._scrollToBottom(false);
 					})
+					// #endif
 				}
 			} else {
 				if (this.useChatRecordMode) {
+					// #ifdef APP-NVUE
+					this.totalData = [...this.totalData, ...newVal];
+					// #endif
+					//#ifndef APP-NVUE
 					const idIndex = newVal.length;
 					let idIndexStr = `z-paging-${idIndex}`;
-					//#ifdef APP-NVUE
-					idIndexStr = idIndex;
-					//#endif
-					this.totalData = newVal.concat(this.totalData);
+					this.totalData = [...newVal, ...this.totalData];
 					if (this.pageNo !== this.defaultPageNo) {
 						this.privateScrollWithAnimation = 0;
 						let delayTime = 200;
-						//#ifdef H5 || APP-NVUE
+						//#ifdef H5
 						delayTime = 0;
 						//#endif
 						this.$emit('update:chatIndex', idIndex);
@@ -1036,14 +1060,16 @@ export default {
 							this._scrollToBottom(false);
 						})
 					}
+					//#endif
+
 				} else {
-					this.totalData = this.totalData.concat(newVal);
+					this.totalData = [...this.totalData, ...newVal];
 				}
 			}
 		},
 		//触发加载更多时调用,from:0-滑动到底部触发；1-点击加载更多触发
 		_onLoadingMore(from = 'click') {
-			if(from === 'toBottom'){
+			if (from === 'toBottom') {
 				if (!this.scrollToBottomBounceEnabled) {
 					if (this.scrollEnable) {
 						this.scrollEnable = false;
@@ -1595,7 +1621,7 @@ export default {
 			if (pageNo == 0) {
 				pageNo = 1;
 			}
-			let totalPagingList = [].concat(this.totalLocalPagingList);
+			let totalPagingList = [...this.totalLocalPagingList];
 			let pageNoIndex = (pageNo - 1) * pageSize;
 			if (pageNoIndex + pageSize <= totalPagingList.length) {
 				this._localPagingQueryResult(callback, totalPagingList.splice(pageNoIndex, pageSize),
@@ -1678,8 +1704,36 @@ export default {
 				}
 			}
 		},
+		_updatePageScrollTopOrBottomHeight(type) {
+			const node = `.zp-page-scroll-${type}`;
+			const marginText = `margin${type.slice(0,1).toUpperCase() + type.slice(1)}`;
+			this.$nextTick(() => {
+				let delayTime = 0;
+				// #ifdef MP-BAIDU
+				delayTime = 10;
+				// #endif
+				setTimeout(() => {
+					this._getNodeClientRect(node).then((res) => {
+						if (res) {
+
+							let pageScrollNodeHeight = res[0].height;
+							if (type === 'bottom') {
+								if (this.safeAreaInsetBottom) {
+									pageScrollNodeHeight += this.safeAreaBottom;
+								}
+							}
+							this.$set(this.scrollViewStyle, marginText,
+								`${pageScrollNodeHeight}px`);
+						} else if (this.safeAreaInsetBottom) {
+							this.$set(this.scrollViewStyle, marginText,
+								`${this.safeAreaBottom}px`);
+						}
+					});
+				}, delayTime)
+			})
+		},
 		// ------------nvue独有的方法----------------
-		//列表滚动时触发
+		//列表滚动时���发
 		_nOnScroll(e) {
 			const contentOffsetY = e.contentOffset.y;
 			this.$emit('scroll', e);
@@ -1689,15 +1743,7 @@ export default {
 		_nOnRrefresh() {
 			this.nRefresherLoading = true;
 			this.refresherStatus = 2;
-			if (this.useChatRecordMode) {
-				this.doChatRecordLoadMore();
-			} else {
-				this._doRefresherLoad();
-			}
-			setTimeout(function() {
-				this.$refs["n-list"].resetLoadmore();
-				this.nRefresherLoading = false;
-			}, 10);
+			this._doRefresherLoad();
 		},
 		//下拉刷新下拉中
 		_nOnPullingdown(e) {
@@ -1710,6 +1756,14 @@ export default {
 				this.refresherStatus = 1;
 			} else {
 				this.refresherStatus = 0;
+			}
+		},
+		//滚动到底部加载更多
+		_nOnLoadmore() {
+			if (this.useChatRecordMode) {
+				this.doChatRecordLoadMore();
+			} else {
+				this._onLoadingMore('toBottom');
 			}
 		},
 		//获取nvue waterfall单项配置

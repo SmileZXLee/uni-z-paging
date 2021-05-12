@@ -1,19 +1,16 @@
-<!-- 聊天记录模式演示(vue) -->
+<!-- 聊天记录模式演示(vue)，vue中目前无法解决分页闪动问题，使用nvue可实现聊天记录无闪动分页 -->
 <template>
 	<view class="content">
 		<z-paging ref="paging" @query="queryList" :use-chat-record-mode="true" :use-page-scroll="true"
 			:list.sync="dataList">
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
-			<view class="list">
-				<!-- 注意！！！！这里id必须绑定index，且格式为z-paging-${index}，格式不能变，否则会导致滑动到顶部加载更多数据时滚动位置不正确！！！！！！ -->
-				<view class="item" :id="`z-paging-${index}`"
-					v-for="(item,index) in dataList" :key="index">
-					<view class="item-title" v-if="item.title.length<3">第{{item.title}}条聊天记录</view>
-					<view class="item-title" v-else>{{item.title}}</view>
-					<view class="item-detail">{{item.detail}}</view>
-					<view class="item-line"></view>
-				</view>
+			<view class="item" :id="`z-paging-${index}`"
+				v-for="(item,index) in dataList" :key="index">
+				<view class="item-title" v-if="item.title.length<3">第{{item.title}}条聊天记录</view>
+				<view class="item-title" v-else>{{item.title}}</view>
+				<view class="item-detail">{{item.detail}}</view>
+				<view class="item-line"></view>
 			</view>
 		</z-paging>
 		<view class="add-chat-record" @click="addChatRecordClick">
@@ -48,7 +45,7 @@
 			},
 			addChatRecordClick(item) {
 				this.newIndex++;
-				this.$refs.paging.doChatRecordLoadMore({
+				this.$refs.paging.addChatRecordData({
 					'title': '新增数据' + this.newIndex,
 					'detail': '新增的聊天数据'
 				});
