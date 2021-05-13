@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V1.6.2
+V1.6.3
 -- >
 <!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -120,7 +120,7 @@ V1.6.2
 		<view class="zp-page-scroll-bottom" v-else-if="usePageScroll&&$slots.bottom" :style="[{'bottom': `${windowBottom}px`}]">
 			<slot name="bottom"></slot>
 		</view>
-		<view v-if="showBackToTopClass" :class="backToTopClass" :style="[backToTopStyle]" @click.stop="scrollToTop(backToTopWithAnimate)">
+		<view v-if="showBackToTopClass" :class="backToTopClass" :style="[finalBackToTopStyle]" @click.stop="scrollToTop(backToTopWithAnimate)">
 			<image class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop"></image>
 		</view>  
 	</view>

@@ -98,6 +98,7 @@ function toKebab(value) {
  * @property {Number} back-to-top-threshold 点击返回顶部按钮显示/隐藏的阈值(滚动距离)，单位为px，默认为200px
  * @property {String} back-to-top-img 点击返回顶部按钮的自定义图片地址，默认使用z-paging内置的图片
  * @property {Boolean} back-to-top-with-animate 点击返回顶部按钮返回到顶部时是否展示过渡动画，默认为是
+ * @property {String} back-to-top-bottom 点击返回顶部按钮与底部的距离，注意添加单位px或rpx，默认为160rpx
  * @property {Object} back-to-top-style 点击返回顶部按钮的自定义样式
  * @property {Boolean} show-scrollbar 在设置滚动条位置时使用动画过渡，默认为否
  * @property {Boolean} scroll-to-top-bounce-enabled iOS设备上滚动到顶部时是否允许回弹效果，默认为是。关闭回弹效果后可使滚动到顶部与下拉刷新更连贯，但是有吸顶view时滚动到顶部时可能出现抖动。
@@ -446,6 +447,11 @@ export default {
 			type: Boolean,
 			default: _getConfig('backToTopWithAnimate', true)
 		},
+		//点击返回顶部按钮与底部的距离，注意添加单位px或rpx，默认为160rpx
+		backToTopBottom: {
+			type: String,
+			default: _getConfig('backToTopBottom', '160rpx')
+		},
 		//点击返回顶部按钮的自定义样式
 		backToTopStyle: {
 			type: Object,
@@ -728,6 +734,13 @@ export default {
 				pagingStyle.bottom = bottom + 'px';
 			}
 			return pagingStyle;
+		},
+		finalBackToTopStyle() {
+			let tempBackToTopStyle = this.backToTopStyle;
+			if (!tempBackToTopStyle.bottom) {
+				tempBackToTopStyle.bottom = this.windowBottom + this._convertTextToPx(this.backToTopBottom) + 'px';
+			}
+			return tempBackToTopStyle;
 		},
 		safeAreaBottom() {
 			if (!this.systemInfo) {

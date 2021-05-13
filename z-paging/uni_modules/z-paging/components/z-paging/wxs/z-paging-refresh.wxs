@@ -66,13 +66,14 @@ function touchmove(e, ownerInstance) {
 	} else {
 		state.refresherStatus = 0;
 	}
-	if(!isTouchmoving){
+	if (!isTouchmoving) {
 		state.isTouchmoving = true;
 	}
-	if(state.isTouchEnded){
+	if (state.isTouchEnded) {
 		state.isTouchEnded = false;
 	}
-	if (oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus || oldIsTouchmoving != isTouchmoving) {
+	if (oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus || oldIsTouchmoving !=
+		isTouchmoving) {
 		ownerInstance.callMethod('_handleRefresherTouchmove', moveDistance, touch);
 	}
 	return false;
@@ -96,7 +97,7 @@ function touchend(e, ownerInstance) {
 	var refresherThreshold = instance.getDataset().refresherthreshold
 	var moveDistance = _getMoveDistance(e, instance);
 	if (!(moveDistance >= refresherThreshold && oldRefresherStatus === 1)) {
-		setTimeout(() => {
+		setTimeout(function() {
 			state.isTouchmoving = false;
 		}, 100);
 	}

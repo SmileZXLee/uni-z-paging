@@ -100,7 +100,7 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 	height: 74rpx;
 	z-index: 999;
 	position: fixed;
-	bottom: 160rpx;
+	bottom: 0rpx;
 	right: 30rpx;
 	transition-duration: .3s;
 	transition-property: opacity;
