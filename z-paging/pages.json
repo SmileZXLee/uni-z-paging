@@ -103,6 +103,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/consistency-demo/consistency-demo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "保证数据一致性演示",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

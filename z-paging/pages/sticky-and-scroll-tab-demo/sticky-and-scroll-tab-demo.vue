@@ -2,7 +2,7 @@
 <template>
 	<view class="content">
 		<z-paging ref="paging" @scroll="scroll" :show-console-error="false" :hide-empty-view="true"
-			:refresher-threshold="80" :refresher-status.sync="refresherStatus" @query="queryList"
+			refresher-threshold="160rpx" :refresher-status.sync="refresherStatus" @query="queryList"
 			:paging-content-style="{height:'calc(100% + 260rpx)'}">
 			<!-- 自定义下拉刷新view -->
 			<custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>

@@ -97,6 +97,7 @@ function touchend(e, ownerInstance) {
 	var refresherThreshold = instance.getDataset().refresherthreshold
 	var moveDistance = _getMoveDistance(e, instance);
 	if (!(moveDistance >= refresherThreshold && oldRefresherStatus === 1)) {
+		console.log('setTimeoutsetTimeoutsetTimeout')
 		setTimeout(function() {
 			state.isTouchmoving = false;
 		}, 100);
@@ -111,6 +112,46 @@ function touchend(e, ownerInstance) {
 	}
 	_setTransformValue(moveDistance, instance, state)
 }
+
+// #ifdef H5
+function isPC() {
+	var userAgentInfo = navigator.userAgent;
+	var Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+	var flag = true;
+	for (var v = 0; v < Agents.length - 1; v++) {
+		if (userAgentInfo.indexOf(Agents[v]) > 0) {
+			flag = false;
+			break;
+		}
+	}
+	return flag;
+}
+
+var movable = false
+
+function mousedown(e, ins) {
+	if (!isPC()) return;
+	touchstart(e, ins);
+	movable = true;
+}
+
+function mousemove(e, ins) {
+	if (!isPC()) return;
+	if (!movable) return;
+	touchmove(e, ins);
+}
+
+function mouseup(e, ins) {
+	if (!isPC()) return;
+	touchend(e, ins);
+	movable = false;
+}
+
+function mouseleave(e, ins) {
+	if (!isPC()) return;
+	movable = false;
+}
+// #endif
 
 
 function _setTransformValue(value, instance, state) {
@@ -147,10 +188,7 @@ function _getCommonTouch(e) {
 	} else if (e.datail && e.datail !== {}) {
 		touch = e.datail;
 	} else {
-		return {
-			touchX: 0,
-			touchY: 0
-		}
+		touch = e;
 	}
 	return {
 		touchX: touch.clientX,
@@ -222,5 +260,9 @@ module.exports = {
 	touchstart: touchstart,
 	touchmove: touchmove,
 	touchend: touchend,
+	mousedown: mousedown,
+	mousemove: mousemove,
+	mouseup: mouseup,
+	mouseleave: mouseleave,
 	propObserver: propObserver
 }

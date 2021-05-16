@@ -12,7 +12,8 @@
 					:style="[{'filter' :defaultThemeStyle==='white'?'brightness(10)':''}]" :src="base64Arrow">
 				</image>
 				<!-- #ifndef APP-NVUE -->
-				<image v-else class="zp-loading-more-line-loading-image zp-custom-refresher-left-image" :src="base64Flower">
+				<image v-else class="zp-loading-more-line-loading-image zp-custom-refresher-left-image"
+					:src="base64Flower">
 				</image>
 				<!-- #endif -->
 				<!-- #ifdef APP-NVUE -->
@@ -63,6 +64,7 @@
 
 <style scoped>
 	@import "../css/z-paging-static.css";
+
 	.zp-custom-refresher-container {
 		/* #ifndef APP-NVUE */
 		display: flex;
@@ -85,6 +87,9 @@
 		height: 30rpx;
 		transform: rotate(180deg);
 		margin-right: 8rpx;
+		/* #ifndef APP-NVUE */
+		margin-top: 2rpx;
+		/* #endif */
 		/* #ifdef APP-NVUE */
 		width: 35rpx;
 		height: 35rpx;
@@ -101,7 +106,6 @@
 		animation-fill-mode: forwards;
 		-webkit-animation-fill-mode: forwards;
 		/* #endif */
-
 		/* #ifdef APP-NVUE */
 		transform: rotate(0deg);
 		/* #endif */
@@ -120,7 +124,7 @@
 	}
 
 	.zp-custom-refresher-right {
-		font-size: 26rpx;
+		font-size: 27rpx;
 		/* #ifndef APP-NVUE */
 		display: flex;
 		/* #endif */
@@ -132,8 +136,8 @@
 	.zp-custom-refresher-right-text {
 		/* #ifdef APP-NVUE */
 		font-size: 28rpx;
-		height: 40px;
-		line-height: 40px;
+		height: 80rpx;
+		line-height: 80rpx;
 		/* #endif */
 		color: #555555
 	}
@@ -169,5 +173,4 @@
 			transform: rotate(180deg);
 		}
 	}
-	
 </style>

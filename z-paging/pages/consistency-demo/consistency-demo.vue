@@ -1,18 +1,14 @@
-<!-- 自定义下拉刷新与上拉加载演示(vue) -->
+<!-- 保证数据一致性演示[当网络较卡顿或接口请求较长时，若用户频繁切换tab，将可能导致当前显示数据与对应tab不一致](vue) -->
+<!-- ps:使用横向滚动切换无需关注数据一致性问题，因为他们的数据源各自持有，而非共享 -->
+<!-- 如果想有更直观的体验，请增加demo请求时长：修改@/http/consistency-request.js中的loadingTime值 -->
+<!-- 快速切换tab体验 -->
 <template>
 	<view class="content">
 		<!-- 非页面滚动时这里的fixed建议设置为true，则无需设置z-paging的高度及其父view的高度 -->
-		<z-paging ref="paging" fixed auto-show-back-to-top refresher-threshold="160rpx" @query="queryList"
-			:list.sync="dataList">
+		<!-- data-key需要绑定一个在切换tab时会跟着改变的且能标识当前切换tab标识的变量 -->
+		<z-paging ref="paging" fixed :data-key="tabIndex" @query="queryList" :list.sync="dataList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
-			<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
-			
-			<!-- 注意注意注意！！QQ小程序或字节跳动小程序中自定义下拉刷新不支持slot-scope，将导致custom-refresher无法显示 -->
-			<!-- 如果是QQ小程序或字节跳动小程序，请参照sticky-demo.vue中的写法，此处使用slot-scope是为了减少data中无关变量声明，降低依赖 -->
-			<custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus"></custom-refresher>
-			<!-- 自定义没有更多数据view -->
-			<custom-nomore slot="loadingMoreNoMore"></custom-nomore>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view class="list">
@@ -27,6 +23,7 @@
 </template>
 
 <script>
+	import consistencyRequest from '../../http/consistency-request.js'
 	export default {
 		data() {
 			return {
@@ -37,17 +34,22 @@
 		methods: {
 			tabChange(index) {
 				this.tabIndex = index;
+				console.log('当前data-key1', this.tabIndex);
 				//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
-				//调用reload时参数传true则代表reload时触发下拉刷新效果，不传或false则代表取消此效果
-				this.$refs.paging.reload(true);
+				this.$refs.paging.reload();
 			},
 			queryList(pageNo, pageSize) {
 				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
 				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
 				//模拟请求服务器获取分页数据，请替换成自己的网络请求
-				this.$request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
+				consistencyRequest.myQueryList(pageNo, pageSize, this.tabIndex + 1, (res) => {
 					//将请求的结果数组传递给z-paging
-					this.$refs.paging.complete(data);
+					//为保证数据一致性，请使用completeByKey方法代替原有的complete
+					//这里的第二个值传的 就是z-paging :data-key绑定的值，因为传给后端时候+1了，所以这里要-1，-1不是必须的，依据具体情况而定
+					//关于res.type 是怎么来的，为什么需要，请看.@/http/consistency-request.js中的解释
+					//总结一句话就是，请求完成传给z-paging数据的时候，要告诉他，当初传过去给服务器的data-key是谁
+					//z-paging会比较它们是否相同，当相同的时候才会接纳这一数据，从而保证数据的一致性
+					this.$refs.paging.completeByKey(res.data, res.type - 1);
 				})
 			},
 			itemClick(item) {

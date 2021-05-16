@@ -117,10 +117,10 @@
 
 ## 自定义下拉刷新view
 
-* `use-custom-refresher`需要设置为true(默认为true)，此时将不会使用uni自带的下拉刷新，转为使用z-paging自定义的下拉刷新，通过slot可以插入开发者自定义的下拉刷新view。
+* `use-custom-refresher`需要设置为true(默认为true，无需设置)，此时将不会使用uni自带的下拉刷新，转为使用z-paging自定义的下拉刷新，通过slot可以插入开发者自定义的下拉刷新view。
 
 ```html
-<z-paging ref="paging" fixed :refresher-threshold="80" @query="queryList" :list.sync="dataList">
+<z-paging ref="paging" fixed :refresher-threshold="160rpx" @query="queryList" :list.sync="dataList">
   <!-- 自定义下拉刷新view -->
   <!-- 注意注意注意！！QQ小程序或字节跳动小程序中自定义下拉刷新不支持slot-scope，将导致custom-refresher无法显示 -->
   <!-- 如果是QQ小程序或字节跳动小程序，请参照demo中的sticky-demo.vue中的写法，此处使用slot-scope是为了减少data中无关变量声明，降低依赖 -->
@@ -168,9 +168,16 @@
 ## 注意事项及常见问题
 
 * 【若无法下拉刷新】请确认要在@query所绑定的方法中调用`this.$refs.paging.complete()`，无论是否需要网络请求都要调用，只有告知z-paging刷新状态结束了，才可以开始下次的下拉刷新。
+
 * 【使用内置scroll-view滚动时】z-paging必须有确定的高度！否则上拉加载更多将无法触发，建议设置`:fixed=true`即可不设置高度！！(不希望跟着滚动的view可以设置`slot="top"`)。
+
 * 【使用页面滚动时】使用z-paging内置的scroll-view滚动性能不及使用页面的滚动。若您要使用页面的滚动，请勿固定z-paging的高度，并且必须设置`use-page-scroll`为true，否则将导致页面无法滚动(不希望跟着滚动的view可以设置`slot="top"`)。
+
+* 【使用页面滚动时】必须引入mixin(可全局引入)(具体可参照demo中的`custom-demo.vue`文件)
+   或在页面的`onReachBottom`事件中调用`this.$refs.paging.doLoadMore()`且在onPageScroll(e)中调用`this.$refs.paging.updatePageScrollTop(e.scrollTop)`。(具体可参照demo中的`custom-demo.vue`文件)
+
 * 【出现实际上有更多数据，而显示没有更多数据时】默认的pageSize(每页显示数量)为10，如果您服务端不需要传pageSize(例如有默认的pageSize：8)，则您需要将默认的pageSize改成您与后端约定好的（8），若没有修改，则z-paging会认为传给服务端的pageSize是10，而服务端只返回了8条，因此会直接判定为没有更多数据。
+
 * 【若页面无法滚动】请检查z-paging是否有固定的高度；若您想使用页面滚动而非z-paging内置的scroll-view的滚动，请设置`use-page-scroll`为true。
 
 ## API文档地址：[http://z-paging.com](http://z-paging.com)

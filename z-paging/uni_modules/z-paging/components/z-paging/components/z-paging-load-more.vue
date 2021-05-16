@@ -58,9 +58,6 @@
 		props: ['config'],
 		computed: {
 			ownLoadingMoreText() {
-				if (this.config.loadingMoreText.length) {
-					return this.config.loadingMoreText;
-				}
 				return this.loadingStatusTextMap[this.config.loadingStatus];
 			},
 		}
@@ -72,7 +69,7 @@
 
 	.zp-load-more-container {
 		height: 80rpx;
-		font-size: 26rpx;
+		font-size: 27rpx;
 		/* #ifndef APP-NVUE */
 		clear: both;
 		display: flex;

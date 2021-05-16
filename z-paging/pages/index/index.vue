@@ -70,6 +70,11 @@
 						title: '聊天记录模式演示',
 						file: 'chat-history-demo',
 						subTitle: ''
+					},
+					{
+						title: '保证数据一致性演示',
+						file: 'consistency-demo',
+						subTitle: '将request.js中的loadingTime修改为2000可更直观体验'
 					}
 				],
 				listNvue: [{
@@ -101,7 +106,9 @@
 			}
 		},
 		mounted (){
+			// #ifdef APP-PLUS
 			this.list = this.list.concat(this.listNvue);
+			// #endif
 		},
 		methods: {
 			queryList() {

@@ -7,7 +7,8 @@
 <template>
 	<view class="zp-container">
 		<view class="zp-main">
-			<image class="zp-main-image" :src="emptyViewImg"></image>
+			<image v-if="!emptyViewImg.length" class="zp-main-image" :src="base64Empty"></image>
+			<image v-else class="zp-main-image" :src="emptyViewImg"></image>
 			<!-- #ifdef APP-NVUE -->
 			<text class="zp-mian-title">{{emptyViewText}}</text>
 			<!-- #endif -->
@@ -23,7 +24,7 @@
 	export default {
 		data() {
 			return {
-
+				base64Empty: zStatic.base64Empty
 			};
 		},
 		props: {
@@ -38,7 +39,7 @@
 			emptyViewImg: {
 				type: String,
 				default: function() {
-					return zStatic.base64Empty
+					return ''
 				}
 			},
 		}
@@ -67,14 +68,16 @@
 		z-index: 1000;
 		/* #ifndef APP-NVUE */
 		display: flex;
+		margin-top: -150rpx;
+		/* #endif */
+		/* #ifdef APP-NVUE */
+		margin-top: -100rpx;
 		/* #endif */
 		flex-direction: column;
 		align-items: center;
-		
 	}
 
 	.zp-main-image {
-		margin-top: -200rpx;
 		width: 200rpx;
 		height: 200rpx;
 		z-index: 1000;

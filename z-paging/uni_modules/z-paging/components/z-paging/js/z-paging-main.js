@@ -5,12 +5,14 @@
 
 import zStatic from './z-paging-static'
 import zConfig from './z-paging-config'
+import zI18n from './z-paging-i18n'
 import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
+const i18nUpdateKey = 'ZPAGINGI18NUPDATE';
 let config = null;
 // #ifdef APP-NVUE
 const weexDom = weex.requireModule('dom');
@@ -54,10 +56,12 @@ function toKebab(value) {
  * @tutorial https://github.com/SmileZXLee/uni-z-paging
  * @property {Number|String} default-page-no 自定义pageNo，默认为1
  * @property {Number|String} default-page-size 自定义pageSize，默认为10
+ * @property {Number|Object} data-key 为保证数据一致，设置当前tab切换时的标识key，并在complete中传递相同key，若二者不一致，则complete将不会生效
+ * @property {String} language i18n国际化设置语言，支持简体中文(zh-cn)、繁体中文(zh-hant-cn)和英文(en)
  * @property {Object} paging-style 设置z-paging的style，部分平台可能无法直接修改组件的style，可使用此属性代替
  * @property {Object} paging-content-style 设置z-paging的容器(插槽的父view)的style
  * @property {Boolean} auto-height z-paging是否自动高度，若自动高度则会自动铺满屏幕，默认为否
- * @property {String} auto-height-addition z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数
+ * @property {Number|String} auto-height-addition z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数
  * @property {String} default-theme-style loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
  * @property {Boolean} use-page-scroll 使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
  * @property {Boolean} fixed z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为否(当使用内置scroll-view滚动时有效)
@@ -73,7 +77,6 @@ function toKebab(value) {
  * @property {String} refresher-pulling-text 自定义下拉刷新松手立即刷新状态下的文字(use-custom-refresher为true时生效)
  * @property {String} refresher-refreshing-text 自定义下拉刷新刷新中状态下的文字(use-custom-refresher为true时生效)
  * @property {Boolean} refresher-end-bounce-enabled 是否开启自定义下拉刷新刷新结束回弹效果，默认为是(use-custom-refresher为true时生效)
- * @property {String} loading-more-text 自定义底部加载更多文字
  * @property {Object} loading-more-custom-style 自定义底部加载更多样式
  * @property {Object} loading-more-loading-icon-custom-style 自定义底部加载更多加载中动画样式
  * @property {String} loading-more-loading-icon-type 自定义底部加载更多加载中动画图标类型，可选circle或flower，默认为circle
@@ -95,19 +98,19 @@ function toKebab(value) {
  * @property {Boolean} auto-hide-empty-view-when-loading 加载中时是否自动隐藏空数据图，默认为是
  * @property {Boolean} auto-hide-loading-after-first-loaded 第一次加载后自动隐藏loading slot，默认为是
  * @property {Boolean} auto-show-back-to-top 自动显示点击返回顶部按钮，默认为否
- * @property {Number} back-to-top-threshold 点击返回顶部按钮显示/隐藏的阈值(滚动距离)，单位为px，默认为200px
+ * @property {Number|String} back-to-top-threshold 点击返回顶部按钮显示/隐藏的阈值(滚动距离)，单位为px，默认为400rpx
  * @property {String} back-to-top-img 点击返回顶部按钮的自定义图片地址，默认使用z-paging内置的图片
  * @property {Boolean} back-to-top-with-animate 点击返回顶部按钮返回到顶部时是否展示过渡动画，默认为是
- * @property {String} back-to-top-bottom 点击返回顶部按钮与底部的距离，注意添加单位px或rpx，默认为160rpx
+ * @property {Number|String} back-to-top-bottom 点击返回顶部按钮与底部的距离，注意添加单位px或rpx，默认为160rpx
  * @property {Object} back-to-top-style 点击返回顶部按钮的自定义样式
  * @property {Boolean} show-scrollbar 在设置滚动条位置时使用动画过渡，默认为否
  * @property {Boolean} scroll-to-top-bounce-enabled iOS设备上滚动到顶部时是否允许回弹效果，默认为是。关闭回弹效果后可使滚动到顶部与下拉刷新更连贯，但是有吸顶view时滚动到顶部时可能出现抖动。
  * @property {Boolean} scroll-with-animation 控制是否出现滚动条，默认为否
  * @property {String} scroll-into-view 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素
- * @property {Number} lower-threshold 距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为50
+ * @property {Number|String} lower-threshold 距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为100rpx
  * @property {Boolean} enable-back-to-top iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向，默认为否
  * @property {Boolean} refresher-enabled 是否开启自定义下拉刷新，默认为是
- * @property {Number} refresher-threshold 设置自定义下拉刷新阈值，默认为45
+ * @property {Number|String} refresher-threshold 设置自定义下拉刷新阈值，默认为80rpx
  * @property {String} refresher-default-style 设置自定义下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式，默认为black
  * @property {String} refresher-background 设置自定义下拉刷新区域背景颜色
  * @property {Number|String} local-paging-loading-time 本地分页时上拉加载更多延迟时间，单位为毫秒，默认200毫秒
@@ -183,6 +186,7 @@ export default {
 			loadingMoreDefaultSlot: null,
 			backToTopClass: 'zp-back-to-top zp-back-to-top-hide',
 			showBackToTopClass: false,
+			tempLanguage: uni.getStorageSync(i18nUpdateKey) || systemInfo.language || 'zh',
 			nRefresherLoading: true,
 			nListIsDragging: false,
 			nShowBottom: true,
@@ -205,6 +209,20 @@ export default {
 			type: [Number, String],
 			default: _getConfig('defaultPageSize', 10),
 		},
+		//为保证数据一致，设置当前tab切换时的标识key，并在complete中传递相同key，若二者不一致，则complete将不会生效
+		dataKey: {
+			type: [Number, Object],
+			default: function() {
+				return _getConfig('dataKey', null);
+			},
+		},
+		//i18n国际化设置语言，支持简体中文(zh-cn)、繁体中文(zh-hant-cn)和英文(en)
+		language: {
+			type: String,
+			default: function() {
+				return _getConfig('language', '');
+			},
+		},
 		//设置z-paging的style，部分平台可能无法直接修改组件的style，可使用此属性代替
 		pagingStyle: {
 			type: Object,
@@ -226,7 +244,7 @@ export default {
 		},
 		//z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，若需要减少高度，则传负数
 		autoHeightAddition: {
-			type: String,
+			type: [Number, String],
 			default: _getConfig('autoHeightAddition', '0px')
 		},
 		//loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
@@ -298,28 +316,23 @@ export default {
 		},
 		//自定义下拉刷新默认状态下的文字(use-custom-refresher为true时生效)
 		refresherDefaultText: {
-			type: String,
-			default: _getConfig('refresherDefaultText', '继续下拉刷新')
+			type: [String, Object],
+			default: _getConfig('refresherDefaultText', null)
 		},
 		//自定义下拉刷新松手立即刷新状态下的文字(use-custom-refresher为true时生效)
 		refresherPullingText: {
-			type: String,
-			default: _getConfig('refresherPullingText', '松开立即刷新')
+			type: [String, Object],
+			default: _getConfig('refresherPullingText', null)
 		},
 		//自定义下拉刷新刷新中状态下的文字(use-custom-refresher为true时生效)
 		refresherRefreshingText: {
-			type: String,
-			default: _getConfig('refresherRefreshingText', '正在刷新...')
+			type: [String, Object],
+			default: _getConfig('refresherRefreshingText', null)
 		},
 		//是否开启自定义下拉刷新刷新结束回弹效果，默认为是(use-custom-refresher为true时生效)
 		refresherEndBounceEnabled: {
 			type: Boolean,
 			default: _getConfig('refresherEndBounceEnabled', true)
-		},
-		//自定义底部加载更多文字
-		loadingMoreText: {
-			type: String,
-			default: _getConfig('loadingMoreText', '')
 		},
 		//自定义底部加载更多样式
 		loadingMoreCustomStyle: {
@@ -357,23 +370,23 @@ export default {
 		},
 		//滑动到底部"默认"文字，默认为【点击加载更多】
 		loadingMoreDefaultText: {
-			type: String,
-			default: _getConfig('loadingMoreDefaultText', '点击加载更多')
+			type: [String, Object],
+			default: _getConfig('loadingMoreDefaultText', null)
 		},
 		//滑动到底部"加载中"文字，默认为【正在加载...】
 		loadingMoreLoadingText: {
-			type: String,
-			default: _getConfig('loadingMoreLoadingText', '正在加载...')
+			type: [String, Object],
+			default: _getConfig('loadingMoreLoadingText', null)
 		},
 		//滑动到底部"没有更多"文字，默认为【没有更多了】
 		loadingMoreNoMoreText: {
-			type: String,
-			default: _getConfig('loadingMoreNoMoreText', '没有更多了')
+			type: [String, Object],
+			default: _getConfig('loadingMoreNoMoreText', null)
 		},
 		//滑动到底部"加载失败"文字，默认为【加载失败，点击重新加载】
 		loadingMoreFailText: {
-			type: String,
-			default: _getConfig('loadingMoreFailText', '加载失败，点击重新加载')
+			type: [String, Object],
+			default: _getConfig('loadingMoreFailText', null)
 		},
 		//当没有更多数据且分页内容未超出z-paging时是否隐藏没有更多数据的view，默认为否
 		hideLoadingMoreWhenNoMoreAndInsideOfPaging: {
@@ -409,13 +422,13 @@ export default {
 		},
 		//空数据图描述文字，默认为“没有数据哦~”
 		emptyViewText: {
-			type: String,
-			default: _getConfig('emptyViewText', '没有数据哦~')
+			type: [String, Object],
+			default: _getConfig('emptyViewText', null)
 		},
 		//空数据图图片，默认使用z-paging内置的图片
 		emptyViewImg: {
 			type: String,
-			default: _getConfig('emptyViewImg', zStatic.base64Empty)
+			default: _getConfig('emptyViewImg', '')
 		},
 		//加载中时是否自动隐藏空数据图，默认为是
 		autoHideEmptyViewWhenLoading: {
@@ -432,10 +445,10 @@ export default {
 			type: Boolean,
 			default: _getConfig('autoShowBackToTop', false)
 		},
-		//点击返回顶部按钮显示/隐藏的阈值(滚动距离)，单位为px，默认为200px
+		//点击返回顶部按钮显示/隐藏的阈值(滚动距离)，单位为px，默认为400rpx
 		backToTopThreshold: {
-			type: Number,
-			default: _getConfig('backToTopThreshold', 200)
+			type: [Number, String],
+			default: _getConfig('backToTopThreshold', '400rpx')
 		},
 		//点击返回顶部按钮的自定义图片地址，默认使用z-paging内置的图片
 		backToTopImg: {
@@ -449,7 +462,7 @@ export default {
 		},
 		//点击返回顶部按钮与底部的距离，注意添加单位px或rpx，默认为160rpx
 		backToTopBottom: {
-			type: String,
+			type: [Number, String],
 			default: _getConfig('backToTopBottom', '160rpx')
 		},
 		//点击返回顶部按钮的自定义样式
@@ -484,10 +497,10 @@ export default {
 			type: String,
 			default: _getConfig('scrollIntoView', '')
 		},
-		//距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为50
+		//距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为100rpx
 		lowerThreshold: {
-			type: Number,
-			default: _getConfig('lowerThreshold', 50)
+			type: [Number, String],
+			default: _getConfig('lowerThreshold', '100rpx')
 		},
 		//iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向，默认为否
 		enableBackToTop: {
@@ -499,10 +512,10 @@ export default {
 			type: Boolean,
 			default: _getConfig('refresherEnabled', true)
 		},
-		//设置自定义下拉刷新阈值，默认为45
+		//设置自定义下拉刷新阈值，默认为80rpx
 		refresherThreshold: {
-			type: Number,
-			default: _getConfig('refresherThreshold', 45)
+			type: [Number, String],
+			default: _getConfig('refresherThreshold', '80rpx')
 		},
 		//设置系统下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式，默认为black
 		refresherDefaultStyle: {
@@ -565,6 +578,12 @@ export default {
 		})
 		this.updatePageScrollTopHeight();
 		this.updatePageScrollBottomHeight();
+		this.$on(i18nUpdateKey, () => {
+			this.$set(this, 'tempLanguage', this.tempLanguage + '');
+		})
+	},
+	destroyed() {
+		uni.$off('i18nUpdateKey');
 	},
 	watch: {
 		totalData(newVal, oldVal) {
@@ -696,11 +715,10 @@ export default {
 				loadingMoreLoadingIconCustomImage: this.loadingMoreLoadingIconCustomImage,
 				showLoadingMoreNoMoreLine: this.showLoadingMoreNoMoreLine,
 				loadingMoreNoMoreLineCustomStyle: this.loadingMoreNoMoreLineCustomStyle,
-				loadingMoreDefaultText: this.loadingMoreDefaultText,
-				loadingMoreLoadingText: this.loadingMoreLoadingText,
-				loadingMoreNoMoreText: this.loadingMoreNoMoreText,
-				loadingMoreFailText: this.loadingMoreFailText,
-				loadingMoreText: this.loadingMoreText
+				loadingMoreDefaultText: this.finalLoadingMoreDefaultText,
+				loadingMoreLoadingText: this.finalLoadingMoreLoadingText,
+				loadingMoreNoMoreText: this.finalLoadingMoreNoMoreText,
+				loadingMoreFailText: this.finalLoadingMoreFailText
 			};
 		},
 		zScopedSlots() {
@@ -735,12 +753,66 @@ export default {
 			}
 			return pagingStyle;
 		},
+		finalBackToTopThreshold() {
+			return this._convertTextToPx(this.backToTopThreshold);
+		},
+		finalLowerThreshold() {
+			return this._convertTextToPx(this.lowerThreshold);
+		},
+		finalRefresherThreshold() {
+			return this._convertTextToPx(this.refresherThreshold);
+		},
 		finalBackToTopStyle() {
 			let tempBackToTopStyle = this.backToTopStyle;
 			if (!tempBackToTopStyle.bottom) {
 				tempBackToTopStyle.bottom = this.windowBottom + this._convertTextToPx(this.backToTopBottom) + 'px';
 			}
 			return tempBackToTopStyle;
+		},
+		finalTempLanguage() {
+			if (this.language.length) {
+				return this.language;
+			}
+			return this.tempLanguage;
+		},
+		finalLanguage() {
+			let language = this.finalTempLanguage.toLowerCase();
+			var reg = new RegExp('_', '');
+			language = language.replace(reg, '-');
+			if (language.indexOf('zh') !== -1) {
+				if (language === 'zh-cn') {
+					return 'zh-cn';
+				}
+				return 'zh-hant-cn';
+			}
+			if (language.indexOf('en') !== -1) {
+				return 'en';
+			}
+			return 'zh-cn';
+		},
+		finalRefresherDefaultText() {
+			return this._getI18nText('refresherDefaultText');
+		},
+		finalRefresherPullingText() {
+			return this._getI18nText('refresherPullingText');
+		},
+		finalRefresherRefreshingText() {
+			return this._getI18nText('refresherRefreshingText');
+		},
+		finalLoadingMoreDefaultText() {
+			return this._getI18nText('loadingMoreDefaultText');
+		},
+		finalLoadingMoreLoadingText() {
+			return this._getI18nText('loadingMoreLoadingText');
+		},
+		finalLoadingMoreNoMoreText() {
+			return this._getI18nText('loadingMoreNoMoreText');
+		},
+		finalLoadingMoreFailText() {
+			return this._getI18nText('loadingMoreFailText');
+		},
+		finalEmptyViewText() {
+			return this._getI18nText('emptyViewText');
 		},
 		safeAreaBottom() {
 			if (!this.systemInfo) {
@@ -790,11 +862,24 @@ export default {
 		complete(data, success = true) {
 			this.addData(data, success);
 		},
+		//【保证数据一致】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为dataKey，需与:data-key绑定的一致，第三个参数为是否成功(默认是是）
+		completeByKey(data, dataKey = null, success = true) {
+			if (dataKey !== null && this.dataKey !== null && dataKey !== this.dataKey) {
+				return;
+			}
+			this.addData(data, success);
+		},
 		//与上方complete方法功能一致，新版本中设置服务端回调数组请使用complete方法
 		addData(data, success = true) {
 			this.$nextTick(() => {
 				this._addData(data, success, false);
 			})
+		},
+		//设置i18n国际化语言
+		setI18n(language) {
+			this.tempLanguage = language;
+			uni.setStorageSync(i18nUpdateKey, language);
+			uni.$emit(i18nUpdateKey);
 		},
 		//添加聊天记录
 		addChatRecordData(data, toBottom = true, toBottomWithAnimate = true) {
@@ -1247,8 +1332,6 @@ export default {
 						}
 					});
 				});
-
-
 			} catch (e) {
 
 			}
@@ -1398,7 +1481,7 @@ export default {
 				this.isTouchmoving = true;
 			}
 			this.isTouchEnded = false;
-			if (moveDistance >= this.refresherThreshold) {
+			if (moveDistance >= this.finalRefresherThreshold) {
 				this.refresherStatus = 1;
 			} else {
 				this.refresherStatus = 0;
@@ -1440,11 +1523,11 @@ export default {
 
 			}
 			this.isTouchEnded = true;
-			if (moveDistance >= this.refresherThreshold && this.refresherStatus === 1) {
+			if (moveDistance >= this.finalRefresherThreshold && this.refresherStatus === 1) {
 				// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
-				this.refresherTransform = `translateY(${this.refresherThreshold}px)`;
+				this.refresherTransform = `translateY(${this.finalRefresherThreshold}px)`;
 				// #endif
-				this.moveDistance = this.refresherThreshold;
+				this.moveDistance = this.finalRefresherThreshold;
 				this.refresherStatus = 2;
 				this._doRefresherLoad();
 			} else {
@@ -1491,11 +1574,11 @@ export default {
 		},
 		//模拟用户手动触发下拉刷新
 		_doRefresherRefreshAnimate() {
-			this.refresherTransform = `translateY(${this.refresherThreshold}px)`;
+			this.refresherTransform = `translateY(${this.finalRefresherThreshold}px)`;
 			// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
 			this.wxsPropType = 'begin' + (new Date()).getTime();
 			// #endif
-			this.moveDistance = this.refresherThreshold;
+			this.moveDistance = this.finalRefresherThreshold;
 			this.refresherStatus = 2;
 			this.isTouchmoving = true;
 		},
@@ -1507,8 +1590,8 @@ export default {
 		//获取处理后的moveDistance
 		_getFinalRefresherMoveDistance(moveDistance) {
 			moveDistance = moveDistance * 0.7;
-			if (moveDistance >= this.refresherThreshold) {
-				moveDistance = this.refresherThreshold + (moveDistance - this.refresherThreshold) * 0.3;
+			if (moveDistance >= this.finalRefresherThreshold) {
+				moveDistance = this.finalRefresherThreshold + (moveDistance - this.finalRefresherThreshold) * 0.3;
 			}
 			return moveDistance;
 		},
@@ -1655,6 +1738,10 @@ export default {
 		},
 		//将文本的px或者rpx转为px的值
 		_convertTextToPx(text) {
+			const dataType = Object.prototype.toString.call(text);
+			if (dataType === '[object Number]') {
+				return text;
+			}
 			let isRpx = false;
 			if (text.indexOf('rpx') !== -1) {
 				text = text.replace('rpx', '');
@@ -1699,7 +1786,7 @@ export default {
 				return;
 			}
 			if (newVal !== oldVal) {
-				if (newVal > this.backToTopThreshold) {
+				if (newVal > this.finalBackToTopThreshold) {
 					if (!this.showBackToTopClass) {
 						this.showBackToTopClass = true;
 						setTimeout(() => {
@@ -1743,6 +1830,20 @@ export default {
 					});
 				}, delayTime)
 			})
+		},
+		//获取国际化转换后的文本
+		_getI18nText(key) {
+			const value = this[key];
+			const dataType = Object.prototype.toString.call(value);
+			if (dataType === '[object Object]') {
+				const nextValue = value[this.finalLanguage];
+				if (nextValue) {
+					return nextValue;
+				}
+			} else if (dataType === '[object String]') {
+				return value;
+			}
+			return zI18n[key][this.finalLanguage];
 		},
 		// ------------nvue独有的方法----------------
 		//列表滚动时触发
