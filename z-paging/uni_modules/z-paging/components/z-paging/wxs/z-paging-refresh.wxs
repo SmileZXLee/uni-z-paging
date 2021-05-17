@@ -97,10 +97,7 @@ function touchend(e, ownerInstance) {
 	var refresherThreshold = instance.getDataset().refresherthreshold
 	var moveDistance = _getMoveDistance(e, instance);
 	if (!(moveDistance >= refresherThreshold && oldRefresherStatus === 1)) {
-		console.log('setTimeoutsetTimeoutsetTimeout')
-		setTimeout(function() {
-			state.isTouchmoving = false;
-		}, 100);
+		state.isTouchmoving = false;
 	}
 	ownerInstance.callMethod('_handleRefresherTouchend', moveDistance);
 	state.isTouchEnded = true;

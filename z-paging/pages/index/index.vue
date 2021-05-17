@@ -1,6 +1,7 @@
 <template>
 	<view class="content">
-		<z-paging ref="paging" fixed @query="queryList" :refresher-threshold="60" :hide-empty-view="true" :mounted-auto-call-reload="false">
+		<z-paging ref="paging" fixed @query="queryList" :refresher-threshold="60" :hide-empty-view="true"
+			:mounted-auto-call-reload="false">
 			<view slot="refresher" style="height: 100%;display: flex;justify-content: center;align-items: center;">
 				<image style="width: 300rpx;height: 60rpx;" src="../../static/logo_loading.gif"></image>
 			</view>
@@ -75,6 +76,11 @@
 						title: '保证数据一致性演示',
 						file: 'consistency-demo',
 						subTitle: '将request.js中的loadingTime修改为2000可更直观体验'
+					},
+					{
+						title: 'i18n国际化演示',
+						file: 'i18n-demo',
+						subTitle: ''
 					}
 				],
 				listNvue: [{
@@ -105,7 +111,7 @@
 				]
 			}
 		},
-		mounted (){
+		mounted() {
 			// #ifdef APP-PLUS
 			this.list = this.list.concat(this.listNvue);
 			// #endif
@@ -123,7 +129,7 @@
 				uni.navigateTo({
 					url: `../${item.file}/${item.file}`
 				})
-				
+
 			}
 		}
 	}
@@ -167,14 +173,16 @@
 		padding: 5rpx 10rpx;
 		border-radius: 8rpx;
 	}
-	.demo-nvue-tip{
+
+	.demo-nvue-tip {
 		width: 100%;
 		padding: 20rpx;
 		color: #aaaaaa;
 		font-size: 24rpx;
 		text-align: center;
 	}
-	.tip-bottom{
+
+	.tip-bottom {
 		background-color: #007AFF;
 		color: white;
 		padding: 20rpx 0rpx;

@@ -38,17 +38,21 @@
 			return {
 				base64Arrow: zStatic.base64Arrow,
 				base64Flower: zStatic.base64Flower,
-				refresherStatusTextMap: {
-					0: this.refresherDefaultText,
-					1: this.refresherPullingText,
-					2: this.refresherRefreshingText
-				},
 				refresherLeftImageClass: 'zp-custom-refresher-left-image',
 			};
 		},
 		props: ['refresherStatus', 'defaultThemeStyle', 'refresherDefaultText', 'refresherPullingText',
 			'refresherPullingText', 'refresherRefreshingText'
 		],
+		computed: {
+			refresherStatusTextMap() {
+				return {
+					0: this.refresherDefaultText,
+					1: this.refresherPullingText,
+					2: this.refresherRefreshingText
+				};
+			}
+		},
 		watch: {
 			refresherStatus(newVal, oldVal) {
 				if (newVal === 0 && oldVal !== 0) {

@@ -1,6 +1,6 @@
 # z-paging
 
-> 【uni-app自动分页器】超简单，低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view，支持吸顶效果等。
+> 【uni-app自动分页器】超简单，低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view，支持吸顶效果，支持国际化等。
 
 ### API文档地址：[http://z-paging.com](http://z-paging.com)
 
@@ -9,7 +9,7 @@
 * 【配置简单】仅需两步（绑定网络请求方法、绑定分页结果数组）轻松完成完整下拉刷新，上拉加载更多功能。
 * 【低耦合，低侵入】分页自动管理。在page中无需处理任何分页相关逻辑，无需在data中定义任何分页相关变量，全由z-paging内部处理。
 * 【超灵活，支持各种类型自定义】支持自定义下拉刷新，自定义上拉加载更多，自带自定义下拉刷新效果，及其他数十种自定义属性。
-* 【功能丰富】支持自定义且自动管理空数据图，支持主题模式切换，支持本地分页，支持聊天分页模式，支持吸顶效果，支持内部scroll-view滚动与页面滚动，支持一键滚动到顶部等诸多功能。
+* 【功能丰富】支持国际化，支持自定义且自动管理空数据图，支持主题模式切换，支持本地分页，支持聊天分页模式，支持吸顶效果，支持内部scroll-view滚动与页面滚动，支持一键滚动到顶部等诸多功能。
 * 【多平台兼容，细致，流畅】支持nvue，支持h5、app及各家小程序；在app-vue、h5、微信小程序、QQ小程序上使用wxs实现下拉刷新，大幅提升性能。多处细节优化，给您精致流畅的体验。
 
 ### 反馈qq群(点击加群)：[790460711](https://jq.qq.com/?_wv=1027&k=vU2fKZZH)
@@ -85,7 +85,7 @@
 </style>
 ```
 
-## 设置自定义emptyView组件
+## 设置自定义emptyView组件示例
 
 * 设置自定义emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理
 
@@ -101,12 +101,13 @@
 </z-paging>
 ```
 
-## 自定义加载更多各个状态的描述文字
+## 自定义加载更多各个状态的描述文字示例
 
 * 以修改【没有更多了】状态描述文字为例(将默认的"没有更多了"修改为"我也是有底线的！")
 
 ```html
 <z-paging ref="paging" fixed loading-more-no-more-text="我也是有底线的！" @query="queryList" :list.sync="dataList">
+    <!-- 设置自己的emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
     <view>
         <view class="item" v-for="(item,index) in dataList">
             <view class="item-title">{{item.title}}</view>
@@ -115,28 +116,28 @@
 </z-paging>
 ```
 
-## 自定义下拉刷新view
+## 自定义下拉刷新view示例
 
-* `use-custom-refresher`需要设置为true(默认为true，无需设置)，此时将不会使用uni自带的下拉刷新，转为使用z-paging自定义的下拉刷新，通过slot可以插入开发者自定义的下拉刷新view。
+* `use-custom-refresher`需要设置为true(默认为true)，此时将不会使用uni自带的下拉刷新，转为使用z-paging自定义的下拉刷新，通过slot可以插入开发者自定义的下拉刷新view。
 
 ```html
-<z-paging ref="paging" fixed :refresher-threshold="160rpx" @query="queryList" :list.sync="dataList">
+<z-paging ref="paging" fixed :refresher-threshold="80" @query="queryList" :list.sync="dataList">
   <!-- 自定义下拉刷新view -->
   <!-- 注意注意注意！！QQ小程序或字节跳动小程序中自定义下拉刷新不支持slot-scope，将导致custom-refresher无法显示 -->
-  <!-- 如果是QQ小程序或字节跳动小程序，请参照demo中的sticky-demo.vue中的写法，此处使用slot-scope是为了减少data中无关变量声明，降低依赖 -->
-  <custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus"></custom-refresher>
+	<!-- 如果是QQ小程序或字节跳动小程序，请参照demo中的sticky-demo.vue中的写法，此处使用slot-scope是为了减少data中无关变量声明，降低依赖 -->
+	<custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus"></custom-refresher>
   <!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
   <view>
     <view class="item" v-for="(item,index) in dataList" @click="itemClick(item)">
-        <view class="item-title">{{item.title}}</view>
-        <view class="item-detail">{{item.detail}}</view>
-        <view class="item-line"></view>
+      <view class="item-title">{{item.title}}</view>
+      <view class="item-detail">{{item.detail}}</view>
+      <view class="item-line"></view>
     </view>
   </view>
 </z-paging>
 ```
 
-## 自定义加载更多各个状态的描述view
+## 自定义加载更多各个状态的描述view示例
 
 * 以修改【没有更多了】状态描述view为例
 
@@ -148,8 +149,50 @@
         </view>
     </view>
     <view style="background-color: red" slot="loadingMoreNoMore">这是完全自定义的没有更多数据view</view>
-</z-paging
+</z-paging>
 ```
+
+## 使用页面滚动示例
+
+```html
+<!-- 使用页面滚动示例(无需设置z-paging的高度) -->
+<template>
+	<view class="content">
+		<!-- 此时使用了页面的滚动，z-paging不需要有确定的高度，use-page-scroll需要设置为true -->
+		<!-- 注意注意！！这里的ref必须设置且必须等于"paging"，否则mixin方法无效 -->
+		<z-paging ref="paging" safe-area-inset-bottom @query="queryList" :list.sync="dataList" :use-page-scroll="true">
+			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
+			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
+			<view>
+				<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
+					<view class="item-title">{{item.title}}</view>
+					<view class="item-detail">{{item.detail}}</view>
+					<view class="item-line"></view>
+				</view>
+			</view>
+		</z-paging>
+	</view>
+</template>
+
+<script>
+	//使用页面滚动时引入此mixin，用于监听和处理onPullDownRefresh等页面生命周期方法(如果全局引入了，就不要这一步，全局引入示例见main.js)
+	import ZPagingMixin from '@/uni_modules/z-paging/components/z-paging/js/z-paging-mixin'
+	export default {
+		//注意这一步不要漏掉，必须注册mixins(如果全局引入了，就不要这一步，全局引入示例见main.js)
+		mixins: [ZPagingMixin],
+		data() {
+			//参见demo
+		},
+		methods: {
+			//参见demo
+		}
+	}
+</script>
+```
+
+## i18n示例
+
+* 请参照demo：`i18n-demo.vue`
 
 ## 性能与建议
 
@@ -174,10 +217,11 @@
 * 【使用页面滚动时】使用z-paging内置的scroll-view滚动性能不及使用页面的滚动。若您要使用页面的滚动，请勿固定z-paging的高度，并且必须设置`use-page-scroll`为true，否则将导致页面无法滚动(不希望跟着滚动的view可以设置`slot="top"`)。
 
 * 【使用页面滚动时】必须引入mixin(可全局引入)(具体可参照demo中的`custom-demo.vue`文件)
-   或在页面的`onReachBottom`事件中调用`this.$refs.paging.doLoadMore()`且在onPageScroll(e)中调用`this.$refs.paging.updatePageScrollTop(e.scrollTop)`。(具体可参照demo中的`custom-demo.vue`文件)
+
+  或在页面的`onReachBottom`事件中调用`this.$refs.paging.doLoadMore()`且在`onPageScroll(e)`事件中调用`this.$refs.paging.updatePageScrollTop(e.scrollTop)`。(具体可参照demo中的`custom-demo.vue`文件)
 
 * 【出现实际上有更多数据，而显示没有更多数据时】默认的pageSize(每页显示数量)为10，如果您服务端不需要传pageSize(例如有默认的pageSize：8)，则您需要将默认的pageSize改成您与后端约定好的（8），若没有修改，则z-paging会认为传给服务端的pageSize是10，而服务端只返回了8条，因此会直接判定为没有更多数据。
 
 * 【若页面无法滚动】请检查z-paging是否有固定的高度；若您想使用页面滚动而非z-paging内置的scroll-view的滚动，请设置`use-page-scroll`为true。
 
-## API文档地址：[http://z-paging.com](http://z-paging.com)
+### API文档地址：[http://z-paging.com](http://z-paging.com)

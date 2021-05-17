@@ -46,20 +46,23 @@
 		data() {
 			return {
 				base64Arrow: zStatic.base64Arrow,
-				base64Flower: zStatic.base64Flower,
-				loadingStatusTextMap: {
-					0: this.config.loadingMoreDefaultText,
-					1: this.config.loadingMoreLoadingText,
-					2: this.config.loadingMoreNoMoreText,
-					3: this.config.loadingMoreFailText,
-				},
+				base64Flower: zStatic.base64Flower
 			};
 		},
 		props: ['config'],
 		computed: {
 			ownLoadingMoreText() {
-				return this.loadingStatusTextMap[this.config.loadingStatus];
+				const loadingMoreText = this.loadingStatusTextMap[this.config.loadingStatus];
+				return loadingMoreText;
 			},
+			loadingStatusTextMap() {
+				return {
+					0: this.config.loadingMoreDefaultText,
+					1: this.config.loadingMoreLoadingText,
+					2: this.config.loadingMoreNoMoreText,
+					3: this.config.loadingMoreFailText,
+				}
+			}
 		}
 	}
 </script>

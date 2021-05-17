@@ -112,6 +112,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/i18n-demo/i18n-demo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "i18n国际化演示",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

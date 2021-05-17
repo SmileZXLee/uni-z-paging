@@ -12,7 +12,7 @@ import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
-const i18nUpdateKey = 'ZPAGINGI18NUPDATE';
+const i18nUpdateKey = 'z-paging-i18n-update';
 let config = null;
 // #ifdef APP-NVUE
 const weexDom = weex.requireModule('dom');
@@ -58,6 +58,7 @@ function toKebab(value) {
  * @property {Number|String} default-page-size 自定义pageSize，默认为10
  * @property {Number|Object} data-key 为保证数据一致，设置当前tab切换时的标识key，并在complete中传递相同key，若二者不一致，则complete将不会生效
  * @property {String} language i18n国际化设置语言，支持简体中文(zh-cn)、繁体中文(zh-hant-cn)和英文(en)
+ * @property {Boolean} follow-system-language i18n国际化默认是否跟随系统语言，默认为是
  * @property {Object} paging-style 设置z-paging的style，部分平台可能无法直接修改组件的style，可使用此属性代替
  * @property {Object} paging-content-style 设置z-paging的容器(插槽的父view)的style
  * @property {Boolean} auto-height z-paging是否自动高度，若自动高度则会自动铺满屏幕，默认为否
@@ -73,9 +74,9 @@ function toKebab(value) {
  * @property {Number|String} refresher-fps 自定义下拉刷新下拉帧率，默认为40，过高可能会出现抖动问题(use-custom-refresher为true时生效)
  * @property {Number|String} refresher-max-angle 自定义下拉刷新允许触发的最大下拉角度，默认为40度，当下拉角度小于设定值时，自定义下拉刷新动画不会被触发
  * @property {Boolean} refresher-angle-enable-change-continued 自定义下拉刷新的角度由未达到最大角度变到达到最大角度时，是否继续下拉刷新手势，默认为否
- * @property {String} refresher-default-text 自定义下拉刷新默认状态下的文字(use-custom-refresher为true时生效)
- * @property {String} refresher-pulling-text 自定义下拉刷新松手立即刷新状态下的文字(use-custom-refresher为true时生效)
- * @property {String} refresher-refreshing-text 自定义下拉刷新刷新中状态下的文字(use-custom-refresher为true时生效)
+ * @property {String|Object} refresher-default-text 自定义下拉刷新默认状态下的文字(use-custom-refresher为true时生效)
+ * @property {String|Object} refresher-pulling-text 自定义下拉刷新松手立即刷新状态下的文字(use-custom-refresher为true时生效)
+ * @property {String|Object} refresher-refreshing-text 自定义下拉刷新刷新中状态下的文字(use-custom-refresher为true时生效)
  * @property {Boolean} refresher-end-bounce-enabled 是否开启自定义下拉刷新刷新结束回弹效果，默认为是(use-custom-refresher为true时生效)
  * @property {Object} loading-more-custom-style 自定义底部加载更多样式
  * @property {Object} loading-more-loading-icon-custom-style 自定义底部加载更多加载中动画样式
@@ -83,17 +84,17 @@ function toKebab(value) {
  * @property {String} loading-more-loading-icon-custom-image 自定义底部加载更多加载中动画图标图片
  * @property {Boolean} loading-more-enabled 是否启用加载更多数据(含滑动到底部加载更多数据和点击加载更多数据)，默认为是
  * @property {Boolean} to-bottom-loading-more-enabled 是否启用滑动到底部加载更多数据
- * @property {String} loading-more-default-text 滑动到底部"默认"文字，默认为【点击加载更多】
- * @property {String} loading-more-loading-text 滑动到底部"加载中"文字，默认为【正在加载...】
- * @property {String} loading-more-no-more-text 滑动到底部"没有更多"文字，默认为【没有更多了】
- * @property {String} loading-more-fail-text 滑动到底部"加载失败"文字，默认为【加载失败，点击重新加载】
+ * @property {String|Object} loading-more-default-text 滑动到底部"默认"文字，默认为【点击加载更多】
+ * @property {String|Object} loading-more-loading-text 滑动到底部"加载中"文字，默认为【正在加载...】
+ * @property {String|Object} loading-more-no-more-text 滑动到底部"没有更多"文字，默认为【没有更多了】
+ * @property {String|Object} loading-more-fail-text 滑动到底部"加载失败"文字，默认为【加载失败，点击重新加载】
  * @property {Boolean} hide-loading-more-when-no-more-and-inside-of-paging 当没有更多数据且分页内容未超出z-paging时是否隐藏没有更多数据的view，默认为是
  * @property {Boolean} show-loading-more-no-more-view 是否显示没有更多数据的view，默认为是
  * @property {Boolean} show-default-loading-more-text 是否显示默认的加载更多text，默认为是
  * @property {Boolean} show-loading-more-no-more-line 是否显示没有更多数据的分割线，默认为是
  * @property {Object} loading-more-no-more-line-custom-style 自定义底部没有更多数据的分割线样式
  * @property {Boolean} hide-empty-view 是否强制隐藏空数据图，默认为否
- * @property {String} empty-view-text 空数据图描述文字，默认为“没有数据哦~”
+ * @property {String|Object} empty-view-text 空数据图描述文字，默认为“没有数据哦~”
  * @property {String} empty-view-img 空数据图图片，默认使用z-paging内置的图片
  * @property {Boolean} auto-hide-empty-view-when-loading 加载中时是否自动隐藏空数据图，默认为是
  * @property {Boolean} auto-hide-loading-after-first-loaded 第一次加载后自动隐藏loading slot，默认为是
@@ -186,7 +187,7 @@ export default {
 			loadingMoreDefaultSlot: null,
 			backToTopClass: 'zp-back-to-top zp-back-to-top-hide',
 			showBackToTopClass: false,
-			tempLanguage: uni.getStorageSync(i18nUpdateKey) || systemInfo.language || 'zh',
+			tempLanguageUpdateKey: 0,
 			nRefresherLoading: true,
 			nListIsDragging: false,
 			nShowBottom: true,
@@ -219,9 +220,12 @@ export default {
 		//i18n国际化设置语言，支持简体中文(zh-cn)、繁体中文(zh-hant-cn)和英文(en)
 		language: {
 			type: String,
-			default: function() {
-				return _getConfig('language', '');
-			},
+			default: _getConfig('language', '')
+		},
+		//i18n国际化默认是否跟随系统语言，默认为是
+		followSystemLanguage: {
+			type: Boolean,
+			default: _getConfig('followSystemLanguage', true)
 		},
 		//设置z-paging的style，部分平台可能无法直接修改组件的style，可使用此属性代替
 		pagingStyle: {
@@ -578,8 +582,8 @@ export default {
 		})
 		this.updatePageScrollTopHeight();
 		this.updatePageScrollBottomHeight();
-		this.$on(i18nUpdateKey, () => {
-			this.$set(this, 'tempLanguage', this.tempLanguage + '');
+		uni.$on(i18nUpdateKey, () => {
+			this.tempLanguageUpdateKey = (new Date()).getTime();
 		})
 	},
 	destroyed() {
@@ -777,18 +781,7 @@ export default {
 		},
 		finalLanguage() {
 			let language = this.finalTempLanguage.toLowerCase();
-			var reg = new RegExp('_', '');
-			language = language.replace(reg, '-');
-			if (language.indexOf('zh') !== -1) {
-				if (language === 'zh-cn') {
-					return 'zh-cn';
-				}
-				return 'zh-hant-cn';
-			}
-			if (language.indexOf('en') !== -1) {
-				return 'en';
-			}
-			return 'zh-cn';
+			return zI18n.getPrivateLanguage(language, this.followSystemLanguage);
 		},
 		finalRefresherDefaultText() {
 			return this._getI18nText('refresherDefaultText');
@@ -813,6 +806,14 @@ export default {
 		},
 		finalEmptyViewText() {
 			return this._getI18nText('emptyViewText');
+		},
+		tempLanguage(){
+			let systemLanguage = false;
+			const temp = this.tempLanguageUpdateKey;
+			if(this.followSystemLanguage){
+				systemLanguage = systemInfo.language;
+			}
+			return uni.getStorageSync(i18nUpdateKey) || systemLanguage || 'zh-cn';
 		},
 		safeAreaBottom() {
 			if (!this.systemInfo) {
@@ -877,9 +878,11 @@ export default {
 		},
 		//设置i18n国际化语言
 		setI18n(language) {
-			this.tempLanguage = language;
-			uni.setStorageSync(i18nUpdateKey, language);
-			uni.$emit(i18nUpdateKey);
+			zI18n.setLanguage(language);
+		},
+		//获取当前z-paging的语言
+		getLanguage() {
+			return this.finalLanguage;
 		},
 		//添加聊天记录
 		addChatRecordData(data, toBottom = true, toBottomWithAnimate = true) {
@@ -1706,7 +1709,7 @@ export default {
 				.useCustomRefresher && this
 				.pageScrollTop > 10) || (!(this.usePageScroll && this.useCustomRefresher) && checkOldScrollTop);
 		},
-		//本地分页请求
+		//本�����分页请求
 		_localPagingQueryList(pageNo, pageSize, localPagingLoadingTime, callback) {
 			pageNo = parseInt(pageNo);
 			pageSize = parseInt(pageSize);
