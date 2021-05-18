@@ -23,7 +23,7 @@ V1.6.5
 		<scroll-view 
 			:class="!usePageScroll&&($slots.top||$slots.bottom)?'zp-scroll-view zp-scroll-view-flex1 zp-scroll-view-fix-height':usePageScroll?'zp-scroll-view':'zp-scroll-view zp-scroll-view-flex1'" 
 			:style="[scrollViewStyle]" :scroll-top="scrollTop"
-			:scroll-y="scrollable&&!usePageScroll&&scrollEnable" :enable-back-to-top="enableBackToTop"
+			:scroll-y="scrollable&&!usePageScroll&&scrollEnable" :enable-back-to-top="finalEnableBackToTop"
 			:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
 			:scroll-into-view="scrollIntoView" :lower-threshold="finalLowerThreshold"
 			:refresher-enabled="finalRefresherEnabled&&!useCustomRefresher" :refresher-threshold="finalRefresherThreshold"
@@ -83,7 +83,7 @@ V1.6.5
 					<slot v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" name="loading" />
 					<!-- 空数据图 -->
 					<view class="zp-empty-view"
-						v-if="!totalData.length&&(autoHideEmptyViewWhenLoading?isAddedData:true)&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
+						v-if="!refresherOnly&&!totalData.length&&(autoHideEmptyViewWhenLoading?isAddedData:true)&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
 						<slot v-if="$slots.empty" name="empty" />
 						<z-paging-empty-view v-else :emptyViewImg="emptyViewImg" :emptyViewText="finalEmptyViewText">
 						</z-paging-empty-view>
@@ -127,7 +127,7 @@ V1.6.5
 	</view>
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
-	<view ref="n-list" :class="useChatRecordMode?'zp-n-list zp-n-view-reverse':'zp-n-list'" :is="finalNvueListIs" alwaysScrollableVertical="true"
+	<view ref="n-list" id="z-paging-nlist" :class="useChatRecordMode?'zp-n-list zp-n-view-reverse':'zp-n-list'" :is="finalNvueListIs" alwaysScrollableVertical="true"
 		:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar" :loadmoreoffset="finalLowerThreshold"
 		:scrollable="scrollable&&scrollEnable" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 		:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap"
@@ -148,7 +148,7 @@ V1.6.5
 			<slot name="loading" />
 		</view>
 		<!-- 空数据图 -->
-		<view :class="useChatRecordMode?'zp-n-view-reverse':''" v-if="!totalData.length&&(autoHideEmptyViewWhenLoading?isAddedData:true)&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)" :is="finalNvueListIs==='waterfall'?'header':'cell'">
+		<view :class="useChatRecordMode?'zp-n-view-reverse':''" v-if="!refresherOnly&&!totalData.length&&(autoHideEmptyViewWhenLoading?isAddedData:true)&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)" :is="finalNvueListIs==='waterfall'?'header':'cell'">
 			<view class="zp-empty-view">
 				<slot v-if="$slots.empty" name="empty" />
 				<z-paging-empty-view v-else :emptyViewImg="emptyViewImg" :emptyViewText="finalEmptyViewText">

@@ -64,6 +64,7 @@ function toKebab(value) {
  * @property {Boolean} auto-height z-paging是否自动高度，若自动高度则会自动铺满屏幕，默认为否
  * @property {Number|String} auto-height-addition z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数
  * @property {String} default-theme-style loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
+ * @property {Boolean} refresher-only 是否只使用下拉刷新，设置为true后将关闭mounted自动请求数据、关闭滚动到底部加载更多，强制隐藏空数据图。默认为否
  * @property {Boolean} use-page-scroll 使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
  * @property {Boolean} fixed z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为否(当使用内置scroll-view滚动时有效)
  * @property {Boolean} mounted-auto-call-reload z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
@@ -109,7 +110,7 @@ function toKebab(value) {
  * @property {Boolean} scroll-with-animation 控制是否出现滚动条，默认为否
  * @property {String} scroll-into-view 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素
  * @property {Number|String} lower-threshold 距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为100rpx
- * @property {Boolean} enable-back-to-top iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向，默认为否
+ * @property {Boolean} enable-back-to-top iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向，默认为是
  * @property {Boolean} refresher-enabled 是否开启自定义下拉刷新，默认为是
  * @property {Number|String} refresher-threshold 设置自定义下拉刷新阈值，默认为80rpx
  * @property {String} refresher-default-style 设置自定义下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式，默认为black
@@ -257,6 +258,11 @@ export default {
 			default: function() {
 				return _getConfig('defaultThemeStyle', 'black');
 			}
+		},
+		//是否只使用下拉刷新，设置为true后将关闭mounted自动请求数据、关闭滚动到底部加载更多，强制隐藏空数据图。默认为否
+		refresherOnly: {
+			type: Boolean,
+			default: _getConfig('refresherOnly', false)
 		},
 		//使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
 		usePageScroll: {
@@ -506,10 +512,10 @@ export default {
 			type: [Number, String],
 			default: _getConfig('lowerThreshold', '100rpx')
 		},
-		//iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向，默认为否
+		//iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向，默认为是
 		enableBackToTop: {
 			type: Boolean,
-			default: _getConfig('enableBackToTop', false)
+			default: _getConfig('enableBackToTop', true)
 		},
 		//是否开启自定义下拉刷新，默认为是
 		refresherEnabled: {
@@ -570,7 +576,7 @@ export default {
 	},
 	mounted() {
 		this.wxsPropType = (new Date()).getTime().toString();
-		if (this.mountedAutoCallReload) {
+		if (!this.refresherOnly && this.mountedAutoCallReload) {
 			this.reload();
 		}
 		this.$nextTick(() => {
@@ -756,6 +762,12 @@ export default {
 				pagingStyle.bottom = bottom + 'px';
 			}
 			return pagingStyle;
+		},
+		finalEnableBackToTop(){
+			if(this.usePageScroll){
+				return false;
+			}
+			return this.enableBackToTop;
 		},
 		finalBackToTopThreshold() {
 			return this._convertTextToPx(this.backToTopThreshold);
@@ -1066,7 +1078,7 @@ export default {
 				data = [];
 			} else if (dataType !== '[object Array]') {
 				data = [];
-				let methodStr = isLocal ? 'setLocalPaging' : 'addData';
+				let methodStr = isLocal ? 'setLocalPaging' : 'complete';
 				if (dataType !== '[object Undefined]') {
 					if (this.showConsoleError) {
 						console.error(`[z-paging]:${methodStr}参数类型不正确，第一个参数类型必须为Array!`);
@@ -1184,7 +1196,7 @@ export default {
 			if (from === 'toBottom' && (!this.toBottomLoadingMoreEnabled || this.useChatRecordMode)) {
 				return;
 			}
-			if (!this.loadingMoreEnabled || !(this.loadingStatus === 0 || 3) || this.loading) return;
+			if (this.refresherOnly || !this.loadingMoreEnabled || !(this.loadingStatus === 0 || 3) || this.loading) return;
 
 			this._doLoadingMore();
 		},
@@ -1341,7 +1353,7 @@ export default {
 		},
 		//是否要展示上拉加载更多view
 		_shouldShowLoading(type) {
-			if (!this.showLoadingMore || !this.loadingMoreEnabled) {
+			if (!this.showLoadingMore || !this.loadingMoreEnabled || this.refresherOnly) {
 				return false;
 			}
 			if (this.useChatRecordMode && type !== 'loadingMoreLoading') {
@@ -1709,7 +1721,7 @@ export default {
 				.useCustomRefresher && this
 				.pageScrollTop > 10) || (!(this.usePageScroll && this.useCustomRefresher) && checkOldScrollTop);
 		},
-		//本�����分页请求
+		//本地分页请求
 		_localPagingQueryList(pageNo, pageSize, localPagingLoadingTime, callback) {
 			pageNo = parseInt(pageNo);
 			pageSize = parseInt(pageSize);
@@ -1746,8 +1758,8 @@ export default {
 				return text;
 			}
 			let isRpx = false;
-			if (text.indexOf('rpx') !== -1) {
-				text = text.replace('rpx', '');
+			if (text.indexOf('rpx') !== -1 || text.indexOf('upx') !== -1) {
+				text = text.replace('rpx', '').replace('upx', '');
 				isRpx = true;
 			} else if (text.indexOf('px') !== -1) {
 				text = text.replace('px', '');

@@ -54,9 +54,6 @@ function touchmove(e, ownerInstance) {
 	if (moveDistance < 0) {
 		return;
 	}
-	if (e.preventDefault) {
-		e.preventDefault();
-	}
 	_setTransformValue(moveDistance, instance, state);
 	var oldRefresherStatus = state.refresherStatus;
 	var oldIsTouchmoving = _getIsTrue(state.oldistouchmoving);

@@ -1,7 +1,6 @@
 <template>
 	<view class="content">
-		<z-paging ref="paging" fixed @query="queryList" :refresher-threshold="60" :hide-empty-view="true"
-			:mounted-auto-call-reload="false">
+		<z-paging ref="paging" fixed refresherOnly @onRefresh="onRefresh" :refresher-threshold="60">
 			<view slot="refresher" style="height: 100%;display: flex;justify-content: center;align-items: center;">
 				<image style="width: 300rpx;height: 60rpx;" src="../../static/logo_loading.gif"></image>
 			</view>
@@ -117,8 +116,7 @@
 			// #endif
 		},
 		methods: {
-			queryList() {
-				// 注意，即使只使用下拉刷新，不使用上拉加载更多，即使下拉不进行网络请求，也要在queryList中调用this.$refs.paging.complete();
+			onRefresh() {
 				// 以告知z-paging下拉刷新结束，这样才可以开始下一次的下拉刷新
 				setTimeout(() => {
 					//1.5秒之后停止刷新动画

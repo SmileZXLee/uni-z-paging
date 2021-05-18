@@ -38,7 +38,7 @@ const loadingMoreNoMoreText = {
 	'zh-hant-cn': '沒有更多了',
 }
 const loadingMoreFailText = {
-	'en': 'Load failed,click to load more',
+	'en': 'Load failed,click to reload',
 	'zh-cn': '加载失败，点击重新加载',
 	'zh-hant-cn': '加載失敗，點擊重新加載',
 }

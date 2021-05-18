@@ -3,7 +3,7 @@
 <template>
 	<view class="content">
 		<!-- 这里的fixed建议设置为true，设置为true则无需设置z-paging的高度及其父view的高度 -->
-		<z-paging ref="paging" fixed @query="queryList" :list.sync="dataList" style="height: 100%;">
+		<z-paging ref="paging" fixed @query="queryList" :list.sync="dataList">
 			<!-- 将不需要参与滚动的部分，放在slot="top"的view中，如果只有一个标签，可以直接在此标签上写slot="top"，将自定义的导航栏放到里面即可 -->
 			<view slot="top">
 				<u-navbar :background="{'background-color': '#007AFF'}">
