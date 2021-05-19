@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V1.6.5
+V1.6.6
 -- >
 <!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -144,11 +144,11 @@ V1.6.5
 		</refresh>
 		<slot />
 		<!-- 全屏 -->
-		<view :class="useChatRecordMode?'zp-n-view-reverse':''" v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" :is="finalNvueListIs==='waterfall'?'header':'cell'">
+		<view :class="useChatRecordMode?'zp-n-view-reverse':''" v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
 			<slot name="loading" />
 		</view>
 		<!-- 空数据图 -->
-		<view :class="useChatRecordMode?'zp-n-view-reverse':''" v-if="!refresherOnly&&!totalData.length&&(autoHideEmptyViewWhenLoading?isAddedData:true)&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)" :is="finalNvueListIs==='waterfall'?'header':'cell'">
+		<view :class="useChatRecordMode?'zp-n-view-reverse':''" v-if="!refresherOnly&&!totalData.length&&(autoHideEmptyViewWhenLoading?isAddedData:true)&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
 			<view class="zp-empty-view">
 				<slot v-if="$slots.empty" name="empty" />
 				<z-paging-empty-view v-else :emptyViewImg="emptyViewImg" :emptyViewText="finalEmptyViewText">
@@ -156,7 +156,7 @@ V1.6.5
 			</view>
 		</view>
 		<!-- 上拉加载更多view -->
-		<view v-if="nShowBottom" :is="finalNvueListIs==='waterfall'?'header':'cell'">
+		<view v-if="nShowBottom" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
 			<view v-if="useChatRecordMode">
 				<view v-if="loadingStatus!==2&&realTotalData.length">
 					<slot v-if="$slots.chatLoading"

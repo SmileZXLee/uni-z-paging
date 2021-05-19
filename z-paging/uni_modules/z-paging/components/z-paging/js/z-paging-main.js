@@ -117,7 +117,7 @@ function toKebab(value) {
  * @property {String} refresher-background 设置自定义下拉刷新区域背景颜色
  * @property {Number|String} local-paging-loading-time 本地分页时上拉加载更多延迟时间，单位为毫秒，默认200毫秒
  * @property {Boolean} use-chat-record-mode 使用聊天记录模式，默认为否
- * @property {String} nvue-list-is nvue中修改列表类型，可选值有list和waterfall，默认为list
+ * @property {String} nvue-list-is nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list
  * @property {Object} nvue-waterfall-config nvue waterfall配置，仅在nvue中且nvueListIs=waterfall时有效，配置参数详情参见：https://uniapp.dcloud.io/component/waterfall
  * @event {Function} addData 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认为是)
  * @event {Function} setLocalPaging 设置本地分页，请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging作分页处理（若调用了此方法，则上拉加载更多时内部会自动分页，不会触发@query所绑定的事件）
@@ -547,7 +547,7 @@ export default {
 			type: Boolean,
 			default: _getConfig('useChatRecordMode', false)
 		},
-		//nvue中修改列表类型，可选值有list和waterfall，默认为list
+		//nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list
 		nvueListIs: {
 			type: String,
 			default: _getConfig('nvueListIs', 'list')
@@ -736,7 +736,8 @@ export default {
 		},
 		finalNvueListIs() {
 			const nvueListIsLowerCase = this.nvueListIs.toLowerCase();
-			if (nvueListIsLowerCase === 'list' || nvueListIsLowerCase === 'waterfall') {
+			if (nvueListIsLowerCase === 'list' || nvueListIsLowerCase === 'waterfall' || nvueListIsLowerCase ===
+				'scroller') {
 				return nvueListIsLowerCase;
 			}
 			return 'list';
@@ -763,8 +764,8 @@ export default {
 			}
 			return pagingStyle;
 		},
-		finalEnableBackToTop(){
-			if(this.usePageScroll){
+		finalEnableBackToTop() {
+			if (this.usePageScroll) {
 				return false;
 			}
 			return this.enableBackToTop;
@@ -819,10 +820,10 @@ export default {
 		finalEmptyViewText() {
 			return this._getI18nText('emptyViewText');
 		},
-		tempLanguage(){
+		tempLanguage() {
 			let systemLanguage = false;
 			const temp = this.tempLanguageUpdateKey;
-			if(this.followSystemLanguage){
+			if (this.followSystemLanguage) {
 				systemLanguage = systemInfo.language;
 			}
 			return uni.getStorageSync(i18nUpdateKey) || systemLanguage || 'zh-cn';
@@ -1196,7 +1197,8 @@ export default {
 			if (from === 'toBottom' && (!this.toBottomLoadingMoreEnabled || this.useChatRecordMode)) {
 				return;
 			}
-			if (this.refresherOnly || !this.loadingMoreEnabled || !(this.loadingStatus === 0 || 3) || this.loading) return;
+			if (this.refresherOnly || !this.loadingMoreEnabled || !(this.loadingStatus === 0 || 3) || this.loading)
+				return;
 
 			this._doLoadingMore();
 		},
