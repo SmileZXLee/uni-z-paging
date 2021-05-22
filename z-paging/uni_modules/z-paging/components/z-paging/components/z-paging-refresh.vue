@@ -26,12 +26,18 @@
 				:class="defaultThemeStyle==='white'?'zp-custom-refresher-right zp-custom-refresher-right-white':'zp-custom-refresher-right zp-custom-refresher-right-black'">
 				<text class="zp-custom-refresher-right-text">{{refresherStatusTextMap[refresherStatus]}}
 				</text>
+				<text class="zp-custom-refresher-right-text" style="margin-top: 10rpx;"
+					v-if="showRefresherUpdateTime&&refresherTimeText.length">{{refresherTimeText}}
+				</text>
 			</view>
 		</view>
 	</view>
 </template>
 <script>
 	import zStatic from '../js/z-paging-static'
+	import {
+		getRefesrherFormatTimeByKey
+	} from '../js/z-paging-utils'
 	export default {
 		name: 'z-paging-refresh',
 		data() {
@@ -39,18 +45,27 @@
 				base64Arrow: zStatic.base64Arrow,
 				base64Flower: zStatic.base64Flower,
 				refresherLeftImageClass: 'zp-custom-refresher-left-image',
+				refresherTimeText: ''
 			};
 		},
 		props: ['refresherStatus', 'defaultThemeStyle', 'refresherDefaultText', 'refresherPullingText',
-			'refresherPullingText', 'refresherRefreshingText'
+			'refresherPullingText', 'refresherRefreshingText', 'showRefresherUpdateTime'
 		],
 		computed: {
 			refresherStatusTextMap() {
+				this.updateTime();
 				return {
 					0: this.refresherDefaultText,
 					1: this.refresherPullingText,
 					2: this.refresherRefreshingText
 				};
+			},
+			refresherLeftImageClass(){
+				const cls = `zp-custom-refresher-left-image ${showRefresherUpdateTime?'zp-custom-refresher-left-image-big':'zp-custom-refresher-left-image-small'}`;
+				// #ifndef APP-NVUE
+				cls = 'zp-loading-more-line-loading-image' + cls;
+				// #endif
+				return cls;
 			}
 		},
 		watch: {
@@ -60,6 +75,13 @@
 				}
 				if (newVal !== 0 && oldVal === 0) {
 					this.refresherLeftImageClass = 'zp-custom-refresher-left-image zp-custom-refresher-arrow-top';
+				}
+			}
+		},
+		methods: {
+			updateTime(){
+				if (this.showRefresherUpdateTime) {
+					this.refresherTimeText = getRefesrherFormatTimeByKey('default');
 				}
 			}
 		}
@@ -87,19 +109,34 @@
 	}
 
 	.zp-custom-refresher-left-image {
-		width: 30rpx;
-		height: 30rpx;
 		transform: rotate(180deg);
-		margin-right: 8rpx;
 		/* #ifndef APP-NVUE */
 		margin-top: 2rpx;
 		/* #endif */
 		/* #ifdef APP-NVUE */
-		width: 35rpx;
-		height: 35rpx;
 		transition-duration: .2s;
 		transition-property: transform;
 		color: #666666;
+		/* #endif */
+	}
+	
+	.zp-custom-refresher-left-image-small{
+		margin-right: 8rpx;
+		width: 30rpx;
+		height: 30rpx;
+		/* #ifdef APP-NVUE */
+		width: 35rpx;
+		height: 35rpx;
+		/* #endif */
+	}
+	
+	.zp-custom-refresher-left-image-big{
+		margin-right: 12rpx;
+		width: 35rpx;
+		height: 35rpx;
+		/* #ifdef APP-NVUE */
+		width: 37rpx;
+		height: 37rpx;
 		/* #endif */
 	}
 
@@ -132,7 +169,7 @@
 		/* #ifndef APP-NVUE */
 		display: flex;
 		/* #endif */
-		flex-direction: row;
+		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 	}

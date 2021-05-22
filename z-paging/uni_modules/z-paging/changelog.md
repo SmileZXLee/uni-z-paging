@@ -1,3 +1,8 @@
+## 1.6.6（2021-05-19）
+1.新增`refresher-only`，支持只开启下拉刷新功能，关闭其他分页相关功能。  
+2.nvue中，`nvue-list-is`新增支持scroller。  
+3.`enable-back-to-top`默认值修改为true。  
+4.修复使用页面滚动时，先向上滚动一段距离手指不松开下拉刷新，报错：Ignored attempt to cancel...的BUG。
 ## 1.6.5（2021-05-17）
 1.支持i18n国际化，并添加相关demo。  
 2.修复在微信小程序上偶现的`nv_setTimeout is not defined`的报错问题。

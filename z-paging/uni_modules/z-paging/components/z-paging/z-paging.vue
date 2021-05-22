@@ -64,10 +64,10 @@ V1.6.6
 						:refresherStatus="refresherStatus"
 						<!-- #endif -->
 						name="refresher" />
-						<z-paging-refresh  v-else :style="[{'height': `${finalRefresherThreshold}px`}]" :refresherStatus="refresherStatus"
+						<z-paging-refresh ref="refresh" v-else :style="[{'height': `${finalRefresherThreshold}px`}]" :refresherStatus="refresherStatus"
 							:defaultThemeStyle="defaultThemeStyle" :refresherDefaultText="finalRefresherDefaultText"
 							:refresherPullingText="finalRefresherPullingText"
-							:refresherRefreshingText="finalRefresherRefreshingText"></z-paging-refresh>
+							:refresherRefreshingText="finalRefresherRefreshingText" :showRefresherUpdateTime="showRefresherUpdateTime"></z-paging-refresh>
 					</view>
 				</view>
 				<view class="zp-paging-container">
@@ -137,9 +137,9 @@ V1.6.6
 			<view class="zp-n-refresh-container">
 				<!-- 下拉刷新view -->
 				<slot v-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
-				<z-paging-refresh v-else :refresherStatus="refresherStatus" :defaultThemeStyle="defaultThemeStyle"
+				<z-paging-refresh ref="refresh" v-else :refresherStatus="refresherStatus" :defaultThemeStyle="defaultThemeStyle"
 					:refresherDefaultText="finalRefresherDefaultText" :refresherPullingText="finalRefresherPullingText"
-					:refresherRefreshingText="finalRefresherRefreshingText"></z-paging-refresh>
+					:refresherRefreshingText="finalRefresherRefreshingText" :showRefresherUpdateTime="showRefresherUpdateTime"></z-paging-refresh>
 			</view>
 		</refresh>
 		<slot />

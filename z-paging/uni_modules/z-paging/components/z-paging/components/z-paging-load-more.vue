@@ -42,7 +42,7 @@
 <script>
 	import zStatic from '../js/z-paging-static'
 	export default {
-		name: 'z-paging-refresh',
+		name: 'z-paging-load-more',
 		data() {
 			return {
 				base64Arrow: zStatic.base64Arrow,

@@ -5,6 +5,7 @@
 
 import zStatic from './z-paging-static'
 import zConfig from './z-paging-config'
+import zUtils from './z-paging-utils'
 import zI18n from './z-paging-i18n'
 import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
@@ -181,6 +182,7 @@ export default {
 			isAddedData: false,
 			isTotalChangeFromAddData: false,
 			isTouchEnded: false,
+			isUserPullDown: false,
 			privateRefresherEnabled: -1,
 			privateScrollWithAnimation: -1,
 			chatRecordLoadingMoreText: '',
@@ -537,6 +539,11 @@ export default {
 			type: String,
 			default: _getConfig('refresherBackground', '#ffffff00')
 		},
+		//z-paging自带的下拉刷新显示上次更新时间，默认为否
+		showRefresherUpdateTime: {
+			type: Boolean,
+			default: _getConfig('showRefresherUpdateTime', true)
+		},
 		//本地分页时上拉加载更多延迟时间，单位为毫秒，默认200毫秒
 		localPagingLoadingTime: {
 			type: [Number, String],
@@ -577,7 +584,7 @@ export default {
 	mounted() {
 		this.wxsPropType = (new Date()).getTime().toString();
 		if (!this.refresherOnly && this.mountedAutoCallReload) {
-			this.reload();
+			this._mountedReload();
 		}
 		this.$nextTick(() => {
 			this.systemInfo = uni.getSystemInfoSync();
@@ -777,7 +784,13 @@ export default {
 			return this._convertTextToPx(this.lowerThreshold);
 		},
 		finalRefresherThreshold() {
-			return this._convertTextToPx(this.refresherThreshold);
+			let refresherThreshold = this.refresherThreshold;
+			if(this.showRefresherUpdateTime){
+				if(refresherThreshold === '80rpx'){
+					refresherThreshold = '120rpx';
+				}
+			}
+			return this._convertTextToPx(refresherThreshold);
 		},
 		finalBackToTopStyle() {
 			let tempBackToTopStyle = this.backToTopStyle;
@@ -961,20 +974,10 @@ export default {
 		},
 		//重新加载分页数据，pageNo会恢复为默认值，相当于下拉刷新的效果(animate为true时会展示下拉刷新动画，默认为false)
 		reload(animate = this.showRefresherWhenReload) {
-			this.isUserReload = true;
-			if (animate) {
-				if (this.useCustomRefresher) {
-					this._doRefresherRefreshAnimate();
-				} else {
-					this.refresherTriggered = true;
-				}
-				// #ifdef APP-NVUE
-				this.nRefresherLoading = true;
-				// #endif
-			} else {
-				this._refresherEnd(false, false);
+			if(animate){
+				this.isUserPullDown = true;
 			}
-			this._reload();
+			this._mountedReload(animate);
 		},
 		//手动触发滚动到顶部加载更多，聊天记录模式时有效
 		doChatRecordLoadMore() {
@@ -1041,7 +1044,25 @@ export default {
 		handleRefresherStatusChanged(func) {
 			this.refresherStatusChangedFunc = func;
 		},
-		//私有的重新加载分页数据方法
+		//------------------ 私有方法 ------------------------
+				//_mounted后重新加载分页数据
+				_mountedReload(animate = this.showRefresherWhenReload) {
+					this.isUserReload = true;
+					if (animate) {
+						if (this.useCustomRefresher) {
+							this._doRefresherRefreshAnimate();
+						} else {
+							this.refresherTriggered = true;
+						}
+						// #ifdef APP-NVUE
+						this.nRefresherLoading = true;
+						// #endif
+					} else {
+						this._refresherEnd(false, false);
+					}
+					this._reload();
+				},
+		//重新加载分页数据
 		_reload() {
 			this.isAddedData = false;
 			this.pageNo = this.defaultPageNo;
@@ -1066,12 +1087,20 @@ export default {
 			}
 			// #endif
 		},
-		//私有的处理服务端返回的数组方法
+		//处理服务端返回的数组
 		_addData(data, success, isLocal) {
 			this.isAddedData = true;
 			this.isTotalChangeFromAddData = true;
 			if (!this.useCustomRefresher) {
 				uni.stopPullDownRefresh();
+			}
+			if(this.isUserPullDown && this.showRefresherUpdateTime && this.pageNo === this.defaultPageNo){
+				zUtils.setRefesrherTime((new Date()).getTime(),'default');
+				this.tempLanguageUpdateKey = (new Date()).getTime();
+				if(this.$refs.refresh){
+					this.$refs.refresh.updateTime();
+				}
+				this.isUserPullDown = false;
 			}
 			const dataType = Object.prototype.toString.call(data);
 			if (dataType === '[object Boolean]') {
@@ -1371,7 +1400,7 @@ export default {
 			} else if (type === 'loadingMoreNoMore') {
 				return this.loadingStatus === 2 && this.$slots.loadingMoreNoMore && this.showLoadingMoreNoMoreView;
 			} else if (type === 'loadingMoreFail') {
-				return this.loadingStatus === 3 && $this.slots.loadingMoreFail;
+				return this.loadingStatus === 3 && this.$slots.loadingMoreFail;
 			} else if (type === 'loadingMoreCustom') {
 				return this.showDefaultLoadingMoreText && !(this.loadingStatus === 2 && !this
 					.showLoadingMoreNoMoreView);
@@ -1418,6 +1447,7 @@ export default {
 			if (this.loading) {
 				return;
 			}
+			this.isUserPullDown = true;
 			this.isUserReload = false;
 			this._startLoading(true);
 			this.refresherTriggered = true;
