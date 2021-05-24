@@ -7,14 +7,11 @@
 <template>
 	<view class="zp-container">
 		<view class="zp-main">
-			<image v-if="!emptyViewImg.length" class="zp-main-image" :src="base64Empty"></image>
+			<image v-if="!emptyViewImg.length" class="zp-main-image" :src="emptyImg"></image>
 			<image v-else class="zp-main-image" :src="emptyViewImg"></image>
-			<!-- #ifdef APP-NVUE -->
-			<text class="zp-mian-title">{{emptyViewText}}</text>
-			<!-- #endif -->
-			<!-- #ifndef APP-NVUE -->
-			<view class="zp-mian-title">{{emptyViewText}}</view>
-			<!-- #endif -->
+			<text class="zp-main-title">{{emptyViewText}}</text>
+			<text v-if="showEmptyViewReload" class="zp-main-error-btn"
+				@click="reloadClick">{{emptyViewReloadText}}</text>
 		</view>
 	</view>
 </template>
@@ -24,7 +21,8 @@
 	export default {
 		data() {
 			return {
-				base64Empty: zStatic.base64Empty
+				base64Empty: zStatic.base64Empty,
+				base64Error: zStatic.base64Error
 			};
 		},
 		props: {
@@ -42,6 +40,41 @@
 					return ''
 				}
 			},
+			//是否显示空数据图重新加载按钮
+			showEmptyViewReload: {
+				type: Boolean,
+				default: function() {
+					return false
+				}
+			},
+			//空数据点击重新加载文字
+			emptyViewReloadText: {
+				type: String,
+				default: function() {
+					return '重新加载'
+				}
+			},
+			//是否是加载失败
+			isLoadFailed: {
+				type: Boolean,
+				default: function() {
+					return false
+				}
+			}
+		},
+		computed: {
+			emptyImg() {
+				if (this.isLoadFailed) {
+					return this.base64Error;
+				} else {
+					return this.base64Empty;
+				}
+			}
+		},
+		methods: {
+			reloadClick() {
+				this.$emit('reload');
+			}
 		}
 	}
 </script>
@@ -83,10 +116,20 @@
 		z-index: 1000;
 	}
 
-	.zp-mian-title {
+	.zp-main-title {
 		font-size: 26rpx;
 		color: #aaaaaa;
 		text-align: center;
+		z-index: 1000;
+	}
+
+	.zp-main-error-btn {
+		font-size: 26rpx;
+		padding: 8rpx 24rpx;
+		border: solid 1px #dddddd;
+		border-radius: 6rpx;
+		color: #aaaaaa;
+		margin-top: 50rpx;
 		z-index: 1000;
 	}
 </style>

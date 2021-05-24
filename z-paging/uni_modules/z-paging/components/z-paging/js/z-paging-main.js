@@ -116,6 +116,8 @@ function toKebab(value) {
  * @property {Number|String} refresher-threshold 设置自定义下拉刷新阈值，默认为80rpx
  * @property {String} refresher-default-style 设置自定义下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式，默认为black
  * @property {String} refresher-background 设置自定义下拉刷新区域背景颜色
+ * @property {Boolean} show-refresher-update-time 是否显示上次下拉刷新更新时间，默认为否
+ * @property {String} refresher-update-time-key 上次下拉刷新更新时间的key，用于区别不同的上次更新时间
  * @property {Number|String} local-paging-loading-time 本地分页时上拉加载更多延迟时间，单位为毫秒，默认200毫秒
  * @property {Boolean} use-chat-record-mode 使用聊天记录模式，默认为否
  * @property {String} nvue-list-is nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list
@@ -191,6 +193,7 @@ export default {
 			backToTopClass: 'zp-back-to-top zp-back-to-top-hide',
 			showBackToTopClass: false,
 			tempLanguageUpdateKey: 0,
+			isLoadFailed: false,
 			nRefresherLoading: true,
 			nListIsDragging: false,
 			nShowBottom: true,
@@ -437,10 +440,35 @@ export default {
 			type: [String, Object],
 			default: _getConfig('emptyViewText', null)
 		},
+		//是否显示空数据图重新加载按钮(无数据时)，默认为否
+		showEmptyViewReload: {
+			type: Boolean,
+			default: _getConfig('showEmptyViewReload', false)
+		},
+		//加载失败时是否显示空数据图重新加载按钮，默认为是
+		showEmptyViewReloadWhenError: {
+			type: Boolean,
+			default: _getConfig('showEmptyViewReloadWhenError', true)
+		},
+		//空数据图点击重新加载文字，默认为“重新加载”
+		emptyViewReloadText: {
+			type: [String, Object],
+			default: _getConfig('emptyViewReloadText', null)
+		},
 		//空数据图图片，默认使用z-paging内置的图片
 		emptyViewImg: {
 			type: String,
 			default: _getConfig('emptyViewImg', '')
+		},
+		//空数据图“加载失败”描述文字，默认为“很抱歉，加载失败”
+		emptyViewErrorText: {
+			type: [String, Object],
+			default: _getConfig('emptyViewErrorText', null)
+		},
+		//空数据图“加载失败”图片，默认使用z-paging内置的图片
+		emptyViewErrorImg: {
+			type: String,
+			default: _getConfig('emptyViewErrorImg', '')
 		},
 		//加载中时是否自动隐藏空数据图，默认为是
 		autoHideEmptyViewWhenLoading: {
@@ -539,10 +567,15 @@ export default {
 			type: String,
 			default: _getConfig('refresherBackground', '#ffffff00')
 		},
-		//z-paging自带的下拉刷新显示上次更新时间，默认为否
+		//是否显示上次下拉刷新更新时间，默认为否
 		showRefresherUpdateTime: {
 			type: Boolean,
-			default: _getConfig('showRefresherUpdateTime', true)
+			default: _getConfig('showRefresherUpdateTime', false)
+		},
+		//上次下拉刷新更新时间的key，用于区别不同的上次更新时间
+		refresherUpdateTimeKey: {
+			type: String,
+			default: _getConfig('refresherUpdateTimeKey', 'default')
 		},
 		//本地分页时上拉加载更多延迟时间，单位为毫秒，默认200毫秒
 		localPagingLoadingTime: {
@@ -785,8 +818,8 @@ export default {
 		},
 		finalRefresherThreshold() {
 			let refresherThreshold = this.refresherThreshold;
-			if(this.showRefresherUpdateTime){
-				if(refresherThreshold === '80rpx'){
+			if (this.showRefresherUpdateTime) {
+				if (refresherThreshold === '80rpx') {
 					refresherThreshold = '120rpx';
 				}
 			}
@@ -831,7 +864,31 @@ export default {
 			return this._getI18nText('loadingMoreFailText');
 		},
 		finalEmptyViewText() {
-			return this._getI18nText('emptyViewText');
+			if (this.isLoadFailed) {
+				return this.finalEmptyViewErrorText;
+			} else {
+				return this._getI18nText('emptyViewText');
+			}
+		},
+		finalEmptyViewReloadText() {
+			return this._getI18nText('emptyViewReloadText');
+		},
+		finalEmptyViewErrorText() {
+			return this._getI18nText('emptyViewErrorText');
+		},
+		finalEmptyViewImg() {
+			if (this.isLoadFailed) {
+				return this.emptyViewImg;
+			} else {
+				return this.emptyViewErrorImg;
+			}
+		},
+		finalShowEmptyViewReload() {
+			if (this.isLoadFailed) {
+				return this.showEmptyViewReloadWhenError;
+			} else {
+				return this.showEmptyViewReload;
+			}
 		},
 		tempLanguage() {
 			let systemLanguage = false;
@@ -974,10 +1031,15 @@ export default {
 		},
 		//重新加载分页数据，pageNo会恢复为默认值，相当于下拉刷新的效果(animate为true时会展示下拉刷新动画，默认为false)
 		reload(animate = this.showRefresherWhenReload) {
-			if(animate){
+			if (animate) {
 				this.isUserPullDown = true;
 			}
 			this._mountedReload(animate);
+		},
+		//清空分页数据
+		clean() {
+			this._reload(true);
+			this._addData([], true, false);
 		},
 		//手动触发滚动到顶部加载更多，聊天记录模式时有效
 		doChatRecordLoadMore() {
@@ -1045,25 +1107,25 @@ export default {
 			this.refresherStatusChangedFunc = func;
 		},
 		//------------------ 私有方法 ------------------------
-				//_mounted后重新加载分页数据
-				_mountedReload(animate = this.showRefresherWhenReload) {
-					this.isUserReload = true;
-					if (animate) {
-						if (this.useCustomRefresher) {
-							this._doRefresherRefreshAnimate();
-						} else {
-							this.refresherTriggered = true;
-						}
-						// #ifdef APP-NVUE
-						this.nRefresherLoading = true;
-						// #endif
-					} else {
-						this._refresherEnd(false, false);
-					}
-					this._reload();
-				},
+		//_mounted后重新加载分页数据
+		_mountedReload(animate = this.showRefresherWhenReload) {
+			this.isUserReload = true;
+			if (animate) {
+				if (this.useCustomRefresher) {
+					this._doRefresherRefreshAnimate();
+				} else {
+					this.refresherTriggered = true;
+				}
+				// #ifdef APP-NVUE
+				this.nRefresherLoading = true;
+				// #endif
+			} else {
+				this._refresherEnd(false, false);
+			}
+			this._reload();
+		},
 		//重新加载分页数据
-		_reload() {
+		_reload(isClean = false) {
 			this.isAddedData = false;
 			this.pageNo = this.defaultPageNo;
 			// #ifdef APP-NVUE
@@ -1071,21 +1133,25 @@ export default {
 				this.nShowBottom = false;
 			}
 			// #endif
-			this._startLoading(true);
+			if (!isClean) {
+				this._startLoading(true);
+			}
 			this.firstPageLoaded = true;
 			this.isTotalChangeFromAddData = false;
 			this.totalData = [];
-			this.$emit('query', this.pageNo, this.defaultPageSize);
-			if (this.autoScrollToTopWhenReload) {
-				this._scrollToTop();
-			}
-			// #ifndef APP-NVUE
-			if (!this.usePageScroll && this.useChatRecordMode) {
-				if (this.showConsoleError) {
-					console.warn('[z-paging]使用聊天记录模式时，建议使用页面滚动，可将usePageScroll设置为true以启用页面滚动！！');
+			if (!isClean) {
+				this.$emit('query', this.pageNo, this.defaultPageSize);
+				if (this.autoScrollToTopWhenReload) {
+					this._scrollToTop();
 				}
+				// #ifndef APP-NVUE
+				if (!this.usePageScroll && this.useChatRecordMode) {
+					if (this.showConsoleError) {
+						console.warn('[z-paging]使用聊天记录模式时，建议使用页面滚动，可将usePageScroll设置为true以启用页面滚动！！');
+					}
+				}
+				// #endif
 			}
-			// #endif
 		},
 		//处理服务端返回的数组
 		_addData(data, success, isLocal) {
@@ -1094,10 +1160,10 @@ export default {
 			if (!this.useCustomRefresher) {
 				uni.stopPullDownRefresh();
 			}
-			if(this.isUserPullDown && this.showRefresherUpdateTime && this.pageNo === this.defaultPageNo){
-				zUtils.setRefesrherTime((new Date()).getTime(),'default');
+			if (this.isUserPullDown && this.showRefresherUpdateTime && this.pageNo === this.defaultPageNo) {
+				zUtils.setRefesrherTime((new Date()).getTime(), this.refresherUpdateTimeKey);
 				this.tempLanguageUpdateKey = (new Date()).getTime();
-				if(this.$refs.refresh){
+				if (this.$refs.refresh) {
 					this.$refs.refresh.updateTime();
 				}
 				this.isUserPullDown = false;
@@ -1128,6 +1194,9 @@ export default {
 				this._refresherEnd(true, true);
 				this.pagingLoaded = true;
 			}, delayTime)
+			if (this.pageNo === this.defaultPageNo) {
+				this.isLoadFailed = !success;
+			}
 			if (success) {
 				this.loadingStatus = 0;
 				if (isLocal) {
@@ -1642,7 +1711,7 @@ export default {
 			}
 			return moveDistance;
 		},
-		//判断当没有更多数据且分页内容未超出z-paging时是否显示没有更多数据的view
+		//判断当没有更多数据且分页�����容未超出z-paging时是否显示没有更多数据的view
 		async _checkShowLoadingMoreWhenNoMoreAndInsideOfPaging(totalData) {
 			try {
 				let pagingContainerH = 0;
@@ -1669,7 +1738,7 @@ export default {
 					if (scrollViewTotalH > this.systemInfo.windowHeight + 100) {
 						if (this.showConsoleError) {
 							console.error(
-								'[z-paging]检测到z-paging的高度超出页面高度，这将导致滚动出现异常，请设置【:fixed="true"】或【确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}】，此时z-paging的百分比高度才能生效。详情参照demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
+								'[z-paging]检测到z-paging的高度超出页面高度，这将导致滚动出现异常，请设置【:fixed="true"】或【确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}】，此时z-paging的百分比高度才能生效。详情参���demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
 							);
 						}
 					}

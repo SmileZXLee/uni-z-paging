@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V1.6.6
+V1.6.7
 -- >
 <!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -66,8 +66,8 @@ V1.6.6
 						name="refresher" />
 						<z-paging-refresh ref="refresh" v-else :style="[{'height': `${finalRefresherThreshold}px`}]" :refresherStatus="refresherStatus"
 							:defaultThemeStyle="defaultThemeStyle" :refresherDefaultText="finalRefresherDefaultText"
-							:refresherPullingText="finalRefresherPullingText"
-							:refresherRefreshingText="finalRefresherRefreshingText" :showRefresherUpdateTime="showRefresherUpdateTime"></z-paging-refresh>
+							:refresherPullingText="finalRefresherPullingText" :refresherRefreshingText="finalRefresherRefreshingText" 
+							:showRefresherUpdateTime="showRefresherUpdateTime" :refresherUpdateTimeKey="refresherUpdateTimeKey"></z-paging-refresh>
 					</view>
 				</view>
 				<view class="zp-paging-container">
@@ -85,7 +85,7 @@ V1.6.6
 					<view class="zp-empty-view"
 						v-if="!refresherOnly&&!totalData.length&&(autoHideEmptyViewWhenLoading?isAddedData:true)&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
 						<slot v-if="$slots.empty" name="empty" />
-						<z-paging-empty-view v-else :emptyViewImg="emptyViewImg" :emptyViewText="finalEmptyViewText">
+						<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" :emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" @reload="reload">
 						</z-paging-empty-view>
 					</view>
 					<!-- 主体内容 -->
@@ -138,8 +138,8 @@ V1.6.6
 				<!-- 下拉刷新view -->
 				<slot v-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
 				<z-paging-refresh ref="refresh" v-else :refresherStatus="refresherStatus" :defaultThemeStyle="defaultThemeStyle"
-					:refresherDefaultText="finalRefresherDefaultText" :refresherPullingText="finalRefresherPullingText"
-					:refresherRefreshingText="finalRefresherRefreshingText" :showRefresherUpdateTime="showRefresherUpdateTime"></z-paging-refresh>
+					:refresherDefaultText="finalRefresherDefaultText" :refresherPullingText="finalRefresherPullingText" :refresherRefreshingText="finalRefresherRefreshingText" 
+					:showRefresherUpdateTime="showRefresherUpdateTime" :refresherUpdateTimeKey="refresherUpdateTimeKey"></z-paging-refresh>
 			</view>
 		</refresh>
 		<slot />
@@ -151,7 +151,7 @@ V1.6.6
 		<view :class="useChatRecordMode?'zp-n-view-reverse':''" v-if="!refresherOnly&&!totalData.length&&(autoHideEmptyViewWhenLoading?isAddedData:true)&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
 			<view class="zp-empty-view">
 				<slot v-if="$slots.empty" name="empty" />
-				<z-paging-empty-view v-else :emptyViewImg="emptyViewImg" :emptyViewText="finalEmptyViewText">
+				<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" :emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" @reload="reload">
 				</z-paging-empty-view>
 			</view>
 		</view>

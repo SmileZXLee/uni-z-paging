@@ -1,13 +1,20 @@
+// z-paging
+// github地址:https://github.com/SmileZXLee/uni-z-paging
+// dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
+// 反馈QQ群：790460711
+// z-paging工具类
+
+import zI18n from './z-paging-i18n'
+
 const storageKey = 'Z-PAGING-REFRESHER-TIME-STORAGE-KEY'
 
 function setRefesrherTime(time, key) {
 	try {
 		let datas = getRefesrherTime();
-		if (!datas){
+		if (!datas) {
 			datas = {};
 		}
 		datas[key] = time;
-		console.log('datas',datas)
 		uni.setStorageSync(storageKey, datas);
 	} catch {}
 }
@@ -34,11 +41,11 @@ function getRefesrherTimeByKey(key) {
 
 function getRefesrherFormatTimeByKey(key) {
 	const time = getRefesrherTimeByKey(key);
-	let timeText = '无';
+	let timeText = zI18n['refresherUpdateTimeNoneText'][zI18n.getLanguage()];
 	if (time) {
 		timeText = timeFormat(time);
 	}
-	return `最后更新：${timeText}`;
+	return `${zI18n['refresherUpdateTimeText'][zI18n.getLanguage()]}${timeText}`;
 }
 
 function timeFormat(time) {
@@ -50,9 +57,9 @@ function timeFormat(time) {
 	let dayStr = '';
 	const timeStr = dateTimeFormat(date);
 	if (disTime === 0) {
-		dayStr = '今天';
+		dayStr = zI18n['refresherUpdateTimeTodayText'][zI18n.getLanguage()];
 	} else if (disTime === -86400000) {
-		dayStr = '昨天';
+		dayStr = zI18n['refresherUpdateTimeYesterdayText'][zI18n.getLanguage()];
 	} else {
 		dayStr = dateDayFormat(date, date.getFullYear() === currentDate.getFullYear());
 	}

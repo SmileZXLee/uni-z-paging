@@ -49,6 +49,42 @@ const emptyViewText = {
 	'zh-hant-cn': '沒有數據哦~',
 }
 
+const emptyViewReloadText = {
+	'en': 'Reload',
+	'zh-cn': '重新加载',
+	'zh-hant-cn': '重新加載',
+}
+
+const emptyViewErrorText = {
+	'en': 'Sorry,load failed',
+	'zh-cn': '很抱歉，加载失败',
+	'zh-hant-cn': '很抱歉，加載失敗',
+}
+
+const refresherUpdateTimeText = {
+	'en': 'Last update: ',
+	'zh-cn': '最后更新：',
+	'zh-hant-cn': '最後更新：',
+}
+
+const refresherUpdateTimeNoneText = {
+	'en': 'None',
+	'zh-cn': '无',
+	'zh-hant-cn': '無',
+}
+
+const refresherUpdateTimeTodayText = {
+	'en': 'Today',
+	'zh-cn': '今天',
+	'zh-hant-cn': '今天',
+}
+
+const refresherUpdateTimeYesterdayText = {
+	'en': 'Yesterday',
+	'zh-cn': '昨天',
+	'zh-hant-cn': '昨天',
+}
+
 // 插件内部使用，请勿直接调用
 function getPrivateLanguage(myLanguage, followSystemLanguage = true) {
 	let systemLanguage = '';
@@ -101,8 +137,14 @@ module.exports = {
 	loadingMoreNoMoreText,
 	loadingMoreFailText,
 	emptyViewText,
+	emptyViewReloadText,
+	emptyViewErrorText,
 	getPrivateLanguage,
 	getLanguage,
 	getLanguageName,
-	setLanguage
+	setLanguage,
+	refresherUpdateTimeText,
+	refresherUpdateTimeNoneText,
+	refresherUpdateTimeTodayText,
+	refresherUpdateTimeYesterdayText
 }

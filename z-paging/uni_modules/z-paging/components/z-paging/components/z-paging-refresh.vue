@@ -6,27 +6,31 @@
 <!-- 下拉刷新view -->
 <template>
 	<view style="height: 100%;">
-		<view class="zp-custom-refresher-container" style="height: 100%;">
+		<view
+			:class="showRefresherUpdateTime?'zp-custom-refresher-container zp-custom-refresher-container-padding':'zp-custom-refresher-container'"
+			style="height: 100%;">
 			<view class="zp-custom-refresher-left">
 				<image v-if="refresherStatus!==2" :class="refresherLeftImageClass"
 					:style="[{'filter' :defaultThemeStyle==='white'?'brightness(10)':''}]" :src="base64Arrow">
 				</image>
 				<!-- #ifndef APP-NVUE -->
-				<image v-else class="zp-loading-more-line-loading-image zp-custom-refresher-left-image"
-					:src="base64Flower">
+				<image v-else :class="refresherLeftLoadingImageClass" :src="base64Flower">
 				</image>
 				<!-- #endif -->
 				<!-- #ifdef APP-NVUE -->
-				<view v-else>
-					<loading-indicator class="zp-custom-refresher-left-image" :animating="true"></loading-indicator>
+				<view v-else :style="[{'margin-right':showRefresherUpdateTime?'30rpx':'28rpx'}]">
+					<loading-indicator class="zp-custom-refresher-left-image" :animating="true">
+					</loading-indicator>
 				</view>
 				<!-- #endif -->
 			</view>
 			<view
 				:class="defaultThemeStyle==='white'?'zp-custom-refresher-right zp-custom-refresher-right-white':'zp-custom-refresher-right zp-custom-refresher-right-black'">
-				<text class="zp-custom-refresher-right-text">{{refresherStatusTextMap[refresherStatus]}}
+				<text class="zp-custom-refresher-right-text"
+					:style="refresherRightTextStyle">{{refresherStatusTextMap[refresherStatus]}}
 				</text>
-				<text class="zp-custom-refresher-right-text" style="margin-top: 10rpx;"
+				<text class="zp-custom-refresher-right-text zp-custom-refresher-right-time-text"
+					:style="refresherRightTextStyle"
 					v-if="showRefresherUpdateTime&&refresherTimeText.length">{{refresherTimeText}}
 				</text>
 			</view>
@@ -44,44 +48,69 @@
 			return {
 				base64Arrow: zStatic.base64Arrow,
 				base64Flower: zStatic.base64Flower,
-				refresherLeftImageClass: 'zp-custom-refresher-left-image',
 				refresherTimeText: ''
 			};
 		},
 		props: ['refresherStatus', 'defaultThemeStyle', 'refresherDefaultText', 'refresherPullingText',
-			'refresherPullingText', 'refresherRefreshingText', 'showRefresherUpdateTime'
+			'refresherPullingText', 'refresherRefreshingText', 'showRefresherUpdateTime', 'refresherUpdateTimeKey'
 		],
 		computed: {
 			refresherStatusTextMap() {
-				this.updateTime();
+				this.updateTime(this.refresherUpdateTimeKey);
 				return {
 					0: this.refresherDefaultText,
 					1: this.refresherPullingText,
 					2: this.refresherRefreshingText
 				};
 			},
-			refresherLeftImageClass(){
-				const cls = `zp-custom-refresher-left-image ${showRefresherUpdateTime?'zp-custom-refresher-left-image-big':'zp-custom-refresher-left-image-small'}`;
-				// #ifndef APP-NVUE
-				cls = 'zp-loading-more-line-loading-image' + cls;
+			refresherLeftImageClass() {
+				let refresherLeftImageClass = ''
+				if (this.refresherStatus === 0) {
+					refresherLeftImageClass = 'zp-custom-refresher-left-image zp-custom-refresher-arrow-down';
+				} else {
+					refresherLeftImageClass = 'zp-custom-refresher-left-image zp-custom-refresher-arrow-top';
+				}
+				if (this.showRefresherUpdateTime) {
+					refresherLeftImageClass += ' zp-custom-refresher-left-image-big';
+				} else {
+					refresherLeftImageClass += ' zp-custom-refresher-left-image-small';
+				}
+				return refresherLeftImageClass;
+			},
+			refresherLeftLoadingImageClass() {
+				let refresherLeftImageClass = 'zp-loading-more-line-loading-image zp-custom-refresher-left-image';
+				if (this.showRefresherUpdateTime) {
+					refresherLeftImageClass += ' zp-custom-refresher-left-image-big';
+				} else {
+					refresherLeftImageClass += ' zp-custom-refresher-left-image-small';
+				}
+				return refresherLeftImageClass;
+			},
+			refresherRightTextStyle() {
+				let refresherRightTextStyle = null;
+				// #ifdef APP-NVUE
+				if (this.showRefresherUpdateTime) {
+					refresherRightTextStyle = [{
+						'height': '40rpx',
+						'line-height': '40rpx'
+					}];
+				} else {
+					refresherRightTextStyle = [{
+						'height': '80rpx',
+						'line-height': '80rpx'
+					}];
+				}
 				// #endif
-				return cls;
-			}
-		},
-		watch: {
-			refresherStatus(newVal, oldVal) {
-				if (newVal === 0 && oldVal !== 0) {
-					this.refresherLeftImageClass = 'zp-custom-refresher-left-image zp-custom-refresher-arrow-down';
-				}
-				if (newVal !== 0 && oldVal === 0) {
-					this.refresherLeftImageClass = 'zp-custom-refresher-left-image zp-custom-refresher-arrow-top';
-				}
+				return refresherRightTextStyle;
 			}
 		},
 		methods: {
-			updateTime(){
+			updateTime(refresherUpdateTimeKey) {
+				if (!refresherUpdateTimeKey) {
+					refresherUpdateTimeKey = this.refresherUpdateTimeKey;
+				}
 				if (this.showRefresherUpdateTime) {
-					this.refresherTimeText = getRefesrherFormatTimeByKey('default');
+					this.refresherTimeText = getRefesrherFormatTimeByKey(refresherUpdateTimeKey);
 				}
 			}
 		}
@@ -98,6 +127,12 @@
 		flex-direction: row;
 		justify-content: center;
 		align-items: center;
+	}
+
+	.zp-custom-refresher-container-padding {
+		/* #ifdef APP-NVUE */
+		padding: 15rpx 0rpx;
+		/* #endif */
 	}
 
 	.zp-custom-refresher-left {
@@ -119,8 +154,8 @@
 		color: #666666;
 		/* #endif */
 	}
-	
-	.zp-custom-refresher-left-image-small{
+
+	.zp-custom-refresher-left-image-small {
 		margin-right: 8rpx;
 		width: 30rpx;
 		height: 30rpx;
@@ -129,11 +164,11 @@
 		height: 35rpx;
 		/* #endif */
 	}
-	
-	.zp-custom-refresher-left-image-big{
-		margin-right: 12rpx;
-		width: 35rpx;
-		height: 35rpx;
+
+	.zp-custom-refresher-left-image-big {
+		margin-right: 20rpx;
+		width: 36rpx;
+		height: 36rpx;
 		/* #ifdef APP-NVUE */
 		width: 37rpx;
 		height: 37rpx;
@@ -177,10 +212,13 @@
 	.zp-custom-refresher-right-text {
 		/* #ifdef APP-NVUE */
 		font-size: 28rpx;
-		height: 80rpx;
-		line-height: 80rpx;
 		/* #endif */
-		color: #555555
+		color: #555555;
+	}
+
+	.zp-custom-refresher-right-time-text {
+		margin-top: 10rpx;
+		font-size: 24rpx;
 	}
 
 	.zp-custom-refresher-right-black {
