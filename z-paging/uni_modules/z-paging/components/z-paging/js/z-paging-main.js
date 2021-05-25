@@ -65,13 +65,16 @@ function toKebab(value) {
  * @property {Boolean} auto-height z-paging是否自动高度，若自动高度则会自动铺满屏幕，默认为否
  * @property {Number|String} auto-height-addition z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数
  * @property {String} default-theme-style loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
+ * @property {String} refresher-theme-style 下拉刷新的主题样式，支持black，white，默认black
+ * @property {String} loading-more-theme-style 底部加载更多的主题样式，支持black，white，默认black
  * @property {Boolean} refresher-only 是否只使用下拉刷新，设置为true后将关闭mounted自动请求数据、关闭滚动到底部加载更多，强制隐藏空数据图。默认为否
  * @property {Boolean} use-page-scroll 使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
  * @property {Boolean} fixed z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为否(当使用内置scroll-view滚动时有效)
  * @property {Boolean} mounted-auto-call-reload z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
  * @property {Boolean} auto-scroll-to-top-when-reload reload时自动滚动到顶部，默认为是
  * @property {Boolean} auto-clean-list-when-reload reload时立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
- * @property {Boolean} show-refresher-when-reload 调用reload方法时自动显示下拉刷新view，默认为否
+ * @property {Boolean} show-refresher-when-reload 是否显示最后更新时间，默认为否
+ * @property {Boolean} refresher-update-time-key 如果需要区别不同页面的最后更新时间，请为不同页面的z-paging的`refresher-update-time-key`设置不同的字符串
  * @property {Boolean} use-custom-refresher 是否使用自定义的下拉刷新，默认为是，即使用z-paging的下拉刷新。设置为false即代表使用uni scroll-view自带的下拉刷新，h5、App、微信小程序以外的平台不支持uni scroll-view自带的下拉刷新
  * @property {Number|String} refresher-fps 自定义下拉刷新下拉帧率，默认为40，过高可能会出现抖动问题(use-custom-refresher为true时生效)
  * @property {Number|String} refresher-max-angle 自定义下拉刷新允许触发的最大下拉角度，默认为40度，当下拉角度小于设定值时，自定义下拉刷新动画不会被触发
@@ -262,6 +265,20 @@ export default {
 			type: String,
 			default: function() {
 				return _getConfig('defaultThemeStyle', 'black');
+			}
+		},
+		//下拉刷新的主题样式，支持black，white，默认black
+		refresherThemeStyle: {
+			type: String,
+			default: function() {
+				return _getConfig('refresherThemeStyle', '');
+			}
+		},
+		//底部加载更多的主题样式，支持black，white，默认black
+		loadingMoreThemeStyle: {
+			type: String,
+			default: function() {
+				return _getConfig('loadingMoreThemeStyle', '');
 			}
 		},
 		//是否只使用下拉刷新，设置为true后将关闭mounted自动请求数据、关闭滚动到底部加载更多，强制隐藏空数据图。默认为否
@@ -470,6 +487,13 @@ export default {
 			type: String,
 			default: _getConfig('emptyViewErrorImg', '')
 		},
+		//空数据图样式
+		emptyViewStyle: {
+			type: Object,
+			default: function() {
+				return _getConfig('emptyViewStyle', {});
+			}
+		},
 		//加载中时是否自动隐藏空数据图，默认为是
 		autoHideEmptyViewWhenLoading: {
 			type: Boolean,
@@ -567,12 +591,12 @@ export default {
 			type: String,
 			default: _getConfig('refresherBackground', '#ffffff00')
 		},
-		//是否显示上次下拉刷新更新时间，默认为否
+		//是否显示最后更新时间，默认为否
 		showRefresherUpdateTime: {
 			type: Boolean,
 			default: _getConfig('showRefresherUpdateTime', false)
 		},
-		//上次下拉刷新更新时间的key，用于区别不同的上次更新时间
+		//如果需要区别不同页面的最后更新时间，请为不同页面的z-paging的`refresher-update-time-key`设置不同的字符串
 		refresherUpdateTimeKey: {
 			type: String,
 			default: _getConfig('refresherUpdateTimeKey', 'default')
@@ -758,7 +782,7 @@ export default {
 		zPagingLoadMoreConfig() {
 			return {
 				loadingStatus: this.loadingStatus,
-				defaultThemeStyle: this.defaultThemeStyle,
+				defaultThemeStyle: this.finalLoadingMoreThemeStyle,
 				loadingMoreCustomStyle: this.loadingMoreCustomStyle,
 				loadingMoreLoadingIconCustomStyle: this.loadingMoreLoadingIconCustomStyle,
 				loadingMoreLoadingIconType: this.loadingMoreLoadingIconType,
@@ -889,6 +913,18 @@ export default {
 			} else {
 				return this.showEmptyViewReload;
 			}
+		},
+		finalRefresherThemeStyle() {
+			if (this.refresherThemeStyle.length) {
+				return this.refresherThemeStyle;
+			}
+			return this.defaultThemeStyle;
+		},
+		finalLoadingMoreThemeStyle() {
+			if (this.loadingMoreThemeStyle.length) {
+				return this.loadingMoreThemeStyle;
+			}
+			return this.defaultThemeStyle;
 		},
 		tempLanguage() {
 			let systemLanguage = false;
@@ -1570,7 +1606,7 @@ export default {
 			}
 			if (this.refresherMaxAngle >= 0 && this.refresherMaxAngle <= 90 && this.lastRefresherTouchmove && this
 				.lastRefresherTouchmove.touchY <= refresherTouchmoveY) {
-				if (!this.refresherAngleEnableChangeContinued && this.moveDistance < 1 && !this
+				if (!moveDistance && !this.refresherAngleEnableChangeContinued && this.moveDistance < 1 && !this
 					.refresherReachMaxAngle) {
 					return;
 				}
@@ -1711,7 +1747,7 @@ export default {
 			}
 			return moveDistance;
 		},
-		//判断当没有更多数据且分页�����容未超出z-paging时是否显示没有更多数据的view
+		//判断当没有更多数据且分页内容未超出z-paging时是否显示没有更多数据的view
 		async _checkShowLoadingMoreWhenNoMoreAndInsideOfPaging(totalData) {
 			try {
 				let pagingContainerH = 0;

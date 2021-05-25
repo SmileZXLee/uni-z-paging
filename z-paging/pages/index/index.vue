@@ -62,6 +62,12 @@
 					// }
 					,
 					{
+						title: '显示最后更新时间演示',
+						file: 'show-update-time-demo',
+						subTitle: ''
+					}
+					,
+					{
 						title: '自定义导航栏演示',
 						file: 'custom-nav-demo',
 						subTitle: '使用了uView的自定义导航栏组件'

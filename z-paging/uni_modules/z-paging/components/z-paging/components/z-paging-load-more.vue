@@ -17,12 +17,13 @@
 		<image
 			v-if="config.loadingStatus===1&&config.loadingMoreLoadingIconType==='flower'&&!config.loadingMoreLoadingIconCustomImage.length"
 			class="zp-loading-more-line-loading-image" :style="[config.loadingMoreLoadingIconCustomStyle]"
-			:src="base64Flower">
+			:src="config.defaultThemeStyle==='white'?base64FlowerWhite:base64Flower">
 		</image>
 		<!-- #endif -->
 		<!-- #ifdef APP-NVUE -->
 		<view>
-			<loading-indicator v-if="config.loadingStatus===1" :animating="true"
+			<loading-indicator v-if="config.loadingStatus===1"
+				:style="[{color:config.defaultThemeStyle==='white'?'white':'#777777'}]" :animating="true"
 				class="zp-loading-more-line-loading-image">
 			</loading-indicator>
 		</view>
@@ -46,7 +47,8 @@
 		data() {
 			return {
 				base64Arrow: zStatic.base64Arrow,
-				base64Flower: zStatic.base64Flower
+				base64Flower: zStatic.base64Flower,
+				base64FlowerWhite: zStatic.base64FlowerWhite,
 			};
 		},
 		props: ['config'],
@@ -139,7 +141,7 @@
 	}
 
 	.zp-loading-more-line-white {
-		background-color: #cccccc;
+		background-color: #efefef;
 	}
 
 	@keyframes loading-circle {

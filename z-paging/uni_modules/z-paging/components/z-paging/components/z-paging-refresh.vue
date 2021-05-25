@@ -11,26 +11,27 @@
 			style="height: 100%;">
 			<view class="zp-custom-refresher-left">
 				<image v-if="refresherStatus!==2" :class="refresherLeftImageClass"
-					:style="[{'filter' :defaultThemeStyle==='white'?'brightness(10)':''}]" :src="base64Arrow">
+					:src="defaultThemeStyle==='white'?base64ArrowWhite:base64Arrow">
 				</image>
 				<!-- #ifndef APP-NVUE -->
-				<image v-else :class="refresherLeftLoadingImageClass" :src="base64Flower">
+				<image v-else :class="refresherLeftLoadingImageClass"
+					:src="defaultThemeStyle==='white'?base64FlowerWhite:base64Flower">
 				</image>
 				<!-- #endif -->
 				<!-- #ifdef APP-NVUE -->
 				<view v-else :style="[{'margin-right':showRefresherUpdateTime?'30rpx':'28rpx'}]">
-					<loading-indicator class="zp-custom-refresher-left-image" :animating="true">
+					<loading-indicator :style="[{color:defaultThemeStyle==='white'?'white':'#777777'}]"
+						class="zp-custom-refresher-left-image" :animating="true">
 					</loading-indicator>
 				</view>
 				<!-- #endif -->
 			</view>
-			<view
-				:class="defaultThemeStyle==='white'?'zp-custom-refresher-right zp-custom-refresher-right-white':'zp-custom-refresher-right zp-custom-refresher-right-black'">
+			<view class="zp-custom-refresher-right">
 				<text class="zp-custom-refresher-right-text"
-					:style="refresherRightTextStyle">{{refresherStatusTextMap[refresherStatus]}}
+					:style="[refresherRightTextStyle]">{{refresherStatusTextMap[refresherStatus]}}
 				</text>
 				<text class="zp-custom-refresher-right-text zp-custom-refresher-right-time-text"
-					:style="refresherRightTextStyle"
+					:style="[refresherRightTextStyle]"
 					v-if="showRefresherUpdateTime&&refresherTimeText.length">{{refresherTimeText}}
 				</text>
 			</view>
@@ -47,7 +48,9 @@
 		data() {
 			return {
 				base64Arrow: zStatic.base64Arrow,
+				base64ArrowWhite: zStatic.base64ArrowWhite,
 				base64Flower: zStatic.base64Flower,
+				base64FlowerWhite: zStatic.base64FlowerWhite,
 				refresherTimeText: ''
 			};
 		},
@@ -87,20 +90,25 @@
 				return refresherLeftImageClass;
 			},
 			refresherRightTextStyle() {
-				let refresherRightTextStyle = null;
+				let refresherRightTextStyle = {};
+				let color = '#555555';
+				if (this.defaultThemeStyle === 'white') {
+					color = '#efefef';
+				}
 				// #ifdef APP-NVUE
 				if (this.showRefresherUpdateTime) {
-					refresherRightTextStyle = [{
+					refresherRightTextStyle = {
 						'height': '40rpx',
 						'line-height': '40rpx'
-					}];
+					};
 				} else {
-					refresherRightTextStyle = [{
+					refresherRightTextStyle = {
 						'height': '80rpx',
 						'line-height': '80rpx'
-					}];
+					};
 				}
 				// #endif
+				refresherRightTextStyle['color'] = color;
 				return refresherRightTextStyle;
 			}
 		},
@@ -213,20 +221,11 @@
 		/* #ifdef APP-NVUE */
 		font-size: 28rpx;
 		/* #endif */
-		color: #555555;
 	}
 
 	.zp-custom-refresher-right-time-text {
 		margin-top: 10rpx;
 		font-size: 24rpx;
-	}
-
-	.zp-custom-refresher-right-black {
-		color: #666666;
-	}
-
-	.zp-custom-refresher-right-white {
-		color: #efefef;
 	}
 
 	@keyframes refresher-arrow-top {

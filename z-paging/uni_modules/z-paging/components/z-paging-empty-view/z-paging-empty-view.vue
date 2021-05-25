@@ -5,7 +5,7 @@
 
 <!-- 空数据占位view，此组件支持easycom规范，可以在项目中直接引用 -->
 <template>
-	<view class="zp-container">
+	<view class="zp-container" :style="[emptyViewStyle]">
 		<view class="zp-main">
 			<image v-if="!emptyViewImg.length" class="zp-main-image" :src="emptyImg"></image>
 			<image v-else class="zp-main-image" :src="emptyViewImg"></image>
@@ -59,6 +59,13 @@
 				type: Boolean,
 				default: function() {
 					return false
+				}
+			},
+			//空数据图样式
+			emptyViewStyle: {
+				type: Object,
+				default: function() {
+					return {}
 				}
 			}
 		},
