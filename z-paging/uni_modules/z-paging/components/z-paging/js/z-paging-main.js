@@ -425,6 +425,11 @@ export default {
 			type: Boolean,
 			default: _getConfig('hideLoadingMoreWhenNoMoreAndInsideOfPaging', false)
 		},
+		//当没有更多数据且分页数组长度少于这个值时，隐藏没有更多数据的view，默认为0，代表不限制。
+		hideLoadingMoreWhenNoMoreByLimit: {
+			type: Number,
+			default: _getConfig('hideLoadingMoreWhenNoMoreByLimit', 0)
+		},
 		//是否显示默认的加载更多text，默认为是
 		showDefaultLoadingMoreText: {
 			type: Boolean,
@@ -611,6 +616,26 @@ export default {
 			type: Boolean,
 			default: _getConfig('useChatRecordMode', false)
 		},
+		//slot="top"的view的z-index，默认为99，仅使用页面滚动时有效
+		topZIndex: {
+			type: Number,
+			default: _getConfig('topZIndex', 99)
+		},
+		//z-paging内容容器父view的z-index，默认为1
+		superContentZIndex: {
+			type: Number,
+			default: _getConfig('superContentZIndex', 1)
+		},
+		//z-paging内容容器部分的z-index，默认为1
+		contentZIndex: {
+			type: Number,
+			default: _getConfig('contentZIndex', 1)
+		},
+		//空数据view的z-index，默认为99
+		emptyViewZIndex: {
+			type: Number,
+			default: _getConfig('emptyViewZIndex', 99)
+		},
 		//nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list
 		nvueListIs: {
 			type: String,
@@ -666,7 +691,10 @@ export default {
 				return;
 			}
 			newVal = [...newVal];
-			if (!this.usePageScroll && this.loadingStatus === 2 && this.hideLoadingMoreWhenNoMoreAndInsideOfPaging &&
+			if (this.loadingStatus === 2 && this.hideLoadingMoreWhenNoMoreByLimit > 0 &&
+				newVal.length) {
+				this.showLoadingMore = newVal.length > this.hideLoadingMoreWhenNoMoreByLimit;
+			} else if (this.loadingStatus === 2 && this.hideLoadingMoreWhenNoMoreAndInsideOfPaging &&
 				newVal.length) {
 				this.$nextTick(() => {
 					this._checkShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal);
@@ -925,6 +953,20 @@ export default {
 				return this.loadingMoreThemeStyle;
 			}
 			return this.defaultThemeStyle;
+		},
+		finalPagingContentStyle() {
+			if (this.contentZIndex != 1) {
+				this.pagingContentStyle['z-index'] = this.contentZIndex;
+				this.pagingContentStyle['position'] = 'relative';
+			}
+			return this.pagingContentStyle;
+		},
+		finalScrollViewStyle() {
+			if (this.superContentZIndex != 1) {
+				this.scrollViewStyle['z-index'] = this.superContentZIndex;
+				this.scrollViewStyle['position'] = 'relative';
+			}
+			return this.scrollViewStyle;
 		},
 		tempLanguage() {
 			let systemLanguage = false;
@@ -1244,6 +1286,7 @@ export default {
 					this._currentDataChange(data, this.currentData);
 				}
 			} else {
+				this._currentDataChange(data, this.currentData);
 				this.loadingStatus = 3;
 				if (this.loadingType === 1) {
 					this.pageNo--;
@@ -1657,7 +1700,7 @@ export default {
 			moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
 			this._handleRefresherTouchend(moveDistance);
 		},
-		//进一步处理拖拽结束结果
+		//进一步处理拖拽���束结果
 		_handleRefresherTouchend(moveDistance) {
 			// #ifndef APP-PLUS || H5 || MP-WEIXIN
 			if (!this.isTouchmoving) {
@@ -1750,17 +1793,24 @@ export default {
 		//判断当没有更多数据且分页内容未超出z-paging时是否显示没有更多数据的view
 		async _checkShowLoadingMoreWhenNoMoreAndInsideOfPaging(totalData) {
 			try {
-				let pagingContainerH = 0;
-				let scrollViewH = 0;
-				const pagingContainerNode = await this._getNodeClientRect('.zp-paging-container-content');
 				const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
-				if (pagingContainerNode) {
-					pagingContainerH = pagingContainerNode[0].height;
+				if (this.usePageScroll) {
+					if (scrollViewNode) {
+						const scrollViewTotalH = scrollViewNode[0].top + scrollViewNode[0].height;
+						this.showLoadingMore = scrollViewTotalH >= this.systemInfo.windowHeight;
+					}
+				} else {
+					let pagingContainerH = 0;
+					let scrollViewH = 0;
+					const pagingContainerNode = await this._getNodeClientRect('.zp-paging-container-content');
+					if (pagingContainerNode) {
+						pagingContainerH = pagingContainerNode[0].height;
+					}
+					if (scrollViewNode) {
+						scrollViewH = scrollViewNode[0].height;
+					}
+					this.showLoadingMore = pagingContainerH >= scrollViewH;
 				}
-				if (scrollViewNode) {
-					scrollViewH = scrollViewNode[0].height;
-				}
-				this.showLoadingMore = pagingContainerH >= scrollViewH;
 			} catch (e) {
 				this.showLoadingMore = totalData.length;
 			}

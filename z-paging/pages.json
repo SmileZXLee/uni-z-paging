@@ -30,7 +30,11 @@
 			"path": "pages/page-default-demo/page-default-demo",
 			"style": {
 				"navigationBarTitleText": "使用页面滚动示例",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": false,
+				"app-plus": {
+					//使用页面滚动建议关闭回弹效果
+					"bounce": "none"
+				}
 			}
 
 		}, {
@@ -84,58 +88,49 @@
 				"enablePullDownRefresh": false
 			}
 
+		}, {
+			"path": "pages/sticky-demo-n/sticky-demo-n",
+			"style": {
+				"navigationBarTitleText": "滚动吸附效果演示(nvue)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/chat-history-demo-n/chat-history-demo-n",
+			"style": {
+				"navigationBarTitleText": "聊天记录模式演示(nvue)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/consistency-demo/consistency-demo",
+			"style": {
+				"navigationBarTitleText": "保证数据一致性演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/i18n-demo/i18n-demo",
+			"style": {
+				"navigationBarTitleText": "i18n国际化演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/show-update-time-demo/show-update-time-demo",
+			"style": {
+				"navigationBarTitleText": "显示最后更新时间演示",
+				"enablePullDownRefresh": false
+			}
+
 		}
-	    ,{
-            "path" : "pages/sticky-demo-n/sticky-demo-n",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "滚动吸附效果演示(nvue)",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/chat-history-demo-n/chat-history-demo-n",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "聊天记录模式演示(nvue)",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/consistency-demo/consistency-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "保证数据一致性演示",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/i18n-demo/i18n-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "i18n国际化演示",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/show-update-time-demo/show-update-time-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "显示最后更新时间演示",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "z-paging",
 		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
-
+		"backgroundColor": "#F8F8F8",
+		//将iOS中回弹效果顶部的灰色改为白色
+		"backgroundColorTop": "#FFFFFF"
 	}
 }

@@ -5,7 +5,7 @@
 
 <!-- 空数据占位view，此组件支持easycom规范，可以在项目中直接引用 -->
 <template>
-	<view class="zp-container" :style="[emptyViewStyle]">
+	<view class="zp-container" :style="[finalEmptyViewStyle]">
 		<view class="zp-main">
 			<image v-if="!emptyViewImg.length" class="zp-main-image" :src="emptyImg"></image>
 			<image v-else class="zp-main-image" :src="emptyViewImg"></image>
@@ -67,6 +67,13 @@
 				default: function() {
 					return {}
 				}
+			},
+			//空数据图z-index
+			emptyViewZIndex: {
+				type: Number,
+				default: function() {
+					return 99
+				}
 			}
 		},
 		computed: {
@@ -76,6 +83,10 @@
 				} else {
 					return this.base64Empty;
 				}
+			},
+			finalEmptyViewStyle(){
+				this.emptyViewStyle['z-index'] = this.emptyViewZIndex;
+				return this.emptyViewStyle;
 			}
 		},
 		methods: {
@@ -105,7 +116,6 @@
 	}
 
 	.zp-main {
-		z-index: 1000;
 		/* #ifndef APP-NVUE */
 		display: flex;
 		margin-top: -150rpx;
@@ -120,14 +130,12 @@
 	.zp-main-image {
 		width: 200rpx;
 		height: 200rpx;
-		z-index: 1000;
 	}
 
 	.zp-main-title {
 		font-size: 26rpx;
 		color: #aaaaaa;
 		text-align: center;
-		z-index: 1000;
 	}
 
 	.zp-main-error-btn {
@@ -137,6 +145,5 @@
 		border-radius: 6rpx;
 		color: #aaaaaa;
 		margin-top: 50rpx;
-		z-index: 1000;
 	}
 </style>

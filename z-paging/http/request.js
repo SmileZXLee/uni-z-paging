@@ -4,7 +4,6 @@ let loadingTime = 500;
 function queryList(pageNo, pageSize, type, callback) {
 	pageNo = parseInt(pageNo);
 	pageSize = parseInt(pageSize);
-
 	if (pageNo < 0 || pageSize <= 0) {
 		callQueryResult(callback, []);
 		return;
