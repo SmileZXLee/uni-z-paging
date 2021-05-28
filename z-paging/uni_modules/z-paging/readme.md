@@ -3,6 +3,7 @@
 > 【uni-app自动分页器】超简单，低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view，支持吸顶效果，支持国际化等。
 
 ### API文档地址：[http://z-paging.com](http://z-paging.com)
+### 备用API文档地址：[https://www.kancloud.cn/zxlee/z-paging/content](https://www.kancloud.cn/zxlee/z-paging/content) 
 
 ### 功能&特点
 
@@ -229,3 +230,4 @@
 * 【关于自定义导航栏】若设置了`:fixed=true`，则必须将自定义导航栏放在z-paging标签中且添加slot="top"，如：`<custom-nav slot="top"></custom-nav>`，如果有多个需要固定顶部的元素，则书写`<view slot="top">需要固定顶部的元素</view>`。
 
 ### API文档地址：[http://z-paging.com](http://z-paging.com)
+### 备用API文档地址：[https://www.kancloud.cn/zxlee/z-paging/content](https://www.kancloud.cn/zxlee/z-paging/content) 

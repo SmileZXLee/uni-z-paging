@@ -2,7 +2,9 @@
 // github地址:https://github.com/SmileZXLee/uni-z-paging
 // dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 // 反馈QQ群：790460711
-//微信小程序、QQ小程序、app-vue、h5上使用wxs实现自定义下拉刷新，降低逻辑层与视图层的通信折损，提升性能
+// 微信小程序、QQ小程序、app-vue、h5上使用wxs实现自定义下拉刷新，降低逻辑层与视图层的通信折损，提升性能
+
+var currentMoveDistance = 0;
 
 function propObserver(newValue, oldValue, ownerInstance, instance) {
 	var state = ownerInstance.getState();
@@ -12,6 +14,8 @@ function propObserver(newValue, oldValue, ownerInstance, instance) {
 	if (newValue.indexOf('end') != -1) {
 		_setTransform('translateY(0px)', instance)
 		state.moveDistance = 0;
+		state.oldMoveDistance = 0;
+		currentMoveDistance = 0;
 	} else if (newValue.indexOf('begin') != -1) {
 		var refresherThreshold = instance.getDataset().refresherthreshold
 		_setTransformValue(refresherThreshold, instance, state);
@@ -26,6 +30,7 @@ function touchstart(e, ownerInstance) {
 	if (_getRefresherTouchDisabled(e, instance)) {
 		return;
 	}
+	state.oldMoveDistance = 0;
 	var touch = _getCommonTouch(e);
 	var loading = _getIsTrue(dataset.loading);
 	state.startY = touch.touchY;
@@ -51,11 +56,13 @@ function touchmove(e, ownerInstance) {
 	}
 	var moveDistance = _getMoveDistance(e, instance);
 	if (moveDistance < 0) {
+		_setTransformValue(0, instance, state);
 		return;
 	}
 	_setTransformValue(moveDistance, instance, state);
 	var oldRefresherStatus = state.refresherStatus;
-	var oldIsTouchmoving = _getIsTrue(state.oldistouchmoving);
+	var dataset = instance.getDataset();
+	var oldIsTouchmoving = _getIsTrue(dataset.oldistouchmoving);
 	var isTouchmoving = state.isTouchmoving;
 	if (moveDistance >= refresherThreshold) {
 		state.refresherStatus = 1;
@@ -64,6 +71,7 @@ function touchmove(e, ownerInstance) {
 	}
 	if (!isTouchmoving) {
 		state.isTouchmoving = true;
+		isTouchmoving = true;
 	}
 	if (state.isTouchEnded) {
 		state.isTouchEnded = false;
@@ -120,7 +128,7 @@ function isPC() {
 	return flag;
 }
 
-var movable = false
+var movable = false;
 
 function mousedown(e, ins) {
 	if (!isPC()) return;
@@ -149,6 +157,9 @@ function mouseleave(e, ins) {
 
 function _setTransformValue(value, instance, state) {
 	value = value || 0;
+	if(state.moveDistance == value){
+		return;
+	}
 	state.moveDistance = value;
 	_setTransform('translateY(' + value + 'px)', instance);
 }
@@ -160,16 +171,28 @@ function _setTransform(transform, instance) {
 			'-webkit-transform': transform
 		})
 	})
-
 }
 
 function _getMoveDistance(e, instance) {
 	var state = instance.getState();
 	var refresherThreshold = instance.getDataset().refresherthreshold;
+	refresherThreshold = parseFloat(refresherThreshold);
 	var touch = _getCommonTouch(e);
 	var moveDistance = touch.touchY - state.startY;
-	moveDistance = _getFinalRefresherMoveDistance(moveDistance, refresherThreshold, state);
-	return moveDistance;
+	var oldMoveDistance = state.oldMoveDistance || 0;
+	state.oldMoveDistance = moveDistance;
+	var diffDis = moveDistance - oldMoveDistance;
+	if (diffDis > 0) {
+		diffDis = diffDis * 0.7;
+		if (currentMoveDistance > refresherThreshold) {
+			diffDis = diffDis * 0.3;
+		}
+	}
+	currentMoveDistance += diffDis;
+	if(currentMoveDistance < 0){
+		currentMoveDistance = 0;
+	}
+	return currentMoveDistance;
 }
 
 function _getCommonTouch(e) {
@@ -188,16 +211,6 @@ function _getCommonTouch(e) {
 		touchY: touch.clientY
 	};
 }
-
-function _getFinalRefresherMoveDistance(moveDistance, refresherThreshold, state) {
-	refresherThreshold = parseFloat(refresherThreshold);
-	moveDistance = moveDistance * 0.7;
-	if (moveDistance >= refresherThreshold) {
-		moveDistance = refresherThreshold + (moveDistance - refresherThreshold) * 0.3;
-	}
-	return moveDistance;
-}
-
 
 function _getRefresherTouchDisabled(e, instance) {
 	var dataset = instance.getDataset();

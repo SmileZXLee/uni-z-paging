@@ -202,6 +202,7 @@ export default {
 			nShowBottom: true,
 			nFixFreezing: false,
 			wxsPropType: '',
+			renderPropScrollTop: 0,
 			wxsIsScrollTopInTopRange: true
 		};
 	},
@@ -499,6 +500,27 @@ export default {
 				return _getConfig('emptyViewStyle', {});
 			}
 		},
+		//空数据图img样式
+		emptyViewImgStyle: {
+			type: Object,
+			default: function() {
+				return _getConfig('emptyViewImgStyle', {});
+			}
+		},
+		//空数据图描述文字样式
+		emptyViewTitleStyle: {
+			type: Object,
+			default: function() {
+				return _getConfig('emptyViewTitleStyle', {});
+			}
+		},
+		//空数据图重新加载按钮样式
+		emptyViewReloadStyle: {
+			type: Object,
+			default: function() {
+				return _getConfig('emptyViewReloadStyle', {});
+			}
+		},
 		//加载中时是否自动隐藏空数据图，默认为是
 		autoHideEmptyViewWhenLoading: {
 			type: Boolean,
@@ -714,6 +736,7 @@ export default {
 			}
 			this.realTotalData = newVal;
 			this.$emit('update:list', newVal);
+			this.$emit('listChange', newVal);
 			this.firstPageLoaded = false;
 			this.isTotalChangeFromAddData = false;
 			this.$nextTick(() => {
@@ -783,6 +806,13 @@ export default {
 			if (newVal !== oldVal) {
 				this.$emit('refresherStatusChange', newVal);
 				this.$emit('update:refresherStatus', newVal);
+			}
+		},
+		finalScrollTop(newVal, oldVal) {
+			if (newVal === 0) {
+				this.renderPropScrollTop = 0;
+			} else {
+				this.renderPropScrollTop = 10;
 			}
 		}
 	},
@@ -876,6 +906,12 @@ export default {
 				}
 			}
 			return this._convertTextToPx(refresherThreshold);
+		},
+		finalScrollTop() {
+			if (this.usePageScroll) {
+				return this.pageScrollTop;
+			}
+			return this.oldScrollTop;
 		},
 		finalBackToTopStyle() {
 			let tempBackToTopStyle = this.backToTopStyle;
@@ -1133,7 +1169,7 @@ export default {
 		},
 		//滚动到顶部，animate为是否展示滚动动画，默认为是；refs仅在nvue中需要传，若不传，默认为this.$parent.$refs
 		scrollToTop(animate, refs) {
-			this._scrollToTop(animate, refs);
+			this._scrollToTop(animate, refs, false);
 		},
 		//滚动到底部，animate为是否展示滚动动画，默认为是；refs仅在nvue中需要传，若不传，默认为this.$parent.$refs
 		scrollToBottom(animate, refs) {
@@ -1393,7 +1429,7 @@ export default {
 			this._onLoadingMore('click');
 		},
 		//滚动到顶部
-		_scrollToTop(animate, refs = null) {
+		_scrollToTop(animate, refs = null, isPrivate = true) {
 			// #ifdef APP-NVUE
 			if (!refs) {
 				refs = this.$parent.$refs;
@@ -1407,6 +1443,10 @@ export default {
 					offset: 0,
 					animated: animate
 				});
+			}else{
+				if(!isPrivate){
+					console.error('[z-paging]在nvue中滚动到顶部，cell必须设置 :ref="`z-paging-${index}`');
+				}
 			}
 			return;
 			// #endif
@@ -1442,6 +1482,8 @@ export default {
 					offset: 0,
 					animated: animate
 				});
+			}else{
+				console.error('[z-paging]在nvue中滚动到底部，cell必须设置 :ref="`z-paging-${index}`');
 			}
 			return;
 			// #endif
@@ -1499,6 +1541,8 @@ export default {
 							offset: -offset,
 							animated: animate
 						});
+					}else{
+						console.error('[z-paging]在nvue中滚动到指定位置，cell必须设置 :ref="`z-paging-${index}`');
 					}
 					return;
 					// #endif
@@ -1700,7 +1744,7 @@ export default {
 			moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
 			this._handleRefresherTouchend(moveDistance);
 		},
-		//进一步处理拖拽���束结果
+		//进一步处���拖拽���束结果
 		_handleRefresherTouchend(moveDistance) {
 			// #ifndef APP-PLUS || H5 || MP-WEIXIN
 			if (!this.isTouchmoving) {
@@ -1784,7 +1828,7 @@ export default {
 		},
 		//获取处理后的moveDistance
 		_getFinalRefresherMoveDistance(moveDistance) {
-			moveDistance = moveDistance * 0.7;
+			moveDistance = moveDistance * 0.8;
 			if (moveDistance >= this.finalRefresherThreshold) {
 				moveDistance = this.finalRefresherThreshold + (moveDistance - this.finalRefresherThreshold) * 0.3;
 			}
@@ -1994,7 +2038,6 @@ export default {
 						setTimeout(() => {
 							this.backToTopClass = 'zp-back-to-top zp-back-to-top-show';
 						}, 300)
-
 					}
 				} else {
 					if (this.showBackToTopClass) {
@@ -2053,6 +2096,7 @@ export default {
 			const contentOffsetY = e.contentOffset.y;
 			this.$emit('scroll', e);
 			this.nListIsDragging = e.isDragging;
+			this._checkShouldShowBackToTop(-e.contentOffset.y,-e.contentOffset.y-1);
 		},
 		//下拉刷新刷新中
 		_nOnRrefresh() {

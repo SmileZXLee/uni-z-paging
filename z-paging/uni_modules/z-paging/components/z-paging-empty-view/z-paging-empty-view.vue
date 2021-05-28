@@ -7,10 +7,10 @@
 <template>
 	<view class="zp-container" :style="[finalEmptyViewStyle]">
 		<view class="zp-main">
-			<image v-if="!emptyViewImg.length" class="zp-main-image" :src="emptyImg"></image>
-			<image v-else class="zp-main-image" :src="emptyViewImg"></image>
-			<text class="zp-main-title">{{emptyViewText}}</text>
-			<text v-if="showEmptyViewReload" class="zp-main-error-btn"
+			<image v-if="!emptyViewImg.length" class="zp-main-image" :style="[emptyViewImgStyle]" :src="emptyImg"></image>
+			<image v-else class="zp-main-image" :style="[emptyViewImgStyle]" :src="emptyViewImg"></image>
+			<text class="zp-main-title" :style="[emptyViewTitleStyle]">{{emptyViewText}}</text>
+			<text v-if="showEmptyViewReload" class="zp-main-error-btn" :style="[emptyViewReloadStyle]"
 				@click="reloadClick">{{emptyViewReloadText}}</text>
 		</view>
 	</view>
@@ -63,6 +63,27 @@
 			},
 			//空数据图样式
 			emptyViewStyle: {
+				type: Object,
+				default: function() {
+					return {}
+				}
+			},
+			//空数据图img样式
+			emptyViewImgStyle: {
+				type: Object,
+				default: function() {
+					return {}
+				}
+			},
+			//空数据图描述文字样式
+			emptyViewTitleStyle: {
+				type: Object,
+				default: function() {
+					return {}
+				}
+			},
+			//空数据图重新加载按钮样式
+			emptyViewReloadStyle: {
 				type: Object,
 				default: function() {
 					return {}

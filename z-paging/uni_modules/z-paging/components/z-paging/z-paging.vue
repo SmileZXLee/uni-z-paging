@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V1.7.1
+V1.7.2
 -- >
 <!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -34,19 +34,22 @@ V1.7.1
 			@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend" @touchcancel="_refresherTouchend"
 			<!-- #endif -->
 			<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
-			@touchstart="paging.touchstart" @touchmove="paging.touchmove" @touchend="paging.touchend" @touchcancel="paging.touchend"
-			@mousedown="paging.mousedown" @mousemove="paging.mousemove" @mouseup="paging.mouseup" @mouseleave="paging.mouseleave"
+			@touchstart="pagingWxs.touchstart" @touchmove="pagingWxs.touchmove" @touchend="pagingWxs.touchend" @touchcancel="pagingWxs.touchend"
+			@mousedown="pagingWxs.mousedown" @mousemove="pagingWxs.mousemove" @mouseup="pagingWxs.mouseup" @mouseleave="pagingWxs.mouseleave"
 			<!-- #endif -->
 			>	
 			<view class="zp-paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]"
 			<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
-			:change:prop="paging.propObserver" :prop="wxsPropType"
+			:change:prop="pagingWxs.propObserver" :prop="wxsPropType"
 			:data-refresherThreshold="finalRefresherThreshold" :data-wxsIsScrollTopInTopRange="wxsIsScrollTopInTopRange"
 			:data-loading="loading" :data-useChatRecordMode="useChatRecordMode" 
 			:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="pageScrollTop"
 			:data-scrollTop="scrollTop" :data-refresherMaxAngle="refresherMaxAngle" 
 			:data-refresherAecc="refresherAngleEnableChangeContinued" :data-usePageScroll="usePageScroll"
 			:data-oldIsTouchmoving="isTouchmoving"
+			<!-- #endif -->
+			<!-- #ifdef APP-VUE || H5 -->
+			:change:renderPropScrollTop="pagingRenderjs.renderPropScrollTopChange" :renderPropScrollTop="renderPropScrollTop"
 			<!-- #endif -->
 			>	
 				<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
@@ -127,73 +130,88 @@ V1.7.1
 	</view>
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
-	<view ref="n-list" id="z-paging-nlist" :class="useChatRecordMode?'zp-n-list zp-n-view-reverse':'zp-n-list'" :is="finalNvueListIs" alwaysScrollableVertical="true"
-		:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar" :loadmoreoffset="finalLowerThreshold"
-		:scrollable="scrollable&&scrollEnable" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
-		:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap"
-		@loadmore="_nOnLoadmore" @scroll="_nOnScroll">
-		<refresh class="zp-n-refresh" v-if="refresherEnabled&&!useChatRecordMode" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
-			@pullingdown="_nOnPullingdown">
-			<view class="zp-n-refresh-container">
-				<!-- 下拉刷新view -->
-				<slot v-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
-				<z-paging-refresh ref="refresh" v-else :refresherStatus="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
-					:refresherDefaultText="finalRefresherDefaultText" :refresherPullingText="finalRefresherPullingText" :refresherRefreshingText="finalRefresherRefreshingText" 
-					:showRefresherUpdateTime="showRefresherUpdateTime" :refresherUpdateTimeKey="refresherUpdateTimeKey"></z-paging-refresh>
+	<scroller>
+		<view ref="n-list" id="z-paging-nlist" :class="useChatRecordMode?'zp-n-list zp-n-view-reverse':'zp-n-list'" :is="finalNvueListIs" alwaysScrollableVertical="true"
+			:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar" :loadmoreoffset="finalLowerThreshold"
+			:scrollable="scrollable&&scrollEnable" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
+			:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap"
+			@loadmore="_nOnLoadmore" @scroll="_nOnScroll">
+			<refresh class="zp-n-refresh" v-if="refresherEnabled&&!useChatRecordMode" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
+				@pullingdown="_nOnPullingdown">
+				<view class="zp-n-refresh-container">
+					<!-- 下拉刷新view -->
+					<slot v-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
+					<z-paging-refresh ref="refresh" v-else :refresherStatus="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
+						:refresherDefaultText="finalRefresherDefaultText" :refresherPullingText="finalRefresherPullingText" :refresherRefreshingText="finalRefresherRefreshingText" 
+						:showRefresherUpdateTime="showRefresherUpdateTime" :refresherUpdateTimeKey="refresherUpdateTimeKey"></z-paging-refresh>
+				</view>
+			</refresh>
+			<slot />
+			<!-- 全屏 -->
+			<view :class="useChatRecordMode?'zp-n-view-reverse':''" v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
+				<slot name="loading" />
 			</view>
-		</refresh>
-		<slot />
-		<!-- 全屏 -->
-		<view :class="useChatRecordMode?'zp-n-view-reverse':''" v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
-			<slot name="loading" />
-		</view>
-		<!-- 空数据图 -->
-		<view :class="useChatRecordMode?'zp-n-view-reverse':''" v-if="!refresherOnly&&!totalData.length&&(autoHideEmptyViewWhenLoading?isAddedData:true)&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
-			<view class="zp-empty-view">
-				<slot v-if="$slots.empty" name="empty" />
-				<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" :emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewZIndex="emptyViewZIndex" @reload="reload">
-				</z-paging-empty-view>
+			<!-- 空数据图 -->
+			<view :class="useChatRecordMode?'zp-n-view-reverse':''" v-if="!refresherOnly&&!totalData.length&&(autoHideEmptyViewWhenLoading?isAddedData:true)&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
+				<view class="zp-empty-view">
+					<slot v-if="$slots.empty" name="empty" />
+					<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" :emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewZIndex="emptyViewZIndex" @reload="reload">
+					</z-paging-empty-view>
+				</view>
 			</view>
-		</view>
-		<!-- 上拉加载更多view -->
-		<view v-if="nShowBottom" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
-			<view v-if="useChatRecordMode">
-				<view v-if="loadingStatus!==2&&realTotalData.length">
-					<slot v-if="$slots.chatLoading"
-						name="chatLoading" />
-					<view v-else class="zp-chat-record-loading-container">
-						<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
-							:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
-						<view>
-							<loading-indicator v-if="loadingStatus===1" :animating="true"
-								class="zp-loading-more-line-loading-image">
-							</loading-indicator>
+			<!-- 上拉加载更多view -->
+			<view v-if="nShowBottom" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
+				<view v-if="useChatRecordMode">
+					<view v-if="loadingStatus!==2&&realTotalData.length">
+						<slot v-if="$slots.chatLoading"
+							name="chatLoading" />
+						<view v-else class="zp-chat-record-loading-container">
+							<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
+								:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
+							<view>
+								<loading-indicator v-if="loadingStatus===1" :animating="true"
+									class="zp-loading-more-line-loading-image">
+								</loading-indicator>
+							</view>
 						</view>
 					</view>
 				</view>
-			</view>
-			<view v-else>
-				<slot v-if="_shouldShowLoading('loadingMoreDefault')" name="loadingMoreDefault" />
-				<slot v-else-if="_shouldShowLoading('loadingMoreLoading')" name="loadingMoreLoading" />
-				<slot v-else-if="_shouldShowLoading('loadingMoreNoMore')" name="loadingMoreNoMore" />
-				<slot v-else-if="_shouldShowLoading('loadingMoreFail')" name="loadingMoreFail" />
-				<z-paging-load-more @click.native="_onLoadingMore('click')"
-					v-else-if="_shouldShowLoading('loadingMoreCustom')" :config="zPagingLoadMoreConfig">
-				</z-paging-load-more>
+				<view v-else>
+					<slot v-if="_shouldShowLoading('loadingMoreDefault')" name="loadingMoreDefault" />
+					<slot v-else-if="_shouldShowLoading('loadingMoreLoading')" name="loadingMoreLoading" />
+					<slot v-else-if="_shouldShowLoading('loadingMoreNoMore')" name="loadingMoreNoMore" />
+					<slot v-else-if="_shouldShowLoading('loadingMoreFail')" name="loadingMoreFail" />
+					<z-paging-load-more @click.native="_onLoadingMore('click')"
+						v-else-if="_shouldShowLoading('loadingMoreCustom')" :config="zPagingLoadMoreConfig">
+					</z-paging-load-more>
+				</view>
 			</view>
 		</view>
-	</view>
+		<view v-if="showBackToTopClass" :class="backToTopClass" :style="[finalBackToTopStyle]" @click.stop="scrollToTop(backToTopWithAnimate)">
+			<image class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop"></image>
+		</view>
+	</scroller>
 	<!-- #endif -->
 </template>
 
 <script
     src="./js/z-paging-main.js"></script>
-	
+<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 <script
-    src="./wxs/z-paging-refresh.wxs"
-    module="paging"
+    src="./wxs/z-paging-wxs.wxs"
+    module="pagingWxs"
     lang="wxs"
 ></script>
+<!-- #endif -->
+
+<!-- #ifdef APP-VUE || H5 -->
+<script module="pagingRenderjs" lang="renderjs">
+	import pagingRenderjs from './wxs/z-paging-renderjs.js';
+	export default {
+		mixins: [pagingRenderjs]
+	}
+</script>
+<!-- #endif -->
 
 <style scoped>
 	@import "./css/z-paging-main.css";

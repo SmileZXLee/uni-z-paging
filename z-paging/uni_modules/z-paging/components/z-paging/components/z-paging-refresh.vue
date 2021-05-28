@@ -19,9 +19,9 @@
 				</image>
 				<!-- #endif -->
 				<!-- #ifdef APP-NVUE -->
-				<view v-else :style="[{'margin-right':showRefresherUpdateTime?'30rpx':'28rpx'}]">
-					<loading-indicator :style="[{color:defaultThemeStyle==='white'?'white':'#777777'}]"
-						class="zp-custom-refresher-left-image" :animating="true">
+				<view v-else :style="[{'margin-right':showRefresherUpdateTime?'18rpx':'12rpx'}]">
+					<loading-indicator class="zp-loading-image"
+						:style="[{color:defaultThemeStyle==='white'?'white':'#777777'}]" :animating="true">
 					</loading-indicator>
 				</view>
 				<!-- #endif -->
@@ -152,8 +152,8 @@
 	}
 
 	.zp-custom-refresher-left-image {
-		transform: rotate(180deg);
 		/* #ifndef APP-NVUE */
+		transform: rotate(180deg);
 		margin-top: 2rpx;
 		/* #endif */
 		/* #ifdef APP-NVUE */

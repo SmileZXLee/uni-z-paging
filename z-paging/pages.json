@@ -25,16 +25,12 @@
 				"navigationBarTitleText": "滑动切换选项卡演示",
 				"enablePullDownRefresh": false
 			}
-
 		}, {
 			"path": "pages/page-default-demo/page-default-demo",
 			"style": {
 				"navigationBarTitleText": "使用页面滚动示例",
-				"enablePullDownRefresh": false,
-				"app-plus": {
-					//使用页面滚动建议关闭回弹效果
-					"bounce": "none"
-				}
+				"enablePullDownRefresh": false
+				
 			}
 
 		}, {
@@ -124,7 +120,7 @@
 			}
 
 		}
-	],
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "z-paging",
