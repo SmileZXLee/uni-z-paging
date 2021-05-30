@@ -120,6 +120,15 @@
 			}
 
 		}
+        ,{
+            "path" : "pages/page-default-demo-n/page-default-demo-n",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "使用页面滚动示例(nvue)",
+                "enablePullDownRefresh": true
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

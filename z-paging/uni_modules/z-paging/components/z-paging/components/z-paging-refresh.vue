@@ -9,7 +9,7 @@
 		<view
 			:class="showRefresherUpdateTime?'zp-custom-refresher-container zp-custom-refresher-container-padding':'zp-custom-refresher-container'"
 			style="height: 100%;">
-			<view class="zp-custom-refresher-left">
+			<view class="zp-custom-refresher-left" v-if="refresherStatus!==-1">
 				<image v-if="refresherStatus!==2" :class="refresherLeftImageClass"
 					:src="defaultThemeStyle==='white'?base64ArrowWhite:base64Arrow">
 				</image>
@@ -54,9 +54,20 @@
 				refresherTimeText: ''
 			};
 		},
-		props: ['refresherStatus', 'defaultThemeStyle', 'refresherDefaultText', 'refresherPullingText',
-			'refresherPullingText', 'refresherRefreshingText', 'showRefresherUpdateTime', 'refresherUpdateTimeKey'
-		],
+		props: {
+			'refresherStatus': {
+				default: -1
+			},
+			'defaultThemeStyle': {},
+			'refresherDefaultText': {},
+			'refresherPullingText': {},
+			'refresherPullingText': {},
+			'refresherRefreshingText': {},
+			'showRefresherUpdateTime': {
+				default: false
+			},
+			'refresherUpdateTimeKey': {}
+		},
 		computed: {
 			refresherStatusTextMap() {
 				this.updateTime(this.refresherUpdateTimeKey);
@@ -67,7 +78,7 @@
 				};
 			},
 			refresherLeftImageClass() {
-				let refresherLeftImageClass = ''
+				let refresherLeftImageClass = '';
 				if (this.refresherStatus === 0) {
 					refresherLeftImageClass = 'zp-custom-refresher-left-image zp-custom-refresher-arrow-down';
 				} else {
@@ -146,9 +157,11 @@
 	.zp-custom-refresher-left {
 		/* #ifndef APP-NVUE */
 		display: flex;
+		max-height: 36rpx;
 		/* #endif */
 		flex-direction: row;
 		align-items: center;
+		overflow: hidden;
 	}
 
 	.zp-custom-refresher-left-image {

@@ -65,8 +65,7 @@
 						title: '显示最后更新时间演示',
 						file: 'show-update-time-demo',
 						subTitle: ''
-					}
-					,
+					},
 					{
 						title: '自定义导航栏演示',
 						file: 'custom-nav-demo',
@@ -101,6 +100,11 @@
 					{
 						title: '滑动切换选项卡演示(nvue)',
 						file: 'scroll-tab-swiper-demo-n',
+						subTitle: ''
+					},
+					{
+						title: '使用页面滚动示例(nvue)',
+						file: 'page-default-demo-n',
 						subTitle: ''
 					},
 					{

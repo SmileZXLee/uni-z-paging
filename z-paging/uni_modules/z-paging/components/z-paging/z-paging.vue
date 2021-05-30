@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V1.7.2
+V1.7.3
 -- >
 <!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -130,13 +130,13 @@ V1.7.2
 	</view>
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
-	<scroller>
+	<view :is="finalNvueSuperListIs">
 		<view ref="n-list" id="z-paging-nlist" :class="useChatRecordMode?'zp-n-list zp-n-view-reverse':'zp-n-list'" :is="finalNvueListIs" alwaysScrollableVertical="true"
 			:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar" :loadmoreoffset="finalLowerThreshold"
 			:scrollable="scrollable&&scrollEnable" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 			:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap"
 			@loadmore="_nOnLoadmore" @scroll="_nOnScroll">
-			<refresh class="zp-n-refresh" v-if="refresherEnabled&&!useChatRecordMode" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
+			<refresh class="zp-n-refresh" v-if="finalNvueListIs!=='view'&&refresherEnabled&&!useChatRecordMode" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
 				@pullingdown="_nOnPullingdown">
 				<view class="zp-n-refresh-container">
 					<!-- 下拉刷新view -->
@@ -146,6 +146,9 @@ V1.7.2
 						:showRefresherUpdateTime="showRefresherUpdateTime" :refresherUpdateTimeKey="refresherUpdateTimeKey"></z-paging-refresh>
 				</view>
 			</refresh>
+			<view :is="finalNvueListIs==='scroller'||finalNvueListIs==='view'?'view':finalNvueListIs==='waterfall'?'header':'cell'" class="zp-page-scroll-top" v-if="usePageScroll&&$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
+				<slot name="top"></slot>
+			</view>
 			<slot />
 			<!-- 全屏 -->
 			<view :class="useChatRecordMode?'zp-n-view-reverse':''" v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
@@ -160,7 +163,7 @@ V1.7.2
 				</view>
 			</view>
 			<!-- 上拉加载更多view -->
-			<view v-if="nShowBottom" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
+			<view v-if="nShowBottom" :is="finalNvueListIs==='scroller'||finalNvueListIs==='view'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
 				<view v-if="useChatRecordMode">
 					<view v-if="loadingStatus!==2&&realTotalData.length">
 						<slot v-if="$slots.chatLoading"
@@ -190,7 +193,7 @@ V1.7.2
 		<view v-if="showBackToTopClass" :class="backToTopClass" :style="[finalBackToTopStyle]" @click.stop="scrollToTop(backToTopWithAnimate)">
 			<image class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop"></image>
 		</view>
-	</scroller>
+	</view>
 	<!-- #endif -->
 </template>
 

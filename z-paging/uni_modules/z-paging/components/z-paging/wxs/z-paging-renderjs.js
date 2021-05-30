@@ -68,7 +68,7 @@ export default {
 		},
 		//判断当前手势是否在z-paging内触发
 		getTouchFromZPaging(target) {
-			if (target && target.tagName && (target.tagName !== "BODY" || 'UNI-PAGE-BODY')) {
+			if (target && target.tagName && target.tagName !== 'BODY' && target.tagName !== 'UNI-PAGE-BODY') {
 				var classList = target.classList;
 				if (classList && classList.contains('zp-scroll-view')) {
 					return true;

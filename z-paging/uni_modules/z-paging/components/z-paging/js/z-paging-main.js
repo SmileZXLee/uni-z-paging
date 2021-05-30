@@ -327,6 +327,11 @@ export default {
 			type: Boolean,
 			default: _getConfig('showRefresherWhenReload', false)
 		},
+		//调用reload方法时自动显示加载更多view，且为加载中状态，默认为否
+		showLoadingMoreWhenReload: {
+			type: Boolean,
+			default: _getConfig('showLoadingMoreWhenReload', false)
+		},
 		//是否使用自定义的下拉刷新，默认为是，即使用z-paging的下拉刷新。设置为false即代表使用uni scroll-view自带的下拉刷新，h5、App、微信小程序以外的平台不支持uni scroll-view自带的下拉刷新
 		useCustomRefresher: {
 			type: Boolean,
@@ -857,12 +862,21 @@ export default {
 			return this.$scopedSlots;
 		},
 		finalNvueListIs() {
+			if (this.usePageScroll) {
+				return 'view';
+			}
 			const nvueListIsLowerCase = this.nvueListIs.toLowerCase();
 			if (nvueListIsLowerCase === 'list' || nvueListIsLowerCase === 'waterfall' || nvueListIsLowerCase ===
 				'scroller') {
 				return nvueListIsLowerCase;
 			}
 			return 'list';
+		},
+		finalNvueSuperListIs() {
+			if (this.usePageScroll) {
+				return 'view';
+			}
+			return 'scroller';
 		},
 		finalPagingStyle() {
 			let pagingStyle = this.pagingStyle;
@@ -1215,7 +1229,9 @@ export default {
 		//设置nvue List的specialEffects
 		setListSpecialEffects(args) {
 			this.nFixFreezing = args !== {};
-			this.$refs["n-list"].setSpecialEffects(args);
+			if (!this.usePageScroll) {
+				this.$refs["n-list"].setSpecialEffects(args);
+			}
 		},
 		handleRefresherStatusChanged(func) {
 			this.refresherStatusChangedFunc = func;
@@ -1443,9 +1459,9 @@ export default {
 					offset: 0,
 					animated: animate
 				});
-			}else{
-				if(!isPrivate){
-					console.error('[z-paging]在nvue中滚动到顶部，cell必须设置 :ref="`z-paging-${index}`');
+			} else {
+				if (!isPrivate) {
+					console.error('[z-paging]在nvue中滚动到顶部，cell必须设置 :ref="`z-paging-${index}`"');
 				}
 			}
 			return;
@@ -1482,8 +1498,8 @@ export default {
 					offset: 0,
 					animated: animate
 				});
-			}else{
-				console.error('[z-paging]在nvue中滚动到底部，cell必须设置 :ref="`z-paging-${index}`');
+			} else {
+				console.error('[z-paging]在nvue中滚动到底部，cell必须设置 :ref="`z-paging-${index}`"');
 			}
 			return;
 			// #endif
@@ -1541,8 +1557,8 @@ export default {
 							offset: -offset,
 							animated: animate
 						});
-					}else{
-						console.error('[z-paging]在nvue中滚动到指定位置，cell必须设置 :ref="`z-paging-${index}`');
+					} else {
+						console.error('[z-paging]在nvue中滚动到指定位置，cell必须设置 :ref="`z-paging-${index}`"');
 					}
 					return;
 					// #endif
@@ -1576,7 +1592,8 @@ export default {
 		},
 		//是否要展示上拉加载更多view
 		_shouldShowLoading(type) {
-			if (!this.showLoadingMore || !this.loadingMoreEnabled || this.refresherOnly) {
+			if ((!this.showLoadingMoreWhenReload && !this.showLoadingMore) || !this.loadingMoreEnabled || this
+				.refresherOnly) {
 				return false;
 			}
 			if (this.useChatRecordMode && type !== 'loadingMoreLoading') {
@@ -1601,7 +1618,7 @@ export default {
 		},
 		//处理开始加载更多状态
 		_startLoading(isReload = false) {
-			if (!isReload) {
+			if (this.showLoadingMoreWhenReload || !isReload) {
 				this.loadingStatus = 1;
 			}
 			this.loading = true;
@@ -1807,7 +1824,9 @@ export default {
 					this.nShowBottom = true;
 				})
 			}, 800);
-			this.$refs["n-list"].resetLoadmore();
+			if (!this.usePageScroll) {
+				this.$refs["n-list"].resetLoadmore();
+			}
 			this.nRefresherLoading = false;
 			// #endif
 		},
@@ -2096,7 +2115,7 @@ export default {
 			const contentOffsetY = e.contentOffset.y;
 			this.$emit('scroll', e);
 			this.nListIsDragging = e.isDragging;
-			this._checkShouldShowBackToTop(-e.contentOffset.y,-e.contentOffset.y-1);
+			this._checkShouldShowBackToTop(-e.contentOffset.y, -e.contentOffset.y - 1);
 		},
 		//下拉刷新刷新中
 		_nOnRrefresh() {
