@@ -1,13 +1,13 @@
 <!-- 使用页面滚动示例(nvue) -->
+<!-- 注意，在nvue中使用页面滚动时，无法使用z-paging的下拉刷新(因为z-paging在nvue中的下拉刷新使用的是原生refresh组件，它只能在scroller和list中使用) -->
+<!-- 若使用页面滚动时需要下拉刷新功能，请在pages.json中设置"enablePullDownRefresh": true开启页面下拉刷新功能 -->
 <template>
 	<view class="content">
-		<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
-		<z-paging ref="paging" use-page-scroll auto-show-back-to-top @query="queryList" :list.sync="dataList">
-			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内，并用header(吸顶)或cell包住！ -->
-			<!-- 请使用template，不要使用block！！！ -->
+		<z-paging ref="paging" use-page-scroll @query="queryList" :list.sync="dataList">
+			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
+			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			<template v-for="(item,index) in dataList">
-				<!-- 在nvue中，z-paging中插入的列表item必须是cell，必须使用cell包住，因为在nvue中，z-paging使用的是nvue的list组件。 -->
-				<view class="item" :key="item.title" @click="itemClick(item)" :ref="`z-paging-${index}`">
+				<view class="item" :key="item.title" @click="itemClick(item)">
 					<text class="item-title">{{item.title}}</text>
 					<text class="item-detail">{{item.detail}}</text>
 					<view class="item-line"></view>
@@ -44,6 +44,9 @@
 					//将请求的结果数组传递给z-paging
 					this.$refs.paging.complete(data);
 					//如果请求失败写 this.$refs.paging.complete(false);
+
+					//若开启了页面下拉刷新，则需要在请求结束结束页面下拉刷新状态
+					uni.stopPullDownRefresh();
 				})
 			},
 			itemClick(item) {

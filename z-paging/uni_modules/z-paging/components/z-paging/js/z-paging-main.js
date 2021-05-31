@@ -1928,7 +1928,6 @@ export default {
 						this.$set(this.scrollViewStyle, 'height', scrollViewHeight + additionHeight + 'px');
 					}
 				} else {
-
 					this.$delete(this.scrollViewStyle, 'height');
 				}
 			} catch (e) {
@@ -1938,9 +1937,23 @@ export default {
 		//获取节点尺寸
 		_getNodeClientRect(select, inThis = true) {
 			// #ifdef APP-NVUE
-			return new Promise((resolve, reject) => {
-				resolve(false);
-			});
+			select = select.replace('.', '').replace('#', '');
+			const ref = this.$refs[select];
+			if (ref) {
+				return new Promise((resolve, reject) => {
+					weexDom.getComponentRect(ref, option => {
+						if (option && option.result && option.result === 1) {
+							resolve([option.size]);
+						} else {
+							resolve(false);
+						}
+					})
+				});
+			} else {
+				return new Promise((resolve, reject) => {
+					resolve(false);
+				});
+			}
 			return;
 			// #endif
 			let res = null;

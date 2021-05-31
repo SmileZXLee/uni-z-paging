@@ -131,7 +131,10 @@ V1.7.3
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
 	<view :is="finalNvueSuperListIs">
-		<view ref="n-list" id="z-paging-nlist" :class="useChatRecordMode?'zp-n-list zp-n-view-reverse':'zp-n-list'" :is="finalNvueListIs" alwaysScrollableVertical="true"
+		<view ref="zp-page-scroll-top" :is="finalNvueListIs==='scroller'||finalNvueListIs==='view'?'view':finalNvueListIs==='waterfall'?'header':'cell'" class="zp-page-scroll-top" v-if="usePageScroll&&$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
+			<slot name="top"></slot>
+		</view>
+		<view ref="n-list" id="z-paging-nlist" :class="useChatRecordMode?'zp-n-list zp-n-view-reverse':'zp-n-list'" :style="[scrollViewStyle]" :is="finalNvueListIs" alwaysScrollableVertical="true"
 			:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar" :loadmoreoffset="finalLowerThreshold"
 			:scrollable="scrollable&&scrollEnable" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 			:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap"
@@ -146,9 +149,6 @@ V1.7.3
 						:showRefresherUpdateTime="showRefresherUpdateTime" :refresherUpdateTimeKey="refresherUpdateTimeKey"></z-paging-refresh>
 				</view>
 			</refresh>
-			<view :is="finalNvueListIs==='scroller'||finalNvueListIs==='view'?'view':finalNvueListIs==='waterfall'?'header':'cell'" class="zp-page-scroll-top" v-if="usePageScroll&&$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
-				<slot name="top"></slot>
-			</view>
 			<slot />
 			<!-- 全屏 -->
 			<view :class="useChatRecordMode?'zp-n-view-reverse':''" v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
