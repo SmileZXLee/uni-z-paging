@@ -55,7 +55,9 @@ function touchmove(e, ownerInstance) {
 		return;
 	}
 	var moveDistance = _getMoveDistance(e, instance);
-	if(state.moveDistance === moveDistance){
+	var oldMoveDistance = state.moveDistance || 0;
+	var dis = moveDistance - oldMoveDistance;
+	if (isNaN(dis) || dis <= 0) {
 		return;
 	}
 	if (moveDistance < 0) {
