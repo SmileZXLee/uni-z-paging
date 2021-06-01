@@ -55,6 +55,9 @@ function touchmove(e, ownerInstance) {
 		return;
 	}
 	var moveDistance = _getMoveDistance(e, instance);
+	if(state.moveDistance === moveDistance){
+		return;
+	}
 	if (moveDistance < 0) {
 		_setTransformValue(0, instance, state);
 		return;
@@ -80,6 +83,10 @@ function touchmove(e, ownerInstance) {
 		isTouchmoving) {
 		ownerInstance.callMethod('_handleRefresherTouchmove', moveDistance, touch);
 	}
+	if (moveDistance > 0 && !state.disabledBounce) {
+		ownerInstance.callMethod('_handleScrollViewDisableBounce', false);
+		state.disabledBounce = true;
+	}
 	return false;
 }
 
@@ -92,6 +99,8 @@ function touchend(e, ownerInstance) {
 		return;
 	}
 	state.refresherReachMaxAngle = true;
+	state.disabledBounce = false;
+	//ownerInstance.callMethod('_handleScrollViewDisableBounce', true);
 	var isTouchmoving = state.isTouchmoving;
 	if (!isTouchmoving) {
 		return;
@@ -157,7 +166,7 @@ function mouseleave(e, ins) {
 
 function _setTransformValue(value, instance, state) {
 	value = value || 0;
-	if(state.moveDistance == value){
+	if (state.moveDistance == value) {
 		return;
 	}
 	state.moveDistance = value;
@@ -189,7 +198,7 @@ function _getMoveDistance(e, instance) {
 		}
 	}
 	currentMoveDistance += diffDis;
-	if(currentMoveDistance < 0){
+	if (currentMoveDistance < 0) {
 		currentMoveDistance = 0;
 	}
 	return currentMoveDistance;
@@ -223,7 +232,8 @@ function _getRefresherTouchDisabled(e, instance) {
 	var wxsIsScrollTopInTopRange = _getIsTrue(dataset.wxsisscrolltopintoprange);
 	var scrollTop = parseFloat(dataset.scrolltop);
 	var res = loading || useChatRecordMode || !refresherEnabled || !useCustomRefresher || (
-		usePageScroll && useCustomRefresher && pageScrollTop > 10) || (!(
+		usePageScroll && useCustomRefresher && pageScrollTop > 10) || (
+		!usePageScroll && useCustomRefresher && scrollTop > 10) || (!(
 		usePageScroll && useCustomRefresher) && !wxsIsScrollTopInTopRange);
 	return res;
 }

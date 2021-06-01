@@ -110,7 +110,7 @@ function toKebab(value) {
  * @property {Number|String} back-to-top-bottom 点击返回顶部按钮与底部的距离，注意添加单位px或rpx，默认为160rpx
  * @property {Object} back-to-top-style 点击返回顶部按钮的自定义样式
  * @property {Boolean} show-scrollbar 在设置滚动条位置时使用动画过渡，默认为否
- * @property {Boolean} scroll-to-top-bounce-enabled iOS设备上滚动到顶部时是否允许回弹效果，默认为是。关闭回弹效果后可使滚动到顶部与下拉刷新更连贯，但是有吸顶view时滚动到顶部时可能出现抖动。
+ * @property {Boolean} scroll-to-top-bounce-enabled iOS设备上滚动到顶部时是否允许回弹效果，默认为否。关闭回弹效果后可使滚动到顶部与下拉刷新更连贯，但是有吸顶view时滚动到顶部时可能出现抖动。
  * @property {Boolean} scroll-with-animation 控制是否出现滚动条，默认为否
  * @property {String} scroll-into-view 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素
  * @property {Number|String} lower-threshold 距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为100rpx
@@ -203,7 +203,8 @@ export default {
 			nFixFreezing: false,
 			wxsPropType: '',
 			renderPropScrollTop: 0,
-			wxsIsScrollTopInTopRange: true
+			wxsIsScrollTopInTopRange: true,
+			disabledBounce: false
 		};
 	},
 	props: {
@@ -573,10 +574,10 @@ export default {
 			type: Boolean,
 			default: _getConfig('showScrollbar', false)
 		},
-		//iOS设备上滚动到顶部时是否允许回弹效果，默认为是。关闭回弹效果后可使滚动到顶部与下拉刷新更连贯，但是有吸顶view时滚动到顶部时可能出现抖动。
+		//iOS设备上滚动到顶部时是否允许回弹效果，默认为否。关闭回弹效果后可使滚动到顶部与下拉刷新更连贯，但是有吸顶view时滚动到顶部时可能出现抖动。
 		scrollToTopBounceEnabled: {
 			type: Boolean,
-			default: _getConfig('scrollToTopBounceEnabled', true)
+			default: _getConfig('scrollToTopBounceEnabled', false)
 		},
 		//iOS设备上滚动到底部时是否允许回弹效果，默认为是。
 		scrollToBottomBounceEnabled: {
@@ -1193,6 +1194,13 @@ export default {
 		scrollIntoViewById(sel, offset, animate) {
 			this._scrollIntoView(sel, offset, animate);
 		},
+		//滚动到指定view(vue中有效)。nodeTop为需要滚动的view的top值(通过uni.createSelectorQuery()获取)；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
+		scrollIntoViewByNodeTop(nodeTop, offset, animate) {
+			this.scrollTop = this.oldScrollTop;
+			this.$nextTick(() => {
+				this._scrollIntoViewByNodeTop(nodeTop, offset, animate);
+			})
+		},
 		//滚动到指定view(nvue中有效)。index为需要滚动的view的index(第几个)；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
 		scrollIntoViewByIndex(index, offset, animate) {
 			this._scrollIntoView(index, offset, animate);
@@ -1433,6 +1441,8 @@ export default {
 		},
 		//当滚动到顶部时
 		_scrollToUpper() {
+			this.$emit('scrolltoupper');
+			this.$emit('scrollTopChange', 0);
 			this.$nextTick(() => {
 				this.oldScrollTop = 0;
 			})
@@ -1538,6 +1548,7 @@ export default {
 		//滚动到指定view
 		_scrollIntoView(sel, offset = 0, animate = false, finishCallback) {
 			try {
+				this.scrollTop = this.oldScrollTop;
 				this.$nextTick(() => {
 					// #ifdef APP-NVUE
 					const refs = this.$parent.$refs;
@@ -1568,18 +1579,7 @@ export default {
 					this._getNodeClientRect('#' + sel, false).then((node) => {
 						if (node) {
 							let nodeTop = node[0].top;
-							this.scrollTop = this.oldScrollTop;
-							this.privateScrollWithAnimation = animate ? 1 : 0;
-							if (this.usePageScroll) {
-								uni.pageScrollTo({
-									scrollTop: nodeTop - offset,
-									duration: animate ? 100 : 0
-								});
-							} else {
-								nodeTop = nodeTop + this.scrollTop;
-								this.scrollTop = nodeTop - offset;
-								this.oldScrollTop = this.scrollTop;
-							}
+							this._scrollIntoViewByNodeTop(nodeTop, offset, animate);
 							if (finishCallback) {
 								finishCallback();
 							}
@@ -1588,6 +1588,20 @@ export default {
 				});
 			} catch (e) {
 
+			}
+		},
+		//通过nodeTop滚动到指定view
+		_scrollIntoViewByNodeTop(nodeTop, offset = 0, animate = false) {
+			this.privateScrollWithAnimation = animate ? 1 : 0;
+			if (this.usePageScroll) {
+				uni.pageScrollTo({
+					scrollTop: nodeTop - offset,
+					duration: animate ? 100 : 0
+				});
+			} else {
+				nodeTop = nodeTop + this.oldScrollTop;
+				this.scrollTop = nodeTop - offset;
+				this.oldScrollTop = this.scrollTop;
 			}
 		},
 		//是否要展示上拉加载更多view
@@ -1642,14 +1656,6 @@ export default {
 		_scroll(e) {
 			this.$emit('scroll', e);
 			this.oldScrollTop = e.detail.scrollTop;
-			if (!this.scrollToTopBounceEnabled && e.detail.scrollTop < 0) {
-				if (this.scrollEnable) {
-					this.scrollEnable = false;
-					this.$nextTick(() => {
-						this.scrollEnable = true;
-					})
-				}
-			}
 		},
 		//自定义下拉刷新被触发
 		_onRefresh() {
@@ -1728,7 +1734,10 @@ export default {
 			}
 			moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
 			this._handleRefresherTouchmove(moveDistance, touch);
-
+			if(!this.disabledBounce){
+				this._handleScrollViewDisableBounce(false);
+				this.disabledBounce = true;
+			}
 		},
 		//进一步处理拖拽中结果
 		_handleRefresherTouchmove(moveDistance, touch) {
@@ -1743,7 +1752,7 @@ export default {
 				this.refresherStatus = 0;
 			}
 			// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
-			this.scrollEnable = false;
+			// this.scrollEnable = false;
 			this.refresherTransform = `translateY(${moveDistance}px)`;
 			this.lastRefresherTouchmove = touch;
 			// #endif
@@ -1760,8 +1769,10 @@ export default {
 			let moveDistance = refresherTouchendY - this.refresherTouchstartY;
 			moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
 			this._handleRefresherTouchend(moveDistance);
+			this._handleScrollViewDisableBounce(true);
+			this.disabledBounce = false;
 		},
-		//进一步处���拖拽���束结果
+		//进一步处理拖拽结束结果
 		_handleRefresherTouchend(moveDistance) {
 			// #ifndef APP-PLUS || H5 || MP-WEIXIN
 			if (!this.isTouchmoving) {
@@ -1776,7 +1787,6 @@ export default {
 						'[z-paging]usePageScroll为true并且自定义下拉刷新时必须引入mixin或在page滚动时通过调用z-paging组件的updatePageScrollTop方法设置当前的scrollTop'
 					)
 				}
-
 			}
 			this.isTouchEnded = true;
 			if (moveDistance >= this.finalRefresherThreshold && this.refresherStatus === 1) {
@@ -1794,6 +1804,26 @@ export default {
 			}
 			this.scrollEnable = true;
 			this.$emit('refresherTouchend', moveDistance);
+		},
+		//处理scroll-view bounce是否生效
+		_handleScrollViewDisableBounce(bounce) {
+			if (!this.usePageScroll && systemInfo.platform === 'ios' && !this.scrollToTopBounceEnabled) {
+				console.log('_handleScrollViewDisableBounce', bounce);
+				if (!bounce) {
+					if (this.scrollEnable) {
+						this.scrollEnable = false;
+					}
+					if (!this.scrollEnable) {
+						setTimeout(() => {
+							this.$nextTick(() => {
+								this.scrollEnable = true;
+							})
+						}, 10);
+					}
+				} else {
+					this.scrollEnable = true;
+				}
+			}
 		},
 		//下拉刷新结束
 		_refresherEnd(shouldEndLoadingDelay = true, fromAddData = false) {
@@ -1887,7 +1917,7 @@ export default {
 					if (scrollViewTotalH > this.systemInfo.windowHeight + 100) {
 						if (this.showConsoleError) {
 							console.error(
-								'[z-paging]检测到z-paging的高度超出页面高度，这将导致滚动出现异常，请设置【:fixed="true"】或【确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}】，此时z-paging的百分比高度才能生效。详情参���demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
+								'[z-paging]检测到z-paging的高度超出页面高度，这将导致滚动出现异常，请设置【:fixed="true"】或【确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}】，此时z-paging的百分比高度才能生效。详情参考demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
 							);
 						}
 					}

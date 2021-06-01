@@ -9,7 +9,12 @@
 			"path": "pages/common-demo/common-demo",
 			"style": {
 				"navigationBarTitleText": "普通模式演示",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": false,
+				"disableScroll": true, // mescroll-uni需禁止滚动, 解决scroll-view在Android小程序卡顿的问题
+				"app-plus" : {
+					"bounce" : "none" // mescroll-uni需取消iOS回弹和安卓顶部底部的半月形阴影
+				},
+				"mp-alipay":{"allowsBounceVertical":"NO"} // mescroll-uni需取消支付宝和钉钉小程序自带的回弹
 			}
 
 		}, {

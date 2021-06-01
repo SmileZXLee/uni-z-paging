@@ -2,12 +2,12 @@
 // github地址:https://github.com/SmileZXLee/uni-z-paging
 // dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 // 反馈QQ群：790460711
-// 使用renderjs在app-vue和h5对touchmove事件冒泡进行处理
+// 使用renderjs在app-vue和h5中对touchmove事件冒泡进行处理
 
 export default {
 	data() {
 		return {
-			scrollTop: 0,
+			newScrollTop: 0,
 			startY: 0,
 			isTouchFromZPaging: false
 		}
@@ -18,7 +18,7 @@ export default {
 	methods: {
 		//接收逻辑层发送的数据
 		renderPropScrollTopChange(newVal, oldVal, ownerVm, vm) {
-			this.scrollTop = newVal;
+			this.newScrollTop = newVal;
 		},
 		//拦截处理touch事件
 		_handleTouch() {
@@ -40,7 +40,7 @@ export default {
 		_handleTouchmove(e) {
 			const touch = this._getCommonTouch(e);
 			var moveY = touch.touchY - this.startY;
-			if (this.isTouchFromZPaging && this.scrollTop < 1 && moveY > 0) {
+			if (this.isTouchFromZPaging && this.newScrollTop < 1 && moveY > 0) {
 				if (e.cancelable && !e.defaultPrevented) {
 					e.preventDefault();
 				}
@@ -70,7 +70,7 @@ export default {
 		getTouchFromZPaging(target) {
 			if (target && target.tagName && target.tagName !== 'BODY' && target.tagName !== 'UNI-PAGE-BODY') {
 				var classList = target.classList;
-				if (classList && classList.contains('zp-scroll-view')) {
+				if (classList && classList.contains('zp-paging-touch-view')) {
 					return true;
 				} else {
 					return this.getTouchFromZPaging(target.parentNode);

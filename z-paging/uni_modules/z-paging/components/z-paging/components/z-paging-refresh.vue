@@ -9,8 +9,9 @@
 		<view
 			:class="showRefresherUpdateTime?'zp-custom-refresher-container zp-custom-refresher-container-padding':'zp-custom-refresher-container'"
 			style="height: 100%;">
-			<view class="zp-custom-refresher-left" v-if="refresherStatus!==-1">
+			<view class="zp-custom-refresher-left">
 				<image v-if="refresherStatus!==2" :class="refresherLeftImageClass"
+					:style="[{width: showRefresherUpdateTime?'36rpx':'30rpx',height: showRefresherUpdateTime?'36rpx':'30rpx','margin-right': showRefresherUpdateTime?'20rpx':'8rpx'}]"
 					:src="defaultThemeStyle==='white'?base64ArrowWhite:base64Arrow">
 				</image>
 				<!-- #ifndef APP-NVUE -->
@@ -84,11 +85,6 @@
 				} else {
 					refresherLeftImageClass = 'zp-custom-refresher-left-image zp-custom-refresher-arrow-top';
 				}
-				if (this.showRefresherUpdateTime) {
-					refresherLeftImageClass += ' zp-custom-refresher-left-image-big';
-				} else {
-					refresherLeftImageClass += ' zp-custom-refresher-left-image-small';
-				}
 				return refresherLeftImageClass;
 			},
 			refresherLeftLoadingImageClass() {
@@ -157,7 +153,6 @@
 	.zp-custom-refresher-left {
 		/* #ifndef APP-NVUE */
 		display: flex;
-		max-height: 36rpx;
 		/* #endif */
 		flex-direction: row;
 		align-items: center;
