@@ -14,6 +14,7 @@ import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
+const errorUpdateKey = 'z-paging-error-emit';
 let config = null;
 // #ifdef APP-NVUE
 const weexDom = weex.requireModule('dom');
@@ -715,9 +716,15 @@ export default {
 		uni.$on(i18nUpdateKey, () => {
 			this.tempLanguageUpdateKey = (new Date()).getTime();
 		})
+		uni.$on(errorUpdateKey, () => {
+			if (this.loading) {
+				this.complete(false);
+			}
+		})
 	},
 	destroyed() {
-		uni.$off('i18nUpdateKey');
+		uni.$off(i18nUpdateKey);
+		uni.$off(errorUpdateKey);
 	},
 	watch: {
 		totalData(newVal, oldVal) {
@@ -1465,7 +1472,6 @@ export default {
 		_scrollToUpper() {
 			this.$emit('scrolltoupper');
 			this.$emit('scrollTopChange', 0);
-			console.log('_scrollToUpper');
 			this.$nextTick(() => {
 				this.oldScrollTop = 0;
 			})
