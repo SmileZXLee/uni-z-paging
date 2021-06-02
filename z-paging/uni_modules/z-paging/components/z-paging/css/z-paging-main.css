@@ -5,7 +5,7 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 */
 
 .z-paging-content,
-.zp-scroll-view {
+ {
 	/* #ifndef APP-NVUE */
 	width: 100%;
 	height: 100%;
@@ -43,12 +43,13 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 	z-index: 999;
 }
 
-.zp-scroll-view-flex1 {
+.zp-scroll-view-super{
 	flex: 1;
+	position: relative;
 }
-
-.zp-scroll-view-fix-height {
-	height: 0;
+.zp-scroll-view{
+	height: 100%;
+	position: absolute;
 }
 
 .zp-paging-touch-view{

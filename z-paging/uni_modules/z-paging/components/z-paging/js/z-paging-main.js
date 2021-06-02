@@ -204,7 +204,9 @@ export default {
 			wxsPropType: '',
 			renderPropScrollTop: 0,
 			wxsIsScrollTopInTopRange: true,
-			disabledBounce: false
+			wxsScrollTop: 0,
+			wxsPageScrollTop: 0,
+			disabledBounce: false,
 		};
 	},
 	props: {
@@ -769,10 +771,11 @@ export default {
 				this.$emit('scrollTopChange', newVal);
 				this.$emit('update:scrollTop', newVal);
 				this._checkShouldShowBackToTop(newVal, oldVal);
-			}
-			const wxsIsScrollTopInTopRange = newVal < 5;
-			if (this.wxsIsScrollTopInTopRange !== wxsIsScrollTopInTopRange) {
-				this.wxsIsScrollTopInTopRange = wxsIsScrollTopInTopRange;
+				if (newVal > 5) {
+					this.wxsScrollTop = 1;
+				} else {
+					this.wxsScrollTop = 0;
+				}
 			}
 		},
 		pageScrollTop(newVal, oldVal) {
@@ -780,6 +783,11 @@ export default {
 				this.$emit('scrollTopChange', newVal);
 				this.$emit('update:scrollTop', newVal);
 				this._checkShouldShowBackToTop(newVal, oldVal);
+				if (newVal > 5) {
+					this.wxsPageScrollTop = 1;
+				} else {
+					this.wxsPageScrollTop = 0;
+				}
 			}
 		},
 		defaultThemeStyle: {
@@ -1457,6 +1465,7 @@ export default {
 		_scrollToUpper() {
 			this.$emit('scrolltoupper');
 			this.$emit('scrollTopChange', 0);
+			console.log('_scrollToUpper');
 			this.$nextTick(() => {
 				this.oldScrollTop = 0;
 			})

@@ -1,4 +1,4 @@
-<!-- z-paging V1.5.3 -->
+<!-- z-paging -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
 <!-- 反馈QQ群：790460711 -->
@@ -8,7 +8,7 @@
 	<view class="zp-container" :style="[finalEmptyViewStyle]">
 		<view class="zp-main">
 			<image v-if="!emptyViewImg.length" class="zp-main-image" :style="[emptyViewImgStyle]" :src="emptyImg"></image>
-			<image v-else class="zp-main-image" :style="[emptyViewImgStyle]" :src="emptyViewImg"></image>
+			<image v-else class="zp-main-image" mode="aspectFit" :style="[emptyViewImgStyle]" :src="emptyViewImg"></image>
 			<text class="zp-main-title" :style="[emptyViewTitleStyle]">{{emptyViewText}}</text>
 			<text v-if="showEmptyViewReload" class="zp-main-error-btn" :style="[emptyViewReloadStyle]"
 				@click="reloadClick">{{emptyViewReloadText}}</text>

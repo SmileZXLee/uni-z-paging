@@ -3,7 +3,7 @@
 		onLaunch: function() {
 			console.log('App Launch')
 			// #ifdef APP-PLUS
-			plus.screen.lockOrientation("portrait-primary");  
+			plus.screen.lockOrientation("portrait-primary");
 			// #endif
 		},
 		onShow: function() {
@@ -21,6 +21,6 @@
 	page {
 		background-color: white;
 	}
+
 	/* #endif */
-	
 </style>

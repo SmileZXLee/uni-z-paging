@@ -237,12 +237,10 @@ function _getRefresherTouchDisabled(e, instance) {
 	var useCustomRefresher = _getIsTrue(dataset.usecustomrefresher);
 	var usePageScroll = _getIsTrue(dataset.usepagescroll);
 	var pageScrollTop = parseFloat(dataset.pagescrolltop);
-	var wxsIsScrollTopInTopRange = _getIsTrue(dataset.wxsisscrolltopintoprange);
 	var scrollTop = parseFloat(dataset.scrolltop);
 	var res = loading || useChatRecordMode || !refresherEnabled || !useCustomRefresher || (
-		usePageScroll && useCustomRefresher && pageScrollTop > 10) || (
-		!usePageScroll && useCustomRefresher && scrollTop > 10) || (!(
-		usePageScroll && useCustomRefresher) && !wxsIsScrollTopInTopRange);
+		usePageScroll && useCustomRefresher && pageScrollTop > 0) || (
+		!usePageScroll && useCustomRefresher && scrollTop > 0);
 	return res;
 }
 

@@ -194,7 +194,7 @@
 	.zp-custom-refresher-arrow-top {
 		/* #ifndef APP-NVUE */
 		animation: refresher-arrow-top 0.25s linear;
-		-webkitanimation: refresher-arrow-top 0.25s linear;
+		-webkit-animation: refresher-arrow-top 0.25s linear;
 		animation-fill-mode: forwards;
 		-webkit-animation-fill-mode: forwards;
 		/* #endif */

@@ -6,9 +6,9 @@
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<view slot="top">
 				<view class="language-view" @click="languageSwitch">当前语言：[{{language}}] 点击切换</view>
-				<tabs-view  @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
+				<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			</view>
-			
+
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view class="list">
@@ -33,25 +33,25 @@
 				language: '',
 				//以下两个变量只是为了demo切换语言演示所用，非必须
 				languageIndex: 0,
-				languageArr : ['zh-cn','zh-hant-cn','en'],
-				languageNameArr : ['简体中文','繁体中文','英语']
+				languageArr: ['zh-cn', 'zh-hant-cn', 'en'],
+				languageNameArr: ['简体中文', '繁体中文', '英语']
 			}
 		},
-		onLoad(){
+		onLoad() {
 			this.updateLanguage();
-			
+
 			// 更新一下languageIndex，这个不是必须的，只是为了demo细节的体验
 			// 因为刚进来，默认选中的不一定是第一个
-			for(let i = 0;i < this.languageNameArr.length;i++){
+			for (let i = 0; i < this.languageNameArr.length; i++) {
 				const item = this.languageNameArr[i];
-				if(item === this.language){
+				if (item === this.language) {
 					this.languageIndex = i;
 					break;
 				}
 			}
 		},
 		methods: {
-			tabChange(index){
+			tabChange(index) {
 				this.tabIndex = index;
 				//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
 				this.$refs.paging.reload();
@@ -68,11 +68,11 @@
 			itemClick(item) {
 				console.log('点击了', item.title);
 			},
-			languageSwitch(){
+			languageSwitch() {
 				//通知更新语言
 				//只要写ZI18n.setLanguage('要更换的语言');就可以，
 				//下面这些逻辑实际上是要演示顺序切换语言效果。具体根据业务进行调整。
-				this.languageIndex ++;
+				this.languageIndex++;
 				this.languageIndex = this.languageIndex % 3;
 				const language = this.languageArr[this.languageIndex];
 				//全局设置当前语言
@@ -81,7 +81,7 @@
 				this.updateLanguage();
 			},
 			//获取当前语言，非必须
-			updateLanguage(){
+			updateLanguage() {
 				//获取当前语言
 				const language = zI18n.getLanguageName();
 				this.language = language;
@@ -116,7 +116,8 @@
 		width: 100%;
 		background-color: #eeeeee;
 	}
-	.language-view{
+
+	.language-view {
 		background-color: #007AFF;
 		text-align: center;
 		padding: 20rpx 0rpx;
