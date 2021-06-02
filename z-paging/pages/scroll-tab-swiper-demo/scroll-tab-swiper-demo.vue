@@ -3,7 +3,7 @@
 <template>
 	<view class="content" @touchmove.stop.prevent>
 		<!-- 此处代码复制了uView中tabsSwiper全屏选项卡的代码 -->
-		<view>
+		<view style="height: 80rpx;">
 			<u-tabs-swiper ref="uTabs" :list="list" :current="current" @change="tabsChange" :is-scroll="false" swiperWidth="750"></u-tabs-swiper>
 		</view>
 		<swiper class="swiper" :current="swiperCurrent" @transition="transition" @animationfinish="animationfinish">
@@ -67,6 +67,6 @@
 	}
 	
 	.swiper{
-		flex: 1;
+		height: calc(100% - 80rpx);
 	}
 </style>
