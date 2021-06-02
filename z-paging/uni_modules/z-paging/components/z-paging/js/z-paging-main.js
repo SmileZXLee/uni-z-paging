@@ -624,6 +624,11 @@ export default {
 			type: String,
 			default: _getConfig('refresherBackground', '#ffffff00')
 		},
+		//设置自定义下拉刷新下拉超出阈值后继续下拉位移衰减的比例，范围0-1，值越大代表衰减越多。默认为0.7(nvue无效)
+		refresherOutRate: {
+			type: Number,
+			default: _getConfig('refresherOutRate', 0.7)
+		},
 		//是否显示最后更新时间，默认为否
 		showRefresherUpdateTime: {
 			type: Boolean,
@@ -981,9 +986,9 @@ export default {
 		},
 		finalEmptyViewImg() {
 			if (this.isLoadFailed) {
-				return this.emptyViewImg;
-			} else {
 				return this.emptyViewErrorImg;
+			} else {
+				return this.emptyViewImg;
 			}
 		},
 		finalShowEmptyViewReload() {
@@ -1018,6 +1023,15 @@ export default {
 				this.scrollViewStyle['position'] = 'relative';
 			}
 			return this.scrollViewStyle;
+		},
+		finalRefresherOutRate() {
+			if (this.refresherOutRate < 0) {
+				return 0;
+			}
+			if (this.refresherOutRate > 1) {
+				return 1;
+			}
+			return this.refresherOutRate;
 		},
 		tempLanguage() {
 			let systemLanguage = false;
@@ -1734,8 +1748,10 @@ export default {
 			}
 			moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
 			this._handleRefresherTouchmove(moveDistance, touch);
-			if(!this.disabledBounce){
-				this._handleScrollViewDisableBounce(false);
+			if (!this.disabledBounce) {
+				this._handleScrollViewDisableBounce({
+					bounce: false
+				});
 				this.disabledBounce = true;
 			}
 		},
@@ -1769,7 +1785,9 @@ export default {
 			let moveDistance = refresherTouchendY - this.refresherTouchstartY;
 			moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
 			this._handleRefresherTouchend(moveDistance);
-			this._handleScrollViewDisableBounce(true);
+			this._handleScrollViewDisableBounce({
+				bounce: true
+			});
 			this.disabledBounce = false;
 		},
 		//进一步处理拖拽结束结果
@@ -1806,19 +1824,11 @@ export default {
 			this.$emit('refresherTouchend', moveDistance);
 		},
 		//处理scroll-view bounce是否生效
-		_handleScrollViewDisableBounce(bounce) {
+		_handleScrollViewDisableBounce(e) {
 			if (!this.usePageScroll && systemInfo.platform === 'ios' && !this.scrollToTopBounceEnabled) {
-				console.log('_handleScrollViewDisableBounce', bounce);
-				if (!bounce) {
+				if (!e.bounce) {
 					if (this.scrollEnable) {
 						this.scrollEnable = false;
-					}
-					if (!this.scrollEnable) {
-						setTimeout(() => {
-							this.$nextTick(() => {
-								this.scrollEnable = true;
-							})
-						}, 10);
 					}
 				} else {
 					this.scrollEnable = true;
@@ -1879,7 +1889,8 @@ export default {
 		_getFinalRefresherMoveDistance(moveDistance) {
 			moveDistance = moveDistance * 0.8;
 			if (moveDistance >= this.finalRefresherThreshold) {
-				moveDistance = this.finalRefresherThreshold + (moveDistance - this.finalRefresherThreshold) * 0.3;
+				moveDistance = this.finalRefresherThreshold + (moveDistance - this.finalRefresherThreshold) * (1 - this
+					.finalRefresherOutRate);
 			}
 			return moveDistance;
 		},

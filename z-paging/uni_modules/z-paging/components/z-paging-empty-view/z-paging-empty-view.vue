@@ -157,6 +157,7 @@
 		font-size: 26rpx;
 		color: #aaaaaa;
 		text-align: center;
+		margin-top: 10rpx;
 	}
 
 	.zp-main-error-btn {

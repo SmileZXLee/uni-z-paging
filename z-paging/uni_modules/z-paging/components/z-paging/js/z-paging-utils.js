@@ -61,7 +61,7 @@ function timeFormat(time) {
 	} else if (disTime === -86400000) {
 		dayStr = zI18n['refresherUpdateTimeYesterdayText'][zI18n.getLanguage()];
 	} else {
-		dayStr = dateDayFormat(date, date.getFullYear() === currentDate.getFullYear());
+		dayStr = dateDayFormat(date, date.getFullYear() !== currentDate.getFullYear());
 	}
 	return `${dayStr} ${timeStr}`;
 }

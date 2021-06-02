@@ -48,7 +48,7 @@ V1.7.4
 				:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="pageScrollTop"
 				:data-scrollTop="oldScrollTop" :data-refresherMaxAngle="refresherMaxAngle" 
 				:data-refresherAecc="refresherAngleEnableChangeContinued" :data-usePageScroll="usePageScroll"
-				:data-oldIsTouchmoving="isTouchmoving"
+				:data-oldIsTouchmoving="isTouchmoving" :data-refresherOutRate="finalRefresherOutRate"
 				<!-- #endif -->
 				<!-- #ifdef APP-VUE || H5 -->
 				:change:renderPropScrollTop="pagingRenderjs.renderPropScrollTopChange" :renderPropScrollTop="renderPropScrollTop"
