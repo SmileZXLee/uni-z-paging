@@ -1646,7 +1646,7 @@ export default {
 				return false;
 			}
 			if (type === 'loadingMoreDefault') {
-				return this.loadingStatus === 0 && this.$slots.loadingMoreDefaul;
+				return this.loadingStatus === 0 && this.$slots.loadingMoreDefault;
 			} else if (type === 'loadingMoreLoading') {
 				return this.loadingStatus === 1 && this.$slots.loadingMoreLoading;
 			} else if (type === 'loadingMoreNoMore') {
