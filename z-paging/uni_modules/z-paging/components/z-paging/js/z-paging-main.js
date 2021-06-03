@@ -11,6 +11,7 @@ import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
+const currentVersion = 'V1.7.8';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -627,6 +628,16 @@ export default {
 			type: String,
 			default: _getConfig('refresherBackground', '#ffffff00')
 		},
+		//设置固定的自定义下拉刷新区域背景颜色
+		refresherFixedBackground: {
+			type: String,
+			default: _getConfig('refresherFixedBackground', '#ffffff00')
+		},
+		//设置固定的自定义下拉刷新区域高度，默认为0
+		refresherFixedBacHeight: {
+			type: [Number, String],
+			default: _getConfig('refresherFixedBacHeight', 0)
+		},
 		//设置自定义下拉刷新下拉超出阈值后继续下拉位移衰减的比例，范围0-1，值越大代表衰减越多。默认为0.7(nvue无效)
 		refresherOutRate: {
 			type: Number,
@@ -662,15 +673,15 @@ export default {
 			type: Number,
 			default: _getConfig('superContentZIndex', 1)
 		},
-		//z-paging内容容器部分的z-index，默认为1
+		//z-paging内容容器部分的z-index，默认为10
 		contentZIndex: {
 			type: Number,
-			default: _getConfig('contentZIndex', 1)
+			default: _getConfig('contentZIndex', 10)
 		},
-		//空数据view的z-index，默认为99
+		//空数据view的z-index，默认为9
 		emptyViewZIndex: {
 			type: Number,
-			default: _getConfig('emptyViewZIndex', 99)
+			default: _getConfig('emptyViewZIndex', 9)
 		},
 		//nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list
 		nvueListIs: {
@@ -942,6 +953,9 @@ export default {
 			}
 			return this._convertTextToPx(refresherThreshold);
 		},
+		finalRefresherFixedBacHeight() {
+			return this._convertTextToPx(this.refresherFixedBacHeight);
+		},
 		finalScrollTop() {
 			if (this.usePageScroll) {
 				return this.pageScrollTop;
@@ -966,38 +980,38 @@ export default {
 			return zI18n.getPrivateLanguage(language, this.followSystemLanguage);
 		},
 		finalRefresherDefaultText() {
-			return this._getI18nText('refresherDefaultText');
+			return this._getI18nText('refresherDefaultText',this.refresherDefaultText);
 		},
 		finalRefresherPullingText() {
-			return this._getI18nText('refresherPullingText');
+			return this._getI18nText('refresherPullingText',this.refresherPullingText);
 		},
 		finalRefresherRefreshingText() {
-			return this._getI18nText('refresherRefreshingText');
+			return this._getI18nText('refresherRefreshingText',this.refresherRefreshingText);
 		},
 		finalLoadingMoreDefaultText() {
-			return this._getI18nText('loadingMoreDefaultText');
+			return this._getI18nText('loadingMoreDefaultText',this.loadingMoreDefaultText);
 		},
 		finalLoadingMoreLoadingText() {
-			return this._getI18nText('loadingMoreLoadingText');
+			return this._getI18nText('loadingMoreLoadingText',this.loadingMoreLoadingText);
 		},
 		finalLoadingMoreNoMoreText() {
-			return this._getI18nText('loadingMoreNoMoreText');
+			return this._getI18nText('loadingMoreNoMoreText',this.loadingMoreNoMoreText);
 		},
 		finalLoadingMoreFailText() {
-			return this._getI18nText('loadingMoreFailText');
+			return this._getI18nText('loadingMoreFailText',this.loadingMoreFailText);
 		},
 		finalEmptyViewText() {
 			if (this.isLoadFailed) {
 				return this.finalEmptyViewErrorText;
 			} else {
-				return this._getI18nText('emptyViewText');
+				return this._getI18nText('emptyViewText',this.emptyViewText);
 			}
 		},
 		finalEmptyViewReloadText() {
-			return this._getI18nText('emptyViewReloadText');
+			return this._getI18nText('emptyViewReloadText',this.emptyViewReloadText);
 		},
 		finalEmptyViewErrorText() {
-			return this._getI18nText('emptyViewErrorText');
+			return this._getI18nText('emptyViewErrorText',this.emptyViewErrorText);
 		},
 		finalEmptyViewImg() {
 			if (this.isLoadFailed) {
@@ -1124,6 +1138,10 @@ export default {
 		//获取当前z-paging的语言
 		getLanguage() {
 			return this.finalLanguage;
+		},
+		//当前版本号
+		version(){
+			return `z-paging ${currentVersion}`;
 		},
 		//添加聊天记录
 		addChatRecordData(data, toBottom = true, toBottomWithAnimate = true) {
@@ -2165,8 +2183,7 @@ export default {
 			})
 		},
 		//获取国际化转换后的文本
-		_getI18nText(key) {
-			const value = this[key];
+		_getI18nText(key,value) {
 			const dataType = Object.prototype.toString.call(value);
 			if (dataType === '[object Object]') {
 				const nextValue = value[this.finalLanguage];

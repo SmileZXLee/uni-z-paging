@@ -4,8 +4,7 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 反馈QQ群：790460711
 */
 
-.z-paging-content,
- {
+.z-paging-content {
 	/* #ifndef APP-NVUE */
 	width: 100%;
 	height: 100%;
@@ -43,18 +42,32 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 	z-index: 999;
 }
 
-.zp-scroll-view-super{
+.zp-scroll-view-super {
 	flex: 1;
 	position: relative;
 }
-.zp-scroll-view{
+
+.zp-scroll-view {
 	height: 100%;
+	width: 100%;
 	position: absolute;
+	top: 0;
+	left: 0;
 }
 
-.zp-paging-touch-view{
+.zp-paging-touch-view {
 	width: 100%;
 	height: 100%;
+	position: relative;
+}
+
+.zp-fixed-bac-view {
+	position: absolute;
+	width: 100%;
+	top: 0;
+	left: 0;
+	background-color: #007AFF;
+	height: 200px;
 }
 
 .zp-paging-main {

@@ -1,3 +1,16 @@
+## 1.7.7（2021-06-03）
+1.修复在支付宝小程序中，自定义下拉刷新view未设置`slot-scope`时无效的问题。  
+2.调整容器部分与空数据图的z-index，使容器盖在空数据图上方，以避免z-pagng中插入固定内容且展示空数据图时，插入的view无法点击的问题。  
+3.修复loadingMoreDefault插入无效的问题。  
+4.修复在支付宝小程序中，z-paging宽度可能不正确的问题。
+## 1.7.6（2021-06-02）
+1.支持全局错误处理，通过`uni.$emit('z-paging-error-emit');`可全局处理请求失败情况。  
+2.提升在低版本webView中的兼容性。  
+3.修复`empty-view-title-style`配置无效的问题。
+## 1.7.5（2021-06-02）
+1.支持全局错误处理，通过`uni.$emit('z-paging-error-emit');`可全局处理请求失败情况。  
+2.提升在低版本webView中的兼容性。  
+3.修复`empty-view-title-style`配置无效的问题。  
 ## 1.7.4（2021-06-02）
 1.修复在ios中，因scroll-view bounce的影响，滚动到顶部无法立即下拉的问题。  
 2.新增scroll-view 滚动到顶部事件监听；新增`scrollIntoViewByNodeTop`，支持传入节点top以滚动到指定节点位置。  

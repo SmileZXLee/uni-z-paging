@@ -129,6 +129,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/my-paging-demo/my-paging-demo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "基于z-paging封装自定义分页组件演示",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

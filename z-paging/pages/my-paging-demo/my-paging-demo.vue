@@ -1,31 +1,25 @@
-<!-- 滚动吸附效果演示 -->
+<!-- 基于z-paging封装自定义分页组件演示(vue) -->
 <template>
 	<view class="content">
-		<!-- 此处为了让reload时不自动滚动到顶部，需要设置auto-clean-list-when-reload和auto-scroll-to-top-when-reload为false，即在reload时关闭自动清空数组和自动滚动到顶部 -->
-		<z-paging ref="paging" fixed :auto-clean-list-when-reload="false" :auto-scroll-to-top-when-reload="false"
-		 refresher-threshold="160rpx" :refresher-status.sync="refresherStatus" @query="queryList"
-		 :list.sync="dataList" style="height: 100%;">
-			<view class="banner-view" style="height: 250rpx;">
-				<view style="font-size: 40rpx;font-weight: 700;">这是一个banner</view>
-				<view style="font-size: 24rpx;margin-top: 5rpx;">下方tab滚动时可吸附在顶部</view>
-			</view>
-			<!-- 小程序中直接修改组件style为position: sticky;无效，需要在组件外层套一层view -->
-			<view style="z-index: 100;position: sticky;top :0;">
+		<my-paging ref="paging" @query="queryList" :list.sync="dataList">
+			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
+			<view slot="top">
+				<view class="notice">
+					<view>①此demo演示了基于z-paging封装自己的分页组件的流程</view>
+					<view>②可将重复的配置或者重复插入的slot封装在自定义的分页组件中</view>
+				</view>
 				<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			</view>
-			<!-- 自定义下拉刷新view -->
-			<!-- 注意注意注意！！如果您的项目不是QQ小程序，:status="refresherStatus有更简化的写法，请参阅custom-demo.vue -->
-			
-			<custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>
+			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
-			<view>
+			<view class="list">
 				<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
 					<view class="item-title">{{item.title}}</view>
 					<view class="item-detail">{{item.detail}}</view>
 					<view class="item-line"></view>
 				</view>
 			</view>
-		</z-paging>
+		</my-paging>
 	</view>
 </template>
 
@@ -34,22 +28,23 @@
 		data() {
 			return {
 				dataList: [],
-				tabIndex: 0,
-				refresherStatus: 0
+				tabIndex: 0
 			}
 		},
 		methods: {
 			tabChange(index) {
 				this.tabIndex = index;
-				//当切换tab时请调用组件的reload方法，请勿直接调用：queryList方法！！
-				this.$refs.paging.reload();
+				//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
+				this.$refs.paging.reload(true);
 			},
 			queryList(pageNo, pageSize) {
 				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
 				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
 				//模拟请求服务器获取分页数据，请替换成自己的网络请求
 				this.$request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
-					this.$refs.paging.addData(data);
+					//将请求的结果数组传递给z-paging
+					this.$refs.paging.complete(data);
+					//如果请求失败写 this.$refs.paging.complete(false);
 				})
 			},
 			itemClick(item) {
@@ -60,13 +55,13 @@
 </script>
 
 <style>
-	.banner-view {
-		background-color: #007AFF;
+	.notice {
+		background-color: red;
 		color: white;
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		justify-content: center;
+		padding: 12rpx 20rpx;
+		font-size: 24rpx;
 	}
 
 	.item {

@@ -93,7 +93,7 @@
 			emptyViewZIndex: {
 				type: Number,
 				default: function() {
-					return 99
+					return 9
 				}
 			}
 		},

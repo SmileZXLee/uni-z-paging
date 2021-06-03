@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V1.7.5
+V1.7.8
 -- >
 <!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -40,7 +40,8 @@ V1.7.5
 				@touchstart="pagingWxs.touchstart" @touchmove="pagingWxs.touchmove" @touchend="pagingWxs.touchend" @touchcancel="pagingWxs.touchend"
 				@mousedown="pagingWxs.mousedown" @mousemove="pagingWxs.mousemove" @mouseup="pagingWxs.mouseup" @mouseleave="pagingWxs.mouseleave"
 				<!-- #endif -->
-				>
+				>	
+					<view v-if="finalRefresherFixedBacHeight>0" class="zp-fixed-bac-view" :style="[{'background-color': refresherFixedBackground,'height': `${finalRefresherFixedBacHeight}px`}]"></view>
 					<view class="zp-paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]"
 					<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 					:change:prop="pagingWxs.propObserver" :prop="wxsPropType"
@@ -55,7 +56,7 @@ V1.7.5
 					:change:renderPropScrollTop="pagingRenderjs.renderPropScrollTopChange" :renderPropScrollTop="renderPropScrollTop"
 					<!-- #endif -->
 					>	
-						<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="custom-refresher-view"
+						<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="zp-custom-refresher-view"
 							:style="[{'margin-top': `-${finalRefresherThreshold}px`,'background-color': refresherBackground}]">
 							<view :style="[{'height': `${finalRefresherThreshold}px`,'background-color': refresherBackground}]">
 								<!-- 下拉刷新view -->
@@ -64,7 +65,7 @@ V1.7.5
 								v-if="zScopedSlots.refresher"
 								<!-- #endif -->
 								<!-- #ifndef MP-WEIXIN || MP-QQ || MP-TOUTIAO || MP-BAIDU -->
-								v-if="$scopedSlots.refresher"
+								v-if="$scopedSlots.refresher||$slots.refresher"
 								<!-- #endif -->
 								<!-- #ifndef MP-QQ -->
 								:refresherStatus="refresherStatus"

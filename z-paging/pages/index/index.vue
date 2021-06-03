@@ -85,6 +85,11 @@
 						title: 'i18n国际化演示',
 						file: 'i18n-demo',
 						subTitle: ''
+					},
+					{
+						title: '基于z-paging封装自定义分页组件演示',
+						file: 'my-paging-demo',
+						subTitle: ''
 					}
 				],
 				listNvue: [{

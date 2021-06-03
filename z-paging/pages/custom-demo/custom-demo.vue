@@ -8,8 +8,8 @@
 			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
 			
-			<!-- 注意注意注意！！QQ小程序或字节跳动小程序中自定义下拉刷新不支持slot-scope，将导致custom-refresher无法显示 -->
-			<!-- 如果是QQ小程序或字节跳动小程序，请参照sticky-demo.vue中的写法，此处使用slot-scope是为了减少data中无关变量声明，降低依赖 -->
+			<!-- 注意注意注意！！QQ小程序中自定义下拉刷新不支持slot-scope，将导致custom-refresher无法显示 -->
+			<!-- 如果是QQ小程序，请参照sticky-demo.vue中的写法，此处使用slot-scope是为了减少data中无关变量声明，降低依赖 -->
 			<custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus"></custom-refresher>
 			<!-- 自定义没有更多数据view -->
 			<custom-nomore slot="loadingMoreNoMore"></custom-nomore>
