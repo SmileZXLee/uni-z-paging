@@ -1,11 +1,12 @@
-<!-- 基于z-paging封装自定义分页组件演示(vue) -->
+<!-- 基于z-paging封装个性化分页组件演示(vue) -->
 <template>
 	<view class="content">
+		<!-- 这里就很整洁了，只要设置ref，绑定query事件，绑定list就可以了 -->
 		<my-paging ref="paging" @query="queryList" :list.sync="dataList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<view slot="top">
 				<view class="notice">
-					<view>①此demo演示了基于z-paging封装自己的分页组件的流程</view>
+					<view>①此demo演示了基于z-paging封装个性化分页组件的流程</view>
 					<view>②可将重复的配置或者重复插入的slot封装在自定义的分页组件中</view>
 				</view>
 				<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
