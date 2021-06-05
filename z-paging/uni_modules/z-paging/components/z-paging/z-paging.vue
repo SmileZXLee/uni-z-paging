@@ -145,9 +145,9 @@ V1.7.9
 			:scrollable="scrollable&&scrollEnable" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 			:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap"
 			@loadmore="_nOnLoadmore" @scroll="_nOnScroll">
-			<refresh class="zp-n-refresh" v-if="finalNvueListIs!=='view'&&refresherEnabled&&!useChatRecordMode" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
+			<refresh class="zp-n-refresh" v-if="finalNvueListIs!=='view'&&refresherEnabled&&nRefresherEnabled&&!useChatRecordMode" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
 				@pullingdown="_nOnPullingdown">
-				<view class="zp-n-refresh-container">
+				<view ref="zp-n-refresh-container" class="zp-n-refresh-container">
 					<!-- 下拉刷新view -->
 					<slot v-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
 					<z-paging-refresh ref="refresh" v-else :refresherStatus="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
@@ -156,8 +156,14 @@ V1.7.9
 				</view>
 			</refresh>
 			<view ref="zp-n-list-top-tag" class="zp-n-list-top-tag" :is="nViewIs"></view>
+			<view ref="zp-n-list-refresher-reveal" class="zp-n-list-refresher-reveal" v-if="nShowRefresherReveal" :is="nViewIs">
+				<slot v-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
+				<z-paging-refresh ref="refresh" v-else :refresherStatus="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
+					:refresherDefaultText="finalRefresherDefaultText" :refresherPullingText="finalRefresherPullingText" :refresherRefreshingText="finalRefresherRefreshingText" 
+					:showRefresherUpdateTime="showRefresherUpdateTime" :refresherUpdateTimeKey="refresherUpdateTimeKey"></z-paging-refresh>
+			</view>
 			<slot />
-			<view ref="zp-n-list-bottom-tag" class="zp-n-list-bottom-tag" :is="nViewIs"></view>
+			<view ref="zp-n-list-bottom-tag" class="zp-n-list-bottom-tag" is="header"></view>
 			<!-- 全屏 -->
 			<view :class="useChatRecordMode?'zp-n-view-reverse':''" v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
 				<slot name="loading" />
@@ -171,7 +177,7 @@ V1.7.9
 				</view>
 			</view>
 			<!-- 上拉加载更多view -->
-			<view v-if="nShowBottom" :is="nViewIs">
+			<view :is="nViewIs">
 				<view v-if="useChatRecordMode">
 					<view v-if="loadingStatus!==2&&realTotalData.length">
 						<slot v-if="$slots.chatLoading"
@@ -187,7 +193,7 @@ V1.7.9
 						</view>
 					</view>
 				</view>
-				<view v-else>
+				<view v-else-if="loadingStatus===0?nShowBottom:true">
 					<slot v-if="_shouldShowLoading('loadingMoreDefault')" name="loadingMoreDefault" />
 					<slot v-else-if="_shouldShowLoading('loadingMoreLoading')" name="loadingMoreLoading" />
 					<slot v-else-if="_shouldShowLoading('loadingMoreNoMore')" name="loadingMoreNoMore" />

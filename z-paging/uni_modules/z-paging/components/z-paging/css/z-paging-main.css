@@ -150,3 +150,7 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 .zp-n-view-reverse {
 	transform: rotate(180deg);
 }
+
+.zp-n-list-top-tag{
+	overflow: hidden;
+}

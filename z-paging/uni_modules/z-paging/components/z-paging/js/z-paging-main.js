@@ -19,6 +19,7 @@ const errorUpdateKey = 'z-paging-error-emit';
 let config = null;
 // #ifdef APP-NVUE
 const weexDom = weex.requireModule('dom');
+// const weexAnimation = weex.requireModule('animation');
 // #endif
 try {
 	const contextKeys = require.context('@/uni_modules/z-paging', false, /\z-paging-config$/).keys();
@@ -75,7 +76,7 @@ function toKebab(value) {
  * @property {Boolean} mounted-auto-call-reload z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
  * @property {Boolean} auto-scroll-to-top-when-reload reload时自动滚动到顶部，默认为是
  * @property {Boolean} auto-clean-list-when-reload reload时立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
- * @property {Boolean} show-refresher-when-reload 是否显示最后更新时间，默认为否
+ * @property {Boolean} show-refresher-when-reload 调用reload方法时是否自动显示下拉刷新view，默认为否
  * @property {Boolean} refresher-update-time-key 如果需要区别不同页面的最后更新时间，请为不同页面的z-paging的`refresher-update-time-key`设置不同的字符串
  * @property {Boolean} use-custom-refresher 是否使用自定义的下拉刷新，默认为是，即使用z-paging的下拉刷新。设置为false即代表使用uni scroll-view自带的下拉刷新，h5、App、微信小程序以外的平台不支持uni scroll-view自带的下拉刷新
  * @property {Number|String} refresher-fps 自定义下拉刷新下拉帧率，默认为40，过高可能会出现抖动问题(use-custom-refresher为true时生效)
@@ -203,6 +204,8 @@ export default {
 			nListIsDragging: false,
 			nShowBottom: true,
 			nFixFreezing: false,
+			nShowRefresherReveal: false,
+			nRefresherEnabled: true,
 			wxsPropType: '',
 			renderPropScrollTop: 0,
 			wxsIsScrollTopInTopRange: true,
@@ -1291,7 +1294,7 @@ export default {
 		setListSpecialEffects(args) {
 			this.nFixFreezing = args !== {};
 			if (!this.usePageScroll) {
-				this.$refs["n-list"].setSpecialEffects(args);
+				this.$refs['n-list'].setSpecialEffects(args);
 			}
 		},
 		handleRefresherStatusChanged(func) {
@@ -1308,7 +1311,29 @@ export default {
 					this.refresherTriggered = true;
 				}
 				// #ifdef APP-NVUE
-				this.nRefresherLoading = true;
+				setTimeout(() => {
+					const el = this.$refs['zp-n-list-top-tag'];
+					this._getNodeClientRect('zp-n-refresh-container', false).then((node) => {
+						if (node) {
+							let nodeHeight = node[0].height;
+							if (systemInfo.platform === 'ios') {
+								weexDom.scrollToElement(el, {
+									offset: -nodeHeight,
+									animated: false
+								});
+							} else {
+								this.nShowRefresherReveal = true;
+								this.nRefresherEnabled = false;
+							}
+							this.nRefresherLoading = true;
+							this.refresherStatus = 2;
+							this._reload(false, true);
+						} else {
+							this._reload(false, true);
+						}
+					});
+				}, 10)
+				return;
 				// #endif
 			} else {
 				this._refresherEnd(false, false);
@@ -1898,11 +1923,15 @@ export default {
 			}
 			this.$emit('onRestore');
 			// #ifdef APP-NVUE
+			if (systemInfo.platform !== 'ios') {
+				this.nShowRefresherReveal = false;
+				this.nRefresherEnabled = true;
+			}
 			setTimeout(() => {
 				this.$nextTick(() => {
 					this.nShowBottom = true;
 				})
-			}, 800);
+			}, 1000);
 			if (!this.usePageScroll) {
 				this.$refs["n-list"].resetLoadmore();
 			}
@@ -2022,7 +2051,7 @@ export default {
 			if (ref) {
 				return new Promise((resolve, reject) => {
 					weexDom.getComponentRect(ref, option => {
-						if (option && option.result && option.result === 1) {
+						if (option && option.result && option.result) {
 							resolve([option.size]);
 						} else {
 							resolve(false);
