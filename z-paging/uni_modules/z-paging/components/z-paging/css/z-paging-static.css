@@ -15,9 +15,14 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 	color: #666666;
 }
 
-.zp-loading-image{
+.zp-loading-image-ios{
 	width: 20px;
 	height: 20px;
+}
+
+.zp-loading-image-android{
+	width: 32rpx;
+	height: 32rpx;
 }
 
 @keyframes loading-flower {

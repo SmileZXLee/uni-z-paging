@@ -1,4 +1,6 @@
 <!-- 使用页面滚动示例(nvue) -->
+<!-- 不建议在nvue中使用页面滚动-->
+<!-- 使用页面滚动在nvue 安卓端中插入slot="top"时会盖住list，且滚动到顶部、底部无法使用，请知悉。在nvue ios端无此问题 -->
 <!-- 注意，在nvue中使用页面滚动时，无法使用z-paging的下拉刷新(因为z-paging在nvue中的下拉刷新使用的是原生refresh组件，它只能在scroller和list中使用) -->
 <!-- 若使用页面滚动时需要下拉刷新功能，请在pages.json中设置"enablePullDownRefresh": true开启页面下拉刷新功能 -->
 <template>
@@ -44,9 +46,6 @@
 					//将请求的结果数组传递给z-paging
 					this.$refs.paging.complete(data);
 					//如果请求失败写 this.$refs.paging.complete(false);
-
-					//若开启了页面下拉刷新，则需要在请求结束结束页面下拉刷新状态
-					uni.stopPullDownRefresh();
 				})
 			},
 			itemClick(item) {

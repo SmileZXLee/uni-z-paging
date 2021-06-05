@@ -1,3 +1,11 @@
+## 1.7.9（2021-06-05）
+1.新增`@emptyViewReload`，支持处理点击空数据图reload按钮事件。  
+2.简化nvue中`scrollToTop`和`scrollToBottom`配置，无需再设置:ref="`z-paging-${index}`"。  
+3.修复在nvue中使用页面滚动且包含`slot="top"`，点击返回顶部后，list被`slot=top`遮挡的问题。  
+4.略微调整在nvue安卓中下拉刷新loading的样式。
+## 1.7.8（2021-06-04）
+1.新增基于z-paging封装个性化分页组件演示。  
+2.修复修改text使用i18n配置无效的BUG。
 ## 1.7.7（2021-06-03）
 1.修复在支付宝小程序中，自定义下拉刷新view未设置`slot-scope`时无效的问题。  
 2.调整容器部分与空数据图的z-index，使容器盖在空数据图上方，以避免z-pagng中插入固定内容且展示空数据图时，插入的view无法点击的问题。  

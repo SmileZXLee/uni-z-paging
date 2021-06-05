@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V1.7.8
+V1.7.9
 -- >
 <!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -26,7 +26,7 @@ V1.7.8
 				:scroll-top="scrollTop"
 				:scroll-y="scrollable&&!usePageScroll&&scrollEnable" :enable-back-to-top="finalEnableBackToTop"
 				:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
-				:scroll-into-view="scrollIntoView" :lower-threshold="finalLowerThreshold" :upper-threshold="0"
+				:scroll-into-view="scrollIntoView" :lower-threshold="finalLowerThreshold" :upper-threshold="5"
 				:refresher-enabled="finalRefresherEnabled&&!useCustomRefresher" :refresher-threshold="finalRefresherThreshold"
 				:refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
 				:refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
@@ -92,7 +92,7 @@ V1.7.8
 							<view class="zp-empty-view"
 								v-if="!refresherOnly&&!totalData.length&&(autoHideEmptyViewWhenLoading?isAddedData:true)&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)">
 								<slot v-if="$slots.empty" name="empty" />
-								<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" :emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" :emptyViewImgStyle="emptyViewImgStyle" :emptyViewReloadStyle="emptyViewReloadStyle" :emptyViewZIndex="emptyViewZIndex" @reload="reload">
+								<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" :emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" :emptyViewImgStyle="emptyViewImgStyle" :emptyViewReloadStyle="emptyViewReloadStyle" :emptyViewZIndex="emptyViewZIndex" @reload="_emptyViewReload">
 								</z-paging-empty-view>
 							</view>
 							<!-- 主体内容 -->
@@ -137,7 +137,7 @@ V1.7.8
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
 	<view :is="finalNvueSuperListIs">
-		<view ref="zp-page-scroll-top" :is="finalNvueListIs==='scroller'||finalNvueListIs==='view'?'view':finalNvueListIs==='waterfall'?'header':'cell'" class="zp-page-scroll-top" v-if="usePageScroll&&$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
+		<view ref="zp-page-scroll-top" :is="nViewIs" class="zp-page-scroll-top" v-if="usePageScroll&&$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
 			<slot name="top"></slot>
 		</view>
 		<view ref="n-list" id="z-paging-nlist" :class="useChatRecordMode?'zp-n-list zp-n-view-reverse':'zp-n-list'" :style="[scrollViewStyle]" :is="finalNvueListIs" alwaysScrollableVertical="true"
@@ -155,7 +155,9 @@ V1.7.8
 						:showRefresherUpdateTime="showRefresherUpdateTime" :refresherUpdateTimeKey="refresherUpdateTimeKey"></z-paging-refresh>
 				</view>
 			</refresh>
+			<view ref="zp-n-list-top-tag" class="zp-n-list-top-tag" :is="nViewIs"></view>
 			<slot />
+			<view ref="zp-n-list-bottom-tag" class="zp-n-list-bottom-tag" :is="nViewIs"></view>
 			<!-- 全屏 -->
 			<view :class="useChatRecordMode?'zp-n-view-reverse':''" v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
 				<slot name="loading" />
@@ -164,12 +166,12 @@ V1.7.8
 			<view :class="useChatRecordMode?'zp-n-view-reverse':''" v-if="!refresherOnly&&!totalData.length&&(autoHideEmptyViewWhenLoading?isAddedData:true)&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
 				<view class="zp-empty-view">
 					<slot v-if="$slots.empty" name="empty" />
-					<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" :emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" :emptyViewImgStyle="emptyViewImgStyle" :emptyViewReloadStyle="emptyViewReloadStyle" :emptyViewZIndex="emptyViewZIndex" @reload="reload">
+					<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" :emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" :emptyViewImgStyle="emptyViewImgStyle" :emptyViewReloadStyle="emptyViewReloadStyle" :emptyViewZIndex="emptyViewZIndex" @reload="_emptyViewReload">
 					</z-paging-empty-view>
 				</view>
 			</view>
 			<!-- 上拉加载更多view -->
-			<view v-if="nShowBottom" :is="finalNvueListIs==='scroller'||finalNvueListIs==='view'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
+			<view v-if="nShowBottom" :is="nViewIs">
 				<view v-if="useChatRecordMode">
 					<view v-if="loadingStatus!==2&&realTotalData.length">
 						<slot v-if="$slots.chatLoading"

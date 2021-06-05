@@ -21,7 +21,7 @@
 				<!-- #endif -->
 				<!-- #ifdef APP-NVUE -->
 				<view v-else :style="[{'margin-right':showRefresherUpdateTime?'18rpx':'12rpx'}]">
-					<loading-indicator class="zp-loading-image"
+					<loading-indicator :class="systemInfo.platform==='ios'?'zp-loading-image-ios':'zp-loading-image-android'"
 						:style="[{color:defaultThemeStyle==='white'?'white':'#777777'}]" :animating="true">
 					</loading-indicator>
 				</view>
@@ -40,6 +40,7 @@
 	</view>
 </template>
 <script>
+	const systemInfo = uni.getSystemInfoSync();
 	import zStatic from '../js/z-paging-static'
 	import {
 		getRefesrherFormatTimeByKey
@@ -48,6 +49,7 @@
 		name: 'z-paging-refresh',
 		data() {
 			return {
+				systemInfo: systemInfo,
 				base64Arrow: zStatic.base64Arrow,
 				base64ArrowWhite: zStatic.base64ArrowWhite,
 				base64Flower: zStatic.base64Flower,

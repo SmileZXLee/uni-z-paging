@@ -2,7 +2,7 @@
 <template>
 	<view class="content">
 		<!-- 非页面滚动时这里的fixed建议设置为true，则无需设置z-paging的高度及其父view的高度 -->
-		<z-paging ref="paging" fixed @query="queryList" :list.sync="dataList">
+		<z-paging ref="paging" fixed @query="queryList" :list.sync="dataList" show-empty-view-reload>
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
@@ -44,6 +44,7 @@
 			},
 			itemClick(item) {
 				console.log('点击了', item.title);
+				this.$refs.paging.scrollToTop();
 			}
 		}
 	}
