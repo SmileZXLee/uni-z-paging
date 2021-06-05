@@ -19,7 +19,7 @@ const errorUpdateKey = 'z-paging-error-emit';
 let config = null;
 // #ifdef APP-NVUE
 const weexDom = weex.requireModule('dom');
-// const weexAnimation = weex.requireModule('animation');
+const weexAnimation = weex.requireModule('animation');
 // #endif
 try {
 	const contextKeys = require.context('@/uni_modules/z-paging', false, /\z-paging-config$/).keys();
@@ -200,13 +200,16 @@ export default {
 			showBackToTopClass: false,
 			tempLanguageUpdateKey: 0,
 			isLoadFailed: false,
+			privateShowRefresherWhenReload: false,
 			nRefresherLoading: true,
 			nListIsDragging: false,
 			nShowBottom: true,
 			nFixFreezing: false,
 			nShowRefresherReveal: false,
+			nShowRefresherRevealHeight: 0,
 			nRefresherEnabled: true,
 			wxsPropType: '',
+			refresherRevealStackCount: 0,
 			renderPropScrollTop: 0,
 			wxsIsScrollTopInTopRange: true,
 			wxsScrollTop: 0,
@@ -735,7 +738,6 @@ export default {
 				this.complete(false);
 			}
 		})
-
 	},
 	destroyed() {
 		uni.$off(i18nUpdateKey);
@@ -1217,6 +1219,7 @@ export default {
 		//重新加载分页数据，pageNo会恢复为默认值，相当于下拉刷新的效果(animate为true时会展示下拉刷新动画，默认为false)
 		reload(animate = this.showRefresherWhenReload) {
 			if (animate) {
+				this.privateShowRefresherWhenReload = animate;
 				this.isUserPullDown = true;
 			}
 			this._mountedReload(animate);
@@ -1305,28 +1308,30 @@ export default {
 		_mountedReload(animate = this.showRefresherWhenReload) {
 			this.isUserReload = true;
 			if (animate) {
+				this.privateShowRefresherWhenReload = animate;
+				// #ifndef APP-NVUE
 				if (this.useCustomRefresher) {
 					this._doRefresherRefreshAnimate();
 				} else {
 					this.refresherTriggered = true;
 				}
+				// #endif
 				// #ifdef APP-NVUE
+				this.refresherStatus = 2;
+				this.refresherRevealStackCount++;
 				setTimeout(() => {
-					const el = this.$refs['zp-n-list-top-tag'];
 					this._getNodeClientRect('zp-n-refresh-container', false).then((node) => {
 						if (node) {
 							let nodeHeight = node[0].height;
-							if (systemInfo.platform === 'ios') {
-								weexDom.scrollToElement(el, {
-									offset: -nodeHeight,
-									animated: false
-								});
-							} else {
-								this.nShowRefresherReveal = true;
-								this.nRefresherEnabled = false;
-							}
-							this.nRefresherLoading = true;
-							this.refresherStatus = 2;
+							this.nRefresherEnabled = false;
+							this.nShowRefresherReveal = true;
+							this.nShowRefresherRevealHeight = nodeHeight;
+							setTimeout(() => {
+								this._nDoRefresherEndAnimation(0, -nodeHeight, false, false);
+								setTimeout(() => {
+									this._nDoRefresherEndAnimation(nodeHeight, 0);
+								}, 10)
+							}, 10)
 							this._reload(false, true);
 						} else {
 							this._reload(false, true);
@@ -1525,7 +1530,6 @@ export default {
 			}
 			if (this.refresherOnly || !this.loadingMoreEnabled || !(this.loadingStatus === 0 || 3) || this.loading)
 				return;
-
 			this._doLoadingMore();
 		},
 		//当滚动到顶部时
@@ -1737,7 +1741,7 @@ export default {
 		},
 		//自定义下拉刷新被触发
 		_onRefresh() {
-			if (this.loading) {
+			if (this.loading || !this.nRefresherEnabled) {
 				return;
 			}
 			this.isUserPullDown = true;
@@ -1901,6 +1905,20 @@ export default {
 		},
 		//下拉刷新结束
 		_refresherEnd(shouldEndLoadingDelay = true, fromAddData = false) {
+			// #ifndef APP-NVUE
+			if (this.showRefresherWhenReload || this.privateShowRefresherWhenReload) {
+				const stackCount = this.refresherRevealStackCount;
+				this.refresherRevealStackCount--;
+				if (stackCount > 1) {
+					return;
+				}
+				this.refresherStatus = 0;
+			}else{
+				setTimeout(() => {
+					this.refresherStatus = 0;
+				}, commonDelayTime);
+			}
+			// #endif
 			// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 			this.refresherTransform = 'translateY(0px)';
 			// #endif
@@ -1911,9 +1929,6 @@ export default {
 			if (this.refresherEndBounceEnabled && fromAddData) {
 				this.refresherTransition = 'transform 0.3s cubic-bezier(0.19,1.64,0.42,0.72)';
 			}
-			setTimeout(() => {
-				this.refresherStatus = 0;
-			}, commonDelayTime);
 			if (shouldEndLoadingDelay) {
 				setTimeout(() => {
 					this.loading = false;
@@ -1923,23 +1938,12 @@ export default {
 			}
 			this.$emit('onRestore');
 			// #ifdef APP-NVUE
-			if (systemInfo.platform !== 'ios') {
-				this.nShowRefresherReveal = false;
-				this.nRefresherEnabled = true;
-			}
-			setTimeout(() => {
-				this.$nextTick(() => {
-					this.nShowBottom = true;
-				})
-			}, 1000);
-			if (!this.usePageScroll) {
-				this.$refs["n-list"].resetLoadmore();
-			}
-			this.nRefresherLoading = false;
+			this._nRefresherEnd();
 			// #endif
 		},
 		//模拟用户手动触发下拉刷新
 		_doRefresherRefreshAnimate() {
+			this.refresherRevealStackCount++;
 			this.refresherTransform = `translateY(${this.finalRefresherThreshold}px)`;
 			// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
 			this.wxsPropType = 'begin' + (new Date()).getTime();
@@ -2271,6 +2275,57 @@ export default {
 			} else {
 				this.refresherStatus = 0;
 			}
+		},
+		//下拉刷新结束
+		_nRefresherEnd() {
+			this._nDoRefresherEndAnimation(0, -this.nShowRefresherRevealHeight);
+			setTimeout(() => {
+				this.$nextTick(() => {
+					this.nShowBottom = true;
+				})
+			}, 1000);
+			if (!this.usePageScroll) {
+				this.$refs["n-list"].resetLoadmore();
+			}
+			this.nRefresherLoading = false;
+		},
+		//执行主动触发下拉刷新动画
+		_nDoRefresherEndAnimation(height, translateY, animate = true, checkStack = true) {
+			if (!this.showRefresherWhenReload && !this.privateShowRefresherWhenReload) {
+				this.nRefresherEnabled = true;
+				setTimeout(() => {
+					this.refresherStatus = 0;
+				}, commonDelayTime);
+				return;
+			}
+			const stackCount = this.refresherRevealStackCount;
+			if (height === 0 && checkStack) {
+				this.refresherRevealStackCount--;
+				if (stackCount > 1) {
+					return;
+				}
+				this.nRefresherEnabled = true;
+				this.refresherStatus = 0;
+			}
+			if (stackCount > 1) {
+				this.refresherStatus = 2;
+			}
+			const duration = animate ? 200 : 0;
+			weexAnimation.transition(this.$refs['zp-n-list-refresher-reveal'], {
+				styles: {
+					height: `${height}px`,
+					transform: `translateY(${translateY}px)`,
+				},
+				duration: duration,
+				timingFunction: height > 0 ? 'ease-in' : 'ease-out',
+				needLayout: true,
+				delay: 0
+			})
+			setTimeout(() => {
+				if (animate) {
+					this.nShowRefresherReveal = height > 0;
+				}
+			}, duration > 0 ? duration - 100 : 0);
 		},
 		//滚动到底部加载更多
 		_nOnLoadmore() {

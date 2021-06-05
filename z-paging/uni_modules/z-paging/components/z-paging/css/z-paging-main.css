@@ -151,6 +151,7 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 	transform: rotate(180deg);
 }
 
-.zp-n-list-top-tag{
-	overflow: hidden;
+.zp-n-list-refresher-reveal{
+	/* transition-property: transform,height;
+	transition-duration:0.15s; */
 }

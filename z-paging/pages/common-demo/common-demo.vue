@@ -44,7 +44,6 @@
 			},
 			itemClick(item) {
 				console.log('点击了', item.title);
-				this.$refs.paging.scrollToTop();
 			}
 		}
 	}
