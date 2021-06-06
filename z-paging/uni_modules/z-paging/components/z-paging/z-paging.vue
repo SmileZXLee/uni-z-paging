@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V1.7.9
+V1.8.1
 -- >
 <!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -145,7 +145,7 @@ V1.7.9
 			:scrollable="scrollable&&scrollEnable" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 			:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap"
 			@loadmore="_nOnLoadmore" @scroll="_nOnScroll">
-			<refresh class="zp-n-refresh" v-if="finalNvueListIs!=='view'&&refresherEnabled&&nRefresherEnabled&&!useChatRecordMode" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
+			<refresh class="zp-n-refresh" v-if="finalNvueListIs!=='view'&&refresherEnabled&&!nShowRefresherReveal&&!useChatRecordMode" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
 				@pullingdown="_nOnPullingdown">
 				<view ref="zp-n-refresh-container" class="zp-n-refresh-container">
 					<!-- 下拉刷新view -->

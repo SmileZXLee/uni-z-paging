@@ -11,7 +11,7 @@ import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
-const currentVersion = 'V1.7.9';
+const currentVersion = 'V1.8.1';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -207,7 +207,6 @@ export default {
 			nFixFreezing: false,
 			nShowRefresherReveal: false,
 			nShowRefresherRevealHeight: 0,
-			nRefresherEnabled: true,
 			wxsPropType: '',
 			refresherRevealStackCount: 0,
 			renderPropScrollTop: 0,
@@ -318,10 +317,15 @@ export default {
 			type: Boolean,
 			default: _getConfig('scrollable', true)
 		},
-		//z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
+		//z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是。请使用简便写法：auto
 		mountedAutoCallReload: {
 			type: Boolean,
 			default: _getConfig('mountedAutoCallReload', true)
+		},
+		//z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
+		auto: {
+			type: Boolean,
+			default: _getConfig('auto', true)
 		},
 		//reload时自动滚动到顶部，默认为是
 		autoScrollToTopWhenReload: {
@@ -718,7 +722,8 @@ export default {
 	},
 	mounted() {
 		this.wxsPropType = (new Date()).getTime().toString();
-		if (!this.refresherOnly && this.mountedAutoCallReload) {
+		this.renderJsIgnore;
+		if (!this.refresherOnly && (this.mountedAutoCallReload && this.auto)) {
 			this._mountedReload();
 		}
 		this.$nextTick(() => {
@@ -852,10 +857,12 @@ export default {
 			}
 		},
 		finalScrollTop(newVal, oldVal) {
-			if (newVal === 0) {
-				this.renderPropScrollTop = 0;
-			} else {
-				this.renderPropScrollTop = 10;
+			if (!this.useChatRecordMode) {
+				if (newVal === 0) {
+					this.renderPropScrollTop = 0;
+				} else {
+					this.renderPropScrollTop = 10;
+				}
 			}
 		}
 	},
@@ -1085,6 +1092,14 @@ export default {
 			safeAreaBottom = this.systemInfo.safeAreaInsets.bottom || 0;
 			// #endif
 			return safeAreaBottom;
+		},
+		renderJsIgnore() {
+			if ((this.usePageScroll && this.useChatRecordMode) || !this.refresherEnabled || !this.useCustomRefresher) {
+				this.$nextTick(() => {
+					this.renderPropScrollTop = 10;
+				})
+			}
+			return 0;
 		},
 		windowTop() {
 			if (!this.systemInfo) {
@@ -1323,7 +1338,6 @@ export default {
 					this._getNodeClientRect('zp-n-refresh-container', false).then((node) => {
 						if (node) {
 							let nodeHeight = node[0].height;
-							this.nRefresherEnabled = false;
 							this.nShowRefresherReveal = true;
 							this.nShowRefresherRevealHeight = nodeHeight;
 							setTimeout(() => {
@@ -1545,6 +1559,7 @@ export default {
 			if (this.loadingStatus === 2) {
 				return;
 			}
+			
 			this._onLoadingMore('click');
 		},
 		//滚动到顶部
@@ -1741,7 +1756,7 @@ export default {
 		},
 		//自定义下拉刷新被触发
 		_onRefresh() {
-			if (this.loading || !this.nRefresherEnabled) {
+			if (this.loading || this.nShowRefresherReveal) {
 				return;
 			}
 			this.isUserPullDown = true;
@@ -1913,7 +1928,7 @@ export default {
 					return;
 				}
 				this.refresherStatus = 0;
-			}else{
+			} else {
 				setTimeout(() => {
 					this.refresherStatus = 0;
 				}, commonDelayTime);
@@ -2292,7 +2307,6 @@ export default {
 		//执行主动触发下拉刷新动画
 		_nDoRefresherEndAnimation(height, translateY, animate = true, checkStack = true) {
 			if (!this.showRefresherWhenReload && !this.privateShowRefresherWhenReload) {
-				this.nRefresherEnabled = true;
 				setTimeout(() => {
 					this.refresherStatus = 0;
 				}, commonDelayTime);
@@ -2304,7 +2318,6 @@ export default {
 				if (stackCount > 1) {
 					return;
 				}
-				this.nRefresherEnabled = true;
 				this.refresherStatus = 0;
 			}
 			if (stackCount > 1) {

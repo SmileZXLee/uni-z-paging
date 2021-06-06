@@ -7,7 +7,7 @@
 <template>
 	<view style="height: 100%;">
 		<view
-			:class="showRefresherUpdateTime?'zp-custom-refresher-container zp-custom-refresher-container-padding':'zp-custom-refresher-container'"
+			:class="['zp-custom-refresher-container',{'zp-custom-refresher-container-padding':showRefresherUpdateTime}]"
 			style="height: 100%;">
 			<view class="zp-custom-refresher-left">
 				<image v-if="refresherStatus!==2" :class="refresherLeftImageClass"
@@ -54,7 +54,8 @@
 				base64ArrowWhite: zStatic.base64ArrowWhite,
 				base64Flower: zStatic.base64Flower,
 				base64FlowerWhite: zStatic.base64FlowerWhite,
-				refresherTimeText: ''
+				refresherTimeText: '',
+				isRefresherLeftImageClassLoaded: false
 			};
 		},
 		props: {
@@ -83,7 +84,12 @@
 			refresherLeftImageClass() {
 				let refresherLeftImageClass = '';
 				if (this.refresherStatus === 0) {
-					refresherLeftImageClass = 'zp-custom-refresher-left-image zp-custom-refresher-arrow-down';
+					if(this.isRefresherLeftImageClassLoaded){
+						refresherLeftImageClass = 'zp-custom-refresher-left-image zp-custom-refresher-arrow-down';
+					}else{
+						this.isRefresherLeftImageClassLoaded = true;
+						refresherLeftImageClass = 'zp-custom-refresher-left-image zp-custom-refresher-arrow-down-no-duration';
+					}
 				} else {
 					refresherLeftImageClass = 'zp-custom-refresher-left-image zp-custom-refresher-arrow-top';
 				}
@@ -195,8 +201,8 @@
 
 	.zp-custom-refresher-arrow-top {
 		/* #ifndef APP-NVUE */
-		animation: refresher-arrow-top 0.25s linear;
-		-webkit-animation: refresher-arrow-top 0.25s linear;
+		animation: refresher-arrow-top .2s linear;
+		-webkit-animation: refresher-arrow-top .2s linear;
 		animation-fill-mode: forwards;
 		-webkit-animation-fill-mode: forwards;
 		/* #endif */
@@ -207,8 +213,20 @@
 
 	.zp-custom-refresher-arrow-down {
 		/* #ifndef APP-NVUE */
-		animation: refresher-arrow-down 0.25s linear;
-		-webkit-animation: refresher-arrow-down 0.25s linear;
+		animation: refresher-arrow-down .2s linear;
+		-webkit-animation: refresher-arrow-down .2s linear;
+		animation-fill-mode: forwards;
+		-webkit-animation-fill-mode: forwards;
+		/* #endif */
+		/* #ifdef APP-NVUE */
+		transform: rotate(180deg);
+		/* #endif */
+	}
+	
+	.zp-custom-refresher-arrow-down-no-duration {
+		/* #ifndef APP-NVUE */
+		animation: refresher-arrow-down 0s linear;
+		-webkit-animation: refresher-arrow-down 0s linear;
 		animation-fill-mode: forwards;
 		-webkit-animation-fill-mode: forwards;
 		/* #endif */
