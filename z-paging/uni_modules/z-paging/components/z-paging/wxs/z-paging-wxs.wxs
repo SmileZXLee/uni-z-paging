@@ -55,10 +55,9 @@ function touchmove(e, ownerInstance) {
 		return true;
 	}
 	var moveDistanceObj = _getMoveDistance(e, instance);
-	var oldMoveDistance = state.oldMoveDistance || 0;
 	var moveDistance = moveDistanceObj.currentMoveDistance;
 	var prevent = moveDistanceObj.isDown;
-	if (moveDistance <= 0 || !prevent) {
+	if (moveDistance < 0) {
 		_setTransformValue(0, instance, state);
 		return true;
 	}
@@ -90,7 +89,6 @@ function touchmove(e, ownerInstance) {
 		isTouchmoving) {
 		ownerInstance.callMethod('_handleRefresherTouchmove', moveDistance, touch);
 	}
-
 	return !prevent;
 }
 
@@ -99,7 +97,7 @@ function touchend(e, ownerInstance) {
 	var instance = ownerInstance.getState().currentInstance;
 	var dataset = instance.getDataset();
 	var state = instance.getState();
-	if (_getRefresherTouchDisabled(e, instance)) {
+	if (_getRefresherTouchDisabled(e, instance, true)) {
 		return;
 	}
 	state.refresherReachMaxAngle = true;
@@ -251,6 +249,7 @@ function _getRefresherTouchDisabled(e, instance, isStart = false) {
 		state.startScrollTop = finalScrollTop || 0;
 		fixedIsTop = true;
 	}
+	console.log('fixedIsTop',fixedIsTop);
 	var res = loading || useChatRecordMode || !refresherEnabled || !useCustomRefresher || ((
 		usePageScroll && useCustomRefresher && pageScrollTop > 5) && !fixedIsTop) || ((
 		!usePageScroll && useCustomRefresher && scrollTop > 5) && !fixedIsTop);

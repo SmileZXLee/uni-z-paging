@@ -11,7 +11,7 @@ import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
-const currentVersion = 'V1.8.1';
+const currentVersion = 'V1.8.2';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -209,6 +209,7 @@ export default {
 			nShowRefresherReveal: false,
 			nShowRefresherRevealHeight: 0,
 			nIsFirstPageAndNoMore: false,
+			nFirstPageAndNoMoreChecked: false,
 			wxsPropType: '',
 			refresherRevealStackCount: 0,
 			renderPropScrollTop: 0,
@@ -791,7 +792,9 @@ export default {
 					}
 				});
 				// #ifdef APP-NVUE
-				if(this.nIsFirstPageAndNoMore){
+				if (this.useChatRecordMode && this.nIsFirstPageAndNoMore && this.pageNo === this
+					.defaultPageNo && !this.nFirstPageAndNoMoreChecked) {
+					this.nFirstPageAndNoMoreChecked = true;
 					this._scrollToBottom(false);
 				}
 				// #endif
