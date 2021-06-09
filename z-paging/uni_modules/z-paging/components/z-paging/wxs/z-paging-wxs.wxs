@@ -27,7 +27,7 @@ function touchstart(e, ownerInstance) {
 	var state = instance.getState();
 	var dataset = instance.getDataset();
 	var isTouchEnded = state.isTouchEnded;
-	if (_getRefresherTouchDisabled(e, instance, true)) {
+	if (_getRefresherTouchDisabled(e, instance, 0)) {
 		return;
 	}
 	state.oldMoveDistance = 0;
@@ -48,7 +48,7 @@ function touchmove(e, ownerInstance) {
 	var dataset = instance.getDataset();
 	var refresherThreshold = dataset.refresherthreshold;
 	var state = instance.getState();
-	if (_getRefresherTouchDisabled(e, instance)) {
+	if (_getRefresherTouchDisabled(e, instance, 1)) {
 		return true;
 	}
 	if (!_getAngleIsInRange(e, touch, state, dataset)) {
@@ -97,12 +97,13 @@ function touchend(e, ownerInstance) {
 	var instance = ownerInstance.getState().currentInstance;
 	var dataset = instance.getDataset();
 	var state = instance.getState();
-	if (_getRefresherTouchDisabled(e, instance, true)) {
+	if (_getRefresherTouchDisabled(e, instance, 2)) {
 		return;
 	}
 	state.refresherReachMaxAngle = true;
 	state.hitReachMaxAngleCount = 0;
 	state.disabledBounce = false;
+	state.fixedIsTopHitCount = 0;
 	//ownerInstance.callMethod('_handleScrollViewDisableBounce', {bounce:true});
 	var isTouchmoving = state.isTouchmoving;
 	if (!isTouchmoving) {
@@ -229,7 +230,7 @@ function _getCommonTouch(e) {
 	};
 }
 
-function _getRefresherTouchDisabled(e, instance, isStart = false) {
+function _getRefresherTouchDisabled(e, instance, processTag) {
 	var dataset = instance.getDataset();
 	var state = instance.getState();
 	var loading = _getIsTrue(dataset.loading);
@@ -245,11 +246,24 @@ function _getRefresherTouchDisabled(e, instance, isStart = false) {
 	if (!isIos && finalScrollTop == (state.startScrollTop || 0) && finalScrollTop <= 105) {
 		fixedIsTop = true;
 	}
-	if (!isIos && isStart) {
+	
+	var fixedIsTopHitCount = state.fixedIsTopHitCount || 0;
+	if(fixedIsTop){
+		fixedIsTopHitCount++;
+		if(fixedIsTopHitCount <= 3){
+			fixedIsTop = false;
+		}
+		state.fixedIsTopHitCount = fixedIsTopHitCount;
+	}else{
+		state.fixedIsTopHitCount = 0;
+	}
+	console.log('fixedIsTop',fixedIsTop)
+	if (!isIos && processTag === 0) {
 		state.startScrollTop = finalScrollTop || 0;
+	}
+	if (!isIos && processTag === 2) {
 		fixedIsTop = true;
 	}
-	console.log('fixedIsTop',fixedIsTop);
 	var res = loading || useChatRecordMode || !refresherEnabled || !useCustomRefresher || ((
 		usePageScroll && useCustomRefresher && pageScrollTop > 5) && !fixedIsTop) || ((
 		!usePageScroll && useCustomRefresher && scrollTop > 5) && !fixedIsTop);

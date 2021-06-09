@@ -218,6 +218,7 @@ export default {
 			wxsScrollTop: 0,
 			wxsPageScrollTop: 0,
 			disabledBounce: false,
+			cacheScrollNodeHeight: -1
 		};
 	},
 	props: {
@@ -1413,6 +1414,7 @@ export default {
 		//重新加载分页数据
 		_reload(isClean = false, isFromMounted = false) {
 			this.isAddedData = false;
+			this.cacheScrollNodeHeight = -1;
 			this.pageNo = this.defaultPageNo;
 			// #ifdef APP-NVUE
 			if (this.isIos) {
@@ -1574,6 +1576,24 @@ export default {
 
 				} else {
 					this.totalData = [...this.totalData, ...newVal];
+				}
+			}
+		},
+		//通过@scroll事件检测是否滚动到了底部
+		_checkScrolledToBottom(scrollDiff) {
+			if (this.cacheScrollNodeHeight === -1) {
+				this._getNodeClientRect('.zp-scroll-view').then((res) => {
+					if (res) {
+						let pageScrollNodeHeight = res[0].height;
+						this.cacheScrollNodeHeight = pageScrollNodeHeight;
+						if (scrollDiff - pageScrollNodeHeight <= this.finalLowerThreshold) {
+							this._onLoadingMore('toBottom');
+						}
+					}
+				});
+			} else {
+				if (scrollDiff - this.cacheScrollNodeHeight <= this.finalLowerThreshold) {
+					this._onLoadingMore('toBottom');
 				}
 			}
 		},
@@ -1804,6 +1824,8 @@ export default {
 		_scroll(e) {
 			this.$emit('scroll', e);
 			this.oldScrollTop = e.detail.scrollTop;
+			const scrollDiff = e.detail.scrollHeight - this.oldScrollTop;
+			this._checkScrolledToBottom(scrollDiff);
 		},
 		//自定义下拉刷新被触发
 		_onRefresh() {

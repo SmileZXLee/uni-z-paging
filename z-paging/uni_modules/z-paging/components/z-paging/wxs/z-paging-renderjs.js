@@ -43,10 +43,18 @@ export default {
 			this.isTouchFromZPaging = this.getTouchFromZPaging(e.target);
 		},
 		_handleTouchmove(e) {
+			if(!this.isTouchFromZPaging){
+				return;
+			}
+			if (!this.newUsePageScroll) {
+				if (e.cancelable && !e.defaultPrevented) {
+					e.preventDefault();
+				}
+				return;
+			}
 			const touch = this._getCommonTouch(e);
 			var moveY = touch.touchY - this.startY;
-			if ((this.isTouchFromZPaging && this.newScrollTop < 1 && moveY > 0) || (this.isTouchFromZPaging && !this.newUsePageScroll && moveY <
-				0)) {
+			if (this.newScrollTop < 1 && moveY > 0) {
 				if (e.cancelable && !e.defaultPrevented) {
 					e.preventDefault();
 				}
