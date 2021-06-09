@@ -30,7 +30,7 @@
 			"style": {
 				"navigationBarTitleText": "使用页面滚动示例",
 				"enablePullDownRefresh": false
-				
+
 			}
 
 		}, {
@@ -119,32 +119,32 @@
 				"enablePullDownRefresh": false
 			}
 
+		}, {
+			"path": "pages/page-default-demo-n/page-default-demo-n",
+			"style": {
+				"navigationBarTitleText": "使用页面滚动示例(nvue)",
+				"enablePullDownRefresh": true
+			}
+
+		}, {
+			"path": "pages/my-paging-demo/my-paging-demo",
+			"style": {
+				"navigationBarTitleText": "基于z-paging封装个性化分页组件演示",
+				"enablePullDownRefresh": false
+			}
+
 		}
-        ,{
-            "path" : "pages/page-default-demo-n/page-default-demo-n",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "使用页面滚动示例(nvue)",
-                "enablePullDownRefresh": true
-            }
-            
-        }
-        ,{
-            "path" : "pages/my-paging-demo/my-paging-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "基于z-paging封装个性化分页组件演示",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "z-paging",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8",
 		//将iOS中回弹效果顶部的灰色改为白色
-		"backgroundColorTop": "#FFFFFF"
+		"backgroundColorTop": "#FFFFFF",
+		//支付宝和钉钉小程序需要取消回弹效果
+		"mp-alipay": {
+			"allowsBounceVertical": "NO"
+		}
 	}
 }

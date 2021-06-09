@@ -1,14 +1,14 @@
 <!-- 聊天记录模式演示(nvue)，使用nvue可实现聊天记录无闪动分页 -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" @query="queryList" :use-chat-record-mode="true" :list.sync="dataList">
+		<z-paging ref="paging" @query="queryList" :use-chat-record-mode="true" :list.sync="dataList" :cellStyle.sync="cellStyle">
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<template v-for="(item,index) in dataList">
 				<!-- 在nvue中，z-paging中插入的列表item必须是cell，必须使用cell包住，因为在nvue中，z-paging使用的是nvue的list组件。 -->
 				<!-- 注意！！！！这里ref必须绑定index，且格式为z-paging-${index}，格式不能变，否则会导致滑动到顶部加载更多数据时滚动位置不正确！！！！！！ -->
-				<!-- style="transform:rotate(180deg);"必须写，必须写！！！ -->
-				<cell style="transform:rotate(180deg);" class="item" :key="item.title" :ref="`z-paging-${index}`" @click="itemClick(item)">
+				<!-- :style="cellStyle"必须写！！！ -->
+				<cell :style="cellStyle" class="item" :key="item.title" :ref="`z-paging-${index}`" @click="itemClick(item)">
 					<text class="item-title" v-if="item.title.length<3">第{{item.title}}条聊天记录</text>
 					<text class="item-title" v-else>{{item.title}}</text>
 					<text class="item-detail">{{item.detail}}</text>
@@ -29,7 +29,8 @@
 			return {
 				dataList: [],
 				tabIndex: 0,
-				newIndex: 0
+				newIndex: 0,
+				cellStyle: {}
 			}
 		},
 		methods: {

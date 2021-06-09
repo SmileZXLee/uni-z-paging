@@ -200,6 +200,7 @@ export default {
 			showBackToTopClass: false,
 			tempLanguageUpdateKey: 0,
 			isLoadFailed: false,
+			isIos: systemInfo.platform === 'ios',
 			privateShowRefresherWhenReload: false,
 			nRefresherLoading: true,
 			nListIsDragging: false,
@@ -207,9 +208,11 @@ export default {
 			nFixFreezing: false,
 			nShowRefresherReveal: false,
 			nShowRefresherRevealHeight: 0,
+			nIsFirstPageAndNoMore: false,
 			wxsPropType: '',
 			refresherRevealStackCount: 0,
 			renderPropScrollTop: 0,
+			renderUsePageScroll: false,
 			wxsIsScrollTopInTopRange: true,
 			wxsScrollTop: 0,
 			wxsPageScrollTop: 0,
@@ -787,6 +790,11 @@ export default {
 						this.$emit('pagingContentHeightChanged', res[0].height);
 					}
 				});
+				// #ifdef APP-NVUE
+				if(this.nIsFirstPageAndNoMore){
+					this._scrollToBottom(false);
+				}
+				// #endif
 			})
 		},
 		currentData(newVal, oldVal) {
@@ -794,16 +802,29 @@ export default {
 		},
 		loadingStatus(newVal, oldVal) {
 			this.$emit('loadingStatusChange', newVal);
+			// #ifdef APP-NVUE
+			if (this.useChatRecordMode) {
+				if (this.pageNo === this.defaultPageNo && newVal === 2) {
+					this.nIsFirstPageAndNoMore = true;
+					return;
+				}
+			}
+			this.nIsFirstPageAndNoMore = false;
+			//  #endif
 		},
 		oldScrollTop(newVal, oldVal) {
 			if (!this.usePageScroll) {
 				this.$emit('scrollTopChange', newVal);
 				this.$emit('update:scrollTop', newVal);
 				this._checkShouldShowBackToTop(newVal, oldVal);
-				if (newVal > 5) {
-					this.wxsScrollTop = 1;
+				if (this.isIos) {
+					if (newVal > 5) {
+						this.wxsScrollTop = 6;
+					} else {
+						this.wxsScrollTop = 0;
+					}
 				} else {
-					this.wxsScrollTop = 0;
+					this.wxsScrollTop = newVal;
 				}
 			}
 		},
@@ -812,10 +833,14 @@ export default {
 				this.$emit('scrollTopChange', newVal);
 				this.$emit('update:scrollTop', newVal);
 				this._checkShouldShowBackToTop(newVal, oldVal);
-				if (newVal > 5) {
-					this.wxsPageScrollTop = 1;
+				if (this.isIos) {
+					if (newVal > 5) {
+						this.wxsPageScrollTop = 6;
+					} else {
+						this.wxsPageScrollTop = 0;
+					}
 				} else {
-					this.wxsPageScrollTop = 0;
+					this.wxsPageScrollTop = newVal;
 				}
 			}
 		},
@@ -827,10 +852,16 @@ export default {
 			},
 			immediate: true
 		},
-		usePageScroll(newVal, oldVal) {
-			if (this.loaded && this.autoHeight) {
-				this._setAutoHeight(!newVal);
-			}
+		usePageScroll: {
+			handler(newVal) {
+				this.$nextTick(() => {
+					this.renderUsePageScroll = newVal;
+				})
+				if (this.loaded && this.autoHeight) {
+					this._setAutoHeight(!newVal);
+				}
+			},
+			immediate: true
 		},
 		autoHeight(newVal, oldVal) {
 			if (this.loaded && !this.usePageScroll) {
@@ -864,6 +895,15 @@ export default {
 					this.renderPropScrollTop = 10;
 				}
 			}
+		},
+		nIsFirstPageAndNoMore: {
+			handler(newVal) {
+				const cellStyle = !this.useChatRecordMode || newVal ? {} : {
+					transform: 'rotate(180deg)'
+				};
+				this.$emit('update:cellStyle', cellStyle);
+			},
+			immediate: true
 		}
 	},
 	computed: {
@@ -1183,7 +1223,11 @@ export default {
 			this.totalData = [...this.totalData, ...data];
 			//#endif
 			//#ifdef APP-NVUE
-			this.totalData = [...data, ...this.totalData];
+			if (this.nIsFirstPageAndNoMore) {
+				this.totalData = [...this.totalData, ...data];
+			} else {
+				this.totalData = [...data, ...this.totalData];
+			}
 			//#endif
 			if (toBottom) {
 				setTimeout(() => {
@@ -1192,7 +1236,11 @@ export default {
 					//#endif
 				}, commonDelayTime)
 				//#ifdef APP-NVUE
-				this._scrollToTop(toBottomWithAnimate);
+				if (this.nIsFirstPageAndNoMore) {
+					this._scrollToBottom(toBottomWithAnimate);
+				} else {
+					this._scrollToTop(toBottomWithAnimate);
+				}
 				//#endif
 			}
 		},
@@ -1364,7 +1412,7 @@ export default {
 			this.isAddedData = false;
 			this.pageNo = this.defaultPageNo;
 			// #ifdef APP-NVUE
-			if (systemInfo.platform !== 'ios') {
+			if (this.isIos) {
 				this.nShowBottom = false;
 			}
 			// #endif
@@ -1559,7 +1607,7 @@ export default {
 			if (this.loadingStatus === 2) {
 				return;
 			}
-			
+
 			this._onLoadingMore('click');
 		},
 		//滚动到顶部
@@ -1908,7 +1956,7 @@ export default {
 		},
 		//处理scroll-view bounce是否生效
 		_handleScrollViewDisableBounce(e) {
-			if (!this.usePageScroll && systemInfo.platform === 'ios' && !this.scrollToTopBounceEnabled) {
+			if (!this.usePageScroll && this.isIos && !this.scrollToTopBounceEnabled) {
 				if (!e.bounce) {
 					if (this.scrollEnable) {
 						this.scrollEnable = false;
@@ -2280,7 +2328,7 @@ export default {
 		},
 		//下拉刷新下拉中
 		_nOnPullingdown(e) {
-			if (this.refresherStatus === 2 || (systemInfo.platform === 'ios' && !this.nListIsDragging)) {
+			if (this.refresherStatus === 2 || (this.isIos && !this.nListIsDragging)) {
 				return;
 			}
 			const viewHeight = e.viewHeight;

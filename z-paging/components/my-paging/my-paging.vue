@@ -4,13 +4,13 @@
 	<z-paging ref="paging" fixed auto-show-back-to-top refresher-threshold="160rpx" @query="queryList"
 		@listChange="listChange" :loading-more-loading-text="{'en':'英文的加载中','zh-cn':'中文的加载中','zh-hant-cn':'繁体的加载中'}">
 		<!-- 这里插入一个view到z-paging中，并且这个view会被z-paging标记为top固定在顶部 -->
-		<view slot="top" v-if="$slots.top">
+		<view slot="top">
 			<!-- 这里接收页面传进来的slot，这样相当于将页面传进来的slot传给z-paging的slot="top"了 -->
 			<slot name="top"></slot>
 		</view>
 		
 		<!-- 这里插入一个view到z-paging中，并且这个view会被z-paging标记为bottom固定在底部 -->
-		<view slot="bottom" v-if="$slots.bottom">
+		<view slot="bottom">
 			<!-- 这里接收页面传进来的slot，这样相当于将页面传进来的slot传给z-paging的slot="bottom"了 -->
 			<slot name="bottom"></slot>
 		</view>

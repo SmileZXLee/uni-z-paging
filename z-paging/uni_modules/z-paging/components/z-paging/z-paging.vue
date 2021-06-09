@@ -45,7 +45,7 @@ V1.8.1
 					<view class="zp-paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]"
 					<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 					:change:prop="pagingWxs.propObserver" :prop="wxsPropType"
-					:data-refresherThreshold="finalRefresherThreshold"
+					:data-refresherThreshold="finalRefresherThreshold" :data-isIos="isIos"
 					:data-loading="loading" :data-useChatRecordMode="useChatRecordMode" 
 					:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="wxsPageScrollTop"
 					:data-scrollTop="wxsScrollTop" :data-refresherMaxAngle="refresherMaxAngle" 
@@ -54,6 +54,7 @@ V1.8.1
 					<!-- #endif -->
 					<!-- #ifdef APP-VUE || H5 -->
 					:change:renderPropScrollTop="pagingRenderjs.renderPropScrollTopChange" :renderPropScrollTop="renderPropScrollTop"
+					:change:renderUsePageScroll="pagingRenderjs.renderUsePageScrollChange" :renderUsePageScroll="renderUsePageScroll"
 					<!-- #endif -->
 					>	
 						<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="zp-custom-refresher-view"
@@ -140,7 +141,7 @@ V1.8.1
 		<view ref="zp-page-scroll-top" :is="nViewIs" class="zp-page-scroll-top" v-if="usePageScroll&&$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
 			<slot name="top"></slot>
 		</view>
-		<view ref="n-list" id="z-paging-nlist" :class="useChatRecordMode?'zp-n-list zp-n-view-reverse':'zp-n-list'" :style="[scrollViewStyle]" :is="finalNvueListIs" alwaysScrollableVertical="true"
+		<view ref="n-list" id="z-paging-nlist" :class="useChatRecordMode&&!nIsFirstPageAndNoMore?'zp-n-list zp-n-view-reverse':'zp-n-list'" :style="[scrollViewStyle]" :is="finalNvueListIs" alwaysScrollableVertical="true"
 			:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar" :loadmoreoffset="finalLowerThreshold"
 			:scrollable="scrollable&&scrollEnable" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 			:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap"
