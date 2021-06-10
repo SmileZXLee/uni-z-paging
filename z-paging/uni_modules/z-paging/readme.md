@@ -219,9 +219,9 @@
 
 * 【使用页面滚动时】使用z-paging内置的scroll-view滚动性能不及使用页面的滚动。若您要使用页面的滚动，请勿固定z-paging的高度，并且必须设置`use-page-scroll`为true，否则将导致页面无法滚动(不希望跟着滚动的view可以设置`slot="top"`)。
 
-* 【使用页面滚动时】必须引入mixin(可全局引入)(具体可参照demo中的`custom-demo.vue`文件)
+* 【使用页面滚动时】必须引入mixin(可全局引入)(具体可参照demo中的`page-default-demo.vue`文件)
 
-  或在页面的`onReachBottom`事件中调用`this.$refs.paging.doLoadMore()`且在`onPageScroll(e)`事件中调用`this.$refs.paging.updatePageScrollTop(e.scrollTop)`。(具体可参照demo中的`custom-demo.vue`文件)
+  或在页面的`onReachBottom`事件中调用`this.$refs.paging.doLoadMore()`且在`onPageScroll(e)`事件中调用`this.$refs.paging.updatePageScrollTop(e.scrollTop)`。(具体可参照demo中的`page-default-demo.vue`文件)
 
 * 【出现实际上有更多数据，而显示没有更多数据时】默认的pageSize(每页显示数量)为10，如果您服务端不需要传pageSize(例如有默认的pageSize：8)，则您需要将默认的pageSize改成您与后端约定好的（8），若没有修改，则z-paging会认为传给服务端的pageSize是10，而服务端只返回了8条，因此会直接判定为没有更多数据。
 

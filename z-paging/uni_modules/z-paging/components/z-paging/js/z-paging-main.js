@@ -1239,14 +1239,14 @@ export default {
 					//#ifndef APP-NVUE
 					this._scrollToBottom(toBottomWithAnimate);
 					//#endif
+					//#ifdef APP-NVUE
+					if (this.nIsFirstPageAndNoMore) {
+						this._scrollToBottom(toBottomWithAnimate);
+					} else {
+						this._scrollToTop(toBottomWithAnimate);
+					}
+					//#endif
 				}, commonDelayTime)
-				//#ifdef APP-NVUE
-				if (this.nIsFirstPageAndNoMore) {
-					this._scrollToBottom(toBottomWithAnimate);
-				} else {
-					this._scrollToTop(toBottomWithAnimate);
-				}
-				//#endif
 			}
 		},
 		//从顶部添加数据，不会影响分页的pageNo和pageSize
