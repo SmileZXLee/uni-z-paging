@@ -34,14 +34,14 @@
 				//以下两个变量只是为了demo切换语言演示所用，非必须
 				languageIndex: 0,
 				languageArr: ['zh-cn', 'zh-hant-cn', 'en'],
-				languageNameArr: ['简体中文', '繁体中文', '英语']
+				languageNameArr: ['简体中文', '繁體中文', 'English']
 			}
 		},
 		onLoad() {
 			this.updateLanguage();
 
-			// 更新一下languageIndex，这个不是必须的，只是为了demo细节的体验
-			// 因为刚进来，默认选中的不一定是第一个
+			//更新一下languageIndex，这个不是必须的，只是为了demo细节的体验
+			//因为刚进来，默认选中的不一定是第一个
 			for (let i = 0; i < this.languageNameArr.length; i++) {
 				const item = this.languageNameArr[i];
 				if (item === this.language) {
