@@ -2,7 +2,7 @@
 <template>
 	<view class="content">
 		<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
-		<z-paging class="paging" ref="paging" @query="queryList" :list.sync="dataList">
+		<z-paging ref="paging" v-model="dataList" @query="queryList">
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内，并用header(吸顶)或cell包住！ -->
 			<!-- 请使用template，不要使用block！！！ -->
 			<template v-for="(item,index) in dataList">
@@ -44,7 +44,6 @@
 			},
 			itemClick(item) {
 				console.log('点击了', item.title);
-				this.$refs.paging.scrollToTop();
 			}
 		}
 	}

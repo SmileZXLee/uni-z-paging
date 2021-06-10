@@ -3,7 +3,8 @@
 <template>
 	<view class="content">
 		<tabs-view @change="tabChange" :current="swiperCurrent" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
-		<swiper class="swiper" :current="swiperCurrent" @change="onswiperchange" @transition="transition" @animationfinish="animationfinish" @onAnimationEnd="animationfinish">
+		<swiper class="swiper" :current="swiperCurrent" @change="onswiperchange" @transition="transition"
+			@animationfinish="animationfinish" @onAnimationEnd="animationfinish">
 			<swiper-item class="swiper-item" v-for="(item, index) in list" :key="index">
 				<scroll-tab-swiper-item-n :tabIndex="index" :currentIndex="swiperCurrent"></scroll-tab-swiper-item-n>
 			</swiper-item>
@@ -39,10 +40,10 @@
 				let dx = e.detail.dx;
 			},
 			onswiperchange(e) {
-			  // #ifndef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
-			  let index = e.target.current || e.detail.current;
-			  this.tabChange(index);
-			  // #endif
+				// #ifndef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
+				let index = e.target.current || e.detail.current;
+				this.tabChange(index);
+				// #endif
 			},
 			animationfinish(e) {
 				let current = e.detail.current;
@@ -62,6 +63,7 @@
 		bottom: 0;
 		right: 0;
 	}
+
 	.swiper {
 		flex: 1;
 	}

@@ -3,7 +3,7 @@
 <!-- 若使用页面滚动时需要下拉刷新功能，请在pages.json中设置"enablePullDownRefresh": true开启页面下拉刷新功能 -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" use-page-scroll @query="queryList" :list.sync="dataList">
+		<z-paging ref="paging" v-model="dataList" use-page-scroll @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			<template v-for="(item,index) in dataList">

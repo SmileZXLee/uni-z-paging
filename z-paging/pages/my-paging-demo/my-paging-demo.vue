@@ -2,7 +2,7 @@
 <template>
 	<view class="content">
 		<!-- 这里就很整洁了，只要设置ref，绑定query事件，绑定list就可以了 -->
-		<my-paging ref="paging" @query="queryList" :list.sync="dataList">
+		<my-paging ref="paging" v-model="dataList" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<view slot="top">
 				<view class="notice">

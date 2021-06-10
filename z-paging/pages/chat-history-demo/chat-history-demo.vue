@@ -1,8 +1,7 @@
 <!-- 聊天记录模式演示(vue)，vue中目前无法解决分页闪动问题，使用nvue可实现聊天记录无闪动分页 -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" @query="queryList" :use-chat-record-mode="true" :use-page-scroll="true"
-			:list.sync="dataList">
+		<z-paging ref="paging" v-model="dataList" use-chat-record-mode use-page-scroll @query="queryList">
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view class="item" :id="`z-paging-${index}`"

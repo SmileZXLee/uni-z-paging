@@ -11,7 +11,7 @@ import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
-const currentVersion = 'V1.8.3';
+const currentVersion = 'V1.8.4';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -725,6 +725,13 @@ export default {
 				return _getConfig('showConsoleError', true);
 			}
 		},
+		//父组件v-model所绑定的list的值
+		value: {
+			type: Array,
+			default: function() {
+				return [];
+			}
+		}
 	},
 	mounted() {
 		this.wxsPropType = (new Date()).getTime().toString();
@@ -755,6 +762,20 @@ export default {
 		uni.$off(errorUpdateKey);
 	},
 	watch: {
+		value(newVal, oldVal) {
+			let dataType = Object.prototype.toString.call(newVal);
+			if (dataType === '[object Undefined]') {
+				zUtils.consoleErr('v-model所绑定的值不存在！');
+				return;
+			}
+			if (dataType !== '[object Array]') {
+				zUtils.consoleErr('v-model所绑定的值必须为Array类型！');
+				return;
+			}
+			if (!zUtils.arrayIsEqual(newVal, this.totalData)) {
+				this.totalData = newVal;
+			}
+		},
 		totalData(newVal, oldVal) {
 			if ((!this.isUserReload || !this.autoCleanListWhenReload) && this.firstPageLoaded && !newVal.length &&
 				oldVal.length) {
@@ -783,6 +804,7 @@ export default {
 				}, commonDelayTime)
 			}
 			this.realTotalData = newVal;
+			this.$emit('input', newVal);
 			this.$emit('update:list', newVal);
 			this.$emit('listChange', newVal);
 			this.firstPageLoaded = false;
@@ -1266,7 +1288,7 @@ export default {
 		resetTotalData(data) {
 			if (data == undefined) {
 				if (this.showConsoleError) {
-					console.error('[z-paging]方法resetTotalData参数缺失！');
+					zUtils.consoleErr('方法resetTotalData参数缺失！');
 				}
 				return;
 			}
@@ -1339,7 +1361,7 @@ export default {
 		//当使用页面滚动并且自定义下拉刷新时，请在页面的onPageScroll中调用此方法，告知z-paging当前的pageScrollTop，否则会导致在任意位置都可以下拉刷新
 		updatePageScrollTop(value) {
 			if (value == undefined) {
-				//console.error('[z-paging]updatePageScrollTop方法缺少参数，请将页面onPageScroll事件中的scrollTop传递给此方法');
+				//zUtils.consoleErr('updatePageScrollTop方法缺少参数，请将页面onPageScroll事件中的scrollTop传递给此方法');
 				return;
 			}
 			this.pageScrollTop = value;
@@ -1477,7 +1499,7 @@ export default {
 				let methodStr = isLocal ? 'setLocalPaging' : 'complete';
 				if (dataType !== '[object Undefined]') {
 					if (this.showConsoleError) {
-						console.error(`[z-paging]:${methodStr}参数类型不正确，第一个参数类型必须为Array!`);
+						zUtils.consoleErr(`${methodStr}参数类型不正确，第一个参数类型必须为Array!`);
 					}
 				}
 			}
@@ -1738,7 +1760,7 @@ export default {
 							animated: animate
 						});
 					} else {
-						console.error('[z-paging]在nvue中滚动到指定位置，cell必须设置 :ref="`z-paging-${index}`"');
+						zUtils.consoleErr('在nvue中滚动到指定位置，cell必须设置 :ref="`z-paging-${index}`"');
 					}
 					return;
 					// #endif
@@ -1857,7 +1879,7 @@ export default {
 			if (this._getRefresherTouchDisabled()) {
 				return;
 			}
-			const touch = this._getCommonTouch(e);
+			const touch = zUtils.getCommonTouch(e);
 			this._handleRefresherTouchstart(touch);
 		},
 		//进一步处理拖拽开始结果
@@ -1881,7 +1903,7 @@ export default {
 				return;
 			}
 			this.pullDownTimeStamp = Number(currentTimeStamp);
-			const touch = this._getCommonTouch(e);
+			const touch = zUtils.getCommonTouch(e);
 			let refresherTouchmoveY = touch.touchY;
 			let moveDistance = refresherTouchmoveY - this.refresherTouchstartY;
 			if (moveDistance < 0) {
@@ -1939,7 +1961,7 @@ export default {
 			if (this._getRefresherTouchDisabled() || !this.isTouchmoving) {
 				return;
 			}
-			const touch = this._getCommonTouch(e);
+			const touch = zUtils.getCommonTouch(e);
 			let refresherTouchendY = touch.touchY;
 			let moveDistance = refresherTouchendY - this.refresherTouchstartY;
 			moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
@@ -1960,8 +1982,8 @@ export default {
 			if (moveDistance < 0 && this.usePageScroll && this.loadingMoreEnabled && this.useCustomRefresher && this
 				.pageScrollTop === -1) {
 				if (this.showConsoleError) {
-					console.error(
-						'[z-paging]usePageScroll为true并且自定义下拉刷新时必须引入mixin或在page滚动时通过调用z-paging组件的updatePageScrollTop方法设置当前的scrollTop'
+					zUtils.consoleErr(
+						'usePageScroll为true并且自定义下拉刷新时必须引入mixin或在page滚动时通过调用z-paging组件的updatePageScrollTop方法设置当前的scrollTop'
 					)
 				}
 			}
@@ -2099,8 +2121,8 @@ export default {
 					const scrollViewTotalH = scrollViewNode[0].top + scrollViewNode[0].height;
 					if (scrollViewTotalH > this.systemInfo.windowHeight + 100) {
 						if (this.showConsoleError) {
-							console.error(
-								'[z-paging]检测到z-paging的高度超出页面高度，这将导致滚动出现异常，请设置【:fixed="true"】或【确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}】，此时z-paging的百分比高度才能生效。详情参考demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
+							zUtils.consoleErr(
+								'检测到z-paging的高度超出页面高度，这将导致滚动出现异常，请设置【:fixed="true"】或【确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}】，此时z-paging的百分比高度才能生效。详情参考demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
 							);
 						}
 					}
@@ -2248,26 +2270,7 @@ export default {
 			}
 			return 0;
 		},
-		//获取最终的touch位置
-		_getCommonTouch(e) {
-			let touch = null;
-			if (e.touches && e.touches.length) {
-				touch = e.touches[0];
-			} else if (e.changedTouches && e.changedTouches.length) {
-				touch = e.changedTouches[0];
-			} else if (e.datail && e.datail !== {}) {
-				touch = e.datail;
-			} else {
-				return {
-					touchX: 0,
-					touchY: 0
-				}
-			}
-			return {
-				touchX: touch.clientX,
-				touchY: touch.clientY
-			};
-		},
+
 		//判断是否要显示返回顶部按钮
 		_checkShouldShowBackToTop(newVal, oldVal) {
 			if (!this.autoShowBackToTop) {

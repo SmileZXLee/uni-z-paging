@@ -2,7 +2,7 @@
 <template>
 	<view class="content">
 		<!-- 非页面滚动时这里的fixed建议设置为true，则无需设置z-paging的高度及其父view的高度 -->
-		<z-paging ref="paging" fixed @query="queryList" :list.sync="dataList">
+		<z-paging ref="paging" v-model="dataList" fixed @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<view slot="top">
 				<view class="language-view" @click="languageSwitch">当前语言：[{{language}}] 点击切换</view>

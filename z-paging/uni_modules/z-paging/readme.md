@@ -43,14 +43,14 @@
 
 ## 基本使用
 
-* ①在`<template>` 中使用@query绑定js中分页请求的方法(`z-paging`会将计算好的pageNo和pageSize两个参数传递到此方法中)，然后通过` :list.sync`绑定列表for循环的list。
+* ①在`<template>` 中使用@query绑定js中分页请求的方法(`z-paging`会将计算好的pageNo和pageSize两个参数传递到此方法中)，然后通过` v-model`绑定列表for循环的list。
 * ②在请求结果回调中，通过调用`z-paging`的`complete()`方法，将请求返回的数组传递给`z-paging`处理，如：`this.$refs.paging.complete(服务器返回的数组);`；若请求失败，调用：`this.$refs.paging.complete(false);`即可。
 * 当tab切换或搜索时，可以通过`this.$refs.paging.reload()`刷新整个列表。
 
 ```html
 <template>
     <view class="content">
-        <z-paging ref="paging" fixed @query="queryList" :list.sync="dataList">
+        <z-paging ref="paging" v-model="dataList" fixed @query="queryList">
             <!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
             <view>
                 <view class="item" v-for="(item,index) in dataList">
@@ -91,7 +91,7 @@
 * 设置自定义emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理
 
 ```html
-<z-paging ref="paging" fixed @query="queryList" :list.sync="dataList">
+<z-paging ref="paging" v-model="dataList" fixed @query="queryList">
     <!-- 设置自己的emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
     <empty-view slot="empty"></empty-view>
     <view>
@@ -107,7 +107,7 @@
 * 以修改【没有更多了】状态描述文字为例(将默认的"没有更多了"修改为"我也是有底线的！")
 
 ```html
-<z-paging ref="paging" fixed loading-more-no-more-text="我也是有底线的！" @query="queryList" :list.sync="dataList">
+<z-paging ref="paging" v-model="dataList" fixed loading-more-no-more-text="我也是有底线的！" @query="queryList">
     <!-- 设置自己的emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
     <view>
         <view class="item" v-for="(item,index) in dataList">
@@ -122,11 +122,11 @@
 * `use-custom-refresher`需要设置为true(默认为true)，此时将不会使用uni自带的下拉刷新，转为使用z-paging自定义的下拉刷新，通过slot可以插入开发者自定义的下拉刷新view。
 
 ```html
-<z-paging ref="paging" fixed :refresher-threshold="80" @query="queryList" :list.sync="dataList">
+<z-paging ref="paging" v-model="dataList" fixed :refresher-threshold="80" @query="queryList">
   <!-- 自定义下拉刷新view -->
   <!-- 注意注意注意！！QQ小程序或字节跳动小程序中自定义下拉刷新不支持slot-scope，将导致custom-refresher无法显示 -->
-  <!-- 如果是QQ小程序或字节跳动小程序，请参照demo中的sticky-demo.vue中的写法，此处使用slot-scope是为了减少data中无关变量声明，降低依赖 -->
-  <custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus"></custom-refresher>
+	<!-- 如果是QQ小程序或字节跳动小程序，请参照demo中的sticky-demo.vue中的写法，此处使用slot-scope是为了减少data中无关变量声明，降低依赖 -->
+	<custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus"></custom-refresher>
   <!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
   <view>
     <view class="item" v-for="(item,index) in dataList" @click="itemClick(item)">
@@ -143,7 +143,7 @@
 * 以修改【没有更多了】状态描述view为例
 
 ```html
-<z-paging ref="paging" fixed @query="queryList" :list.sync="dataList">
+<z-paging ref="paging" v-model="dataList" fixed @query="queryList">
     <view>
         <view class="item" v-for="(item,index) in dataList">
             <view class="item-title">{{item.title}}</view>
@@ -161,9 +161,7 @@
 	<view class="content">
 		<!-- 此时使用了页面的滚动，z-paging不需要有确定的高度，use-page-scroll需要设置为true -->
 		<!-- 注意注意！！这里的ref必须设置且必须等于"paging"，否则mixin方法无效 -->
-		<z-paging ref="paging" use-page-scroll @query="queryList" :list.sync="dataList">
-			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
-			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
+		<z-paging ref="paging" v-model="dataList" use-page-scroll @query="queryList">
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view>

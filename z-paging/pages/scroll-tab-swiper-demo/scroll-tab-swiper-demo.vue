@@ -1,10 +1,11 @@
 <!-- 滑动切换选项卡演示 -->
 <!--  此demo使用了uView的tabsSwiper全屏选项卡 https://uviewui.com/components/tabsSwiper.html -->
 <template>
-	<view class="content" @touchmove.stop.prevent>
+	<view class="content">
 		<!-- 此处代码复制了uView中tabsSwiper全屏选项卡的代码 -->
 		<view style="height: 80rpx;">
-			<u-tabs-swiper ref="uTabs" :list="list" :current="current" @change="tabsChange" :is-scroll="false" swiperWidth="750"></u-tabs-swiper>
+			<u-tabs-swiper ref="uTabs" :list="list" :current="current" @change="tabsChange" :is-scroll="false"
+				swiperWidth="750"></u-tabs-swiper>
 		</view>
 		<swiper class="swiper" :current="swiperCurrent" @transition="transition" @animationfinish="animationfinish">
 			<swiper-item class="swiper-item" v-for="(item, index) in list" :key="index">
@@ -58,15 +59,15 @@
 	page {
 		height: 100%;
 	}
-	
+
 	.content {
 		height: 100%;
 		/* 父节点建议开启flex布局 */
 		display: flex;
 		flex-direction: column;
 	}
-	
-	.swiper{
+
+	.swiper {
 		height: calc(100% - 80rpx);
 	}
 </style>

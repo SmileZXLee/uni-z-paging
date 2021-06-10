@@ -1,7 +1,7 @@
 <!-- 自定义下拉刷新与上拉加载演示(nvue) -->
 <template>
 	<view class="content">
-		<z-paging class="paging" ref="paging" @query="queryList" :list.sync="dataList">
+		<z-paging ref="paging" v-model="dataList" @query="queryList">
 			<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
 			<custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus">
 			</custom-refresher>
