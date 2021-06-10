@@ -92,11 +92,10 @@ function getPrivateLanguage(myLanguage, followSystemLanguage = true) {
 		systemLanguage = uni.getSystemInfoSync().language;
 	}
 	let language = myLanguage || uni.getStorageSync(i18nUpdateKey) || systemLanguage;
-	language = language.toLowerCase();
 	var reg = new RegExp('_', '');
 	language = language.replace(reg, '-');
 	if (language.indexOf('zh') !== -1) {
-		if (language === 'zh' || language === 'zh-cn' || language === 'zh-hans-cn') {
+		if (language === 'zh' || language === 'zh-cn' || language.indexOf('zh-hans') !== -1) {
 			return 'zh-cn';
 		}
 		return 'zh-hant-cn';

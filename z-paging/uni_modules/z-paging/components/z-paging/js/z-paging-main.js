@@ -11,7 +11,7 @@ import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
-const currentVersion = 'V1.8.2';
+const currentVersion = 'V1.8.3';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -217,6 +217,7 @@ export default {
 			wxsIsScrollTopInTopRange: true,
 			wxsScrollTop: 0,
 			wxsPageScrollTop: 0,
+			wxsOnPullingDown: false,
 			disabledBounce: false,
 			cacheScrollNodeHeight: -1
 		};
@@ -893,7 +894,7 @@ export default {
 		},
 		finalScrollTop(newVal, oldVal) {
 			if (!this.useChatRecordMode) {
-				if (newVal === 0) {
+				if (newVal < 6) {
 					this.renderPropScrollTop = 0;
 				} else {
 					this.renderPropScrollTop = 10;
@@ -1825,7 +1826,9 @@ export default {
 			this.$emit('scroll', e);
 			this.oldScrollTop = e.detail.scrollTop;
 			const scrollDiff = e.detail.scrollHeight - this.oldScrollTop;
-			this._checkScrolledToBottom(scrollDiff);
+			if (!this.isIos) {
+				this._checkScrolledToBottom(scrollDiff);
+			}
 		},
 		//自定义下拉刷新被触发
 		_onRefresh() {
@@ -1988,6 +1991,15 @@ export default {
 					}
 				} else {
 					this.scrollEnable = true;
+				}
+			}
+		},
+		//wxs正在下拉处理
+		_handleWxsOnPullingDown(onPullingDown) {
+			this.wxsOnPullingDown = onPullingDown;
+			if (onPullingDown) {
+				if (!this.useChatRecordMode) {
+					this.renderPropScrollTop = 0;
 				}
 			}
 		},

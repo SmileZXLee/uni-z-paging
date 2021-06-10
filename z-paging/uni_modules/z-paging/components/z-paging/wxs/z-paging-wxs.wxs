@@ -49,9 +49,11 @@ function touchmove(e, ownerInstance) {
 	var refresherThreshold = dataset.refresherthreshold;
 	var state = instance.getState();
 	if (_getRefresherTouchDisabled(e, instance, 1)) {
+		_handleTouchMovePullingDown(state, ownerInstance, false);
 		return true;
 	}
 	if (!_getAngleIsInRange(e, touch, state, dataset)) {
+		_handleTouchMovePullingDown(state, ownerInstance, false);
 		return true;
 	}
 	var moveDistanceObj = _getMoveDistance(e, instance);
@@ -59,6 +61,7 @@ function touchmove(e, ownerInstance) {
 	var prevent = moveDistanceObj.isDown;
 	if (moveDistance < 0) {
 		_setTransformValue(0, instance, state);
+		_handleTouchMovePullingDown(state, ownerInstance, false);
 		return true;
 	}
 	if (prevent && !state.disabledBounce) {
@@ -66,6 +69,7 @@ function touchmove(e, ownerInstance) {
 			bounce: false
 		});
 		state.disabledBounce = true;
+		_handleTouchMovePullingDown(state, ownerInstance, prevent);
 		return !prevent;
 	}
 	_setTransformValue(moveDistance, instance, state);
@@ -89,6 +93,7 @@ function touchmove(e, ownerInstance) {
 		isTouchmoving) {
 		ownerInstance.callMethod('_handleRefresherTouchmove', moveDistance, touch);
 	}
+	_handleTouchMovePullingDown(state, ownerInstance, prevent);
 	return !prevent;
 }
 
@@ -246,18 +251,16 @@ function _getRefresherTouchDisabled(e, instance, processTag) {
 	if (!isIos && finalScrollTop == (state.startScrollTop || 0) && finalScrollTop <= 105) {
 		fixedIsTop = true;
 	}
-	
 	var fixedIsTopHitCount = state.fixedIsTopHitCount || 0;
-	if(fixedIsTop){
+	if (fixedIsTop) {
 		fixedIsTopHitCount++;
-		if(fixedIsTopHitCount <= 3){
+		if (fixedIsTopHitCount <= 3) {
 			fixedIsTop = false;
 		}
 		state.fixedIsTopHitCount = fixedIsTopHitCount;
-	}else{
+	} else {
 		state.fixedIsTopHitCount = 0;
 	}
-	console.log('fixedIsTop',fixedIsTop)
 	if (!isIos && processTag === 0) {
 		state.startScrollTop = finalScrollTop || 0;
 	}
@@ -301,6 +304,14 @@ function _getAngleIsInRange(e, touch, state, dataset) {
 	}
 	state.lastRefresherTouchmove = touch;
 	return true;
+}
+
+function _handleTouchMovePullingDown(state, instance, onPullingDown) {
+	var oldOnPullingDown = state.onPullingDown || false;
+	if (oldOnPullingDown != onPullingDown) {
+		instance.callMethod('_handleWxsOnPullingDown', onPullingDown);
+	}
+	state.onPullingDown = onPullingDown;
 }
 
 function _getIsTrue(value) {

@@ -7,8 +7,8 @@
 export default {
 	data() {
 		return {
-			newScrollTop: 0,
-			newUsePageScroll: false,
+			renderScrollTop: 0,
+			renderUsePageScroll: false,
 			startY: 0,
 			isTouchFromZPaging: false
 		}
@@ -19,11 +19,10 @@ export default {
 	methods: {
 		//接收逻辑层发送的数据
 		renderPropScrollTopChange(newVal, oldVal, ownerVm, vm) {
-			this.newScrollTop = newVal;
+			this.renderScrollTop = newVal;
 		},
 		renderUsePageScrollChange(newVal, oldVal, ownerVm, vm) {
-			this.newUsePageScroll = newVal;
-
+			this.renderUsePageScroll = newVal;
 		},
 		//拦截处理touch事件
 		_handleTouch() {
@@ -43,18 +42,11 @@ export default {
 			this.isTouchFromZPaging = this.getTouchFromZPaging(e.target);
 		},
 		_handleTouchmove(e) {
-			if(!this.isTouchFromZPaging){
-				return;
-			}
-			if (!this.newUsePageScroll) {
-				if (e.cancelable && !e.defaultPrevented) {
-					e.preventDefault();
-				}
-				return;
-			}
 			const touch = this._getCommonTouch(e);
 			var moveY = touch.touchY - this.startY;
-			if (this.newScrollTop < 1 && moveY > 0) {
+			if ((this.isTouchFromZPaging && this.renderScrollTop < 1 && moveY > 0) || (this.isTouchFromZPaging && this.isIos && !this
+					.renderUsePageScroll && moveY <
+					0)) {
 				if (e.cancelable && !e.defaultPrevented) {
 					e.preventDefault();
 				}
