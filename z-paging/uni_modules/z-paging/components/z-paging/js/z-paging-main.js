@@ -11,7 +11,7 @@ import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
-const currentVersion = 'V1.8.4';
+const currentVersion = 'V1.8.5';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -140,7 +140,7 @@ function toKebab(value) {
  * @event {Function} onRefresh 自定义下拉刷新被触发
  * @event {Function} onRestore 自定义下拉刷新被复位
  * @event {Function} scroll 滚动时触发，event.detail = {scrollLeft, scrollTop, scrollHeight, scrollWidth, deltaX, deltaY}
- * @example <z-paging ref="paging" @query="queryList" :list.sync="dataList"></z-paging>
+ * @example <z-paging ref="paging" v-model="dataList" @query="queryList"></z-paging>
  */
 export default {
 	name: "z-paging",
@@ -193,6 +193,7 @@ export default {
 			isUserPullDown: false,
 			privateRefresherEnabled: -1,
 			privateScrollWithAnimation: -1,
+			myParentQuery: -1,
 			chatRecordLoadingMoreText: '',
 			moveDistance: 0,
 			loadingMoreDefaultSlot: null,
@@ -241,6 +242,20 @@ export default {
 			type: [Number, Object],
 			default: function() {
 				return _getConfig('dataKey', null);
+			},
+		},
+		//自动注入的list名，可自动修改父view(包含ref="paging")中对应name的list值
+		autowireListName: {
+			type: String,
+			default: function() {
+				return _getConfig('autowireListName', '');
+			},
+		},
+		//自动注入的query名，可自动调用父view(包含ref="paging")中的query方法
+		autowireQueryName: {
+			type: String,
+			default: function() {
+				return _getConfig('autowireQueryName', '');
 			},
 		},
 		//i18n国际化设置语言，支持简体中文(zh-cn)、繁体中文(zh-hant-cn)和英文(en)
@@ -807,6 +822,7 @@ export default {
 			this.$emit('input', newVal);
 			this.$emit('update:list', newVal);
 			this.$emit('listChange', newVal);
+			this._callMyParentList(newVal);
 			this.firstPageLoaded = false;
 			this.isTotalChangeFromAddData = false;
 			this.$nextTick(() => {
@@ -1452,6 +1468,7 @@ export default {
 			this.totalData = [];
 			if (!isClean) {
 				this.$emit('query', this.pageNo, this.defaultPageSize);
+				this._callMyParentQuery();
 				if (!isFromMounted && this.autoScrollToTopWhenReload) {
 					let checkedNRefresherLoading = true;
 					// #ifdef APP-NVUE
@@ -1840,6 +1857,7 @@ export default {
 					})
 				} else {
 					this.$emit('query', this.pageNo, this.defaultPageSize);
+					this._callMyParentQuery();
 				}
 				this.loadingType = 1;
 			}
@@ -2351,6 +2369,28 @@ export default {
 				return value;
 			}
 			return zI18n[key][this.finalLanguage];
+		},
+		//修改父view的list
+		_callMyParentList(newVal) {
+			if (this.autowireListName.length) {
+				const myParent = zUtils.getParent(this.$parent)
+				if (myParent && myParent[this.autowireListName]) {
+					myParent[this.autowireListName] = newVal;
+					console.log('1111111')
+				}
+			}
+		},
+		//调用父view的query
+		_callMyParentQuery() {
+			if (this.autowireQueryName) {
+				if (this.myParentQuery === -1) {
+					const myParent = zUtils.getParent(this.$parent);
+					if (myParent && myParent[this.autowireQueryName]) {
+						this.myParentQuery = myParent[this.autowireQueryName];
+					}
+				}
+				this.myParentQuery(this.pageNo, this.defaultPageSize);
+			}
 		},
 		// ------------nvue独有的方法----------------
 		//列表滚动时触发

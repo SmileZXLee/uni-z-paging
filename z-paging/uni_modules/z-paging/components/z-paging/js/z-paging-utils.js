@@ -59,8 +59,19 @@ function getTouchFromZPaging(target) {
 	}
 }
 
+//获取z-paging所在的parent
+function getParent(parent) {
+	if (!parent) {
+		return null;
+	}
+	if (parent.$refs.paging) {
+		return parent;
+	}
+	return getParent(parent.$parent);
+}
+
 //打印错误信息
-function consoleErr(err){
+function consoleErr(err) {
 	console.error(`[z-paging]${err}`);
 }
 
@@ -157,5 +168,6 @@ module.exports = {
 	arrayIsEqual,
 	getCommonTouch,
 	getTouchFromZPaging,
+	getParent,
 	consoleErr
 };

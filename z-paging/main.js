@@ -12,9 +12,9 @@ Vue.mixin(ZPagingMixin)
 // ----------------------全局配置z-paging默认的属性值方案：第①步：引入z-paging-config-----------------------
 //注意：这里的全局配置不是全局引入组件，全局配置是指统一配置z-paging默认的属性值，z-paging遵循easycom组件规范，无需注册即可使用。
 //关于easycom组件规范，可查阅https://uniapp.dcloud.io/component/README?id=easycom组件规范
-/*
+
 import zConfig from '@/uni_modules/z-paging/components/z-paging/js/z-paging-config'
-*/
+
 
 Vue.config.productionTip = false
 Vue.prototype.$request = request
@@ -22,7 +22,7 @@ App.mpType = 'app'
 
 // ----------------------全局配置z-paging默认的属性值方案：第②步：设置配置信息-----------------------
 //注意，如果调用过setConfig进行配置，后期又需要取消配置，则需要设置zConfig.setConfig(null)。需要将配置置空，因为setConfig是将配置设置在缓存中，直接删除配置代码将导致原先缓存的配置无法清空。
-/*
+
 zConfig.setConfig({
 	//配置分页默认pageSize为15
 	'default-page-size': '15',
@@ -30,7 +30,7 @@ zConfig.setConfig({
 	'empty-view-text': '空空如也~~',
 	//...
 })
-*/
+
 
 
 const app = new Vue({
