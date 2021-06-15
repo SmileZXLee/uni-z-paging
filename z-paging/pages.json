@@ -134,7 +134,16 @@
 			}
 
 		}
-	],
+	    ,{
+            "path" : "pages/minimalism-demo/minimalism-demo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "极简写法演示",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "z-paging",

@@ -1455,11 +1455,6 @@ export default {
 			this.isAddedData = false;
 			this.cacheScrollNodeHeight = -1;
 			this.pageNo = this.defaultPageNo;
-			// #ifdef APP-NVUE
-			if (this.isIos) {
-				this.nShowBottom = false;
-			}
-			// #endif
 			if (!isClean) {
 				this._startLoading(true);
 			}
@@ -1486,6 +1481,13 @@ export default {
 				}
 				// #endif
 			}
+			this.$nextTick(()=>{
+				if(!this.realTotalData.length){
+					// #ifdef APP-NVUE
+					this.nShowBottom = false;
+					// #endif
+				}
+			})
 		},
 		//处理服务端返回的数组
 		_addData(data, success, isLocal) {
@@ -1814,6 +1816,9 @@ export default {
 		},
 		//是否要展示上拉加载更多view
 		_shouldShowLoading(type) {
+			if(!(this.loadingStatus===0?this.nShowBottom:true)){
+				return false;
+			}
 			if ((!this.showLoadingMoreWhenReload && !this.showLoadingMore) || !this.loadingMoreEnabled || this
 				.refresherOnly) {
 				return false;
@@ -2099,7 +2104,7 @@ export default {
 		},
 		//获取处理后的moveDistance
 		_getFinalRefresherMoveDistance(moveDistance) {
-			moveDistance = moveDistance * 0.8;
+			moveDistance = moveDistance * 0.85;
 			if (moveDistance >= this.finalRefresherThreshold) {
 				moveDistance = this.finalRefresherThreshold + (moveDistance - this.finalRefresherThreshold) * (1 - this
 					.finalRefresherOutRate);
@@ -2373,10 +2378,9 @@ export default {
 		//修改父view的list
 		_callMyParentList(newVal) {
 			if (this.autowireListName.length) {
-				const myParent = zUtils.getParent(this.$parent)
+				const myParent = zUtils.getParent(this.$parent);
 				if (myParent && myParent[this.autowireListName]) {
 					myParent[this.autowireListName] = newVal;
-					console.log('1111111')
 				}
 			}
 		},
@@ -2389,7 +2393,9 @@ export default {
 						this.myParentQuery = myParent[this.autowireQueryName];
 					}
 				}
-				this.myParentQuery(this.pageNo, this.defaultPageSize);
+				if (this.myParentQuery !== -1) {
+					this.myParentQuery(this.pageNo, this.defaultPageSize);
+				}
 			}
 		},
 		// ------------nvue独有的方法----------------
@@ -2422,11 +2428,13 @@ export default {
 		//下拉刷新结束
 		_nRefresherEnd() {
 			this._nDoRefresherEndAnimation(0, -this.nShowRefresherRevealHeight);
-			setTimeout(() => {
-				this.$nextTick(() => {
-					this.nShowBottom = true;
-				})
-			}, 1000);
+			if(!this.nShowBottom){
+				setTimeout(() => {
+					this.$nextTick(() => {
+						this.nShowBottom = true;
+					})
+				}, 1000);
+			}
 			if (!this.usePageScroll) {
 				this.$refs["n-list"].resetLoadmore();
 			}
@@ -2451,14 +2459,14 @@ export default {
 			if (stackCount > 1) {
 				this.refresherStatus = 2;
 			}
-			const duration = animate ? 200 : 0;
+			const duration = animate ? 120 : 0;
 			weexAnimation.transition(this.$refs['zp-n-list-refresher-reveal'], {
 				styles: {
 					height: `${height}px`,
 					transform: `translateY(${translateY}px)`,
 				},
 				duration: duration,
-				timingFunction: height > 0 ? 'ease-in' : 'ease-out',
+				timingFunction: 'linear',
 				needLayout: true,
 				delay: 0
 			})

@@ -9,26 +9,21 @@ let getedStorage = false;
 const storageKey = 'Z-PAGING-CONFIG-STORAGE-KEY'
 
 function setConfig(value) {
-	config = value;
-	if (!value) {
+	try {
 		uni.setStorageSync(storageKey, value);
-	}
-	// try {
-	// 	uni.setStorageSync(storageKey, value);
-	// } catch {}
+	} catch {}
 }
 
 function getConfig() {
-	return config;
-	// try {
-	// 	if (getedStorage) {
-	// 		return config;
-	// 	}
-	// 	config = uni.getStorageSync(storageKey);
-	// 	getedStorage = true;
-	// } catch {
-	// 	return null;
-	// }
+	try {
+		if (getedStorage) {
+			return config;
+		}
+		config = uni.getStorageSync(storageKey);
+		getedStorage = true;
+	} catch {
+		return null;
+	}
 }
 
 module.exports = {

@@ -194,7 +194,7 @@ V1.8.5
 						</view>
 					</view>
 				</view>
-				<view v-else-if="loadingStatus===0?nShowBottom:true">
+				<view>
 					<slot v-if="_shouldShowLoading('loadingMoreDefault')" name="loadingMoreDefault" />
 					<slot v-else-if="_shouldShowLoading('loadingMoreLoading')" name="loadingMoreLoading" />
 					<slot v-else-if="_shouldShowLoading('loadingMoreNoMore')" name="loadingMoreNoMore" />

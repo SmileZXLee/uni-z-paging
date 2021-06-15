@@ -1,6 +1,8 @@
 <!-- 基于z-paging封装个性化分页组件演示，可减少大量重复代码 -->
 <template>
 	<!-- 这边统一设置z-paging，在页面中使用时就不用重复写 -->
+	<!-- 如果要在这里设置极简写法，这里的ref不能设置为paging，设置为其他名即可，因为极简写法会修改/调用第一个包含了ref="paging"的付view中的list和query -->
+	<!-- 极简写法在下方设置autowire-list-name="xxx" autowire-query-name="xxx"即可，与minimalism-demo.vue中的一致，并且不用再从这个组件转发到页面，只要遵循上一行的规则即可 -->
 	<z-paging ref="paging" v-model="list" fixed auto-show-back-to-top refresher-threshold="160rpx" @query="queryList"
 		:loading-more-loading-text="{'en':'英文的加载中','zh-cn':'中文的加载中','zh-hant-cn':'繁体的加载中'}">
 		<!-- 这里插入一个view到z-paging中，并且这个view会被z-paging标记为top固定在顶部 -->

@@ -90,6 +90,11 @@
 						title: '基于z-paging封装个性化分页组件演示',
 						file: 'my-paging-demo',
 						subTitle: '可将重复的配置或者重复插入的slot封装在自定义的分页组件中'
+					},
+					{
+						title: '极简写法演示',
+						file: 'minimalism-demo',
+						subTitle: ''
 					}
 				],
 				listNvue: [{

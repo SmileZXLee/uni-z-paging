@@ -203,7 +203,7 @@ function _getMoveDistance(e, instance) {
 	state.oldMoveDistance = moveDistance;
 	var diffDis = moveDistance - oldMoveDistance;
 	if (diffDis > 0) {
-		diffDis = diffDis * 0.8;
+		diffDis = diffDis * 0.85;
 		if (currentMoveDistance > refresherThreshold) {
 			diffDis = diffDis * (1 - refresherOutRate);
 		}
