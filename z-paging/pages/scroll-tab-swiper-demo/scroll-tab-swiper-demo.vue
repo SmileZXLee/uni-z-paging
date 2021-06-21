@@ -62,9 +62,6 @@
 
 	.content {
 		height: 100%;
-		/* 父节点建议开启flex布局 */
-		display: flex;
-		flex-direction: column;
 	}
 
 	.swiper {

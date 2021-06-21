@@ -143,6 +143,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/scroll-tab-swiper-easy-demo/scroll-tab-swiper-easy-demo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

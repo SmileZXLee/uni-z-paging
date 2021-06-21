@@ -4,7 +4,8 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V1.8.5
+V1.8.7
+by ZXLee 2021-06-19
 -- >
 <!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -157,7 +158,7 @@ V1.8.5
 				</view>
 			</refresh>
 			<view ref="zp-n-list-top-tag" class="zp-n-list-top-tag" :is="nViewIs"></view>
-			<view v-if="nShowRefresherReveal" ref="zp-n-list-refresher-reveal" :style="[{transform:`translateY(-${nShowRefresherRevealHeight}px)`,height:'0px'}]" class="zp-n-list-refresher-reveal" :is="nViewIs">
+			<view v-if="nShowRefresherReveal" ref="zp-n-list-refresher-reveal" :style="[{transform:`translateY(-${nShowRefresherRevealHeight}px)`,height:'0px'}]" :is="nViewIs">
 				<slot v-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
 				<z-paging-refresh ref="refresh" v-else :refresherStatus="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
 					:refresherDefaultText="finalRefresherDefaultText" :refresherPullingText="finalRefresherPullingText" :refresherRefreshingText="finalRefresherRefreshingText" 

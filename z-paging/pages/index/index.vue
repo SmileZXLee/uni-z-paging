@@ -41,8 +41,13 @@
 						subTitle: ''
 					},
 					{
-						title: '滑动切换选项卡演示',
+						title: '滑动切换选项卡演示(标准写法)',
 						file: 'scroll-tab-swiper-demo',
+						subTitle: '使用了uView的tabsSwiper组件'
+					},
+					{
+						title: '滑动切换选项卡演示(简化写法)',
+						file: 'scroll-tab-swiper-easy-demo',
 						subTitle: '使用了uView的tabsSwiper组件'
 					},
 					{

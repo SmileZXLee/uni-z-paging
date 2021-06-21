@@ -66,7 +66,6 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 	width: 100%;
 	top: 0;
 	left: 0;
-	background-color: #007AFF;
 	height: 200px;
 }
 
@@ -145,17 +144,4 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 	/* #endif */
 	justify-content: center;
 	width: 750rpx;
-}
-
-.zp-n-view-reverse {
-	transform: rotate(180deg);
-}
-
-.zp-n-view-unreverse{
-	/* transform: rotate(0deg); */
-}
-
-.zp-n-list-refresher-reveal{
-	/* transition-property: transform,height;
-	transition-duration:0.15s; */
 }

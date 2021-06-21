@@ -11,7 +11,7 @@ import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
-const currentVersion = 'V1.8.5';
+const currentVersion = 'V1.8.7';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -752,7 +752,7 @@ export default {
 		this.wxsPropType = (new Date()).getTime().toString();
 		this.renderJsIgnore;
 		if (!this.refresherOnly && (this.mountedAutoCallReload && this.auto)) {
-			this._mountedReload();
+			this._preReload();
 		}
 		this.$nextTick(() => {
 			this.systemInfo = uni.getSystemInfoSync();
@@ -1328,7 +1328,7 @@ export default {
 				this.privateShowRefresherWhenReload = animate;
 				this.isUserPullDown = true;
 			}
-			this._mountedReload(animate);
+			this._preReload(animate, false);
 		},
 		//清空分页数据
 		clean() {
@@ -1410,8 +1410,8 @@ export default {
 			this.refresherStatusChangedFunc = func;
 		},
 		//------------------ 私有方法 ------------------------
-		//_mounted后重新加载分页数据
-		_mountedReload(animate = this.showRefresherWhenReload) {
+		//reload之前的一些处理
+		_preReload(animate = this.showRefresherWhenReload, isFromMounted = true) {
 			this.isUserReload = true;
 			if (animate) {
 				this.privateShowRefresherWhenReload = animate;
@@ -1437,9 +1437,9 @@ export default {
 									this._nDoRefresherEndAnimation(nodeHeight, 0);
 								}, 10)
 							}, 10)
-							this._reload(false, true);
+							this._reload(false, isFromMounted);
 						} else {
-							this._reload(false, true);
+							this._reload(false, isFromMounted);
 						}
 					});
 				}, 10)
@@ -1448,7 +1448,7 @@ export default {
 			} else {
 				this._refresherEnd(false, false);
 			}
-			this._reload(false, true);
+			this._reload(false, isFromMounted);
 		},
 		//重新加载分页数据
 		_reload(isClean = false, isFromMounted = false) {
@@ -1481,8 +1481,8 @@ export default {
 				}
 				// #endif
 			}
-			this.$nextTick(()=>{
-				if(!this.realTotalData.length){
+			this.$nextTick(() => {
+				if (!this.realTotalData.length) {
 					// #ifdef APP-NVUE
 					this.nShowBottom = false;
 					// #endif
@@ -1816,7 +1816,7 @@ export default {
 		},
 		//是否要展示上拉加载更多view
 		_shouldShowLoading(type) {
-			if(!(this.loadingStatus===0?this.nShowBottom:true)){
+			if (!(this.loadingStatus === 0 ? this.nShowBottom : true)) {
 				return false;
 			}
 			if ((!this.showLoadingMoreWhenReload && !this.showLoadingMore) || !this.loadingMoreEnabled || this
@@ -2428,7 +2428,7 @@ export default {
 		//下拉刷新结束
 		_nRefresherEnd() {
 			this._nDoRefresherEndAnimation(0, -this.nShowRefresherRevealHeight);
-			if(!this.nShowBottom){
+			if (!this.nShowBottom) {
 				setTimeout(() => {
 					this.$nextTick(() => {
 						this.nShowBottom = true;
