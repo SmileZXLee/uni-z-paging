@@ -47,9 +47,9 @@
 					if (newVal === this.tabIndex) {
 						//懒加载，当滑动到当前的item时，才去加载
 						if (!this.firstLoaded) {
-							this.$nextTick(() => {
+							setTimeout(() => {
 								this.$refs.paging.reload();
-							})
+							}, 5);
 						}
 					}
 				},
@@ -57,7 +57,7 @@
 			}
 		},
 		methods: {
-			reload(data){
+			reload(data) {
 				this.$refs.paging.reload(data);
 			},
 			complete(data) {
@@ -76,6 +76,11 @@
 
 <style scoped>
 	.zp-swiper-item-container {
+		/* #ifndef APP-NVUE */
 		height: 100%;
+		/* #endif */
+		/* #ifdef APP-NVUE */
+		flex: 1;
+		/* #endif */
 	}
 </style>

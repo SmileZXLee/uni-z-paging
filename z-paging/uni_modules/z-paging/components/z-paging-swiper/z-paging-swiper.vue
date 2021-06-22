@@ -8,9 +8,9 @@
 	<view :class="fixed?'zp-swiper-container zp-swiper-container-fixed':'zp-swiper-container'" :style="[swiperStyle]">
 		<slot v-if="$slots.top" name="top"></slot>
 		<view class="zp-swiper-super">
-			<swiper class="zp-swiper" :current="current" @transition="transition" @animationfinish="animationfinish">
-				<slot></slot>
-			</swiper>
+			<view class="zp-swiper">
+				<slot/></slot>
+			</view>
 		</view>
 		<slot v-if="$slots.bottom" name="bottom"></slot>
 	</view>
@@ -21,16 +21,10 @@
 		name: "z-paging-swiper",
 		data() {
 			return {
-				dataList: [],
 				systemInfo: null
 			};
 		},
 		props: {
-			//当前swiper切换到第几个index
-			current: {
-				type: Number,
-				default: 0
-			},
 			//是否使用fixed布局，默认为是
 			fixed: {
 				type: Boolean,
@@ -80,16 +74,6 @@
 				// #endif
 				return safeAreaBottom;
 			}
-		},
-		methods: {
-			//swiper-item 的位置发生改变时会触发 transition 事件
-			transition(e) {
-				this.$emit('transition', e);
-			},
-			//动画结束时会触发animationfinish事件
-			animationfinish(e) {
-				this.$emit('animationfinish', e);
-			}
 		}
 	}
 </script>
@@ -129,24 +113,21 @@
 	.zp-swiper-super {
 		flex: 1;
 		position: relative;
-		background-color: red;
 	}
 
 	.zp-swiper {
 		/* #ifndef APP-NVUE */
 		height: 100%;
 		width: 100%;
-		/* #endif */
 		position: absolute;
 		top: 0;
 		left: 0;
-		/* #ifdef APP-NVUE */
-		bottom: 0;
-		right: 0;
 		/* #endif */
-		background-color: blue;
+		/* #ifdef APP-NVUE */
+		flex: 1;
+		/* #endif */
 	}
-
+	
 	.zp-swiper-item {
 		height: 100%;
 	}

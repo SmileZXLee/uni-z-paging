@@ -10,6 +10,7 @@ export default {
 		return {
 			renderScrollTop: 0,
 			renderUsePageScroll: false,
+			renderIsIos: uni.getSystemInfoSync().platform === 'ios',
 			startY: 0,
 			isTouchFromZPaging: false
 		}
@@ -46,7 +47,7 @@ export default {
 			const touch = zUtils.getCommonTouch(e);
 			var moveY = touch.touchY - this.startY;
 			if ((this.isTouchFromZPaging && this.renderScrollTop < 1 && moveY > 0) || (this.isTouchFromZPaging && this
-					.isIos && !this
+					.renderIsIos && !this
 					.renderUsePageScroll && moveY <
 					0)) {
 				if (e.cancelable && !e.defaultPrevented) {

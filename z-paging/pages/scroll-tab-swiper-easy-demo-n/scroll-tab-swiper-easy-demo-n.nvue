@@ -1,20 +1,26 @@
+<!-- 滑动切换选项卡演示(简化写法)(nvue) -->
+<!-- 简化写法灵活性不如标 准写法高，暂时无法设置内部z-paging自定义下拉刷新view，自定义上拉加载view等slot插入的view，设置z-paging只支持全局配置 -->
+<!-- 适用于简单的低自定义场景 -->
 <template>
 	<view class="content">
-		<z-paging-swiper :current="current" @transition="transition" @animationfinish="animationfinish">
-			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，未设置slot="top"或者slot="bottom"的view默认会被放置在swiper中 -->
+		<z-paging-swiper>
+			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中 -->
 			<view style="height: 80rpx;" slot="top">
-				<tabs-view @change="tabsChange" :current="current" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
+				<tabs-view @change="tabChange" :current="current" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			</view>
-			<swiper-item v-for="(item,index) in list" :key="index">
-				<z-paging-swiper-item ref="swiperItem" :tabIndex="index" :currentIndex="current" @query="queryList"
-					@updateList="updateList">
-					<cell class="item" v-for="(item,index) in dataList[index]" :key="index">
-						<view class="item-title">{{item.title}}</view>
-						<view class="item-detail">{{item.detail}}</view>
-						<view class="item-line"></view>
-					</cell>
-				</z-paging-swiper-item>
-			</swiper-item>
+			<!-- 因swiper与swiper-item无法封装在不同组件中，因此这边依然需要设置swiper包裹swiper-item -->
+			<swiper style="flex: 1;" :current="current" @transition="transition" @animationfinish="animationfinish" @change="onswiperchange">
+				<swiper-item v-for="(item,index) in list" :key="index">
+					<z-paging-swiper-item ref="swiperItem" :tabIndex="index" :currentIndex="current" @query="queryList"
+						@updateList="updateList">
+						<cell class="item" v-for="(subItem,subIndex) in dataList[index]" :key="subItem.title">
+							<text class="item-title">{{subItem.title}}</text>
+							<text class="item-detail">{{subItem.detail}}</text>
+							<view class="item-line"></view>
+						</cell>
+					</z-paging-swiper-item>
+				</swiper-item>
+			</swiper>
 		</z-paging-swiper>
 	</view>
 </template>
@@ -39,8 +45,18 @@
 		},
 		methods: {
 			// tabs通知swiper切换
-			tabsChange(index) {
+			tabChange(index) {
 				this.current = index;
+			},
+			onswiperchange(e) {
+				// #ifndef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
+				let index = e.target.current || e.detail.current;
+				this.tabChange(index);
+				// #endif
+			},
+			animationfinish(e) {
+				let current = e.detail.current;
+				this.current = current;
 			},
 			queryList(pageNo, pageSize) {
 				//这里的网络请求请替换成自己的网络请求

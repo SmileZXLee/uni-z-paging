@@ -1,28 +1,28 @@
 <!-- 滑动切换选项卡演示(简化写法)(vue) -->
-<!-- 简化写法灵活性不如标准写法高，暂时无法设置内部z-paging自定义下拉刷新view，自定义上拉加载view等slot插入的view，设置z-paging只支持全局配置 -->
+<!-- 简化写法灵活性不如标 准写法高，暂时无法设置内部z-paging自定义下拉刷新view，自定义上拉加载view等slot插入的view，设置z-paging只支持全局配置 -->
 <!-- 适用于简单的低自定义场景 -->
+<!-- 支付宝小程序不支持此写法 -->
 <template>
-	<view>
-		<z-paging-swiper :current="current" @transition="transition" @animationfinish="animationfinish">
-			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，未设置slot="top"或者slot="bottom"的view默认会被放置在swiper中 -->
-			<view style="height: 80rpx;" slot="top">
-				<u-tabs-swiper ref="uTabs" :list="list" :current="current" @change="tabsChange" :is-scroll="false"
-					swiperWidth="750"></u-tabs-swiper>
-			</view>
+	<z-paging-swiper>
+		<!-- 需要固定在顶部不滚动的view放在slot="top"的view中 -->
+		<view style="height: 80rpx;" slot="top">
+			<u-tabs-swiper ref="uTabs" :list="list" :current="current" @change="tabsChange" :is-scroll="false"
+				swiperWidth="750"></u-tabs-swiper>
+		</view>
+		<!-- 因swiper与swiper-item无法封装在不同组件中，因此这边依然需要设置swiper包裹swiper-item -->
+		<swiper style="height: 100%;" :current="swiperCurrent" @transition="transition" @animationfinish="animationfinish">
 			<swiper-item v-for="(item,index) in list" :key="index">
 				<z-paging-swiper-item ref="swiperItem" :tabIndex="index" :currentIndex="current" @query="queryList"
 					@updateList="updateList">
-					<view class="list">
-						<view class="item" v-for="(item,index) in dataList[index]" :key="index">
-							<view class="item-title">{{item.title}}</view>
-							<view class="item-detail">{{item.detail}}</view>
-							<view class="item-line"></view>
-						</view>
+					<view class="item" v-for="(subItem,subIndex) in dataList[index]" :key="subIndex">
+						<view class="item-title">{{subItem.title}}</view>
+						<view class="item-detail">{{subItem.detail}}</view>
+						<view class="item-line"></view>
 					</view>
 				</z-paging-swiper-item>
 			</swiper-item>
-		</z-paging-swiper>
-	</view>
+		</swiper>
+	</z-paging-swiper>
 </template>
 
 <script>
@@ -40,14 +40,15 @@
 				}, {
 					name: '测试4'
 				}],
-				//tabs组件的current值，表示当前活动的tab选项
-				current: 0
+				// 因为内部的滑动机制限制，请将tabs组件和swiper组件的current用不同变量赋值
+				current: 0, // tabs组件的current值，表示当前活动的tab选项
+				swiperCurrent: 0, // swiper组件的current值，表示当前那个swiper-item是活动的
 			}
 		},
 		methods: {
 			// tabs通知swiper切换
 			tabsChange(index) {
-				this.current = index;
+				this.swiperCurrent = index;
 			},
 			// swiper-item左右移动，通知tabs的滑块跟随移动
 			transition(e) {
@@ -59,6 +60,7 @@
 			animationfinish(e) {
 				let current = e.detail.current;
 				this.$refs.uTabs.setFinishCurrent(current);
+				this.swiperCurrent = current;
 				this.current = current;
 			},
 			queryList(pageNo, pageSize) {

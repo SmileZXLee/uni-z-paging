@@ -1463,7 +1463,13 @@ export default {
 			this.totalData = [];
 			if (!isClean) {
 				this.$emit('query', this.pageNo, this.defaultPageSize);
-				this._callMyParentQuery();
+				let delay = 0;
+				// #ifdef MP-TOUTIAO
+				delay = 5;
+				// #endif
+				setTimeout(()=>{
+					this._callMyParentQuery();
+				},delay)
 				if (!isFromMounted && this.autoScrollToTopWhenReload) {
 					let checkedNRefresherLoading = true;
 					// #ifdef APP-NVUE

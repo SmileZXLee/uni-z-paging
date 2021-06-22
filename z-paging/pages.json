@@ -22,7 +22,7 @@
 		}, {
 			"path": "pages/scroll-tab-swiper-demo/scroll-tab-swiper-demo",
 			"style": {
-				"navigationBarTitleText": "滑动切换选项卡演示",
+				"navigationBarTitleText": "滑动切换选项卡演示(标准写法)",
 				"enablePullDownRefresh": false
 			}
 		}, {
@@ -50,7 +50,7 @@
 		}, {
 			"path": "pages/scroll-tab-swiper-demo-n/scroll-tab-swiper-demo-n",
 			"style": {
-				"navigationBarTitleText": "滑动切换选项卡演示(nvue)",
+				"navigationBarTitleText": "滑动切换选项卡演示(标准写法)(nvue)",
 				"enablePullDownRefresh": false
 			}
 
