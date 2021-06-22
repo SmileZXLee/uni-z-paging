@@ -7,9 +7,9 @@
 			<u-tabs-swiper ref="uTabs" :list="list" :current="current" @change="tabsChange" :is-scroll="false"
 				swiperWidth="750"></u-tabs-swiper>
 		</view>
-		<swiper class="swiper" :current="swiperCurrent" @transition="transition" @animationfinish="animationfinish">
+		<swiper class="swiper" :current="current" @transition="transition" @animationfinish="animationfinish">
 			<swiper-item class="swiper-item" v-for="(item, index) in list" :key="index">
-				<scroll-tab-swiper-item :tabIndex="index" :currentIndex="swiperCurrent"></scroll-tab-swiper-item>
+				<scroll-tab-swiper-item :tabIndex="index" :currentIndex="current"></scroll-tab-swiper-item>
 			</swiper-item>
 		</swiper>
 	</view>
@@ -30,13 +30,12 @@
 				}],
 				// 因为内部的滑动机制限制，请将tabs组件和swiper组件的current用不同变量赋值
 				current: 0, // tabs组件的current值，表示当前活动的tab选项
-				swiperCurrent: 0, // swiper组件的current值，表示当前那个swiper-item是活动的
 			};
 		},
 		methods: {
 			// tabs通知swiper切换
 			tabsChange(index) {
-				this.swiperCurrent = index;
+				this.current = index;
 			},
 			// swiper-item左右移动，通知tabs的滑块跟随移动
 			transition(e) {
@@ -48,7 +47,6 @@
 			animationfinish(e) {
 				let current = e.detail.current;
 				this.$refs.uTabs.setFinishCurrent(current);
-				this.swiperCurrent = current;
 				this.current = current;
 			}
 		}
@@ -56,6 +54,7 @@
 </script>
 
 <style>
+	/* 页面需要设置固定的高度 */
 	page {
 		height: 100%;
 	}
@@ -64,6 +63,7 @@
 		height: 100%;
 	}
 
+	/* swiper+顶部固定部分的高度需要等于页面高度 */
 	.swiper {
 		height: calc(100% - 80rpx);
 	}

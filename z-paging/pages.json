@@ -147,7 +147,16 @@
             "path" : "pages/scroll-tab-swiper-easy-demo/scroll-tab-swiper-easy-demo",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "滑动切换选项卡演示(简化写法)",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/scroll-tab-swiper-easy-demo-n/scroll-tab-swiper-easy-demo-n",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "滑动切换选项卡演示(简化写法)(nvue)",
                 "enablePullDownRefresh": false
             }
             

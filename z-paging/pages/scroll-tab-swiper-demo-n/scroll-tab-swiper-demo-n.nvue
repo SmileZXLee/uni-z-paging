@@ -2,11 +2,11 @@
 <!-- 注意：此tab-view仅为z-paging的demo演示之用，未作兼容与细节处理，不建议直接使用，建议使用第三方成熟的tab-view -->
 <template>
 	<view class="content">
-		<tabs-view @change="tabChange" :current="swiperCurrent" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
-		<swiper class="swiper" :current="swiperCurrent" @change="onswiperchange" @transition="transition"
+		<tabs-view @change="tabChange" :current="current" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
+		<swiper class="swiper" :current="current" @change="onswiperchange" @transition="transition"
 			@animationfinish="animationfinish" @onAnimationEnd="animationfinish">
 			<swiper-item class="swiper-item" v-for="(item, index) in list" :key="index">
-				<scroll-tab-swiper-item-n :tabIndex="index" :currentIndex="swiperCurrent"></scroll-tab-swiper-item-n>
+				<scroll-tab-swiper-item-n :tabIndex="index" :currentIndex="current"></scroll-tab-swiper-item-n>
 			</swiper-item>
 		</swiper>
 	</view>
@@ -27,13 +27,12 @@
 				}],
 				// 因为内部的滑动机制限制，请将tabs组件和swiper组件的current用不同变量赋值
 				current: 0, // tabs组件的current值，表示当前活动的tab选项
-				swiperCurrent: 0, // swiper组件的current值，表示当前那个swiper-item是活动的
 			};
 		},
 		methods: {
 			// tabs通知swiper切换
 			tabChange(index) {
-				this.swiperCurrent = index;
+				this.current = index;
 			},
 			// swiper-item左右移动，通知tabs的滑块跟随移动
 			transition(e) {
@@ -47,7 +46,6 @@
 			},
 			animationfinish(e) {
 				let current = e.detail.current;
-				this.swiperCurrent = current;
 				this.current = current;
 			}
 		}

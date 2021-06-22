@@ -113,8 +113,13 @@
 						subTitle: ''
 					},
 					{
-						title: '滑动切换选项卡演示(nvue)',
+						title: '滑动切换选项卡演示(标准写法)(nvue)',
 						file: 'scroll-tab-swiper-demo-n',
+						subTitle: ''
+					},
+					{
+						title: '滑动切换选项卡演示(简化写法)(nvue)',
+						file: 'scroll-tab-swiper-easy-demo-n',
 						subTitle: ''
 					},
 					{

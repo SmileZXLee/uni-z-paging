@@ -3,50 +3,40 @@
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
 <!-- 反馈QQ群：790460711 -->
 
-<!-- 空数据占位view，此组件支持easycom规范，可以在项目中直接引用 -->
+<!-- 滑动切换选项卡swiper，此组件支持easycom规范，可以在项目中直接引用 -->
 <template>
-	<view class="zp-swiper-container zp-swiper-container-fixed" :style="[swiperStyle]">
+	<view :class="fixed?'zp-swiper-container zp-swiper-container-fixed':'zp-swiper-container'" :style="[swiperStyle]">
 		<slot v-if="$slots.top" name="top"></slot>
 		<view class="zp-swiper-super">
-			<swiper class="zp-swiper" :current="swiperCurrent" @transition="transition"
-				@animationfinish="animationfinish">
-				<swiper-item class="zp-swiper-item" v-for="(item,index) in tabsList" :key="index">
-					<z-paging-swiper-item ref="swiperItem" :tabIndex="index" :currentIndex="swiperCurrent" @query="query" @updateList="updateList">
-						<slot></slot>
-					</z-paging-swiper-item>
-				</swiper-item>
+			<swiper class="zp-swiper" :current="current" @transition="transition" @animationfinish="animationfinish">
+				<slot></slot>
 			</swiper>
 		</view>
+		<slot v-if="$slots.bottom" name="bottom"></slot>
 	</view>
 </template>
 
 <script>
-	import zPagingSwiperItem from './components/z-paging-swiper-item'
 	export default {
 		name: "z-paging-swiper",
-		components: {
-			zPagingSwiperItem
-		},
 		data() {
 			return {
-				systemInfo: null,
-				// 因为内部的滑动机制限制，请将tabs组件和swiper组件的current用不同变量赋值
-				current: 0, // tabs组件的current值，表示当前活动的tab选项
-				swiperCurrent: 0, // swiper组件的current值，表示当前那个swiper-item是活动的
+				dataList: [],
+				systemInfo: null
 			};
 		},
 		props: {
-			//空数据描述文字
-			tabsList: {
-				type: Array,
-				default: []
+			//当前swiper切换到第几个index
+			current: {
+				type: Number,
+				default: 0
 			},
-			//空数据描述文字
+			//是否使用fixed布局，默认为是
 			fixed: {
 				type: Boolean,
 				default: true
 			},
-			//空数据描述文字
+			//是否开启底部安全区域适配
 			safeAreaInsetBottom: {
 				type: Boolean,
 				default: false
@@ -92,35 +82,13 @@
 			}
 		},
 		methods: {
-			setCurrent(current) {
-				this.swiperCurrent = current;
-			},
-			// swiper-item左右移动，通知tabs的滑块跟随移动
+			//swiper-item 的位置发生改变时会触发 transition 事件
 			transition(e) {
 				this.$emit('transition', e);
 			},
-			// 由于swiper的内部机制问题，快速切换swiper不会触发dx的连续变化，需要在结束时重置状态
-			// swiper滑动结束，分别设置tabs和swiper的状态
+			//动画结束时会触发animationfinish事件
 			animationfinish(e) {
-				let current = e.detail.current;
-				// this.$refs.uTabs.setFinishCurrent(current);
-				this.swiperCurrent = current;
-				// this.current = current;
 				this.$emit('animationfinish', e);
-			},
-			query(pageNo, pageSize) {
-				this.$emit('query', {
-					pageNo,
-					pageSize,
-					current: this.swiperCurrent
-				});
-			},
-			complete(data){
-				console.log(this.$refs.swiperItem[this.swiperCurrent])
-				this.$refs.swiperItem[this.swiperCurrent].complete(data);
-			},
-			updateList(list){
-				
 			}
 		}
 	}
@@ -132,6 +100,7 @@
 		display: flex;
 		/* #endif */
 		flex-direction: column;
+		flex: 1;
 	}
 
 	.zp-swiper-container-fixed {
@@ -160,14 +129,22 @@
 	.zp-swiper-super {
 		flex: 1;
 		position: relative;
+		background-color: red;
 	}
 
 	.zp-swiper {
+		/* #ifndef APP-NVUE */
 		height: 100%;
 		width: 100%;
+		/* #endif */
 		position: absolute;
 		top: 0;
 		left: 0;
+		/* #ifdef APP-NVUE */
+		bottom: 0;
+		right: 0;
+		/* #endif */
+		background-color: blue;
 	}
 
 	.zp-swiper-item {

@@ -1,24 +1,18 @@
-<!-- 滑动切换选项卡演示(简化写法)(vue) -->
-<!-- 简化写法灵活性不如标准写法高，暂时无法设置内部z-paging自定义下拉刷新view，自定义上拉加载view等slot插入的view，设置z-paging只支持全局配置 -->
-<!-- 适用于简单的低自定义场景 -->
 <template>
-	<view>
+	<view class="content">
 		<z-paging-swiper :current="current" @transition="transition" @animationfinish="animationfinish">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，未设置slot="top"或者slot="bottom"的view默认会被放置在swiper中 -->
 			<view style="height: 80rpx;" slot="top">
-				<u-tabs-swiper ref="uTabs" :list="list" :current="current" @change="tabsChange" :is-scroll="false"
-					swiperWidth="750"></u-tabs-swiper>
+				<tabs-view @change="tabsChange" :current="current" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			</view>
 			<swiper-item v-for="(item,index) in list" :key="index">
 				<z-paging-swiper-item ref="swiperItem" :tabIndex="index" :currentIndex="current" @query="queryList"
 					@updateList="updateList">
-					<view class="list">
-						<view class="item" v-for="(item,index) in dataList[index]" :key="index">
-							<view class="item-title">{{item.title}}</view>
-							<view class="item-detail">{{item.detail}}</view>
-							<view class="item-line"></view>
-						</view>
-					</view>
+					<cell class="item" v-for="(item,index) in dataList[index]" :key="index">
+						<view class="item-title">{{item.title}}</view>
+						<view class="item-detail">{{item.detail}}</view>
+						<view class="item-line"></view>
+					</cell>
 				</z-paging-swiper-item>
 			</swiper-item>
 		</z-paging-swiper>
@@ -26,10 +20,10 @@
 </template>
 
 <script>
+	import request from '../../http/request.js'
 	export default {
 		data() {
 			return {
-				//注意，这个数组是一个二维数组，数组里面包含的是所有tabs的list数组
 				dataList: [],
 				list: [{
 					name: '测试1'
@@ -40,8 +34,7 @@
 				}, {
 					name: '测试4'
 				}],
-				//tabs组件的current值，表示当前活动的tab选项
-				current: 0
+				current: 0, // tabs组件的current值，表示当前活动的tab选项
 			}
 		},
 		methods: {
@@ -49,22 +42,10 @@
 			tabsChange(index) {
 				this.current = index;
 			},
-			// swiper-item左右移动，通知tabs的滑块跟随移动
-			transition(e) {
-				let dx = e.detail.dx;
-				this.$refs.uTabs.setDx(dx);
-			},
-			// 由于swiper的内部机制问题，快速切换swiper不会触发dx的连续变化，需要在结束时重置状态
-			// swiper滑动结束，分别设置tabs和swiper的状态
-			animationfinish(e) {
-				let current = e.detail.current;
-				this.$refs.uTabs.setFinishCurrent(current);
-				this.current = current;
-			},
 			queryList(pageNo, pageSize) {
 				//这里的网络请求请替换成自己的网络请求
 				//this.current代表当前下拉刷新/上拉加载更多对应的是第几个
-				this.$request.queryList(pageNo, pageSize, this.current + 1, (data) => {
+				request.queryList(pageNo, pageSize, this.current + 1, (data) => {
 					//将返回的数组传递给z-paging-swiper-item
 					this.$refs.swiperItem[this.current].complete(data);
 				})
@@ -78,15 +59,23 @@
 </script>
 
 <style>
+	.content {
+		background-color: white;
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+	}
 	.item {
+		flex-direction: row;
 		position: relative;
 		height: 150rpx;
-		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		padding: 0rpx 30rpx;
 	}
-
+	
 	.item-detail {
 		padding: 5rpx 15rpx;
 		border-radius: 10rpx;
@@ -94,13 +83,13 @@
 		color: white;
 		background-color: #007AFF;
 	}
-
+	
 	.item-line {
 		position: absolute;
-		bottom: 0rpx;
-		left: 0rpx;
+		bottom: 0;
+		left: 0;
+		right: 0;
 		height: 1px;
-		width: 100%;
 		background-color: #eeeeee;
 	}
 </style>
