@@ -1,9 +1,11 @@
 <!-- 滑动切换选项卡演示 -->
 <!--  此demo使用了uView的tabsSwiper全屏选项卡 https://uviewui.com/components/tabsSwiper.html -->
 <template>
-	<view class="content">
+	<!-- 使用z-paging-swiper为根节点可以免计算高度 -->
+	<z-paging-swiper>
 		<!-- 此处代码复制了uView中tabsSwiper全屏选项卡的代码 -->
-		<view style="height: 80rpx;">
+		<!-- 需要固定在顶部不滚动的view放在slot="top"的view中 -->
+		<view slot="top">
 			<u-tabs-swiper ref="uTabs" :list="list" :current="current" @change="tabsChange" :is-scroll="false"
 				swiperWidth="750"></u-tabs-swiper>
 		</view>
@@ -12,7 +14,7 @@
 				<scroll-tab-swiper-item :tabIndex="index" :currentIndex="swiperCurrent"></scroll-tab-swiper-item>
 			</swiper-item>
 		</swiper>
-	</view>
+	</z-paging-swiper>
 </template>
 
 <script>
@@ -56,18 +58,8 @@
 </script>
 
 <style>
-	/* 页面需要设置固定的高度 */
-	page {
-		height: 100%;
-	}
-
-	.content {
-		height: 100%;
-	}
-	
-	/* swiper+顶部固定部分的高度需要等于页面高度 */
 	.swiper {
-		height: calc(100% - 80rpx);
+		height: 100%;
 	}
 </style>
 

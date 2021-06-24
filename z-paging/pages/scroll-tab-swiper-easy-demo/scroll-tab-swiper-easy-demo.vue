@@ -1,5 +1,6 @@
 <!-- 滑动切换选项卡演示(简化写法)(vue) -->
-<!-- 简化写法灵活性不如标 准写法高，暂时无法设置内部z-paging自定义下拉刷新view，自定义上拉加载view等slot插入的view，设置z-paging只支持全局配置 -->
+<!--  此demo使用了uView的tabsSwiper全屏选项卡 https://uviewui.com/components/tabsSwiper.html -->
+<!-- 简化写法灵活性不如标准写法高，暂时无法设置内部z-paging自定义下拉刷新view，自定义上拉加载view等slot插入的view，设置z-paging只支持全局配置 -->
 <!-- 适用于简单的低自定义场景 -->
 <!-- 支付宝小程序不支持此写法 -->
 <template>

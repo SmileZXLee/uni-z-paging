@@ -11,7 +11,7 @@ import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
-const currentVersion = 'V1.8.7';
+const currentVersion = 'V1.8.8';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -1202,7 +1202,8 @@ export default {
 			return windowBottom;
 		},
 		nWaterfallColumnCount() {
-			return this._getNvueWaterfallSingleConfig('column-count', 2);
+			const defaultColumnCount = this.finalNvueListIs === 'waterfall' ? 2 : 0;
+			return this._getNvueWaterfallSingleConfig('column-count', defaultColumnCount);
 		},
 		nWaterfallColumnWidth() {
 			return this._getNvueWaterfallSingleConfig('column-width', 'auto');
@@ -2243,10 +2244,11 @@ export default {
 		//判断touch手势是否要触发
 		_getRefresherTouchDisabled() {
 			let checkOldScrollTop = this.oldScrollTop > 5;
-			return this.loading || this.useChatRecordMode || !this.refresherEnabled || !this.useCustomRefresher || (
+			const res = this.loading || this.useChatRecordMode || !this.refresherEnabled || !this.useCustomRefresher || (
 				this.usePageScroll && this
 				.useCustomRefresher && this
 				.pageScrollTop > 10) || (!(this.usePageScroll && this.useCustomRefresher) && checkOldScrollTop);
+			return res;
 		},
 		//本地分页请求
 		_localPagingQueryList(pageNo, pageSize, localPagingLoadingTime, callback) {
