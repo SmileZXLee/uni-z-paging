@@ -370,7 +370,7 @@ zConfig.setConfig({
 
 |           参数           |                             说明                             |      类型      |       默认值       | 可选值 |
 | :----------------------: | :----------------------------------------------------------: | :------------: | :----------------: | :----: |
-|  auto-show-back-to-top   | 自动显示点击返回顶部按钮<p style="color:red;">(在nvue中，cell必须设置 :ref="`z-paging-${index}`")</p> |    Boolean     |       false        |  true  |
+|  auto-show-back-to-top   |                   自动显示点击返回顶部按钮                   |    Boolean     |       false        |  true  |
 |  back-to-top-threshold   | 点击返回顶部按钮显示/隐藏的阈值(滚动距离)，默认单位为px。<p style="color:red;">(支持传100、"100px"或"100rpx")</p> | Number\|String |       400rpx       |   -    |
 |     back-to-top-img      |               点击返回顶部按钮的自定义图片地址               |     String     | z-paging内置的图片 |   -    |
 | back-to-top-with-animate |         点击返回顶部按钮返回到顶部时是否展示过渡动画         |    Boolean     |        true        | false  |
@@ -452,8 +452,8 @@ zConfig.setConfig({
 |     paging-style     | 设置z-paging的style，部分平台可能无法直接修改组件的style，可使用此属性代替 |     Object     |   -    |   -    |
 | default-theme-style  | loading(下拉刷新、上拉加载更多)的主题样式，支持black，white  |     String     | black  | white  |
 |       data-key       | 为保证数据一致，设置当前tab切换时的标识key，并在complete中传递相同key，若二者不一致，则complete将不会生效<p style="color:red;">(关于数据一致性，请查看demo中`consistency-demo.vue`文件)</p> | Number\|Object |   -    |   -    |
-|  autowire-list-name  | 【极简写法】自动注入的list名，可自动修改父view(包含ref="paging")中对应name的list值 |     String     |   ""   |   -    |
-| autowire-query-name  | 【极简写法】自动注入的query名，可自动调用父view(包含ref="paging")中的query方法 |     String     |   ""   |   -    |
+|  autowire-list-name  | 【极简写法】自动注入的list名，可自动修改父view(包含ref="paging")中对应name的list值<p style="color:red;">z-paging标签必须设置`res="paging"`</p> |     String     |   ""   |   -    |
+| autowire-query-name  | 【极简写法】自动注入的query名，可自动调用父view(包含ref="paging")中的query方法<p style="color:red;">z-paging标签必须设置`res="paging"`</p> |     String     |   ""   |   -    |
 |     auto-height      | <p style="color:red;">(建议使用fixed代替)</p>z-paging是否自动高度，若自动高度则会自动铺满屏幕，不需要设置父view为100%等操作。（注意：自动高度可能并不准确） |    Boolean     | false  |  true  |
 | auto-height-addition | <p style="color:red;">(建议使用fixed代替)</p>z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数。如"-10rpx"，"10.5px" | Number\|String |  0px   |   -    |
 |  show-console-error  |                  是否将错误信息打印至控制台                  |    Boolean     |  true  | false  |
