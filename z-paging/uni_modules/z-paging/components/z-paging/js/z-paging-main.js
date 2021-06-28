@@ -1514,6 +1514,8 @@ export default {
 				if (this.$refs.refresh) {
 					this.$refs.refresh.updateTime();
 				}
+			}
+			if (this.isUserPullDown && this.pageNo === this.defaultPageNo){
 				this.isUserPullDown = false;
 			}
 			const dataType = Object.prototype.toString.call(data);
@@ -1826,7 +1828,8 @@ export default {
 			if (!(this.loadingStatus === 0 ? this.nShowBottom : true)) {
 				return false;
 			}
-			if ((!this.showLoadingMoreWhenReload && !this.showLoadingMore) || !this.loadingMoreEnabled || this
+			
+			if (((!this.showLoadingMoreWhenReload || this.isUserPullDown || this.loadingStatus!==1) && !this.showLoadingMore) || !this.loadingMoreEnabled || this
 				.refresherOnly) {
 				return false;
 			}
