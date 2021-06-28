@@ -130,7 +130,6 @@
 		/* #endif */
 		/* #ifdef APP-NVUE */
 		flex: 1;
-		height: 1200rpx;
 		/* #endif */
 		align-items: center;
 		justify-content: center;

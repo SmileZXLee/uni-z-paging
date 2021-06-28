@@ -1250,7 +1250,7 @@ export default {
 			return this.finalLanguage;
 		},
 		//当前版本号
-		version() {
+		getVersion() {
 			return `z-paging ${currentVersion}`;
 		},
 		//添加聊天记录

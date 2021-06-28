@@ -6,13 +6,11 @@
 		<z-paging ref="paging" v-model="dataList" use-page-scroll @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
-			<template v-for="(item,index) in dataList">
-				<view class="item" :key="item.title" @click="itemClick(item)">
-					<text class="item-title">{{item.title}}</text>
-					<text class="item-detail">{{item.detail}}</text>
-					<view class="item-line"></view>
-				</view>
-			</template>
+			<view class="item" v-for="(item,index) in dataList" :key="item.title" @click="itemClick(item)">
+				<text class="item-title">{{item.title}}</text>
+				<text class="item-detail">{{item.detail}}</text>
+				<view class="item-line"></view>
+			</view>
 		</z-paging>
 	</view>
 </template>

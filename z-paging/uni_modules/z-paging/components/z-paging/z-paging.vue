@@ -108,7 +108,7 @@ by ZXLee 2021-06-22
 							<slot v-else-if="_shouldShowLoading('loadingMoreNoMore')" name="loadingMoreNoMore" />
 							<slot v-else-if="_shouldShowLoading('loadingMoreFail')" name="loadingMoreFail" />
 							<z-paging-load-more @click.native="_onLoadingMore('click')"
-								v-else-if="_shouldShowLoading('loadingMoreCustom')" :config="zPagingLoadMoreConfig">
+								v-else-if="_shouldShowLoading('loadingMoreCustom')" :zConfig="zPagingLoadMoreConfig">
 							</z-paging-load-more>
 							<!-- #endif -->
 							<!-- #ifdef MP-ALIPAY -->
@@ -120,7 +120,7 @@ by ZXLee 2021-06-22
 								name="loadingMoreNoMore" />
 							<slot v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
 								name="loadingMoreFail" />
-							<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode" :config="zPagingLoadMoreConfig">
+							<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode" :zConfig="zPagingLoadMoreConfig">
 							</z-paging-load-more>
 							<!-- #endif -->
 						</view>
@@ -139,7 +139,7 @@ by ZXLee 2021-06-22
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
 	<view :is="finalNvueSuperListIs">
-		<view ref="zp-page-scroll-top" :is="nViewIs" class="zp-page-scroll-top" v-if="usePageScroll&&$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
+		<view ref="zp-page-scroll-top" :is="nViewIs" class="zp-page-scroll-top" v-if="$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
 			<slot name="top"></slot>
 		</view>
 		<view ref="n-list" id="z-paging-nlist" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" :is="finalNvueListIs" alwaysScrollableVertical="true"
@@ -167,12 +167,12 @@ by ZXLee 2021-06-22
 			<slot />
 			<view ref="zp-n-list-bottom-tag" class="zp-n-list-bottom-tag" is="header"></view>
 			<!-- 全屏 -->
-			<view :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
+			<view style="flex: 1;" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
 				<slot name="loading" />
 			</view>
 			<!-- 空数据图 -->
-			<view :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="!refresherOnly&&!totalData.length&&(autoHideEmptyViewWhenLoading?isAddedData:true)&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
-				<view class="zp-empty-view">
+			<view style="flex: 1;" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="!refresherOnly&&!totalData.length&&(autoHideEmptyViewWhenLoading?isAddedData:true)&&!hideEmptyView&&(autoHideEmptyViewWhenLoading?(!firstPageLoaded&&!loading):true)" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
+				<view class="zp-empty-view" style="flex: 1;">
 					<slot v-if="$slots.empty" name="empty" />
 					<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" :emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" :emptyViewImgStyle="emptyViewImgStyle" :emptyViewReloadStyle="emptyViewReloadStyle" :emptyViewZIndex="emptyViewZIndex" @reload="_emptyViewReload">
 					</z-paging-empty-view>
@@ -201,11 +201,12 @@ by ZXLee 2021-06-22
 					<slot v-else-if="_shouldShowLoading('loadingMoreNoMore')" name="loadingMoreNoMore" />
 					<slot v-else-if="_shouldShowLoading('loadingMoreFail')" name="loadingMoreFail" />
 					<z-paging-load-more @click.native="_onLoadingMore('click')"
-						v-else-if="_shouldShowLoading('loadingMoreCustom')" :config="zPagingLoadMoreConfig">
+						v-else-if="_shouldShowLoading('loadingMoreCustom')" :zConfig="zPagingLoadMoreConfig">
 					</z-paging-load-more>
 				</view>
 			</view>
 		</view>
+		<slot name="bottom"></slot>
 		<view v-if="showBackToTopClass" :class="backToTopClass" :style="[finalBackToTopStyle]" @click.stop="scrollToTop(backToTopWithAnimate)">
 			<image class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop"></image>
 		</view>

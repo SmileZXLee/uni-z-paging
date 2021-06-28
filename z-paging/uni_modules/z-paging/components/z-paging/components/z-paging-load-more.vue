@@ -5,39 +5,39 @@
 
 <!-- 上拉加载更多view -->
 <template>
-	<view class="zp-load-more-container" :style="[config.loadingMoreCustomStyle]">
+	<view class="zp-load-more-container" :style="[zConfig.loadingMoreCustomStyle]">
 		<text
-			:class="config.defaultThemeStyle==='white'?'zp-loading-more-line zp-loading-more-line-white':'zp-loading-more-line zp-loading-more-line-black'"
-			:style="[config.loadingMoreNoMoreLineCustomStyle]"
-			v-if="config.showLoadingMoreNoMoreLine&&config.loadingStatus===2"></text>
+			:class="zConfig.defaultThemeStyle==='white'?'zp-loading-more-line zp-loading-more-line-white':'zp-loading-more-line zp-loading-more-line-black'"
+			:style="[zConfig.loadingMoreNoMoreLineCustomStyle]"
+			v-if="zConfig.showLoadingMoreNoMoreLine&&zConfig.loadingStatus===2"></text>
 		<!-- #ifndef APP-NVUE -->
-		<image v-if="config.loadingStatus===1&&config.loadingMoreLoadingIconCustomImage.length"
-			:src="config.loadingMoreLoadingIconCustomImage" class="zp-loading-more-line-loading-custom-image">
+		<image v-if="zConfig.loadingStatus===1&&zConfig.loadingMoreLoadingIconCustomImage.length"
+			:src="zConfig.loadingMoreLoadingIconCustomImage" class="zp-loading-more-line-loading-custom-image">
 		</image>
 		<image
-			v-if="config.loadingStatus===1&&config.loadingMoreLoadingIconType==='flower'&&!config.loadingMoreLoadingIconCustomImage.length"
-			class="zp-loading-more-line-loading-image" :style="[config.loadingMoreLoadingIconCustomStyle]"
-			:src="config.defaultThemeStyle==='white'?base64FlowerWhite:base64Flower">
+			v-if="zConfig.loadingStatus===1&&zConfig.loadingMoreLoadingIconType==='flower'&&!zConfig.loadingMoreLoadingIconCustomImage.length"
+			class="zp-loading-more-line-loading-image" :style="[zConfig.loadingMoreLoadingIconCustomStyle]"
+			:src="zConfig.defaultThemeStyle==='white'?base64FlowerWhite:base64Flower">
 		</image>
 		<!-- #endif -->
 		<!-- #ifdef APP-NVUE -->
 		<view>
-			<loading-indicator v-if="config.loadingStatus===1"
-				:style="[{color:config.defaultThemeStyle==='white'?'white':'#777777'}]" :animating="true"
+			<loading-indicator v-if="zConfig.loadingStatus===1"
+				:style="[{color:zConfig.defaultThemeStyle==='white'?'white':'#777777'}]" :animating="true"
 				class="zp-loading-more-line-loading-image">
 			</loading-indicator>
 		</view>
 		<!-- #endif -->
 		<text
-			v-if="config.loadingStatus===1&&config.loadingMoreLoadingIconType==='circle'&&!config.loadingMoreLoadingIconCustomImage.length"
-			:class="config.defaultThemeStyle==='white'?'zp-loading-more-line-loading-view zp-loading-more-line-loading-view-white':'zp-loading-more-line-loading-view zp-loading-more-line-loading-view-black'"
-			:style="[config.loadingMoreLoadingIconCustomStyle]"></text>
+			v-if="zConfig.loadingStatus===1&&zConfig.loadingMoreLoadingIconType==='circle'&&!zConfig.loadingMoreLoadingIconCustomImage.length"
+			:class="zConfig.defaultThemeStyle==='white'?'zp-loading-more-line-loading-view zp-loading-more-line-loading-view-white':'zp-loading-more-line-loading-view zp-loading-more-line-loading-view-black'"
+			:style="[zConfig.loadingMoreLoadingIconCustomStyle]"></text>
 		<text
-			:class="config.defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{ownLoadingMoreText}}</text>
+			:class="zConfig.defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{ownLoadingMoreText}}</text>
 		<text
-			:class="config.defaultThemeStyle==='white'?'zp-loading-more-line zp-loading-more-line-white':'zp-loading-more-line zp-loading-more-line-black'"
-			:style="[config.loadingMoreNoMoreLineCustomStyle]"
-			v-if="config.showLoadingMoreNoMoreLine&&config.loadingStatus===2"></text>
+			:class="zConfig.defaultThemeStyle==='white'?'zp-loading-more-line zp-loading-more-line-white':'zp-loading-more-line zp-loading-more-line-black'"
+			:style="[zConfig.loadingMoreNoMoreLineCustomStyle]"
+			v-if="zConfig.showLoadingMoreNoMoreLine&&zConfig.loadingStatus===2"></text>
 	</view>
 </template>
 <script>
@@ -51,18 +51,18 @@
 				base64FlowerWhite: zStatic.base64FlowerWhite,
 			};
 		},
-		props: ['config'],
+		props: ['zConfig'],
 		computed: {
 			ownLoadingMoreText() {
-				const loadingMoreText = this.loadingStatusTextMap[this.config.loadingStatus];
+				const loadingMoreText = this.loadingStatusTextMap[this.zConfig.loadingStatus];
 				return loadingMoreText;
 			},
 			loadingStatusTextMap() {
 				return {
-					0: this.config.loadingMoreDefaultText,
-					1: this.config.loadingMoreLoadingText,
-					2: this.config.loadingMoreNoMoreText,
-					3: this.config.loadingMoreFailText,
+					0: this.zConfig.loadingMoreDefaultText,
+					1: this.zConfig.loadingMoreLoadingText,
+					2: this.zConfig.loadingMoreNoMoreText,
+					3: this.zConfig.loadingMoreFailText,
 				}
 			}
 		}
