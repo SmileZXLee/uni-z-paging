@@ -1158,6 +1158,12 @@ export default {
 			}
 			return this.refresherOutRate;
 		},
+		showEmpty() {
+			const showEmpty = !this.refresherOnly && !this.totalData.length && (this.autoHideEmptyViewWhenLoading ? this
+				.isAddedData : true) && !this.hideEmptyView && (this.autoHideEmptyViewWhenLoading ? (!this
+				.firstPageLoaded && !this.loading) : true);
+			return showEmpty;
+		},
 		tempLanguage() {
 			let systemLanguage = false;
 			const temp = this.tempLanguageUpdateKey;
@@ -1468,9 +1474,9 @@ export default {
 				// #ifdef MP-TOUTIAO
 				delay = 5;
 				// #endif
-				setTimeout(()=>{
+				setTimeout(() => {
 					this._callMyParentQuery();
-				},delay)
+				}, delay)
 				if (!isFromMounted && this.autoScrollToTopWhenReload) {
 					let checkedNRefresherLoading = true;
 					// #ifdef APP-NVUE
@@ -1515,7 +1521,7 @@ export default {
 					this.$refs.refresh.updateTime();
 				}
 			}
-			if (this.isUserPullDown && this.pageNo === this.defaultPageNo){
+			if (this.isUserPullDown && this.pageNo === this.defaultPageNo) {
 				this.isUserPullDown = false;
 			}
 			const dataType = Object.prototype.toString.call(data);
@@ -1828,8 +1834,9 @@ export default {
 			if (!(this.loadingStatus === 0 ? this.nShowBottom : true)) {
 				return false;
 			}
-			
-			if (((!this.showLoadingMoreWhenReload || this.isUserPullDown || this.loadingStatus!==1) && !this.showLoadingMore) || !this.loadingMoreEnabled || this
+
+			if (((!this.showLoadingMoreWhenReload || this.isUserPullDown || this.loadingStatus !== 1) && !this
+					.showLoadingMore) || !this.loadingMoreEnabled || this
 				.refresherOnly) {
 				return false;
 			}
@@ -2247,10 +2254,11 @@ export default {
 		//判断touch手势是否要触发
 		_getRefresherTouchDisabled() {
 			let checkOldScrollTop = this.oldScrollTop > 5;
-			const res = this.loading || this.useChatRecordMode || !this.refresherEnabled || !this.useCustomRefresher || (
-				this.usePageScroll && this
-				.useCustomRefresher && this
-				.pageScrollTop > 10) || (!(this.usePageScroll && this.useCustomRefresher) && checkOldScrollTop);
+			const res = this.loading || this.useChatRecordMode || !this.refresherEnabled || !this.useCustomRefresher ||
+				(
+					this.usePageScroll && this
+					.useCustomRefresher && this
+					.pageScrollTop > 10) || (!(this.usePageScroll && this.useCustomRefresher) && checkOldScrollTop);
 			return res;
 		},
 		//本地分页请求
@@ -2419,6 +2427,9 @@ export default {
 		},
 		//下拉刷新刷新中
 		_nOnRrefresh() {
+			if (this.nShowRefresherReveal) {
+				return;
+			}
 			this.nRefresherLoading = true;
 			this.refresherStatus = 2;
 			this._doRefresherLoad();
@@ -2489,6 +2500,9 @@ export default {
 		},
 		//滚动到底部加载更多
 		_nOnLoadmore() {
+			if (this.nShowRefresherReveal || !this.totalData.length) {
+				return;
+			}
 			if (this.useChatRecordMode) {
 				this.doChatRecordLoadMore();
 			} else {
