@@ -4,8 +4,8 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V1.8.8
-by ZXLee 2021-06-22
+V1.8.9
+by ZXLee 2021-06-30
 -- >
 <!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -195,7 +195,7 @@ by ZXLee 2021-06-22
 						</view>
 					</view>
 				</view>
-				<view>
+				<view :style="nLoadingMoreFixedHeight?{height:'80rpx'}:{}">
 					<slot v-if="_shouldShowLoading('loadingMoreDefault')" name="loadingMoreDefault" />
 					<slot v-else-if="_shouldShowLoading('loadingMoreLoading')" name="loadingMoreLoading" />
 					<slot v-else-if="_shouldShowLoading('loadingMoreNoMore')" name="loadingMoreNoMore" />

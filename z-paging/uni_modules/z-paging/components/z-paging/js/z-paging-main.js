@@ -11,7 +11,7 @@ import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
-const currentVersion = 'V1.8.8';
+const currentVersion = 'V1.8.9';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -211,6 +211,7 @@ export default {
 			nShowRefresherRevealHeight: 0,
 			nIsFirstPageAndNoMore: false,
 			nFirstPageAndNoMoreChecked: false,
+			nLoadingMoreFixedHeight: false,
 			wxsPropType: '',
 			refresherRevealStackCount: 0,
 			renderPropScrollTop: 0,
@@ -714,6 +715,11 @@ export default {
 			type: Number,
 			default: _getConfig('emptyViewZIndex', 9)
 		},
+		//自动拼接complete中传过来的数组(使用聊天记录模式时无效)
+		concat: {
+			type: Boolean,
+			default: _getConfig('concat', true)
+		},
 		//nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list
 		nvueListIs: {
 			type: String,
@@ -771,6 +777,11 @@ export default {
 				this.complete(false);
 			}
 		})
+		// #ifdef APP-NVUE
+		if (!this.isIos && !this.useChatRecordMode) {
+			this.nLoadingMoreFixedHeight = true;
+		}
+		// #endif
 	},
 	destroyed() {
 		uni.$off(i18nUpdateKey);
@@ -928,6 +939,11 @@ export default {
 			if (newVal !== oldVal) {
 				this.$emit('refresherStatusChange', newVal);
 				this.$emit('update:refresherStatus', newVal);
+			}
+		},
+		useChatRecordMode(newVal, oldVal){
+			if(newVal){
+				this.nLoadingMoreFixedHeight = false;
 			}
 		},
 		finalScrollTop(newVal, oldVal) {
@@ -1579,7 +1595,7 @@ export default {
 				newVal.reverse();
 			}
 			// #endif
-			if (this.pageNo === this.defaultPageNo) {
+			if (this.pageNo === this.defaultPageNo && this.concat) {
 				this.totalData = [];
 			}
 			if (
@@ -1589,7 +1605,9 @@ export default {
 				this.loadingStatus = 2;
 			}
 			if (!this.totalData.length) {
-				this.totalData = newVal;
+				if(this.concat){
+					this.totalData = newVal;
+				}
 				if (this.useChatRecordMode) {
 					// #ifndef APP-NVUE
 					this.$nextTick(() => {
@@ -1632,7 +1650,9 @@ export default {
 					//#endif
 
 				} else {
-					this.totalData = [...this.totalData, ...newVal];
+					if(this.concat){
+						this.totalData = [...this.totalData, ...newVal];
+					}
 				}
 			}
 		},
@@ -1834,7 +1854,6 @@ export default {
 			if (!(this.loadingStatus === 0 ? this.nShowBottom : true)) {
 				return false;
 			}
-
 			if (((!this.showLoadingMoreWhenReload || this.isUserPullDown || this.loadingStatus !== 1) && !this
 					.showLoadingMore) || !this.loadingMoreEnabled || this
 				.refresherOnly) {
@@ -1847,16 +1866,49 @@ export default {
 				return false;
 			}
 			if (type === 'loadingMoreDefault') {
-				return this.loadingStatus === 0 && this.$slots.loadingMoreDefault;
+				const res = this.loadingStatus === 0 && this.$slots.loadingMoreDefault;
+				if (res) {
+					// #ifdef APP-NVUE
+					if (!this.isIos) {
+						this.nLoadingMoreFixedHeight = false;
+					}
+					//  #endif
+				}
+				return res;
 			} else if (type === 'loadingMoreLoading') {
-				return this.loadingStatus === 1 && this.$slots.loadingMoreLoading;
+				const res = this.loadingStatus === 1 && this.$slots.loadingMoreLoading;
+				if (res) {
+					// #ifdef APP-NVUE
+					if (!this.isIos) {
+						this.nLoadingMoreFixedHeight = false;
+					}
+					//  #endif
+				}
+				return res;
 			} else if (type === 'loadingMoreNoMore') {
-				return this.loadingStatus === 2 && this.$slots.loadingMoreNoMore && this.showLoadingMoreNoMoreView;
+				const res = this.loadingStatus === 2 && this.$slots.loadingMoreNoMore && this.showLoadingMoreNoMoreView;
+				if (res) {
+					// #ifdef APP-NVUE
+					if (!this.isIos) {
+						this.nLoadingMoreFixedHeight = false;
+					}
+					//  #endif
+				}
+				return res;
 			} else if (type === 'loadingMoreFail') {
-				return this.loadingStatus === 3 && this.$slots.loadingMoreFail;
+				const res = this.loadingStatus === 3 && this.$slots.loadingMoreFail;
+				if (res) {
+					// #ifdef APP-NVUE
+					if (!this.isIos) {
+						this.nLoadingMoreFixedHeight = false;
+					}
+					//  #endif
+				}
+				return res;
 			} else if (type === 'loadingMoreCustom') {
-				return this.showDefaultLoadingMoreText && !(this.loadingStatus === 2 && !this
+				const res = this.showDefaultLoadingMoreText && !(this.loadingStatus === 2 && !this
 					.showLoadingMoreNoMoreView);
+				return res;
 			}
 			return false;
 		},

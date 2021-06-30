@@ -113,6 +113,11 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 	align-items: center;
 }
 
+.zp-loading-more-fixed-height{
+	height: 80rpx;
+	background-color: red;
+}
+
 .zp-back-to-top {
 	width: 76rpx;
 	height: 76rpx;
