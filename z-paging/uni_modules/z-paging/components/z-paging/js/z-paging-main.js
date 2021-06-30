@@ -941,8 +941,8 @@ export default {
 				this.$emit('update:refresherStatus', newVal);
 			}
 		},
-		useChatRecordMode(newVal, oldVal){
-			if(newVal){
+		useChatRecordMode(newVal, oldVal) {
+			if (newVal) {
 				this.nLoadingMoreFixedHeight = false;
 			}
 		},
@@ -1173,6 +1173,12 @@ export default {
 				return 1;
 			}
 			return this.refresherOutRate;
+		},
+		finalRefresherTransform() {
+			if (this.refresherTransform === 'translateY(0px)') {
+				return 'none';
+			}
+			return this.refresherTransform;
 		},
 		showEmpty() {
 			const showEmpty = !this.refresherOnly && !this.totalData.length && (this.autoHideEmptyViewWhenLoading ? this
@@ -1605,7 +1611,7 @@ export default {
 				this.loadingStatus = 2;
 			}
 			if (!this.totalData.length) {
-				if(this.concat){
+				if (this.concat) {
 					this.totalData = newVal;
 				}
 				if (this.useChatRecordMode) {
@@ -1650,7 +1656,7 @@ export default {
 					//#endif
 
 				} else {
-					if(this.concat){
+					if (this.concat) {
 						this.totalData = [...this.totalData, ...newVal];
 					}
 				}
@@ -1855,7 +1861,8 @@ export default {
 				return false;
 			}
 			if (((!this.showLoadingMoreWhenReload || this.isUserPullDown || this.loadingStatus !== 1) && !this
-					.showLoadingMore) || !this.loadingMoreEnabled || this
+					.showLoadingMore) || (!this.loadingMoreEnabled && (!this.showLoadingMoreWhenReload || this
+					.isUserPullDown || this.loadingStatus !== 1)) || this
 				.refresherOnly) {
 				return false;
 			}

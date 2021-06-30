@@ -43,7 +43,7 @@ by ZXLee 2021-06-30
 				<!-- #endif -->
 				>	
 					<view v-if="finalRefresherFixedBacHeight>0" class="zp-fixed-bac-view" :style="[{'background-color': refresherFixedBackground,'height': `${finalRefresherFixedBacHeight}px`}]"></view>
-					<view class="zp-paging-main" :style="[{'transform': refresherTransform,'transition': refresherTransition}]"
+					<view class="zp-paging-main" :style="[{'transform': finalRefresherTransform,'transition': refresherTransition}]"
 					<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 					:change:prop="pagingWxs.propObserver" :prop="wxsPropType"
 					:data-refresherThreshold="finalRefresherThreshold" :data-isIos="isIos"
@@ -195,7 +195,7 @@ by ZXLee 2021-06-30
 						</view>
 					</view>
 				</view>
-				<view :style="nLoadingMoreFixedHeight?{height:'80rpx'}:{}">
+				<view :style="nLoadingMoreFixedHeight?{height:loadingMoreCustomStyle&&loadingMoreCustomStyle.height?loadingMoreCustomStyle.height:'80rpx'}:{}">
 					<slot v-if="_shouldShowLoading('loadingMoreDefault')" name="loadingMoreDefault" />
 					<slot v-else-if="_shouldShowLoading('loadingMoreLoading')" name="loadingMoreLoading" />
 					<slot v-else-if="_shouldShowLoading('loadingMoreNoMore')" name="loadingMoreNoMore" />

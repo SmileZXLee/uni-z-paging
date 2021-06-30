@@ -183,6 +183,9 @@ function _setTransformValue(value, instance, state) {
 }
 
 function _setTransform(transform, instance) {
+	if(transform == 'translateY(0px)'){
+		transform = 'none';
+	}
 	instance.requestAnimationFrame(function() {
 		instance.setStyle({
 			transform: transform,
