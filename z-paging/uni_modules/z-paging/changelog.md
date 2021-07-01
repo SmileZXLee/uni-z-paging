@@ -1,3 +1,10 @@
+## 1.8.9（2021-07-01）
+1.默认状态由`translateY(0px)`修改为`none`，修复因使用transform引发的子view fixed被降级为absoult的BUG。  
+2.修复在nvue安卓中，通过`loading-more-custom-style`修改加载更多view的高度时，加载更多view被裁剪的BUG。  
+3.去掉reload自动滚动到顶部的动画。  
+4.当`loading-more-enabled`设置为false，且`show-loading-more-when-reload`为true时，`show-loading-more-when-reload`优先。  
+5.修复在nvue 安卓中使用聊天记录模式，只有一页时底部有一段空白的BUG。  
+6.`concat`为false时，不再自动清空list。  
 ## 1.8.8（2021-06-30）
 1.修复设置了`show-loading-more-when-reload`后，下拉刷新时展示加载更多loading且无数据时展示加载更多view的BUG。  
 2.修复在nvue中，在安卓设备上下拉刷新view底部有一根白色横线的BUG。  

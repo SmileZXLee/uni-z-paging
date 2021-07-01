@@ -1505,7 +1505,7 @@ export default {
 					checkedNRefresherLoading = !this.nRefresherLoading;
 					// #endif
 					if (checkedNRefresherLoading) {
-						this._scrollToTop();
+						this._scrollToTop(false);
 					}
 				}
 				// #ifndef APP-NVUE
