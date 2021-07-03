@@ -1,8 +1,7 @@
 <!-- 普通模式演示(vue) -->
 <template>
 	<view class="content">
-		<!-- 非页面滚动时这里的fixed建议设置为true，则无需设置z-paging的高度及其父view的高度 -->
-		<z-paging ref="paging" :loading-more-enabled="false" show-loading-more-when-reload v-model="dataList" fixed @query="queryList">
+		<z-paging ref="paging" v-model="dataList" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
@@ -38,7 +37,7 @@
 				//模拟请求服务器获取分页数据，请替换成自己的网络请求
 				this.$request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
 					//将请求的结果数组传递给z-paging
-					this.$refs.paging.complete(data);
+					this.$refs.paging.complete([]);
 					//如果请求失败写 this.$refs.paging.complete(false);
 				})
 			},

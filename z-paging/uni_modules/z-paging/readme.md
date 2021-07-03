@@ -50,7 +50,7 @@
 ```html
 <template>
     <view class="content">
-        <z-paging ref="paging" v-model="dataList" fixed @query="queryList">
+        <z-paging ref="paging" v-model="dataList" @query="queryList">
             <!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
             <view>
                 <view class="item" v-for="(item,index) in dataList">
@@ -91,7 +91,7 @@
 * 设置自定义emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理
 
 ```html
-<z-paging ref="paging" v-model="dataList" fixed @query="queryList">
+<z-paging ref="paging" v-model="dataList" @query="queryList">
     <!-- 设置自己的emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
     <empty-view slot="empty"></empty-view>
     <view>
@@ -107,7 +107,7 @@
 * 以修改【没有更多了】状态描述文字为例(将默认的"没有更多了"修改为"我也是有底线的！")
 
 ```html
-<z-paging ref="paging" v-model="dataList" fixed loading-more-no-more-text="我也是有底线的！" @query="queryList">
+<z-paging ref="paging" v-model="dataList" loading-more-no-more-text="我也是有底线的！" @query="queryList">
     <!-- 设置自己的emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
     <view>
         <view class="item" v-for="(item,index) in dataList">
@@ -122,7 +122,7 @@
 * `use-custom-refresher`需要设置为true(默认为true)，此时将不会使用uni自带的下拉刷新，转为使用z-paging自定义的下拉刷新，通过slot可以插入开发者自定义的下拉刷新view。
 
 ```html
-<z-paging ref="paging" v-model="dataList" fixed :refresher-threshold="80" @query="queryList">
+<z-paging ref="paging" v-model="dataList" :refresher-threshold="80" @query="queryList">
   <!-- 自定义下拉刷新view -->
   <!-- 注意注意注意！！QQ小程序或字节跳动小程序中自定义下拉刷新不支持slot-scope，将导致custom-refresher无法显示 -->
 	<!-- 如果是QQ小程序或字节跳动小程序，请参照demo中的sticky-demo.vue中的写法，此处使用slot-scope是为了减少data中无关变量声明，降低依赖 -->
@@ -143,7 +143,7 @@
 * 以修改【没有更多了】状态描述view为例
 
 ```html
-<z-paging ref="paging" v-model="dataList" fixed @query="queryList">
+<z-paging ref="paging" v-model="dataList" @query="queryList">
     <view>
         <view class="item" v-for="(item,index) in dataList">
             <view class="item-title">{{item.title}}</view>

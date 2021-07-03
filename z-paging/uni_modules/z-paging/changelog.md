@@ -1,3 +1,9 @@
+## 1.9.0（2021-07-04）
+## 【注意1】由V1.9.0起，fixed属性默认值为true，z-paging默认会铺满屏幕。老项目更新请注意，使用侧滑滚动切换选项卡或需要局部使用z-paging请设置:fixed="false"。如果您希望fixed属性默认为false，请参考下方的【全局配置】，将fixed默认值设置为false。  
+1.修复使用slot="top"时可能出现的置顶view点击无效的问题。  
+2.修复设置`show-loading-more-when-reload`后，下拉刷新时底部加载更多view也处于loading状态的问题。  
+3.其他细节调整。
+
 ## 1.8.9（2021-07-01）
 1.默认状态由`translateY(0px)`修改为`none`，修复因使用transform引发的子view fixed被降级为absoult的BUG。  
 2.修复在nvue安卓中，通过`loading-more-custom-style`修改加载更多view的高度时，加载更多view被裁剪的BUG。  

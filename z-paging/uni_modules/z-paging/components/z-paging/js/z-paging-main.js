@@ -11,7 +11,7 @@ import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
-const currentVersion = 'V1.8.9';
+const currentVersion = 'V1.9.0';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -327,7 +327,7 @@ export default {
 		//z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为否(当使用内置scroll-view滚动时有效)
 		fixed: {
 			type: Boolean,
-			default: _getConfig('fixed', false)
+			default: _getConfig('fixed', true)
 		},
 		//是否开启底部安全区域适配
 		safeAreaInsetBottom: {
@@ -1921,7 +1921,7 @@ export default {
 		},
 		//处理开始加载更多状态
 		_startLoading(isReload = false) {
-			if (this.showLoadingMoreWhenReload || !isReload) {
+			if ((this.showLoadingMoreWhenReload && !this.isUserPullDown) || !isReload) {
 				this.loadingStatus = 1;
 			}
 			this.loading = true;

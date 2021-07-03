@@ -56,6 +56,7 @@
 <style>
 	.add-chat-record {
 		position: fixed;
+		z-index: 100;
 		width: 80rpx;
 		height: 80rpx;
 		display: flex;

@@ -1,9 +1,9 @@
 <!-- 极简写法演示(vue) -->
 <template>
 	<view class="content">
-		<!-- 这里的fixed、autowire-query-name、autowire-list-name都可以写在全局配置中，实际上项目中只要写<z-paging ref="paging">即可 -->
+		<!-- 这里的autowire-query-name、autowire-list-name都可以写在全局配置中，实际上项目中只要写<z-paging ref="paging">即可 -->
 		<!-- autowire-list-name用于设置自动赋值list的名字，autowire-query-name用于设置自动调用query方法的方法名 -->
-		<z-paging ref="paging" fixed autowire-list-name="zList" autowire-query-name="zQuery">
+		<z-paging ref="paging" autowire-list-name="zList" autowire-query-name="zQuery">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<view slot="top">
 				<view class="notice">
