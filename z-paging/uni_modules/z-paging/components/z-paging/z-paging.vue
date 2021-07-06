@@ -23,7 +23,7 @@ by ZXLee 2021-07-04
 		</view>
 		<view class="zp-scroll-view-super" :style="[finalScrollViewStyle]">
 			<scroll-view
-				:class="{'zp-scroll-view':!usePageScroll&&fixed}"
+				:class="{'zp-scroll-view':true,'zp-scroll-view-absolute':!usePageScroll&&fixed}"
 				:scroll-top="scrollTop"
 				:scroll-y="scrollable&&!usePageScroll&&scrollEnable" :enable-back-to-top="finalEnableBackToTop"
 				:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
