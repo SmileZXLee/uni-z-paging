@@ -16,6 +16,9 @@ const ZPagingMixin = {
 			return;
 		}
 		this.$refs.paging.updatePageScrollTop(e.scrollTop);
+		if (e.scrollTop < 10) {
+			this.$refs.paging.doChatRecordLoadMore();
+		}
 	},
 	onReachBottom() {
 		if (this.isPagingRefNotFound()) {

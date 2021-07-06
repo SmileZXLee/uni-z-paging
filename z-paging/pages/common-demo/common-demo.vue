@@ -7,7 +7,7 @@
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<view class="list">
-				<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
+				<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item,index)">
 					<view class="item-title">{{item.title}}</view>
 					<view class="item-detail">{{item.detail}}</view>
 					<view class="item-line"></view>
@@ -37,12 +37,13 @@
 				//模拟请求服务器获取分页数据，请替换成自己的网络请求
 				this.$request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
 					//将请求的结果数组传递给z-paging
-					this.$refs.paging.complete([]);
+					this.$refs.paging.complete(data);
 					//如果请求失败写 this.$refs.paging.complete(false);
 				})
 			},
-			itemClick(item) {
+			itemClick(item,index) {
 				console.log('点击了', item.title);
+				this.dataList.splice(index,1)
 			}
 		}
 	}

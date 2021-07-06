@@ -11,7 +11,7 @@ import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
-const currentVersion = 'V1.9.0';
+const currentVersion = 'V1.9.1';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -1366,7 +1366,9 @@ export default {
 		},
 		//手动触发滚动到顶部加载更多，聊天记录模式时有效
 		doChatRecordLoadMore() {
-			this._onLoadingMore('click');
+			if (this.useChatRecordMode) {
+				this._onLoadingMore('click');
+			}
 		},
 		//手动触发上拉加载更多(非必须，可依据具体需求使用)
 		doLoadMore() {
@@ -1382,7 +1384,9 @@ export default {
 		},
 		//滚动到底部，animate为是否展示滚动动画，默认为是
 		scrollToBottom(animate) {
-			this._scrollToBottom(animate);
+			this.$nextTick(() => {
+				this._scrollToBottom(animate);
+			})
 		},
 		//滚动到指定view(vue中有效)。sel为需要滚动的view的id值，不包含"#"；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
 		scrollIntoViewById(sel, offset, animate) {
