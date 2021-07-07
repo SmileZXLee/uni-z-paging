@@ -9,6 +9,7 @@
 			<u-tabs-swiper ref="uTabs" :list="list" :current="current" @change="tabsChange" :is-scroll="false"
 				swiperWidth="750"></u-tabs-swiper>
 		</view>
+		<!-- swiper必须设置height:100%，因为swiper有默认的高度，只有设置高度100%才可以铺满页面  -->
 		<swiper class="swiper" :current="swiperCurrent" @transition="transition" @animationfinish="animationfinish">
 			<swiper-item class="swiper-item" v-for="(item, index) in list" :key="index">
 				<scroll-tab-swiper-item :tabIndex="index" :currentIndex="swiperCurrent"></scroll-tab-swiper-item>

@@ -109,16 +109,11 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 	align-items: center;
 }
 
-.zp-loading-more-fixed-height {
-	height: 80rpx;
-	background-color: red;
-}
-
 .zp-back-to-top {
 	width: 76rpx;
 	height: 76rpx;
 	z-index: 999;
-	position: fixed;
+	position: absolute;
 	bottom: 0rpx;
 	right: 25rpx;
 	transition-duration: .3s;
@@ -134,8 +129,13 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 }
 
 .zp-back-to-top-img {
-	width: 76rpx;
-	height: 76rpx;
+	/* #ifndef APP-NVUE */
+	width: 100%;
+	height: 100%;
+	/* #endif */
+	/* #ifdef APP-NVUE */
+	flex: 1;
+	/* #endif */
 	z-index: 999;
 }
 
