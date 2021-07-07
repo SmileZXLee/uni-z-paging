@@ -2225,7 +2225,7 @@ export default {
 					if (scrollViewTotalH > this.systemInfo.windowHeight + 100) {
 						if (this.showConsoleError) {
 							zUtils.consoleErr(
-								'检测到z-paging的高度超出页面高度，这将导致滚动出现异常，请设置【:fixed="true"】或【确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}】，此时z-paging的百分比高度才能生效。详情参考demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
+								'检测到z-paging的高度超出页面高度，这将导致滚动或展示出现异常，请设置【:fixed="true"】或【确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}】，此时z-paging的百分比高度才能生效。详情参考demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
 							);
 						}
 					}

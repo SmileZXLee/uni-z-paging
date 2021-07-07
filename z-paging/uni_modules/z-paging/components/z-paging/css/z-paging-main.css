@@ -37,7 +37,6 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 
 .zp-scroll-view-super {
 	flex: 1;
-	height: 100%;
 	position: relative;
 }
 
@@ -110,7 +109,7 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 	align-items: center;
 }
 
-.zp-loading-more-fixed-height{
+.zp-loading-more-fixed-height {
 	height: 80rpx;
 	background-color: red;
 }

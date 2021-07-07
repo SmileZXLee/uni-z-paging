@@ -99,17 +99,6 @@
 		right: 0;
 	}
 
-	.zp-swiper-top,
-	.zp-swiper-bottom {
-		/* #ifndef APP-NVUE */
-		width: auto;
-		/* #endif */
-		position: fixed;
-		left: 0;
-		right: 0;
-		z-index: 999;
-	}
-
 	.zp-swiper-super {
 		flex: 1;
 		position: relative;

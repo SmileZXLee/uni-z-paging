@@ -5,7 +5,7 @@
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
 V1.9.1
-by ZXLee 2021-07-04
+by ZXLee 2021-07-07
 -- >
 <!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -21,9 +21,9 @@ by ZXLee 2021-07-04
 		<view class="zp-page-scroll-top" v-else-if="usePageScroll&&$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
 			<slot name="top"></slot>
 		</view>
-		<view class="zp-scroll-view-super" :style="[finalScrollViewStyle]">
+		<view :class="{'zp-scroll-view-super':!usePageScroll}" :style="[finalScrollViewStyle]">
 			<scroll-view
-				:class="{'zp-scroll-view':true,'zp-scroll-view-absolute':!usePageScroll&&fixed}"
+				:class="{'zp-scroll-view':true,'zp-scroll-view-absolute':!usePageScroll}"
 				:scroll-top="scrollTop"
 				:scroll-y="scrollable&&!usePageScroll&&scrollEnable" :enable-back-to-top="finalEnableBackToTop"
 				:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
