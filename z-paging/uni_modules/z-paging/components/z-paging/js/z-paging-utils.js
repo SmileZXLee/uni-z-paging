@@ -75,6 +75,11 @@ function consoleErr(err) {
 	console.error(`[z-paging]${err}`);
 }
 
+//打印警告信息
+function consoleWarn(warn) {
+	console.warn(`[z-paging]${warn}`);
+}
+
 //设置下拉刷新时间
 function setRefesrherTime(time, key) {
 	try {
@@ -169,5 +174,6 @@ module.exports = {
 	getCommonTouch,
 	getTouchFromZPaging,
 	getParent,
-	consoleErr
+	consoleErr,
+	consoleWarn
 };
