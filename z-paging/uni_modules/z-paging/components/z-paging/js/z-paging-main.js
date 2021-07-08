@@ -1720,6 +1720,13 @@ export default {
 
 			this._onLoadingMore('click');
 		},
+		//点击返回顶部
+		_backToTopClick(){
+			if(!this.backToTopWithAnimate){
+				this._checkShouldShowBackToTop(1, 0);
+			}
+			this.scrollToTop(this.backToTopWithAnimate);
+		},
 		//滚动到顶部
 		_scrollToTop(animate, isPrivate = true) {
 			// #ifdef APP-NVUE
