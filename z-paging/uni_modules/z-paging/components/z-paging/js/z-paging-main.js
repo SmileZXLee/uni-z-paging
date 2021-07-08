@@ -11,7 +11,7 @@ import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
-const currentVersion = 'V1.9.1';
+const currentVersion = 'V1.9.2';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -221,7 +221,8 @@ export default {
 			wxsPageScrollTop: 0,
 			wxsOnPullingDown: false,
 			disabledBounce: false,
-			cacheScrollNodeHeight: -1
+			cacheScrollNodeHeight: -1,
+			customNoMore: -1
 		};
 	},
 	props: {
@@ -1254,12 +1255,21 @@ export default {
 	methods: {
 		//请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认是是）
 		complete(data, success = true) {
+			this.customNoMore = -1;
 			this.addData(data, success);
 		},
 		//【保证数据一致】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为dataKey，需与:data-key绑定的一致，第三个参数为是否成功(默认是是）
 		completeByKey(data, dataKey = null, success = true) {
 			if (dataKey !== null && this.dataKey !== null && dataKey !== this.dataKey) {
 				return;
+			}
+			this.customNoMore = -1;
+			this.addData(data, success);
+		},
+		//【自行判断是否有更多数据】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否有更多数据，第三个参数为是否成功(默认是是）
+		completeByNoMore(data, nomore, success = true) {
+			if (nomore != 'undefined') {
+				this.customNoMore = nomore == true ? 1 : 0;
 			}
 			this.addData(data, success);
 		},
@@ -1608,11 +1618,15 @@ export default {
 			if (this.pageNo === this.defaultPageNo && this.concat) {
 				this.totalData = [];
 			}
-			if (
-				!newVal.length ||
-				(newVal.length && newVal.length < this.defaultPageSize)
-			) {
-				this.loadingStatus = 2;
+			if (this.customNoMore !== -1) {
+				if (this.customNoMore === 0 || !newVal.length) {
+					this.loadingStatus = 2;
+				}
+			} else {
+				if (!newVal.length ||
+					(newVal.length && newVal.length < this.defaultPageSize)) {
+					this.loadingStatus = 2;
+				}
 			}
 			if (!this.totalData.length) {
 				if (this.concat) {
@@ -1666,7 +1680,7 @@ export default {
 				}
 			}
 		},
-		//通过@scroll事件检测是否滚动到了底部
+		//通过@scroll事件检测是否滚动到了底���
 		_checkScrolledToBottom(scrollDiff) {
 			if (this.cacheScrollNodeHeight === -1) {
 				this._getNodeClientRect('.zp-scroll-view').then((res) => {
@@ -1721,8 +1735,8 @@ export default {
 			this._onLoadingMore('click');
 		},
 		//点击返回顶部
-		_backToTopClick(){
-			if(!this.backToTopWithAnimate){
+		_backToTopClick() {
+			if (!this.backToTopWithAnimate) {
 				this._checkShouldShowBackToTop(1, 0);
 			}
 			this.scrollToTop(this.backToTopWithAnimate);

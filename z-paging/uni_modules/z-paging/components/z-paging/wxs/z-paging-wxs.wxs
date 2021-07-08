@@ -297,7 +297,7 @@ function _getAngleIsInRange(e, touch, state, dataset) {
 			if (angle < refresherMaxAngle) {
 				var hitReachMaxAngleCount = state.hitReachMaxAngleCount || 0;
 				state.hitReachMaxAngleCount = ++hitReachMaxAngleCount;
-				if (state.hitReachMaxAngleCount > 4) {
+				if (state.hitReachMaxAngleCount > 1) {
 					state.lastRefresherTouchmove = touch;
 					state.refresherReachMaxAngle = false;
 				}

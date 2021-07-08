@@ -8,6 +8,7 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 	position: relative;
 	/* #ifndef APP-NVUE */
 	display: flex;
+	height: 100%;
 	/* #endif */
 	flex-direction: column;
 }
