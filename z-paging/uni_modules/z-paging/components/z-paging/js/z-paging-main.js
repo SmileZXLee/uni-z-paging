@@ -1231,8 +1231,10 @@ export default {
 			return windowBottom;
 		},
 		nWaterfallColumnCount() {
-			const defaultColumnCount = this.finalNvueListIs === 'waterfall' ? 2 : 0;
-			return this._getNvueWaterfallSingleConfig('column-count', defaultColumnCount);
+			if(this.finalNvueListIs !== 'waterfall'){
+				return 0;
+			}
+			return this._getNvueWaterfallSingleConfig('column-count', 2);
 		},
 		nWaterfallColumnWidth() {
 			return this._getNvueWaterfallSingleConfig('column-width', 'auto');

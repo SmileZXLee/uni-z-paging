@@ -141,9 +141,8 @@
 			}
 		},
 		mounted() {
-			// #ifdef APP-PLUS
+			
 			this.list = this.list.concat(this.listNvue);
-			// #endif
 		},
 		methods: {
 			onRefresh() {

@@ -167,7 +167,7 @@ by ZXLee 2021-07-07
 			<slot />
 			<!-- 空数据图 -->
 			<view style="flex: 1;" key="z-paging-empty-view" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="showEmpty" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
-				<view class="zp-empty-view" style="flex: 1;">
+				<view class="zp-empty-view">
 					<slot v-if="$slots.empty" name="empty" />
 					<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" :emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" :emptyViewImgStyle="emptyViewImgStyle" :emptyViewReloadStyle="emptyViewReloadStyle" :emptyViewZIndex="emptyViewZIndex" @reload="_emptyViewReload">
 					</z-paging-empty-view>
