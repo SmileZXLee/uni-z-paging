@@ -1,3 +1,9 @@
+## 1.9.2（2021-07-09）
+## 【注意】由V1.9.0起，fixed属性默认值为true，z-paging默认会铺满屏幕。老项目更新请注意，使用侧滑滚动切换选项卡或需要局部使用z-paging请设置:fixed="false"。如果您希望fixed属性默认为false，请参考文档：z-paging.com，将fixed默认值设置为false。 
+1.新增`completeByNoMore(data,nomore)`方法，支持在请求结束时自行控制是否有更多数据。  
+2.修复在微信小程序中，:fixed="false"时列表未展示的BUG。  
+3.进一步兼容和整合vue和nvue的写法。  
+4.其他细节调整与优化。
 ## 1.9.1（2021-07-07）
 # 【注意】由V1.9.0起，fixed属性默认值为true，z-paging默认会铺满屏幕。老项目更新请注意，使用侧滑滚动切换选项卡或需要局部使用z-paging请设置:fixed="false"。如果您希望fixed属性默认为false，请参考文档：z-paging.com，将fixed默认值设置为false。
 1.修复在一些情况下空数据图无法展示或展示位置不正确的问题。  
