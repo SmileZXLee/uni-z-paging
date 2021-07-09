@@ -183,7 +183,7 @@ function _setTransformValue(value, instance, state) {
 }
 
 function _setTransform(transform, instance) {
-	if(transform == 'translateY(0px)'){
+	if (transform == 'translateY(0px)') {
 		transform = 'none';
 	}
 	instance.requestAnimationFrame(function() {
@@ -281,17 +281,19 @@ function _getAngleIsInRange(e, touch, state, dataset) {
 	var refresherAecc = _getIsTrue(dataset.refresheraecc);
 	var lastRefresherTouchmove = state.lastRefresherTouchmove;
 	var refresherReachMaxAngle = state.refresherReachMaxAngle;
+	var moveDistance = state.oldMoveDistance;
 	if (!lastRefresherTouchmove) {
 		return true;
 	}
 	if (refresherMaxAngle >= 0 && refresherMaxAngle <= 90 && lastRefresherTouchmove) {
-		if (!state.oldMoveDistance && !refresherAecc && refresherReachMaxAngle != null && !refresherReachMaxAngle) {
+		if ((!moveDistance || moveDistance < 1) && !refresherAecc && refresherReachMaxAngle != null && !
+			refresherReachMaxAngle) {
 			return false;
 		}
 		var x = Math.abs(touch.touchX - lastRefresherTouchmove.touchX);
 		var y = Math.abs(touch.touchY - lastRefresherTouchmove.touchY);
 		var z = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-		if (x && y) {
+		if ((x || y) && x > 1) {
 			var angle = Math.asin(y / z) / Math.PI * 180;
 			if (angle < refresherMaxAngle) {
 				var hitReachMaxAngleCount = state.hitReachMaxAngleCount || 0;

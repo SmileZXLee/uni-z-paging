@@ -2044,7 +2044,7 @@ export default {
 				const x = Math.abs(touch.touchX - this.lastRefresherTouchmove.touchX);
 				const y = Math.abs(refresherTouchmoveY - this.lastRefresherTouchmove.touchY);
 				const z = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-				if (x && y) {
+				if ((x || y) && x > 1) {
 					const angle = Math.asin(y / z) / Math.PI * 180;
 					if (angle < this.refresherMaxAngle) {
 						this.lastRefresherTouchmove = touch;
