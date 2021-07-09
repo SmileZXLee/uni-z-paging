@@ -1252,6 +1252,9 @@ export default {
 			const finalNvueListIs = this.finalNvueListIs;
 			return finalNvueListIs === 'scroller' || finalNvueListIs === 'view' ? 'view' : finalNvueListIs ===
 				'waterfall' ? 'header' : 'cell';
+		},
+		nSafeAreaBottomHeight(){
+			return this.safeAreaInsetBottom?this.safeAreaBottom:0;
 		}
 	},
 	methods: {
@@ -2426,6 +2429,11 @@ export default {
 			}
 		},
 		_updatePageScrollTopOrBottomHeight(type) {
+			// #ifdef APP-VUE
+			if(!this.usePageScroll){
+				return;
+			}
+			// #endif
 			const node = `.zp-page-scroll-${type}`;
 			const marginText = `margin${type.slice(0,1).toUpperCase() + type.slice(1)}`;
 			this.$nextTick(() => {
