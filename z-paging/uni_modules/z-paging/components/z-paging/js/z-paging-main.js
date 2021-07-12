@@ -11,7 +11,7 @@ import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
-const currentVersion = 'V1.9.2';
+const currentVersion = 'V1.9.3';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -759,7 +759,9 @@ export default {
 		this.wxsPropType = (new Date()).getTime().toString();
 		this.renderJsIgnore;
 		if (!this.refresherOnly && (this.mountedAutoCallReload && this.auto)) {
-			this._preReload();
+			this.$nextTick(() => {
+				this._preReload();
+			})
 		}
 		this.$nextTick(() => {
 			this.systemInfo = uni.getSystemInfoSync();
@@ -1231,7 +1233,7 @@ export default {
 			return windowBottom;
 		},
 		nWaterfallColumnCount() {
-			if(this.finalNvueListIs !== 'waterfall'){
+			if (this.finalNvueListIs !== 'waterfall') {
 				return 0;
 			}
 			return this._getNvueWaterfallSingleConfig('column-count', 2);
@@ -1253,8 +1255,8 @@ export default {
 			return finalNvueListIs === 'scroller' || finalNvueListIs === 'view' ? 'view' : finalNvueListIs ===
 				'waterfall' ? 'header' : 'cell';
 		},
-		nSafeAreaBottomHeight(){
-			return this.safeAreaInsetBottom?this.safeAreaBottom:0;
+		nSafeAreaBottomHeight() {
+			return this.safeAreaInsetBottom ? this.safeAreaBottom : 0;
 		}
 	},
 	methods: {
@@ -2430,7 +2432,7 @@ export default {
 		},
 		_updatePageScrollTopOrBottomHeight(type) {
 			// #ifdef APP-VUE
-			if(!this.usePageScroll){
+			if (!this.usePageScroll) {
 				return;
 			}
 			// #endif
