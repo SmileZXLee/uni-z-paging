@@ -12,7 +12,7 @@
 			v-if="zConfig.showLoadingMoreNoMoreLine&&zConfig.loadingStatus===2"></text>
 		<!-- #ifndef APP-NVUE -->
 		<image v-if="zConfig.loadingStatus===1&&zConfig.loadingMoreLoadingIconCustomImage.length"
-			:src="zConfig.loadingMoreLoadingIconCustomImage" class="zp-loading-more-line-loading-custom-image">
+			:src="zConfig.loadingMoreLoadingIconCustomImage" :class="{'zp-loading-more-line-loading-custom-image':true,'zp-loading-more-line-loading-custom-image-animated':zConfig.loadingMoreLoadingAnimated}">
 		</image>
 		<image
 			v-if="zConfig.loadingStatus===1&&zConfig.loadingMoreLoadingIconType==='flower'&&!zConfig.loadingMoreLoadingIconCustomImage.length"
@@ -89,6 +89,9 @@
 		margin-right: 8rpx;
 		width: 28rpx;
 		height: 28rpx;
+	}
+	
+	.zp-loading-more-line-loading-custom-image-animated{
 		/* #ifndef APP-NVUE */
 		animation: loading-circle 1s linear infinite;
 		/* #endif */

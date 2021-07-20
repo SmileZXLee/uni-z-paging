@@ -1,3 +1,7 @@
+## 1.9.3（2021-07-12）
+1.延后首次加载自动请求的时机，使其在onLoad之后触发。  
+2.修复使用`safe-area-inset-bottom`时，距离顶部有段空白的BUG。  
+3.优化横向切换与下拉刷新手势的兼容，横向切换时禁止下拉刷新的细节调整。  
 ## 1.9.2（2021-07-09）
 ## 【注意】由V1.9.0起，fixed属性默认值为true，z-paging默认会铺满屏幕。老项目更新请注意，使用侧滑滚动切换选项卡或需要局部使用z-paging请设置:fixed="false"。如果您希望fixed属性默认为false，请参考文档：z-paging.com，将fixed默认值设置为false。 
 1.新增`completeByNoMore(data,nomore)`方法，支持在请求结束时自行控制是否有更多数据。  

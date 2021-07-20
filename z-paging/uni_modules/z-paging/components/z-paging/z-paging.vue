@@ -5,7 +5,7 @@
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
 V1.9.3
-by ZXLee 2021-07-09
+by ZXLee 2021-07-12
 -- >
 <!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -133,7 +133,8 @@ by ZXLee 2021-07-09
 			<slot name="bottom"></slot>
 		</view>
 		<view v-if="showBackToTopClass" :class="backToTopClass" :style="[finalBackToTopStyle]" @click.stop="_backToTopClick">
-			<image class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop"></image>
+			<slot v-if="$slots.backToTop" name="backToTop" />
+			<image v-else class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop"></image>
 		</view>  
 	</view>
 	<!-- #endif -->
@@ -208,7 +209,8 @@ by ZXLee 2021-07-09
 		</view>
 		<slot name="bottom"></slot>
 		<view v-if="showBackToTopClass" :class="backToTopClass" :style="[finalBackToTopStyle]" @click.stop="_backToTopClick">
-			<image class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop"></image>
+			<slot v-if="$slots.backToTop" name="backToTop" />
+			<image v-else class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop"></image>
 		</view>
 	</view>
 	<!-- #endif -->

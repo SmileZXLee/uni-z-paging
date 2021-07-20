@@ -21,6 +21,5 @@
 	page {
 		background-color: white;
 	}
-
 	/* #endif */
 </style>

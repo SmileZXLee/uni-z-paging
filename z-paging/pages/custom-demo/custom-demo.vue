@@ -1,7 +1,7 @@
 <!-- 自定义下拉刷新与上拉加载演示(vue) -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" v-model="dataList" auto-show-back-to-top refresher-threshold="160rpx"
+		<z-paging ref="paging" v-model="dataList" loadingMoreLoadingIconCustomImage="/static/logo.png" auto-show-back-to-top refresher-threshold="160rpx"
 			@query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>

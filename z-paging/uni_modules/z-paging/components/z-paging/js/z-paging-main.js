@@ -434,6 +434,11 @@ export default {
 			type: String,
 			default: _getConfig('loadingMoreLoadingIconCustomImage', '')
 		},
+		//底部加载更多加载中view是否展示旋转动画，默认为是
+		loadingMoreLoadingAnimated: {
+			type: Boolean,
+			default: _getConfig('loadingMoreLoadingAnimated', true)
+		},
 		//是否启用加载更多数据(含滑动到底部加载更多数据和点击加载更多数据)，默认为是
 		loadingMoreEnabled: {
 			type: Boolean,
@@ -997,6 +1002,7 @@ export default {
 				loadingMoreLoadingIconCustomStyle: this.loadingMoreLoadingIconCustomStyle,
 				loadingMoreLoadingIconType: this.loadingMoreLoadingIconType,
 				loadingMoreLoadingIconCustomImage: this.loadingMoreLoadingIconCustomImage,
+				loadingMoreLoadingAnimated: this.loadingMoreLoadingAnimated,
 				showLoadingMoreNoMoreLine: this.showLoadingMoreNoMoreLine,
 				loadingMoreNoMoreLineCustomStyle: this.loadingMoreNoMoreLineCustomStyle,
 				loadingMoreDefaultText: this.finalLoadingMoreDefaultText,
@@ -1687,7 +1693,7 @@ export default {
 				}
 			}
 		},
-		//通过@scroll事件检测是否滚动到了底���
+		//通过@scroll事件检测是否滚动到了底部
 		_checkScrolledToBottom(scrollDiff) {
 			if (this.cacheScrollNodeHeight === -1) {
 				this._getNodeClientRect('.zp-scroll-view').then((res) => {
@@ -1747,6 +1753,11 @@ export default {
 				this._checkShouldShowBackToTop(1, 0);
 			}
 			this.scrollToTop(this.backToTopWithAnimate);
+			// if(this.backToTopWithAnimate){
+			// 	setTimeout(()=> {
+			// 		this.scrollToTop(false);
+			// 	}, 150);
+			// }
 		},
 		//滚动到顶部
 		_scrollToTop(animate, isPrivate = true) {
