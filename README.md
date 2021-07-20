@@ -55,7 +55,7 @@
 ```html
 <template>
     <view class="content">
-        <z-paging ref="paging" v-model="dataList" fixed @query="queryList">
+        <z-paging ref="paging" v-model="dataList" @query="queryList">
             <!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
             <view>
                 <view class="item" v-for="(item,index) in dataList">
@@ -96,7 +96,7 @@
 * 设置自定义emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理
 
 ```html
-<z-paging ref="paging" v-model="dataList" fixed @query="queryList">
+<z-paging ref="paging" v-model="dataList" @query="queryList">
     <!-- 设置自己的emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
     <empty-view slot="empty"></empty-view>
     <view>
@@ -112,7 +112,7 @@
 * 以修改【没有更多了】状态描述文字为例(将默认的"没有更多了"修改为"我也是有底线的！")
 
 ```html
-<z-paging ref="paging" v-model="dataList" fixed loading-more-no-more-text="我也是有底线的！" @query="queryList">
+<z-paging ref="paging" v-model="dataList" loading-more-no-more-text="我也是有底线的！" @query="queryList">
     <!-- 设置自己的emptyView组件，非必须。空数据时会自动展示空数据组件，不需要自己处理 -->
     <view>
         <view class="item" v-for="(item,index) in dataList">
@@ -127,7 +127,7 @@
 * `use-custom-refresher`需要设置为true(默认为true)，此时将不会使用uni自带的下拉刷新，转为使用z-paging自定义的下拉刷新，通过slot可以插入开发者自定义的下拉刷新view。
 
 ```html
-<z-paging ref="paging" v-model="dataList" fixed :refresher-threshold="80" @query="queryList">
+<z-paging ref="paging" v-model="dataList" :refresher-threshold="80" @query="queryList">
   <!-- 自定义下拉刷新view -->
   <!-- 注意注意注意！！QQ小程序或字节跳动小程序中自定义下拉刷新不支持slot-scope，将导致custom-refresher无法显示 -->
 	<!-- 如果是QQ小程序或字节跳动小程序，请参照demo中的sticky-demo.vue中的写法，此处使用slot-scope是为了减少data中无关变量声明，降低依赖 -->
@@ -148,7 +148,7 @@
 * 以修改【没有更多了】状态描述view为例
 
 ```html
-<z-paging ref="paging" v-model="dataList" fixed @query="queryList">
+<z-paging ref="paging" v-model="dataList" @query="queryList">
     <view>
         <view class="item" v-for="(item,index) in dataList">
             <view class="item-title">{{item.title}}</view>
@@ -232,7 +232,9 @@
 
 * 【关于自定义导航栏】若设置了`:fixed=true`，则必须将自定义导航栏放在z-paging标签中且添加slot="top"，如：`<custom-nav slot="top"></custom-nav>`，如果有多个需要固定顶部的元素，则书写`<view slot="top">需要固定顶部的元素</view>`。
 
-<p style="color:red;font-weight:bold">【注意】由V1.8.4起，支持使用v-model绑定list，之前的:list.sync依然有效。在新的项目中建议使用v-model，因为v-model是双向绑定的，修改页面中的list将同步修改z-paging中的list。</p>
+<p style="font-size:25px;color:red;font-weight:bold">【注意1】由V1.9.0起，fixed属性默认值为true，z-paging默认会铺满屏幕。老项目更新请注意，使用侧滑滚动切换选项卡或需要局部使用z-paging请设置:fixed="false"。如果您希望fixed属性默认为false，请参考下方的【全局配置】，将fixed默认值设置为false。</p>
+
+<p style="color:red;font-weight:bold">【注意2】由V1.8.4起，支持使用v-model绑定list，之前的:list.sync依然有效。在新的项目中建议使用v-model，因为v-model是双向绑定的，修改页面中的list将同步修改z-paging中的list。</p>
 
 # API
 
@@ -244,7 +246,7 @@
 
 [点击查看easycom组件规范](https://uniapp.dcloud.io/component/README?id=easycom组件规范)
 
-* 【方案1】在路径`@/uni_modules/z-paging`下创建`z-paging-config.js`(与z-paging目录下的readme.md同级)，`z-paging-config.js`中的内容如下所示。
+* (推荐)【方案1】在路径`@/uni_modules/z-paging`下创建`z-paging-config.js`(与z-paging目录下的readme.md同级)，`z-paging-config.js`中的内容如下所示。
 
 ```json
 module.exports = {
@@ -278,8 +280,8 @@ zConfig.setConfig({
 | :--------------------: | :----------------------------------------------------------: | :------------: | :----: | :----------------------------------------------------------: |
 |    default-page-no     |                     自定义pageNo(第几页)                     | Number\|String |   1    |                              -                               |
 |   default-page-size    |                自定义pageSize(每页显示多少条)                | Number\|String |   10   |                              -                               |
-|         fixed          | z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为否<p style="color:red;">(当使用内置scroll-view滚动时有效，nvue无效。若使用了fixed，请不要设置`height:100%`)</p> |    Boolean     | false  |                             true                             |
-| safe-area-inset-bottom | 是否开启底部安全区域适配<p style="color:red;">(nvue无效)</p> |    Boolean     | false  |                             true                             |
+|         fixed          | z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认铺满屏幕，页面中的view请放在z-paging标签内，需要固定在顶部的view使用slot="top"包住。<p style="color:red;">(当使用内置scroll-view滚动时有效，nvue无效。若使用了fixed，请不要设置`height:100%`)</p> |    Boolean     |  true  |                            false                             |
+| safe-area-inset-bottom |                   是否开启底部安全区域适配                   |    Boolean     | false  |                             true                             |
 |    use-page-scroll     | 使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略繁琐 |    Boolean     | false  |                             true                             |
 |  use-custom-refresher  | 是否使用自定义的下拉刷新，默认为是，即使用z-paging的下拉刷新。设置为false即代表使用uni scroll-view自带的下拉刷新，h5、App、微信小程序以外的平台不支持uni scroll-view自带的下拉刷新 |    Boolean     |  true  | h5、App、微信小程序以外的平台设置为false时，无法使用下拉刷新 |
 |       list.sync        | <p style="color:red;">(建议使用v-model代替)</p>绑定最终的列表渲染变量(页面data中声明的值)，当列表数据改变时，所绑定的变量会跟着改变 |     Array      |   -    |                              -                               |
@@ -405,11 +407,11 @@ zConfig.setConfig({
 
 ### <p style="color:#007AFF;font-weight:bold">【nvue独有】配置</p>
 
-|           参数            |                             说明                             |  类型   | 默认值 |       可选值        |
-| :-----------------------: | :----------------------------------------------------------: | :-----: | :----: | :-----------------: |
-|       nvue-list-is        | nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list<p style="color:red;">(为list和waterfall时仅可插入`<header>`和`<cell>`，为scroller时可插入任意view，但无法插入list独有的子view)</p> | String  |  list  | waterfall、scroller |
-| nvue-waterfall-confignvue | waterfall配置，仅在nvue中且nvueListIs=waterfall时有效，如：{'column-gap': 20}，配置参数详情参见：[https://uniapp.dcloud.io/component/waterfall](https://uniapp.dcloud.io/component/waterfall) | Object  |   -    |          -          |
-|        nvue-bounce        | nvue 控制是否回弹效果，iOS不支持动态修改<p style="color:red;">(若禁用回弹效果，下拉刷新将失效)</p> | Boolean |  true  |        false        |
+|         参数          |                             说明                             |  类型   | 默认值 |       可选值        |
+| :-------------------: | :----------------------------------------------------------: | :-----: | :----: | :-----------------: |
+|     nvue-list-is      | nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list<p style="color:red;">(为list和waterfall时仅可插入`<header>`和`<cell>`，为scroller时可插入任意view，但无法插入list独有的子view)</p> | String  |  list  | waterfall、scroller |
+| nvue-waterfall-config | waterfall配置，仅在nvue中且nvueListIs=waterfall时有效，如：{'column-gap': 20}，配置参数详情参见：[https://uniapp.dcloud.io/component/waterfall](https://uniapp.dcloud.io/component/waterfall) | Object  |   -    |          -          |
+|      nvue-bounce      | nvue 控制是否回弹效果，iOS不支持动态修改<p style="color:red;">(若禁用回弹效果，下拉刷新将失效)</p> | Boolean |  true  |        false        |
 
 ### <p style="color:#007AFF;font-weight:bold">【i18n国际化】配置</p>
 
@@ -456,6 +458,7 @@ zConfig.setConfig({
 | autowire-query-name  | 【极简写法】自动注入的query名，可自动调用父view(包含ref="paging")中的query方法<p style="color:red;">z-paging标签必须设置`res="paging"`</p> |     String     |   ""   |   -    |
 |     auto-height      | <p style="color:red;">(建议使用fixed代替)</p>z-paging是否自动高度，若自动高度则会自动铺满屏幕，不需要设置父view为100%等操作。（注意：自动高度可能并不准确） |    Boolean     | false  |  true  |
 | auto-height-addition | <p style="color:red;">(建议使用fixed代替)</p>z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数。如"-10rpx"，"10.5px" | Number\|String |  0px   |   -    |
+|        concat        |    自动拼接complete中传过来的数组(使用聊天记录模式时无效)    |    Boolean     |  true  | false  |
 |  show-console-error  |                  是否将错误信息打印至控制台                  |    Boolean     |  true  | false  |
 
 ## <p style="color:#007AFF;font-weight:bold">Slot</p>
@@ -465,8 +468,8 @@ zConfig.setConfig({
 | empty              | 自定义空数据占位view                                         |
 | loading            | 自定义页面reload时的加载view，注意：这个slot默认仅会在第一次加载时显示，若需要每次reload时都显示，需要将`auto-hide-loading-after-first-loaded`设置为false |
 | refresher          | 自定义下拉刷新view，设置后则不使用uni自带的下拉刷新view和z-paging自定义的下拉刷新view。此view的style必须设置为`height:100%`<p style="color:red;">(use-custom-refresher为true时生效)</p> |
-| top                | 可以将自定义导航栏、tab-view等需要固定的<p style="color:red;">(不需要跟着滚动的)</p>元素放入slot="top"的view中。 |
-| bottom             | 可以将需要固定在底部的<p style="color:red;">(不需要跟着滚动的)</p>元素放入slot="bottom"的view中。 |
+| top                | 可以将自定义导航栏、tab-view等需要固定的<p style="color:red;">(不需要跟着滚动的)</p>元素放入slot="top"的view中。<br/>注意，当有多个需要固定的view时，请用一个view包住它们，并且在这个view上设置slot="top"。 |
+| bottom             | 可以将需要固定在底部的<p style="color:red;">(不需要跟着滚动的)</p>元素放入slot="bottom"的view中。<br>注意，当有多个需要固定的view时，请用一个view包住它们，并且在这个view上设置slot="bottom"。 |
 | chatLoading        | 使用聊天记录模式时自定义顶部加载更多view，`use-chat-record-mode`为true时有效 |
 | loadingMoreDefault | 自定义滑动到底部"默认"状态的view                             |
 | loadingMoreLoading | 自定义滑动到底部"加载中"状态的view                           |
@@ -484,6 +487,7 @@ zConfig.setConfig({
 | ------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | reload                    | 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果   | value：(传true或false，默认为false)reload时是否展示下拉刷新动画，默认为否 |
 | complete                  | 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理<p style="color:red;">(全局错误处理：当请求失败时，也必须调用complete，可在封装的网络请求错误的地方书写：`uni.$emit('z-paging-error-emit');`  即可将当前加载中状态的z-paging设置为请求失败状态)</p> | value1:请求结果数组；<br>value2:是否请求成功，不填默认为true。<br><p style="color:red;">请求失败时直接调用：this.$refs.paging.complete(false); 即可；如果只是想表达请求结束，则调用：this.$refs.paging.complete(); 即可</p> |
+| completeByNoMore          | 【自行判断是否有更多数据】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理 | value1:请求结果数组；<br/>value2:是否有更多数据，若为true则可以继续滚动到底部加载更多，但如果在某个时刻value1传入了空数组，也代表着没有更多数据了；<br/>value3:是否请求成功，不填默认为true |
 | completeByKey             | 【保证数据一致】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理<p style="color:red;">(关于数据一致性，请查看demo中`consistency-demo.vue`文件)</p> | value1:请求结果数组；<br/>value2:dataKey，需与:data-key绑定的一致；<br/>value3:是否请求成功，不填默认为true |
 | clean                     | 清空分页数据，pageNo恢复为默认值。                           | -                                                            |
 | setLocalPaging            | 设置本地分页，请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging作分页处理<p style="color:red;">（若调用了此方法，则上拉加载更多时内部会自动分页，不会触发@query所绑定的事件）</p> | value1:请求结果数组；<br/>value2:是否请求成功，不填默认为true |
@@ -501,7 +505,7 @@ zConfig.setConfig({
 | addChatRecordData         | 添加聊天记录，`use-chat-record-mode`为true时有效             | value1:需要添加的聊天数据，可以是一条数据或一组数据；<br/>value2:是否滚动到底部，不填默认为true；<br/>value3:是否使用动画滚动到底部，不填默认为true |
 | addDataFromTop            | 从顶部添加数据，不会影响分页的pageNo和pageSize               | value1:需要添加的数据，可以是一条数据或一组数据；<br/>value2:是否滚动到顶部，不填默认为true；<br/>value3:是否使用动画滚动到顶部，不填默认为true |
 | resetTotalData            | <p style="color:red;">(建议使用v-model代替:list.sync，则无需调用此方法)</p>重新设置列表数据，调用此方法不会影响pageNo和pageSize，也不会触发请求。适用场景：当需要删除列表中某一项时，将删除对应项后的数组通过此方法传递给z-paging。<p style="color:red;">(当出现类似的需要修改列表数组的场景时，请使用此方法，请勿直接修改page中:list.sync绑定的数组)</p> | value:修改后的列表数组                                       |
-| version                   | 获取当前版本号                                               | -                                                            |
+| getVersion                | 获取当前版本号                                               | -                                                            |
 | setListSpecialEffects     | 设置nvue List的specialEffects                                | value1:参见[https://uniapp.dcloud.io/component/list?id=listsetspecialeffects](https://uniapp.dcloud.io/component/list?id=listsetspecialeffects) |
 
 ### <p style="color:#007AFF;font-weight:bold">监听组件事件</p>
