@@ -1,4 +1,4 @@
-const listCount = 24;
+let listCount = 24;
 const loadingTime = 500;
 const showLog = true;
 /* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件 */
@@ -56,6 +56,12 @@ function callQueryResult(callback, arg) {
 	}, loadingTime)
 }
 
+function queryListLong(pageNo, pageSize, type, callback) {
+	listCount = 224;
+	this.queryList(pageNo,pageSize,type,callback);
+}
+
 module.exports = {
-	queryList
+	queryList,
+	queryListLong
 }

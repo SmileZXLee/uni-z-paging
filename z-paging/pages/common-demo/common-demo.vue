@@ -42,6 +42,7 @@
 				})
 			},
 			itemClick(item,index) {
+				console.log('点击了', item.title);
 			}
 		}
 	}

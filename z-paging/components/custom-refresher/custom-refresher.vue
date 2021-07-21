@@ -1,3 +1,4 @@
+<!-- 自定义的下拉刷新view -->
 <template>
 	<view class="refresher-container">
 		<!-- 这里的图片请换成自己项目的图片 -->

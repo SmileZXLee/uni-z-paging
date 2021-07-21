@@ -161,6 +161,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/custom-back-to-top-demo/custom-back-to-top-demo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "自定义返回顶部view演示(vue)",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

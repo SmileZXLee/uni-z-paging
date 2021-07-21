@@ -11,7 +11,7 @@ import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
-const currentVersion = 'V1.9.3';
+const currentVersion = 'V1.9.4';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -745,6 +745,13 @@ export default {
 				return _getConfig('nvueBounce', true);
 			}
 		},
+		//nvue中通过代码滚动到顶部/底部时，是否加快动画效果(无滚动动画时无效)，默认为否
+		nvueFastScroll: {
+			type: Boolean,
+			default: function() {
+				return _getConfig('nvueFastScroll', false);
+			}
+		},
 		//是否将错误信息打印至控制台，默认为是
 		showConsoleError: {
 			type: Boolean,
@@ -1403,12 +1410,28 @@ export default {
 		},
 		//滚动到顶部，animate为是否展示滚动动画，默认为是
 		scrollToTop(animate) {
-			this._scrollToTop(animate, false);
+			this.$nextTick(() => {
+				this._scrollToTop(animate, false);
+				// #ifdef APP-NVUE
+				if (this.nvueFastScroll && animate) {
+					setTimeout(() => {
+						this._scrollToTop(false, false);
+					}, 150);
+				}
+				// #endif
+			})
 		},
 		//滚动到底部，animate为是否展示滚动动画，默认为是
 		scrollToBottom(animate) {
 			this.$nextTick(() => {
 				this._scrollToBottom(animate);
+				// #ifdef APP-NVUE
+				if (this.nvueFastScroll && animate) {
+					setTimeout(() => {
+						this._scrollToBottom(false);
+					}, 150);
+				}
+				// #endif
 			})
 		},
 		//滚动到指定view(vue中有效)。sel为需要滚动的view的id值，不包含"#"；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
@@ -1753,11 +1776,6 @@ export default {
 				this._checkShouldShowBackToTop(1, 0);
 			}
 			this.scrollToTop(this.backToTopWithAnimate);
-			// if(this.backToTopWithAnimate){
-			// 	setTimeout(()=> {
-			// 		this.scrollToTop(false);
-			// 	}, 150);
-			// }
 		},
 		//滚动到顶部
 		_scrollToTop(animate, isPrivate = true) {
