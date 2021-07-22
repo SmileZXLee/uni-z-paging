@@ -1215,10 +1215,13 @@ export default {
 				return 0;
 			}
 			let safeAreaBottom = 0;
-			// #ifdef APP-PLUS || H5 || MP-WEIXIN
+			// #ifdef MP-WEIXIN
+			safeAreaBottom = this.systemInfo.screenHeight - this.systemInfo.safeArea.bottom;
+			// #endif
+			// #ifdef APP-PLUS || H5
 			safeAreaBottom = this.systemInfo.safeAreaInsets.bottom || 0;
 			// #endif
-			return safeAreaBottom;
+			return Math.abs(safeAreaBottom);
 		},
 		renderJsIgnore() {
 			if ((this.usePageScroll && this.useChatRecordMode) || !this.refresherEnabled || !this.useCustomRefresher) {
@@ -2460,7 +2463,7 @@ export default {
 			}
 		},
 		_updatePageScrollTopOrBottomHeight(type) {
-			// #ifdef APP-VUE
+			// #ifndef APP-NVUE
 			if (!this.usePageScroll) {
 				return;
 			}
