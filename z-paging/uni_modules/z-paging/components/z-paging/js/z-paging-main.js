@@ -215,7 +215,7 @@ export default {
 			wxsPropType: '',
 			refresherRevealStackCount: 0,
 			renderPropScrollTop: 0,
-			renderUsePageScroll: false,
+			renderPropUsePageScroll: -1,
 			wxsIsScrollTopInTopRange: true,
 			wxsScrollTop: 0,
 			wxsPageScrollTop: 0,
@@ -923,8 +923,8 @@ export default {
 		},
 		usePageScroll: {
 			handler(newVal) {
-				this.$nextTick(() => {
-					this.renderUsePageScroll = newVal;
+				this.$nextTick(()=>{
+					this.renderPropUsePageScroll = newVal;
 				})
 				if (this.loaded && this.autoHeight) {
 					this._setAutoHeight(!newVal);
@@ -1748,6 +1748,11 @@ export default {
 						})
 					}
 				}
+				//#ifndef APP-NVUE
+				if(this.isIos){
+					this.renderPropUsePageScrollChange(this.usePageScroll);
+				}
+				//#endif
 			}
 			this.$emit('scrolltolower', from);
 			if (from === 'toBottom' && (!this.toBottomLoadingMoreEnabled || this.useChatRecordMode)) {

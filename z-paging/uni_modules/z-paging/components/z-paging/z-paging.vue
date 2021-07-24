@@ -55,7 +55,7 @@ by ZXLee 2021-07-21
 					<!-- #endif -->
 					<!-- #ifdef APP-VUE || H5 -->
 					:change:renderPropScrollTop="pagingRenderjs.renderPropScrollTopChange" :renderPropScrollTop="renderPropScrollTop"
-					:change:renderUsePageScroll="pagingRenderjs.renderUsePageScrollChange" :renderUsePageScroll="renderUsePageScroll"
+					:change:renderPropUsePageScroll="pagingRenderjs.renderPropUsePageScrollChange" :renderPropUsePageScroll="renderPropUsePageScroll"
 					<!-- #endif -->
 					>	
 						<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="zp-custom-refresher-view"

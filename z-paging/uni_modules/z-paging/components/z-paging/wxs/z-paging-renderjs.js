@@ -5,26 +5,25 @@
 // 使用renderjs在app-vue和h5中对touchmove事件冒泡进行处理
 
 import zUtils from '../js/z-paging-utils'
+var data = {
+	renderScrollTop: 0,
+	renderUsePageScroll: false,
+	renderIsIos: uni.getSystemInfoSync().platform === 'ios',
+	startY: 0,
+	isTouchFromZPaging: false
+}
+
 export default {
-	data() {
-		return {
-			renderScrollTop: 0,
-			renderUsePageScroll: false,
-			renderIsIos: uni.getSystemInfoSync().platform === 'ios',
-			startY: 0,
-			isTouchFromZPaging: false
-		}
-	},
 	mounted() {
 		this._handleTouch();
 	},
 	methods: {
 		//接收逻辑层发送的数据
 		renderPropScrollTopChange(newVal, oldVal, ownerVm, vm) {
-			this.renderScrollTop = newVal;
+			data.renderScrollTop = newVal;
 		},
-		renderUsePageScrollChange(newVal, oldVal, ownerVm, vm) {
-			this.renderUsePageScroll = newVal;
+		renderPropUsePageScrollChange(newVal, oldVal, ownerVm, vm) {
+			data.renderUsePageScroll = newVal;
 		},
 		//拦截处理touch事件
 		_handleTouch() {
@@ -40,14 +39,14 @@ export default {
 		},
 		_handleTouchstart(e) {
 			const touch = zUtils.getCommonTouch(e);
-			this.startY = touch.touchY;
-			this.isTouchFromZPaging = zUtils.getTouchFromZPaging(e.target);
+			data.startY = touch.touchY;
+			data.isTouchFromZPaging = zUtils.getTouchFromZPaging(e.target);
 		},
 		_handleTouchmove(e) {
 			const touch = zUtils.getCommonTouch(e);
-			var moveY = touch.touchY - this.startY;
-			if ((this.isTouchFromZPaging && this.renderScrollTop < 1 && moveY > 0) || (this.isTouchFromZPaging && this
-					.renderIsIos && !this
+			var moveY = touch.touchY - data.startY;
+			if ((data.isTouchFromZPaging && data.renderScrollTop < 1 && moveY > 0) || (data.isTouchFromZPaging && data
+					.renderIsIos && !data
 					.renderUsePageScroll && moveY <
 					0)) {
 				if (e.cancelable && !e.defaultPrevented) {
