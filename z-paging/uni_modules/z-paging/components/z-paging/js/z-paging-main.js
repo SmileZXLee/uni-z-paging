@@ -923,7 +923,7 @@ export default {
 		},
 		usePageScroll: {
 			handler(newVal) {
-				this.$nextTick(()=>{
+				this.$nextTick(() => {
 					this.renderPropUsePageScroll = newVal;
 				})
 				if (this.loaded && this.autoHeight) {
@@ -1748,8 +1748,8 @@ export default {
 						})
 					}
 				}
-				//#ifndef APP-NVUE
-				if(this.isIos){
+				//#ifdef APP-VUE || H5
+				if (this.isIos) {
 					this.renderPropUsePageScrollChange(this.usePageScroll);
 				}
 				//#endif
