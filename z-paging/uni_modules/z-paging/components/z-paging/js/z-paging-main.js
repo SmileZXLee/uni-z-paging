@@ -260,6 +260,11 @@ export default {
 				return _getConfig('autowireQueryName', '');
 			},
 		},
+		//调用complete后延迟处理的时间，单位为毫秒，默认0毫秒
+		delay: {
+			type: [Number, String],
+			default: _getConfig('delay', 0),
+		},
 		//i18n国际化设置语言，支持简体中文(zh-cn)、繁体中文(zh-hant-cn)和英文(en)
 		language: {
 			type: String,
@@ -1299,7 +1304,13 @@ export default {
 		//与上方complete方法功能一致，新版本中设置服务端回调数组请使用complete方法
 		addData(data, success = true) {
 			this.$nextTick(() => {
-				this._addData(data, success, false);
+				if (this.delay > 0) {
+					setTimeout(() => {
+						this._addData(data, success, false);
+					}, this.delay)
+				} else {
+					this._addData(data, success, false);
+				}
 			})
 		},
 		//设置i18n国际化语言
