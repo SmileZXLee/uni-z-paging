@@ -6,7 +6,7 @@
 			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内，并用header(吸顶)或cell包住！ -->
 			<!-- 在nvue中，z-paging中插入的列表item必须是cell，必须使用cell包住，因为在nvue中，z-paging使用的是nvue的list组件。 -->
-			<cell class="item" :ref="`test${index}`" v-for="(item,index) in dataList" :key="item.title" @click="itemClick(item)">
+			<cell class="item" v-for="(item,index) in dataList" :key="item.title" @click="itemClick(item)">
 				<text class="item-title">{{item.title}}</text>
 				<text class="item-detail">{{item.detail}}</text>
 				<view class="item-line"></view>
@@ -41,8 +41,7 @@
 				})
 			},
 			itemClick(item) {
-				console.log('点击了', this.$refs.test5);
-				this.$refs.paging.scrollIntoViewByView(this.$refs.test5);
+				console.log('点击了', item.title);
 			}
 		}
 	}
