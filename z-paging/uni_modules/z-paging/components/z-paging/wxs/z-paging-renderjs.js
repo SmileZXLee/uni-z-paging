@@ -23,7 +23,9 @@ export default {
 			data.renderScrollTop = newVal;
 		},
 		renderPropUsePageScrollChange(newVal, oldVal, ownerVm, vm) {
-			data.renderUsePageScroll = newVal;
+			if(newVal !== -1){
+				data.renderUsePageScroll = newVal;
+			}
 		},
 		//拦截处理touch事件
 		_handleTouch() {

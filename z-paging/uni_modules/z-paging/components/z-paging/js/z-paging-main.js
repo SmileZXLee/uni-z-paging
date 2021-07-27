@@ -1750,7 +1750,10 @@ export default {
 				}
 				//#ifdef APP-VUE || H5
 				if (this.isIos) {
-					this.renderPropUsePageScrollChange(this.usePageScroll);
+					this.renderPropUsePageScroll = -1;
+					this.$nextTick(() => {
+						this.renderPropUsePageScroll = this.usePageScroll;
+					})
 				}
 				//#endif
 			}
@@ -1880,6 +1883,8 @@ export default {
 					if (dataType === '[object Number]') {
 						const els = refs[`z-paging-${sel}`];
 						el = els ? els[0] : null;
+					} else if (dataType === '[object Array]') {
+						el = sel[0];
 					} else {
 						el = sel;
 					}
