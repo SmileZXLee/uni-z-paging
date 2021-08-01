@@ -45,7 +45,6 @@ export default {
 			data.isTouchFromZPaging = zUtils.getTouchFromZPaging(e.target);
 		},
 		_handleTouchmove(e) {
-			
 			const touch = zUtils.getCommonTouch(e);
 			var moveY = touch.touchY - data.startY;
 			if ((data.isTouchFromZPaging && data.renderScrollTop < 1 && moveY > 0) || (data.isTouchFromZPaging && data

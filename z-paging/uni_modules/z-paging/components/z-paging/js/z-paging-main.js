@@ -11,7 +11,7 @@ import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
-const currentVersion = 'V1.9.5';
+const currentVersion = 'V1.9.7';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -222,7 +222,8 @@ export default {
 			wxsOnPullingDown: false,
 			disabledBounce: false,
 			cacheScrollNodeHeight: -1,
-			customNoMore: -1
+			customNoMore: -1,
+			checkScrolledToBottomTimeOut: null,
 		};
 	},
 	props: {
@@ -986,6 +987,9 @@ export default {
 		}
 	},
 	computed: {
+		pageSize() {
+			return this.defaultPageSize;
+		},
 		pullDownDisTimeStamp() {
 			return 1000 / this.refresherFps;
 		},
@@ -1286,12 +1290,42 @@ export default {
 			this.customNoMore = -1;
 			this.addData(data, success);
 		},
-		//【保证数据一致】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为dataKey，需与:data-key绑定的一致，第三个参数为是否成功(默认是是）
+		//【保证数据一致】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为dataKey，需与:data-key绑定的一致，第三个参数为是否成功(默认为是）
 		completeByKey(data, dataKey = null, success = true) {
 			if (dataKey !== null && this.dataKey !== null && dataKey !== this.dataKey) {
 				return;
 			}
 			this.customNoMore = -1;
+			this.addData(data, success);
+		},
+		//【通过totalCount判断是否有更多数据】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为totalCount(列表总数)，第三个参数为是否成功(默认为是）
+		completeByTotalCount(data, totalCount, success = true) {
+			if (totalCount == 'undefined') {
+				this.customNoMore = -1;
+			} else {
+				let dataTypeRes = this._checkDataType(data, success);
+				data = dataTypeRes.data;
+				success = dataTypeRes.success;
+				if (totalCount >= 0 && success) {
+					this.$nextTick(() => {
+						let nomore = true;
+						let realTotalDataCount = this.realTotalData.length;
+						if (this.pageNo == this.defaultPageNo) {
+							realTotalDataCount = 0;
+						}
+						let exceedCount = realTotalDataCount + data.length - totalCount;
+						if (exceedCount >= 0) {
+							nomore = false;
+							exceedCount = this.defaultPageSize - exceedCount;
+							if (exceedCount > 0 && exceedCount < data.length) {
+								data = data.splice(0, exceedCount);
+							}
+						}
+						this.completeByNoMore(data, nomore, success);
+					})
+					return;
+				}
+			}
 			this.addData(data, success);
 		},
 		//【自行判断是否有更多数据】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否有更多数据，第三个参数为是否成功(默认是是）
@@ -1610,19 +1644,9 @@ export default {
 			if (this.isUserPullDown && this.pageNo === this.defaultPageNo) {
 				this.isUserPullDown = false;
 			}
-			const dataType = Object.prototype.toString.call(data);
-			if (dataType === '[object Boolean]') {
-				success = data;
-				data = [];
-			} else if (dataType !== '[object Array]') {
-				data = [];
-				let methodStr = isLocal ? 'setLocalPaging' : 'complete';
-				if (dataType !== '[object Undefined]') {
-					if (this.showConsoleError) {
-						zUtils.consoleErr(`${methodStr}参数类型不正确，第一个参数类型必须为Array!`);
-					}
-				}
-			}
+			let dataTypeRes = this._checkDataType(data, success);
+			data = dataTypeRes.data;
+			success = dataTypeRes.success;
 			if (this.refresherTriggered) {
 				this.refresherTriggered = false;
 			}
@@ -1731,7 +1755,12 @@ export default {
 			}
 		},
 		//通过@scroll事件检测是否滚动到了底部
-		_checkScrolledToBottom(scrollDiff) {
+		_checkScrolledToBottom(scrollDiff,checked=false) {
+			console.log('newScrollDiff',scrollDiff)
+			if (this.checkScrolledToBottomTimeOut) {
+				clearTimeout(this.checkScrolledToBottomTimeOut);
+				this.checkScrolledToBottomTimeOut = null;
+			}
 			if (this.cacheScrollNodeHeight === -1) {
 				this._getNodeClientRect('.zp-scroll-view').then((res) => {
 					if (res) {
@@ -1744,7 +1773,17 @@ export default {
 				});
 			} else {
 				if (scrollDiff - this.cacheScrollNodeHeight <= this.finalLowerThreshold) {
+					console.log('加载更多')
 					this._onLoadingMore('toBottom');
+				} else if (scrollDiff - this.cacheScrollNodeHeight <= 500 && !checked) {
+					this.checkScrolledToBottomTimeOut = setTimeout(() => {
+						this._getNodeClientRect('.zp-scroll-view',true,true).then((res) => {
+							this.oldScrollTop = res[0].scrollTop;
+							const newScrollDiff = res[0].scrollHeight - this.oldScrollTop;
+							this._checkScrolledToBottom(newScrollDiff,true);
+							console.log('进来了！！！',this.oldScrollTop)
+						})
+					}, 150)
 				}
 			}
 		},
@@ -2354,7 +2393,7 @@ export default {
 			}
 		},
 		//获取节点尺寸
-		_getNodeClientRect(select, inThis = true) {
+		_getNodeClientRect(select, inThis = true, scrollOffset = false) {
 			// #ifdef APP-NVUE
 			select = select.replace('.', '').replace('#', '');
 			const ref = this.$refs[select];
@@ -2384,7 +2423,11 @@ export default {
 			//#ifdef MP-ALIPAY
 			res = uni.createSelectorQuery();
 			//#endif
-			res.select(select).boundingClientRect();
+			if(scrollOffset){
+				res.select(select).scrollOffset();
+			}else{
+				res.select(select).boundingClientRect();
+			}
 			return new Promise((resolve, reject) => {
 				res.exec(data => {
 					if (data && data != '' && data != undefined && data.length) {
@@ -2565,6 +2608,26 @@ export default {
 					this.myParentQuery(this.pageNo, this.defaultPageSize);
 				}
 			}
+		},
+		//检查complete data的类型
+		_checkDataType(data, success) {
+			const dataType = Object.prototype.toString.call(data);
+			if (dataType === '[object Boolean]') {
+				success = data;
+				data = [];
+			} else if (dataType !== '[object Array]') {
+				data = [];
+				let methodStr = isLocal ? 'setLocalPaging' : 'complete';
+				if (dataType !== '[object Undefined]') {
+					if (this.showConsoleError) {
+						zUtils.consoleErr(`${methodStr}参数类型不正确，第一个参数类型必须为Array!`);
+					}
+				}
+			}
+			return {
+				data,
+				success
+			};
 		},
 		// ------------nvue独有的方法----------------
 		//列表滚动时触发
