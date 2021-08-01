@@ -1303,7 +1303,7 @@ export default {
 			if (totalCount == 'undefined') {
 				this.customNoMore = -1;
 			} else {
-				let dataTypeRes = this._checkDataType(data, success);
+				let dataTypeRes = this._checkDataType(data, success, false);
 				data = dataTypeRes.data;
 				success = dataTypeRes.success;
 				if (totalCount >= 0 && success) {
@@ -1644,7 +1644,7 @@ export default {
 			if (this.isUserPullDown && this.pageNo === this.defaultPageNo) {
 				this.isUserPullDown = false;
 			}
-			let dataTypeRes = this._checkDataType(data, success);
+			let dataTypeRes = this._checkDataType(data, success, true);
 			data = dataTypeRes.data;
 			success = dataTypeRes.success;
 			if (this.refresherTriggered) {
@@ -1755,8 +1755,7 @@ export default {
 			}
 		},
 		//通过@scroll事件检测是否滚动到了底部
-		_checkScrolledToBottom(scrollDiff,checked=false) {
-			console.log('newScrollDiff',scrollDiff)
+		_checkScrolledToBottom(scrollDiff, checked = false) {
 			if (this.checkScrolledToBottomTimeOut) {
 				clearTimeout(this.checkScrolledToBottomTimeOut);
 				this.checkScrolledToBottomTimeOut = null;
@@ -1773,15 +1772,13 @@ export default {
 				});
 			} else {
 				if (scrollDiff - this.cacheScrollNodeHeight <= this.finalLowerThreshold) {
-					console.log('加载更多')
 					this._onLoadingMore('toBottom');
 				} else if (scrollDiff - this.cacheScrollNodeHeight <= 500 && !checked) {
 					this.checkScrolledToBottomTimeOut = setTimeout(() => {
-						this._getNodeClientRect('.zp-scroll-view',true,true).then((res) => {
+						this._getNodeClientRect('.zp-scroll-view', true, true).then((res) => {
 							this.oldScrollTop = res[0].scrollTop;
 							const newScrollDiff = res[0].scrollHeight - this.oldScrollTop;
-							this._checkScrolledToBottom(newScrollDiff,true);
-							console.log('进来了！！！',this.oldScrollTop)
+							this._checkScrolledToBottom(newScrollDiff, true);
 						})
 					}, 150)
 				}
@@ -2229,7 +2226,7 @@ export default {
 		},
 		//处理scroll-view bounce是否生效
 		_handleScrollViewDisableBounce(e) {
-			if (!this.usePageScroll && this.isIos && !this.scrollToTopBounceEnabled) {
+			if (!this.usePageScroll && !this.scrollToTopBounceEnabled) {
 				if (!e.bounce) {
 					if (this.scrollEnable) {
 						this.scrollEnable = false;
@@ -2423,9 +2420,9 @@ export default {
 			//#ifdef MP-ALIPAY
 			res = uni.createSelectorQuery();
 			//#endif
-			if(scrollOffset){
+			if (scrollOffset) {
 				res.select(select).scrollOffset();
-			}else{
+			} else {
 				res.select(select).boundingClientRect();
 			}
 			return new Promise((resolve, reject) => {
@@ -2610,7 +2607,7 @@ export default {
 			}
 		},
 		//检查complete data的类型
-		_checkDataType(data, success) {
+		_checkDataType(data, success, isLocal) {
 			const dataType = Object.prototype.toString.call(data);
 			if (dataType === '[object Boolean]') {
 				success = data;

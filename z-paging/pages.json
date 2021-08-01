@@ -181,6 +181,10 @@
 		//支付宝和钉钉小程序需要取消回弹效果
 		"mp-alipay": {
 			"allowsBounceVertical": "NO"
+		},
+		//在App中，取消安卓下拉刷新灰色半弧形效果
+		"app-plus" : {
+			"bounce" : "none"
 		}
 	}
 }
