@@ -21,6 +21,11 @@ let config = null;
 const weexDom = weex.requireModule('dom');
 const weexAnimation = weex.requireModule('animation');
 // #endif
+
+/*
+当z-paging未使用uni_modules管理时，控制台会有警告：WARNING: Module not found: Error: Can't resolve '@/uni_modules/z-paging'...
+此时注释下方try中的代码即可
+*/
 try {
 	const contextKeys = require.context('@/uni_modules/z-paging', false, /\z-paging-config$/).keys();
 	if (contextKeys.length) {
@@ -224,6 +229,7 @@ export default {
 			cacheScrollNodeHeight: -1,
 			customNoMore: -1,
 			customRefresherHeight: -1,
+			showCustomRefresher: false,
 			checkScrolledToBottomTimeOut: null,
 		};
 	},
@@ -791,8 +797,10 @@ export default {
 		})
 		this.updatePageScrollTopHeight();
 		this.updatePageScrollBottomHeight();
-		if(this.finalRefresherEnabled && this.useCustomRefresher){
-			this.isTouchmoving = true;
+		if (this.finalRefresherEnabled && this.useCustomRefresher) {
+			this.$nextTick(()=>{
+				this.isTouchmoving = true;
+			})
 		}
 		uni.$on(i18nUpdateKey, () => {
 			this.tempLanguageUpdateKey = (new Date()).getTime();
@@ -1270,9 +1278,9 @@ export default {
 			const showRefresher = this.finalRefresherEnabled && this.useCustomRefresher && this.isTouchmoving;
 			// #ifndef APP-NVUE
 			if (this.customRefresherHeight === -1 && showRefresher) {
-				this.$nextTick(() => {
+				setTimeout(()=>{
 					this._updateCustomRefresherHeight();
-				})
+				},100)
 			}
 			// #endif
 			return showRefresher;
@@ -2579,7 +2587,9 @@ export default {
 			this._getNodeClientRect('.zp-custom-refresher-slot-view').then((res) => {
 				if (res) {
 					this.customRefresherHeight = res[0].height;
-					console.log(this.customRefresherHeight)
+					if(this.customRefresherHeight > 0){
+						this.showCustomRefresher = true;
+					}
 				} else {
 					this.customRefresherHeight = 0;
 				}

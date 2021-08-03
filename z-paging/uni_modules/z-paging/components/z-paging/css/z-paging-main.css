@@ -42,6 +42,10 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 	position: relative;
 }
 
+.zp-custom-refresher-container {
+	overflow: hidden;
+}
+
 .zp-scroll-view {
 	height: 100%;
 	width: 100%;
@@ -141,7 +145,7 @@ dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
 	z-index: 999;
 }
 
-.zp-empty-view{
+.zp-empty-view {
 	/* #ifdef APP-NVUE */
 	height: 100%;
 	/* #endif */

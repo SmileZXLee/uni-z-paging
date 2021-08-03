@@ -60,24 +60,17 @@ by ZXLee 2021-08-03
 					>	
 						<view v-if="showRefresher" class="zp-custom-refresher-view"
 							:style="[{'margin-top': `-${finalRefresherThreshold}px`,'background-color': refresherBackground}]">
-							<view :style="[{'height': `${finalRefresherThreshold}px`,'background-color': refresherBackground}]">
+							<view class="zp-custom-refresher-container" :style="[{'height': `${finalRefresherThreshold}px`,'background-color': refresherBackground}]">
 								<!-- 下拉刷新view -->
 								<view
-								class="zp-custom-refresher-slot-view"
-								<!-- #ifdef MP-WEIXIN || MP-QQ || MP-TOUTIAO || MP-BAIDU  -->
-								v-if="zScopedSlots.refresher"
-								<!-- #endif -->
-								<!-- #ifndef MP-WEIXIN || MP-QQ || MP-TOUTIAO || MP-BAIDU -->
-								v-if="$scopedSlots.refresher||$slots.refresher"
-								<!-- #endif -->
-								>
+								class="zp-custom-refresher-slot-view">
 									<slot
 									<!-- #ifndef MP-QQ -->
 									:refresherStatus="refresherStatus"
 									<!-- #endif -->
 									name="refresher" />
 								</view>
-								<z-paging-refresh ref="refresh" v-else :style="[{'height': `${finalRefresherThreshold}px`}]" :refresherStatus="refresherStatus"
+								<z-paging-refresh ref="refresh" v-if="!showCustomRefresher" :style="[{'height': `${finalRefresherThreshold}px`}]" :refresherStatus="refresherStatus"
 									:defaultThemeStyle="finalRefresherThemeStyle" :refresherDefaultText="finalRefresherDefaultText"
 									:refresherPullingText="finalRefresherPullingText" :refresherRefreshingText="finalRefresherRefreshingText" 
 									:showRefresherUpdateTime="showRefresherUpdateTime" :refresherUpdateTimeKey="refresherUpdateTimeKey"></z-paging-refresh>
