@@ -36,12 +36,9 @@
 <style scoped>
 	.refresher-container {
 		/* #ifndef APP-NVUE */
-		height: 100%;
 		display: flex;
 		/* #endif */
-		/* #ifdef APP-NVUE */
-		height: 150rpx;
-		/* #endif */
+		height: 250rpx;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;

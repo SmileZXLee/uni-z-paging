@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
-		<z-paging ref="paging" refresherOnly @onRefresh="onRefresh" :refresher-threshold="60">
-			<view slot="refresher" style="height: 100%;display: flex;justify-content: center;align-items: center;">
+		<z-paging ref="paging" refresherOnly @onRefresh="onRefresh">
+			<view slot="refresher" style="height: 120rpx;display: flex;justify-content: center;align-items: center;">
 				<image style="width: 300rpx;height: 60rpx;" src="../../static/logo_loading.gif"></image>
 			</view>
 			<!-- <view class="tip-bottom" slot="top">z-paging.com</view> -->

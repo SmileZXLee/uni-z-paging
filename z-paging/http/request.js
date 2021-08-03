@@ -1,10 +1,15 @@
 let listCount = 24;
 const loadingTime = 500;
-const showLog = false;
+const showLog = true;
 /* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件 */
-function queryList(pageNo, pageSize, type, callback) {
-	pageNo = parseInt(pageNo);
-	pageSize = parseInt(pageSize);
+function queryList(data, callback) {
+	if(!data.pageNo || !data.pageSize){
+		callQueryResult(callback, []);
+		return;
+	}
+	let pageNo = parseInt(data.pageNo );
+	let pageSize = parseInt(data.pageSize);
+	let type = data.type || 0;
 	if (pageNo < 0 || pageSize <= 0) {
 		callQueryResult(callback, []);
 		return;
@@ -56,9 +61,9 @@ function callQueryResult(callback, arg) {
 	}, loadingTime)
 }
 
-function queryListLong(pageNo, pageSize, type, callback) {
+function queryListLong(data, callback) {
 	listCount = 224;
-	this.queryList(pageNo,pageSize,type,callback);
+	this.queryList(data,callback);
 }
 
 module.exports = {

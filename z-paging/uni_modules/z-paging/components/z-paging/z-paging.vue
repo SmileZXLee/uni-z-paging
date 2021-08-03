@@ -4,8 +4,8 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V1.9.7
-by ZXLee 2021-08-01
+V1.9.8
+by ZXLee 2021-08-03
 -- >
 <!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -58,21 +58,25 @@ by ZXLee 2021-08-01
 					:change:renderPropUsePageScroll="pagingRenderjs.renderPropUsePageScrollChange" :renderPropUsePageScroll="renderPropUsePageScroll"
 					<!-- #endif -->
 					>	
-						<view v-if="finalRefresherEnabled&&useCustomRefresher&&isTouchmoving" class="zp-custom-refresher-view"
+						<view v-if="showRefresher" class="zp-custom-refresher-view"
 							:style="[{'margin-top': `-${finalRefresherThreshold}px`,'background-color': refresherBackground}]">
 							<view :style="[{'height': `${finalRefresherThreshold}px`,'background-color': refresherBackground}]">
 								<!-- 下拉刷新view -->
-								<slot 
+								<view
+								class="zp-custom-refresher-slot-view"
 								<!-- #ifdef MP-WEIXIN || MP-QQ || MP-TOUTIAO || MP-BAIDU  -->
 								v-if="zScopedSlots.refresher"
 								<!-- #endif -->
 								<!-- #ifndef MP-WEIXIN || MP-QQ || MP-TOUTIAO || MP-BAIDU -->
 								v-if="$scopedSlots.refresher||$slots.refresher"
 								<!-- #endif -->
-								<!-- #ifndef MP-QQ -->
-								:refresherStatus="refresherStatus"
-								<!-- #endif -->
-								name="refresher" />
+								>
+									<slot
+									<!-- #ifndef MP-QQ -->
+									:refresherStatus="refresherStatus"
+									<!-- #endif -->
+									name="refresher" />
+								</view>
 								<z-paging-refresh ref="refresh" v-else :style="[{'height': `${finalRefresherThreshold}px`}]" :refresherStatus="refresherStatus"
 									:defaultThemeStyle="finalRefresherThemeStyle" :refresherDefaultText="finalRefresherDefaultText"
 									:refresherPullingText="finalRefresherPullingText" :refresherRefreshingText="finalRefresherRefreshingText" 

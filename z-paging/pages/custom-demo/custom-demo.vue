@@ -1,8 +1,7 @@
 <!-- 自定义下拉刷新与上拉加载演示(vue) -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" v-model="dataList" auto-show-back-to-top refresher-threshold="160rpx"
-			@query="queryList">
+		<z-paging ref="paging" v-model="dataList" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
@@ -45,7 +44,7 @@
 				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
 				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
 				//模拟请求服务器获取分页数据，请替换成自己的网络请求
-				this.$request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
+				this.$request.queryList({pageNo, pageSize, type:this.tabIndex + 1}, (data) => {
 					//将请求的结果数组传递给z-paging
 					this.$refs.paging.complete(data);
 					//如果请求失败写 this.$refs.paging.complete(false);

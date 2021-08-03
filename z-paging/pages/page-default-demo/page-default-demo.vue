@@ -41,7 +41,7 @@
 				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
 				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
 				//模拟请求服务器获取分页数据，请替换成自己的网络请求
-				this.$request.queryList(pageNo, pageSize, this.tabIndex + 1, (data) => {
+				this.$request.queryList({pageNo, pageSize, type:this.tabIndex + 1}, (data) => {
 					this.$refs.paging.complete(data);
 				})
 			},
@@ -57,7 +57,7 @@
 	.item {
 		z-index: 1;
 		position: relative;
-		height: 150rpx;
+		height: 147rpx;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;

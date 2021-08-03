@@ -11,7 +11,7 @@ import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
-const currentVersion = 'V1.9.7';
+const currentVersion = 'V1.9.8';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -223,6 +223,7 @@ export default {
 			disabledBounce: false,
 			cacheScrollNodeHeight: -1,
 			customNoMore: -1,
+			customRefresherHeight: -1,
 			checkScrolledToBottomTimeOut: null,
 		};
 	},
@@ -790,6 +791,9 @@ export default {
 		})
 		this.updatePageScrollTopHeight();
 		this.updatePageScrollBottomHeight();
+		if(this.finalRefresherEnabled && this.useCustomRefresher){
+			this.isTouchmoving = true;
+		}
 		uni.$on(i18nUpdateKey, () => {
 			this.tempLanguageUpdateKey = (new Date()).getTime();
 		})
@@ -1083,10 +1087,15 @@ export default {
 		},
 		finalRefresherThreshold() {
 			let refresherThreshold = this.refresherThreshold;
-			if (this.showRefresherUpdateTime) {
-				if (refresherThreshold === '80rpx') {
+			let idDefault = false;
+			if (refresherThreshold === '80rpx') {
+				idDefault = true;
+				if (this.showRefresherUpdateTime) {
 					refresherThreshold = '120rpx';
 				}
+			}
+			if (idDefault && this.customRefresherHeight > 0) {
+				return this.customRefresherHeight;
 			}
 			return this._convertTextToPx(refresherThreshold);
 		},
@@ -1256,6 +1265,17 @@ export default {
 				windowBottom += this.safeAreaBottom;
 			}
 			return windowBottom;
+		},
+		showRefresher() {
+			const showRefresher = this.finalRefresherEnabled && this.useCustomRefresher && this.isTouchmoving;
+			// #ifndef APP-NVUE
+			if (this.customRefresherHeight === -1 && showRefresher) {
+				this.$nextTick(() => {
+					this._updateCustomRefresherHeight();
+				})
+			}
+			// #endif
+			return showRefresher;
 		},
 		nWaterfallColumnCount() {
 			if (this.finalNvueListIs !== 'waterfall') {
@@ -1609,7 +1629,7 @@ export default {
 				// #ifndef APP-NVUE
 				if (!this.usePageScroll && this.useChatRecordMode) {
 					if (this.showConsoleError) {
-						zUtils.consoleWarn('[z-paging]使用聊天记录模式时，建议使用页面滚动，可将usePageScroll设置为true以启用页面滚动！！');
+						zUtils.consoleWarn('使用聊天记录模式时，建议使用页面滚动，可将usePageScroll设置为true以启用页面滚动！！');
 					}
 				}
 				// #endif
@@ -2361,7 +2381,7 @@ export default {
 				}
 				const scrollViewHeight = pagingContainerNode[0].height;
 				const scrollViewTop = scrollViewNode[0].top;
-				if (this.isAddedData && scrollViewHeight + scrollViewTop <= this.systemInfo.windowHeight + 10) {
+				if (this.isAddedData && scrollViewHeight + scrollViewTop <= this.systemInfo.windowHeight) {
 					this._setAutoHeight(true, scrollViewNode);
 				} else {
 					this._setAutoHeight(false);
@@ -2554,6 +2574,16 @@ export default {
 					});
 				}, delayTime)
 			})
+		},
+		_updateCustomRefresherHeight() {
+			this._getNodeClientRect('.zp-custom-refresher-slot-view').then((res) => {
+				if (res) {
+					this.customRefresherHeight = res[0].height;
+					console.log(this.customRefresherHeight)
+				} else {
+					this.customRefresherHeight = 0;
+				}
+			});
 		},
 		//点击了空数据view重新加载按钮
 		_emptyViewReload() {
