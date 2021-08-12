@@ -190,7 +190,6 @@ function _setTransform(transform, instance, animate=false) {
 	}
 	instance.requestAnimationFrame(function() {
 		if(animate){
-			console.log('动画动画')
 			instance.setStyle({
 				'transform': transform,
 				'transition': 'transform .1s linear',
