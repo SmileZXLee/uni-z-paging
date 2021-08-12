@@ -734,6 +734,11 @@ export default {
 			type: Number,
 			default: _getConfig('emptyViewZIndex', 9)
 		},
+		//使用页面滚动时，是否在不满屏时自动填充满屏幕，默认为是
+		autoFullHeight: {
+			type: Boolean,
+			default: _getConfig('autoFullHeight', true)
+		},
 		//自动拼接complete中传过来的数组(使用聊天记录模式时无效)
 		concat: {
 			type: Boolean,
@@ -852,7 +857,7 @@ export default {
 			} else {
 				this.showLoadingMore = newVal.length;
 			}
-			if (this.usePageScroll && this.isTotalChangeFromAddData) {
+			if (this.autoFullHeight && this.usePageScroll && this.isTotalChangeFromAddData) {
 				this.$nextTick(() => {
 					this._checkScrollViewShouldFullHeight();
 				})
@@ -2190,6 +2195,7 @@ export default {
 			if (!this.isTouchmoving) {
 				this.isTouchmoving = true;
 			}
+			this.refresherTransition = '0s';
 			this.isTouchEnded = false;
 			if (moveDistance >= this.finalRefresherThreshold) {
 				this.refresherStatus = 1;
@@ -2256,6 +2262,7 @@ export default {
 		//处理scroll-view bounce是否生效
 		_handleScrollViewDisableBounce(e) {
 			if (!this.usePageScroll && !this.scrollToTopBounceEnabled) {
+				this.refresherTransition = '0s';
 				if (!e.bounce) {
 					if (this.scrollEnable) {
 						this.scrollEnable = false;
