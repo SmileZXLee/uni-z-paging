@@ -126,10 +126,12 @@ function touchend(e, ownerInstance) {
 	if (oldMoveDistance < refresherThreshold) {
 		return;
 	}
+	var animate = false;
 	if (moveDistance >= refresherThreshold) {
 		moveDistance = refresherThreshold;
+		animate = true;
 	}
-	_setTransformValue(moveDistance, instance, state)
+	_setTransformValue(moveDistance, instance, state, animate);
 }
 
 // #ifdef H5
@@ -173,24 +175,31 @@ function mouseleave(e, ins) {
 // #endif
 
 
-function _setTransformValue(value, instance, state) {
+function _setTransformValue(value, instance, state, animate=false) {
 	value = value || 0;
 	if (state.moveDistance == value) {
 		return;
 	}
 	state.moveDistance = value;
-	_setTransform('translateY(' + value + 'px)', instance);
+	_setTransform('translateY(' + value + 'px)', instance, animate);
 }
 
-function _setTransform(transform, instance) {
+function _setTransform(transform, instance, animate=false) {
 	if (transform == 'translateY(0px)') {
 		transform = 'none';
 	}
 	instance.requestAnimationFrame(function() {
-		instance.setStyle({
-			'transform': transform
-		})
-		
+		if(animate){
+			console.log('动画动画')
+			instance.setStyle({
+				'transform': transform,
+				'transition': 'transform .1s linear',
+			})
+		}else{
+			instance.setStyle({
+				'transform': transform
+			})
+		}
 	})
 }
 
