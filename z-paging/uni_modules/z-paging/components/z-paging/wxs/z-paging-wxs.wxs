@@ -188,9 +188,9 @@ function _setTransform(transform, instance) {
 	}
 	instance.requestAnimationFrame(function() {
 		instance.setStyle({
-			transform: transform,
-			'-webkit-transform': transform
+			'transform': transform
 		})
+		
 	})
 }
 

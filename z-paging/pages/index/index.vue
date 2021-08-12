@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<z-paging ref="paging" refresherOnly @onRefresh="onRefresh">
+		<z-paging ref="paging" refresher-only @onRefresh="onRefresh">
 			<view slot="refresher" style="height: 120rpx;display: flex;justify-content: center;align-items: center;">
 				<image style="width: 300rpx;height: 60rpx;" src="../../static/logo_loading.gif"></image>
 			</view>
@@ -60,11 +60,11 @@
 						file: 'sticky-demo',
 						subTitle: ''
 					}
-					// ,{
-					// 	title: '滑动切换选项卡+吸顶演示',
-					// 	file: 'sticky-and-scroll-tab-demo',
-					// 	subTitle: ''
-					// }
+					,{
+						title: '滑动切换选项卡+吸顶演示',
+						file: 'sticky-and-scroll-tab-demo',
+						subTitle: ''
+					}
 					,
 					{
 						title: '显示最后更新时间演示',

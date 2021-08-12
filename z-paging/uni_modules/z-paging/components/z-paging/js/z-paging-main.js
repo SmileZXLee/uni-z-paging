@@ -2136,7 +2136,7 @@ export default {
 				this.isTouchmoving = false;
 			}
 			this.isTouchEnded = false;
-			this.refresherTransition = 'transform .1s linear';
+			this.refresherTransition = '0s';
 			this.refresherTouchstartY = touch.touchY;
 			this.$emit('refresherTouchstart', this.refresherTouchstartY);
 			this.lastRefresherTouchmove = touch;
@@ -2250,6 +2250,7 @@ export default {
 				}, commonDelayTime);
 			}
 			this.scrollEnable = true;
+			this.refresherTransition = 'transform .1s linear';
 			this.$emit('refresherTouchend', moveDistance);
 		},
 		//处理scroll-view bounce是否生效
