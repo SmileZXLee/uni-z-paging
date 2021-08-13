@@ -177,7 +177,7 @@ export default {
 			lastRefresherTouchmove: null,
 			refresherReachMaxAngle: true,
 			refresherTransform: 'translateY(0px)',
-			refresherTransition: '0s',
+			refresherTransition: '',
 			finalRefresherDefaultStyle: 'black',
 			//当前加载类型 0-下拉刷新 1-上拉加载更多
 			loadingType: 0,
@@ -231,6 +231,7 @@ export default {
 			customRefresherHeight: -1,
 			showCustomRefresher: false,
 			checkScrolledToBottomTimeOut: null,
+			isIos13: systemInfo.system && systemInfo.system.length && systemInfo.system.indexOf('iOS 13') != -1
 		};
 	},
 	props: {
@@ -803,7 +804,7 @@ export default {
 		this.updatePageScrollTopHeight();
 		this.updatePageScrollBottomHeight();
 		if (this.finalRefresherEnabled && this.useCustomRefresher) {
-			this.$nextTick(()=>{
+			this.$nextTick(() => {
 				this.isTouchmoving = true;
 			})
 		}
@@ -1283,9 +1284,9 @@ export default {
 			const showRefresher = this.finalRefresherEnabled && this.useCustomRefresher && this.isTouchmoving;
 			// #ifndef APP-NVUE
 			if (this.customRefresherHeight === -1 && showRefresher) {
-				setTimeout(()=>{
+				setTimeout(() => {
 					this._updateCustomRefresherHeight();
-				},100)
+				}, 100)
 			}
 			// #endif
 			return showRefresher;
@@ -2141,7 +2142,9 @@ export default {
 				this.isTouchmoving = false;
 			}
 			this.isTouchEnded = false;
-			this.refresherTransition = '0s';
+			if (this.isIos13) {
+				this.refresherTransition = '';
+			}
 			this.refresherTouchstartY = touch.touchY;
 			this.$emit('refresherTouchstart', this.refresherTouchstartY);
 			this.lastRefresherTouchmove = touch;
@@ -2195,7 +2198,7 @@ export default {
 			if (!this.isTouchmoving) {
 				this.isTouchmoving = true;
 			}
-			this.refresherTransition = '0s';
+			//this.refresherTransition = '';
 			this.isTouchEnded = false;
 			if (moveDistance >= this.finalRefresherThreshold) {
 				this.refresherStatus = 1;
@@ -2262,7 +2265,9 @@ export default {
 		//处理scroll-view bounce是否生效
 		_handleScrollViewDisableBounce(e) {
 			if (!this.usePageScroll && !this.scrollToTopBounceEnabled) {
-				this.refresherTransition = '0s';
+				if (this.isIos13) {
+					this.refresherTransition = '';
+				}
 				if (!e.bounce) {
 					if (this.scrollEnable) {
 						this.scrollEnable = false;
@@ -2595,7 +2600,7 @@ export default {
 			this._getNodeClientRect('.zp-custom-refresher-slot-view').then((res) => {
 				if (res) {
 					this.customRefresherHeight = res[0].height;
-					if(this.customRefresherHeight > 0){
+					if (this.customRefresherHeight > 0) {
 						this.showCustomRefresher = true;
 					}
 				} else {
