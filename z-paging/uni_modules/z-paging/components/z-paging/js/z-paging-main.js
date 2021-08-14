@@ -164,6 +164,7 @@ export default {
 			totalData: [],
 			pageNo: 1,
 			showLoadingMore: false,
+			insideOfPaging: -1,
 			refresherTriggered: false,
 			loading: false,
 			firstPageLoaded: false,
@@ -492,6 +493,11 @@ export default {
 		hideLoadingMoreWhenNoMoreByLimit: {
 			type: Number,
 			default: _getConfig('hideLoadingMoreWhenNoMoreByLimit', 0)
+		},
+		//当分页未满一屏时，是否自动加载更多，默认为否(nvue无效)
+		insideMore: {
+			type: Boolean,
+			default: _getConfig('insideMore', false)
 		},
 		//是否显示默认的加载更多text，默认为是
 		showDefaultLoadingMoreText: {
@@ -847,21 +853,15 @@ export default {
 				return;
 			}
 			newVal = [...newVal];
-			if (this.loadingStatus === 2 && this.hideLoadingMoreWhenNoMoreByLimit > 0 &&
-				newVal.length) {
-				this.showLoadingMore = newVal.length > this.hideLoadingMoreWhenNoMoreByLimit;
-			} else if (this.loadingStatus === 2 && this.hideLoadingMoreWhenNoMoreAndInsideOfPaging &&
-				newVal.length) {
-				this.$nextTick(() => {
-					this._checkShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal);
-				})
-			} else {
-				this.showLoadingMore = newVal.length;
-			}
 			if (this.autoFullHeight && this.usePageScroll && this.isTotalChangeFromAddData) {
 				this.$nextTick(() => {
-					this._checkScrollViewShouldFullHeight();
+					this._checkScrollViewShouldFullHeight((scrollViewNode, pagingContainerNode) => {
+						this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal, scrollViewNode,
+							pagingContainerNode)
+					});
 				})
+			} else {
+				this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal)
 			}
 			if (!this.usePageScroll && (this.pageNo === this.defaultPageNo || this.defaultPageNo + 1)) {
 				setTimeout(() => {
@@ -1615,6 +1615,7 @@ export default {
 		_reload(isClean = false, isFromMounted = false) {
 			this.isAddedData = false;
 			this.cacheScrollNodeHeight = -1;
+			this.insideOfPaging = -1;
 			this.pageNo = this.defaultPageNo;
 			if (!isClean) {
 				this._startLoading(true);
@@ -1643,7 +1644,7 @@ export default {
 				// #ifndef APP-NVUE
 				if (!this.usePageScroll && this.useChatRecordMode) {
 					if (this.showConsoleError) {
-						zUtils.consoleWarn('使用聊天记录模式时，建议使用页面滚动，可将usePageScroll设置为true以启用页面滚动！！');
+						zUtils.consoleWarn('使用聊天记录模式时，建议使用页面滚动，可���usePageScroll设置为true以启用页面滚动！！');
 					}
 				}
 				// #endif
@@ -2349,29 +2350,63 @@ export default {
 			}
 			return moveDistance;
 		},
+		//(预处理)判断当没有更多数据且分页内容未超出z-paging时是否显示没有更多数据的view
+		_preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal, scrollViewNode, pagingContainerNode) {
+			if (this.loadingStatus === 2 && this.hideLoadingMoreWhenNoMoreByLimit > 0 &&
+				newVal.length) {
+				this.showLoadingMore = newVal.length > this.hideLoadingMoreWhenNoMoreByLimit;
+			} else if ((this.loadingStatus === 2 && this.hideLoadingMoreWhenNoMoreAndInsideOfPaging &&
+					newVal.length) || (this.insideMore && this.insideOfPaging !== false &&
+					newVal.length)) {
+				this.$nextTick(() => {
+					this._checkShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal, scrollViewNode,
+						pagingContainerNode);
+				})
+				if (this.insideMore && this.insideOfPaging !== false &&
+					newVal.length) {
+					this.showLoadingMore = newVal.length;
+				}
+			} else {
+				this.showLoadingMore = newVal.length;
+			}
+		},
 		//判断当没有更多数据且分页内容未超出z-paging时是否显示没有更多数据的view
-		async _checkShowLoadingMoreWhenNoMoreAndInsideOfPaging(totalData) {
+		async _checkShowLoadingMoreWhenNoMoreAndInsideOfPaging(totalData, oldScrollViewNode, oldPagingContainerNode) {
 			try {
-				const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
+				const scrollViewNode = oldScrollViewNode || await this._getNodeClientRect('.zp-scroll-view');
 				if (this.usePageScroll) {
 					if (scrollViewNode) {
 						const scrollViewTotalH = scrollViewNode[0].top + scrollViewNode[0].height;
-						this.showLoadingMore = scrollViewTotalH >= this.systemInfo.windowHeight;
+						this.insideOfPaging = scrollViewTotalH < this.systemInfo.windowHeight;
+						if (this.hideLoadingMoreWhenNoMoreAndInsideOfPaging) {
+							this.showLoadingMore = !this.insideOfPaging;
+						}
+						this._updateInsideOfPaging();
+						console.log('啊啊啊啊啊',scrollViewNode[0].height,this.systemInfo.windowHeight)
 					}
 				} else {
 					let pagingContainerH = 0;
 					let scrollViewH = 0;
-					const pagingContainerNode = await this._getNodeClientRect('.zp-paging-container-content');
+					const pagingContainerNode = oldPagingContainerNode || await this._getNodeClientRect(
+						'.zp-paging-container-content');
 					if (pagingContainerNode) {
 						pagingContainerH = pagingContainerNode[0].height;
 					}
 					if (scrollViewNode) {
 						scrollViewH = scrollViewNode[0].height;
 					}
-					this.showLoadingMore = pagingContainerH >= scrollViewH;
+					this.insideOfPaging = pagingContainerH < scrollViewH;
+					if (this.hideLoadingMoreWhenNoMoreAndInsideOfPaging) {
+						this.showLoadingMore = !this.insideOfPaging;
+					}
+					this._updateInsideOfPaging();
 				}
 			} catch (e) {
-				this.showLoadingMore = totalData.length;
+				this.insideOfPaging = !totalData.length;
+				if (this.hideLoadingMoreWhenNoMoreAndInsideOfPaging) {
+					this.showLoadingMore = !this.insideOfPaging;
+				}
+				this._updateInsideOfPaging();
 			}
 		},
 		//检测z-paging是否超出了页面高度
@@ -2393,7 +2428,7 @@ export default {
 			}
 		},
 		//检测z-paging是否要全屏覆盖(当使用页面滚动并且不满全屏时，默认z-paging需要铺满全屏，避免数据过少时内部的empty-view无法正确展示)
-		async _checkScrollViewShouldFullHeight() {
+		async _checkScrollViewShouldFullHeight(callback) {
 			try {
 				const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
 				const pagingContainerNode = await this._getNodeClientRect('.zp-paging-container-content');
@@ -2404,11 +2439,13 @@ export default {
 				const scrollViewTop = scrollViewNode[0].top;
 				if (this.isAddedData && scrollViewHeight + scrollViewTop <= this.systemInfo.windowHeight) {
 					this._setAutoHeight(true, scrollViewNode);
+					callback(scrollViewNode, pagingContainerNode);
 				} else {
 					this._setAutoHeight(false);
+					callback(null, null);
 				}
 			} catch (e) {
-
+				callback(null, null);
 			}
 		},
 		//设置z-paging高度
@@ -2421,13 +2458,25 @@ export default {
 						const scrollViewTop = finalScrollViewNode[0].top;
 						const scrollViewHeight = this.systemInfo.windowHeight - scrollViewTop;
 						let additionHeight = this._convertTextToPx(this.autoHeightAddition);
-						this.$set(this.scrollViewStyle, 'height', scrollViewHeight + additionHeight + 'px');
+						this.$set(this.scrollViewStyle, 'height', scrollViewHeight + additionHeight - (this
+							.insideMore ? 1 : 0) + 'px');
+							console.log('全屏',scrollViewHeight)
 					}
 				} else {
 					this.$delete(this.scrollViewStyle, 'height');
+					console.log('取消全屏')
 				}
 			} catch (e) {
 
+			}
+		},
+		//触发更新是否超出页面状态
+		_updateInsideOfPaging() {
+			console.log('this.insideOfPaging', this.insideOfPaging)
+			if (this.insideMore && this.insideOfPaging === true) {
+				setTimeout(() => {
+					this.doLoadMore();
+				}, 200)
 			}
 		},
 		//获取节点尺寸

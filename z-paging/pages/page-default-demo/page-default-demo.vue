@@ -57,7 +57,7 @@
 	.item {
 		z-index: 1;
 		position: relative;
-		height: 147rpx;
+		height: 150rpx;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
