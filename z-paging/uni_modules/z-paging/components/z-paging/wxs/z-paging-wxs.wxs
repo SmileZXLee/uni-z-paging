@@ -5,6 +5,8 @@
 // 微信小程序、QQ小程序、app-vue、h5上使用wxs实现自定义下拉刷新，降低逻辑层与视图层的通信折损，提升性能
 
 var currentMoveDistance = 0;
+var systemInfo = uni.getSystemInfoSync();
+var isIos13 = systemInfo.system && systemInfo.system.length && systemInfo.system.indexOf('iOS 13') != -1;
 
 function propObserver(newValue, oldValue, ownerInstance, instance) {
 	var state = ownerInstance.getState();
@@ -126,10 +128,14 @@ function touchend(e, ownerInstance) {
 	if (oldMoveDistance < refresherThreshold) {
 		return;
 	}
+	var animate = false;
 	if (moveDistance >= refresherThreshold) {
 		moveDistance = refresherThreshold;
+		if (isIos13) {
+			animate = true;
+		}
 	}
-	_setTransformValue(moveDistance, instance, state);
+	_setTransformValue(moveDistance, instance, state, animate);
 }
 
 // #ifdef H5
@@ -173,7 +179,7 @@ function mouseleave(e, ins) {
 // #endif
 
 
-function _setTransformValue(value, instance, state, animate=false) {
+function _setTransformValue(value, instance, state, animate = false) {
 	value = value || 0;
 	if (state.moveDistance == value) {
 		return;
@@ -182,17 +188,17 @@ function _setTransformValue(value, instance, state, animate=false) {
 	_setTransform('translateY(' + value + 'px)', instance, animate);
 }
 
-function _setTransform(transform, instance, animate=false) {
+function _setTransform(transform, instance, animate = false) {
 	if (transform == 'translateY(0px)') {
 		transform = 'none';
 	}
 	instance.requestAnimationFrame(function() {
-		if(animate){
+		if (animate) {
 			instance.setStyle({
 				'transform': transform,
 				'transition': 'transform .1s linear',
 			})
-		}else{
+		} else {
 			instance.setStyle({
 				'transform': transform
 			})

@@ -2059,7 +2059,7 @@ export default {
 			this.isTouchEnded = false;
 			if (this.isIos13) {
 				this.refresherTransition = '';
-			}else{
+			} else {
 				this.refresherTransition = 'transform .1s linear';
 			}
 			this.refresherTouchstartY = touch.touchY;
@@ -2219,6 +2219,9 @@ export default {
 				}, commonDelayTime);
 			}
 			// #endif
+			if (this.refresherEndBounceEnabled && fromAddData) {
+				this.refresherTransition = 'transform 0.3s cubic-bezier(0.19,1.64,0.42,0.72)';
+			}
 			// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 			this.refresherTransform = 'translateY(0px)';
 			// #endif
@@ -2226,9 +2229,6 @@ export default {
 			this.wxsPropType = 'end' + (new Date()).getTime();
 			// #endif
 			this.moveDistance = 0;
-			if (this.refresherEndBounceEnabled && fromAddData) {
-				this.refresherTransition = 'transform 0.3s cubic-bezier(0.19,1.64,0.42,0.72)';
-			}
 			if (shouldEndLoadingDelay) {
 				setTimeout(() => {
 					this.loading = false;
