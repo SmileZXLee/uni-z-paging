@@ -2059,6 +2059,8 @@ export default {
 			this.isTouchEnded = false;
 			if (this.isIos13) {
 				this.refresherTransition = '';
+			}else{
+				this.refresherTransition = 'transform .1s linear';
 			}
 			this.refresherTouchstartY = touch.touchY;
 			this.$emit('refresherTouchstart', this.refresherTouchstartY);

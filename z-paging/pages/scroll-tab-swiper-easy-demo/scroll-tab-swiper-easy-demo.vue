@@ -67,7 +67,12 @@
 			queryList(pageNo, pageSize) {
 				//这里的网络请求请替换成自己的网络请求
 				//this.current代表当前下拉刷新/上拉加载更多对应的是第几个
-				this.$request.queryList({pageNo, pageSize, type:this.tabIndex + 1}, (data) => {
+				const param = {
+					pageNo: pageNo,
+					pageSize: pageSize,
+					type: this.tabIndex + 1
+				}
+				this.$request.queryList(param, (data) => {
 					//将返回的数组传递给z-paging-swiper-item
 					this.$refs.swiperItem[this.current].complete(data);
 				})

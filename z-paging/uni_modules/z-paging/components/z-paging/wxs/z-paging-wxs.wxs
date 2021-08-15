@@ -126,12 +126,10 @@ function touchend(e, ownerInstance) {
 	if (oldMoveDistance < refresherThreshold) {
 		return;
 	}
-	var animate = false;
 	if (moveDistance >= refresherThreshold) {
 		moveDistance = refresherThreshold;
-		animate = true;
 	}
-	_setTransformValue(moveDistance, instance, state, animate);
+	_setTransformValue(moveDistance, instance, state);
 }
 
 // #ifdef H5

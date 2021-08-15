@@ -46,7 +46,12 @@
 				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
 				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
 				//模拟请求服务器获取分页数据，请替换成自己的网络请求
-				this.$request.queryListLong({pageNo, pageSize, type:this.tabIndex + 1}, (data) => {
+				const param = {
+					pageNo: pageNo,
+					pageSize: pageSize,
+					type: this.tabIndex + 1
+				}
+				this.$request.queryListLong(param, (data) => {
 					//将请求的结果数组传递给z-paging
 					this.$refs.paging.complete(data);
 					// demo这里是写死的总页数，一般这时候服务端会返回一共有多页或一共有多少跳

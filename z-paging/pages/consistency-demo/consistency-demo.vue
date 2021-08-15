@@ -42,7 +42,8 @@
 				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
 				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
 				//模拟请求服务器获取分页数据，请替换成自己的网络请求
-				consistencyRequest.myQueryList({pageNo, pageSize, type:this.tabIndex + 1}, (res) => {
+				const param = {pageNo, pageSize, type:this.tabIndex + 1};
+				consistencyRequest.myQueryList(param, (res) => {
 					//将请求的结果数组传递给z-paging
 					//为保证数据一致性，请使用completeByKey方法代替原有的complete
 					//这里的第二个值传的 就是z-paging :data-key绑定的值，因为传给后端时候+1了，所以这里要-1，-1不是必须的，依据具体情况而定
