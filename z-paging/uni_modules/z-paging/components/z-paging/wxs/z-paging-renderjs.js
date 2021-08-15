@@ -52,6 +52,7 @@ export default {
 					.renderUsePageScroll && moveY <
 					0)) {
 				if (e.cancelable && !e.defaultPrevented) {
+					console.log('挡掉了')
 					e.preventDefault();
 				}
 			}

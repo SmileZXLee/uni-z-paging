@@ -60,11 +60,11 @@
 						file: 'sticky-demo',
 						subTitle: ''
 					}
-					,{
-						title: '滑动切换选项卡+吸顶演示',
-						file: 'sticky-and-scroll-tab-demo',
-						subTitle: ''
-					}
+					// ,{
+					// 	title: '滑动切换选项卡+吸顶演示',
+					// 	file: 'sticky-and-scroll-tab-demo',
+					// 	subTitle: ''
+					// }
 					,
 					{
 						title: '显示最后更新时间演示',
