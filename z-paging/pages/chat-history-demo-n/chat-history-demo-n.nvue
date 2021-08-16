@@ -8,7 +8,8 @@
 				<!-- 在nvue中，z-paging中插入的列表item必须是cell，必须使用cell包住，因为在nvue中，z-paging使用的是nvue的list组件。 -->
 				<!-- 注意！！！！这里ref必须绑定index，且格式为z-paging-${index}，格式不能变，否则会导致滑动到顶部加载更多数据时滚动位置不正确！！！！！！ -->
 				<!-- :style="cellStyle"必须写，必须写！！！ -->
-				<cell :style="cellStyle" class="item" :key="item.title" :ref="`z-paging-${index}`" @click="itemClick(item)">
+				<cell :style="cellStyle" class="item" :key="item.title" :ref="`z-paging-${index}`"
+					@click="itemClick(item)">
 					<text class="item-title" v-if="item.title.length<3">第{{item.title}}条聊天记录</text>
 					<text class="item-title" v-else>{{item.title}}</text>
 					<text class="item-detail">{{item.detail}}</text>
@@ -44,9 +45,14 @@
 					pageSize: pageSize,
 					type: this.tabIndex + 1
 				}
-				request.queryList(params, (data) => {
+				request.queryList(params).then(res => {
 					//将请求的结果数组传递给z-paging
-					this.$refs.paging.complete(data);
+					this.$refs.paging.complete(res.data.list);
+				}).catch(res => {
+					//如果请求失败写this.$refs.paging.complete(false);
+					//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
+					//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
+					this.$refs.paging.complete(false);
 				})
 			},
 			addChatRecordClick(item) {
@@ -91,7 +97,7 @@
 		justify-content: space-between;
 		padding: 0rpx 30rpx;
 	}
-	
+
 	.item-detail {
 		padding: 5rpx 15rpx;
 		border-radius: 10rpx;
@@ -99,7 +105,7 @@
 		color: white;
 		background-color: #007AFF;
 	}
-	
+
 	.item-line {
 		position: absolute;
 		bottom: 0;

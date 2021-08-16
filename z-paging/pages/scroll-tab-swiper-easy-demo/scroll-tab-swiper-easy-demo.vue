@@ -72,9 +72,9 @@
 					pageSize: pageSize,
 					type: this.tabIndex + 1
 				}
-				this.$request.queryList(params, (data) => {
-					//将返回的数组传递给z-paging-swiper-item
-					this.$refs.swiperItem[this.current].complete(data);
+				this.$request.queryList(params).then(res => {
+					//将请求的结果数组传递给z-paging
+					this.$refs.swiperItem[this.current].complete(res.data.list);
 				})
 			},
 			updateList(data) {

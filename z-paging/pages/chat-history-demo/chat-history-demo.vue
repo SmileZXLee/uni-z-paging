@@ -3,8 +3,7 @@
 	<view class="content">
 		<z-paging ref="paging" v-model="dataList" use-chat-record-mode use-page-scroll @query="queryList">
 			<!-- :id="`z-paging-${index}`必须加！！！！ -->
-			<view class="item" :id="`z-paging-${index}`"
-				v-for="(item,index) in dataList" :key="index">
+			<view class="item" :id="`z-paging-${index}`" v-for="(item,index) in dataList" :key="index">
 				<view class="item-title" v-if="item.title.length<3">第{{item.title}}条聊天记录</view>
 				<view class="item-title" v-else>{{item.title}}</view>
 				<view class="item-detail">{{item.detail}}</view>
@@ -42,9 +41,14 @@
 					pageSize: pageSize,
 					type: this.tabIndex + 1
 				}
-				this.$request.queryList(params, (data) => {
+				this.$request.queryList(params).then(res => {
 					//将请求的结果数组传递给z-paging
-					this.$refs.paging.complete(data);
+					this.$refs.paging.complete(res.data.list);
+				}).catch(res => {
+					//如果请求失败写this.$refs.paging.complete(false);
+					//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
+					//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
+					this.$refs.paging.complete(false);
 				})
 			},
 			addChatRecordClick(item) {

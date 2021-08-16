@@ -43,16 +43,26 @@
 				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
 				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
 				//模拟请求服务器获取分页数据，请替换成自己的网络请求
-				const params = {pageNo, pageSize, type:this.tabIndex + 1};
-				consistencyRequest.myQueryList(params, (res) => {
+				const params = {
+					pageNo,
+					pageSize,
+					type: this.tabIndex + 1
+				};
+				consistencyRequest.myQueryList(params).then(res => {
 					//将请求的结果数组传递给z-paging
 					//为保证数据一致性，请使用completeByKey方法代替原有的complete
 					//这里的第二个值传的 就是z-paging :data-key绑定的值，因为传给后端时候+1了，所以这里要-1，-1不是必须的，依据具体情况而定
 					//关于res.type 是怎么来的，为什么需要，请看.@/http/consistency-request.js中的解释
 					//总结一句话就是，请求完成传给z-paging数据的时候，要告诉他，当初传过去给服务器的data-key是谁
 					//z-paging会比较它们是否相同，当相同的时候才会接纳这一数据，从而保证数据的一致性
-					this.$refs.paging.completeByKey(res.data, res.type - 1);
+					this.$refs.paging.completeByKey(res.data.list, res.type - 1);
+				}).catch(res => {
+					//如果请求失败写this.$refs.paging.complete(false);
+					//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
+					//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
+					this.$refs.paging.complete(false);
 				})
+
 			},
 			itemClick(item) {
 				console.log('点击了', item.title);

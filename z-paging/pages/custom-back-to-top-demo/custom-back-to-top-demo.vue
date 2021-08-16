@@ -52,12 +52,14 @@
 					pageSize: pageSize,
 					type: this.tabIndex + 1
 				}
-				this.$request.queryListLong(params, (data) => {
+				this.$request.queryList(params).then(res => {
 					//将请求的结果数组传递给z-paging
-					this.$refs.paging.complete(data);
-					// demo这里是写死的总页数，一般这时候服务端会返回一共有多页或一共有多少跳
-					this.total = 23;
-					//如果请求失败写 this.$refs.paging.complete(false);
+					this.$refs.paging.complete(res.data.list);
+				}).catch(res => {
+					//如果请求失败写this.$refs.paging.complete(false);
+					//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
+					//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
+					this.$refs.paging.complete(false);
 				})
 			},
 			itemClick(item) {

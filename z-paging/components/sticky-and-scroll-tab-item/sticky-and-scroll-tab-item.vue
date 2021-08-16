@@ -76,12 +76,17 @@
 					pageSize: pageSize,
 					type: this.tabIndex + 1
 				}
-				this.$request.queryList(params, (data) => {
+				this.$request.queryList(params).then(res => {
 					this.$refs.paging.complete(data);
 					this.firstLoaded = true;
 					if(this.completeFunc){
 						this.completeFunc();
 					}
+				}).catch(res => {
+					//如果请求失败写this.$refs.paging.complete(false);
+					//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
+					//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
+					this.$refs.paging.complete(false);
 				})
 			},
 			scroll(e){

@@ -3,18 +3,16 @@ const loadingTime = 500;
 const showLog = true;
 /* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件 */
 function queryList(data, callback) {
-	if(!data.pageNo || !data.pageSize){
-		callQueryResult(callback, []);
-		return;
+	if (!data.pageNo || !data.pageSize) {
+		return callQueryResult([]);
 	}
-	let pageNo = parseInt(data.pageNo );
+	let pageNo = parseInt(data.pageNo);
 	let pageSize = parseInt(data.pageSize);
 	let type = data.type || 0;
 	if (pageNo < 0 || pageSize <= 0) {
-		callQueryResult(callback, []);
-		return;
+		return callQueryResult([]);
 	}
-	if(showLog){
+	if (showLog) {
 		console.log('%c\n----------请求开始--------', 'color:green;');
 		console.info(`请求参数：【pageNo:${pageNo},pageSize:${pageSize}】`)
 		console.log('%c----------请求结束--------\n', 'color:green;');
@@ -35,35 +33,42 @@ function queryList(data, callback) {
 	}
 	let pageNoIndex = (pageNo - 1) * pageSize;
 	if (pageNoIndex + pageSize <= totalPagingList.length) {
-		callQueryResult(callback, totalPagingList.splice(pageNoIndex, pageSize));
+		return callQueryResult(totalPagingList.splice(pageNoIndex, pageSize));
 	} else if (pageNoIndex < totalPagingList.length) {
-		callQueryResult(callback, totalPagingList.splice(pageNoIndex, totalPagingList.length - pageNoIndex));
+		return callQueryResult(totalPagingList.splice(pageNoIndex, totalPagingList.length - pageNoIndex));
 	} else {
-		callQueryResult(callback, []);
+		return callQueryResult([]);
 	}
 }
 
-function callQueryResult(callback, arg) {
-	setTimeout(() => {
-		uni.hideLoading();
-		if(showLog){
-			console.log('%c\n----------响应开始--------', 'color:#0113fa;');
-			// #ifdef H5
-			console.table(arg);
-			// #endif
-			
-			// #ifndef H5
-			console.log(arg);
-			// #endif
-			console.log('%c----------响应结束--------\n', 'color:#0113fa;');
-		}
-		callback(arg);
-	}, loadingTime)
+function callQueryResult(arg) {
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+			uni.hideLoading();
+			if (showLog) {
+				console.log('%c\n----------响应开始--------', 'color:#0113fa;');
+				// #ifdef H5
+				console.table(arg);
+				// #endif
+
+				// #ifndef H5
+				console.log(arg);
+				// #endif
+				console.log('%c----------响应结束--------\n', 'color:#0113fa;');
+			}
+			resolve({
+				data: {
+					list: arg
+				}
+			});
+		}, loadingTime)
+	})
+
 }
 
 function queryListLong(data, callback) {
 	listCount = 224;
-	this.queryList(data,callback);
+	return this.queryList(data, callback);
 }
 
 module.exports = {
