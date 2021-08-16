@@ -21,6 +21,7 @@
 	export default {
 		data() {
 			return {
+				//v-model绑定的这个变量不要自己赋值、不要自己赋值、不要自己赋值！！！
 				dataList: [],
 				firstLoaded: false,
 				height: 0,
@@ -70,12 +71,12 @@
 				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
 				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
 				//模拟请求服务器获取分页数据，请替换成自己的网络请求
-				const param = {
+				const params = {
 					pageNo: pageNo,
 					pageSize: pageSize,
 					type: this.tabIndex + 1
 				}
-				this.$request.queryList(param, (data) => {
+				this.$request.queryList(params, (data) => {
 					this.$refs.paging.complete(data);
 					this.firstLoaded = true;
 					if(this.completeFunc){
