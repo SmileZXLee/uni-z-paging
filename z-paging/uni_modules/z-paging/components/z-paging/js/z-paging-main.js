@@ -132,7 +132,7 @@ export default {
 			nLoadingMoreFixedHeight: false,
 			wxsPropType: '',
 			refresherRevealStackCount: 0,
-			renderPropScrollTop: 0,
+			renderPropScrollTop: -1,
 			renderPropUsePageScroll: -1,
 			wxsIsScrollTopInTopRange: true,
 			wxsScrollTop: 0,

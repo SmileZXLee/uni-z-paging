@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<z-paging ref="paging" refresher-only @onRefresh="onRefresh">
+		<z-paging ref="paging" refresher-only @onRefresh="onRefresh" use-page-scroll>
 			<view slot="refresher" style="height: 120rpx;display: flex;justify-content: center;align-items: center;">
 				<image style="width: 300rpx;height: 60rpx;" src="../../static/logo_loading.gif"></image>
 			</view>

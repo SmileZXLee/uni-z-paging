@@ -4,8 +4,8 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V2.0.0
-by ZXLee 2021-08-16
+V2.0.1
+by ZXLee 2021-08-17
 -- >
 <!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -46,7 +46,7 @@ by ZXLee 2021-08-16
 					<view class="zp-paging-main" :style="[{'transform': finalRefresherTransform,'transition': refresherTransition}]"
 					<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 					:change:prop="pagingWxs.propObserver" :prop="wxsPropType"
-					:data-refresherThreshold="finalRefresherThreshold" :data-isIos="isIos"
+					:data-refresherThreshold="finalRefresherThreshold" :data-isIos="isIos" :data-isIos13="isIos13"
 					:data-loading="loading" :data-useChatRecordMode="useChatRecordMode" 
 					:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="wxsPageScrollTop"
 					:data-scrollTop="wxsScrollTop" :data-refresherMaxAngle="refresherMaxAngle" 
