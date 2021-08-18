@@ -1236,6 +1236,10 @@ export default {
 			this.customNoMore = -1;
 			this.addData(data, success);
 		},
+		//简写，与complete完全相同
+		end(data, success = true) {
+			this.complete(data, success);
+		},
 		//【保证数据一致】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为dataKey，需与:data-key绑定的一致，第三个参数为是否成功(默认为是）
 		completeByKey(data, dataKey = null, success = true) {
 			if (dataKey !== null && this.dataKey !== null && dataKey !== this.dataKey) {
@@ -1243,6 +1247,10 @@ export default {
 			}
 			this.customNoMore = -1;
 			this.addData(data, success);
+		},
+		//简写，与completeByKey完全相同
+		endByKey(data, dataKey = null, success = true) {
+			this.completeByKey(data, dataKey, success);
 		},
 		//【通过totalCount判断是否有更多数据】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为totalCount(列表总数)，第三个参数为是否成功(默认为是）
 		completeByTotalCount(data, totalCount, success = true) {
@@ -1274,12 +1282,20 @@ export default {
 			}
 			this.addData(data, success);
 		},
+		//简写，与completeByTotalCount完全相同
+		endByTotalCount(data, totalCount, success = true) {
+			this.completeByTotalCount(data, totalCount, success);
+		},
 		//【自行判断是否有更多数据】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否有更多数据，第三个参数为是否成功(默认是是）
 		completeByNoMore(data, nomore, success = true) {
 			if (nomore != 'undefined') {
 				this.customNoMore = nomore == true ? 1 : 0;
 			}
 			this.addData(data, success);
+		},
+		//简写，与completeByNoMore完全相同
+		endByNoMore(data, nomore, success = true) {
+			this.completeByNoMore(data, nomore, success);
 		},
 		//与上方complete方法功能一致，新版本中设置服务端回调数组请使用complete方法
 		addData(data, success = true) {

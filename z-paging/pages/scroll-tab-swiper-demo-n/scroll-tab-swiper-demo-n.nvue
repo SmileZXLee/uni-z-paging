@@ -1,4 +1,4 @@
-<!-- 滑动切换选项卡演示(nvue) -->
+<!-- 滑动切换选项卡演示(标准写法)(nvue) -->
 <!-- 注意：此tab-view仅为z-paging的demo演示之用，未作兼容与细节处理，不建议直接使用，建议使用第三方成熟的tab-view -->
 <template>
 	<z-paging-swiper>

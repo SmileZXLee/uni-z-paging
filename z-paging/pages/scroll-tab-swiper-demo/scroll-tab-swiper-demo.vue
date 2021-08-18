@@ -1,4 +1,4 @@
-<!-- 滑动切换选项卡演示 -->
+<!-- 滑动切换选项卡演示(标准写法) -->
 <!--  此demo使用了uView的tabsSwiper全屏选项卡 https://uviewui.com/components/tabsSwiper.html -->
 <template>
 	<!-- 使用z-paging-swiper为根节点可以免计算高度 -->

@@ -61,6 +61,9 @@
 					'title': '新增数据' + this.newIndex,
 					'detail': '新增的聊天数据'
 				});
+			},
+			itemClick(item) {
+				console.log('点击了', item.title);
 			}
 		}
 	}

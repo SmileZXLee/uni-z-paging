@@ -245,9 +245,9 @@ by ZXLee 2021-08-17
 	 * @property {Boolean} fixed z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为否(当使用内置scroll-view滚动时有效)
 	 * @property {Boolean} safe-area-inset-bottom 是否开启底部安全区域适配，默认为否
 	 * @property {Boolean} scrollable 是否可以滚动，使用内置scroll-view和nvue时有效，默认为是
-	 * @property {Boolean} auto [z-paging]mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
-	 * @property {Boolean} auto-scroll-to-top-when-reload reload时自动滚动到顶部，默认为是
-	 * @property {Boolean} auto-clean-list-when-reload reload时立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
+	 * @property {Boolean} auto [z-paging]mounted后是否自动调用reload方法(mounted后自动调用接口)，默认为是
+	 * @property {Boolean} auto-scroll-to-top-when-reload reload时是否自动滚动到顶部，默认为是
+	 * @property {Boolean} auto-clean-list-when-reload reload时是否立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
 	 * @property {Boolean} show-refresher-when-reload 调用reload方法时是否自动显示下拉刷新view，默认为否
 	 * @property {Boolean} show-loading-more-when-reload 调用reload方法时自动显示加载更多view，且为加载中状态(仅初始设置有效，不可动态修改)
 	 * @property {Boolean} refresher-update-time-key 如果需要区别不同页面的最后更新时间，请为不同页面的z-paging的`refresher-update-time-key`设置不同的字符串
@@ -289,14 +289,14 @@ by ZXLee 2021-08-17
 	 * @property {Object} empty-view-title-style 空数据图描述文字样式
 	 * @property {Object} empty-view-reload-style 空数据图重新加载按钮样式
 	 * @property {Boolean} auto-hide-empty-view-when-loading 加载中时是否自动隐藏空数据图，默认为是
-	 * @property {Boolean} auto-hide-loading-after-first-loaded 第一次加载后自动隐藏loading slot，默认为是
+	 * @property {Boolean} auto-hide-loading-after-first-loaded 第一次加载后是否自动隐藏loading slot，默认为是
 	 * @property {Boolean} auto-show-back-to-top 自动显示点击返回顶部按钮，默认为否
 	 * @property {Number|String} back-to-top-threshold 点击返回顶部按钮显示/隐藏的阈值(滚动距离)，单位为px，默认为400rpx
 	 * @property {String} back-to-top-img 点击返回顶部按钮的自定义图片地址，默认使用z-paging内置的图片
 	 * @property {Boolean} back-to-top-with-animate 点击返回顶部按钮返回到顶部时是否展示过渡动画，默认为是
 	 * @property {Number|String} back-to-top-bottom 点击返回顶部按钮与底部的距离，注意添加单位px或rpx，默认为160rpx
 	 * @property {Object} back-to-top-style 点击返回顶部按钮的自定义样式
-	 * @property {Boolean} show-scrollbar 在设置滚动条位置时使用动画过渡，默认为否
+	 * @property {Boolean} show-scrollbar 在设置滚动条位置时是否使用动画过渡，默认为否
 	 * @property {Boolean} scroll-to-top-bounce-enabled iOS设备上滚动到顶部时是否允许回弹效果，默认为否。关闭回弹效果后可使滚动到顶部与下拉刷新更连贯，但是有吸顶view时滚动到顶部时可能出现抖动。
 	 * @property {Boolean} scroll-with-animation 控制是否出现滚动条，默认为否
 	 * @property {String} scroll-into-view 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素
