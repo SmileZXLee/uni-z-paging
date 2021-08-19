@@ -11,12 +11,12 @@
 			style="height: 100%;">
 			<view class="zp-custom-refresher-left">
 				<image v-if="refresherStatus!==2" :class="refresherLeftImageClass"
-					:style="[{width: showRefresherUpdateTime?'36rpx':'30rpx',height: showRefresherUpdateTime?'36rpx':'30rpx','margin-right': showRefresherUpdateTime?'20rpx':'8rpx'}]"
+					:style="[{width: showRefresherUpdateTime?'36rpx':'30rpx',height: showRefresherUpdateTime?'36rpx':'30rpx','margin-right': showRefresherUpdateTime?'20rpx':'8rpx'},refresherImgStyle]"
 					:src="defaultThemeStyle==='white'?base64ArrowWhite:base64Arrow">
 				</image>
 				<!-- #ifndef APP-NVUE -->
 				<image v-else class="zp-loading-more-line-loading-image zp-custom-refresher-left-image"
-					:style="[{width: showRefresherUpdateTime?'36rpx':'30rpx',height: showRefresherUpdateTime?'36rpx':'30rpx','margin-right': showRefresherUpdateTime?'20rpx':'8rpx'}]"
+					:style="[{width: showRefresherUpdateTime?'36rpx':'30rpx',height: showRefresherUpdateTime?'36rpx':'30rpx','margin-right': showRefresherUpdateTime?'20rpx':'8rpx'},refresherImgStyle]"
 					:src="defaultThemeStyle==='white'?base64FlowerWhite:base64Flower">
 				</image>
 				<!-- #endif -->
@@ -24,17 +24,17 @@
 				<view v-else :style="[{'margin-right':showRefresherUpdateTime?'18rpx':'12rpx'}]">
 					<loading-indicator
 						:class="systemInfo.platform==='ios'?'zp-loading-image-ios':'zp-loading-image-android'"
-						:style="[{color:defaultThemeStyle==='white'?'white':'#777777'}]" :animating="true">
+						:style="[{color:defaultThemeStyle==='white'?'white':'#777777'},refresherImgStyle]" :animating="true">
 					</loading-indicator>
 				</view>
 				<!-- #endif -->
 			</view>
 			<view class="zp-custom-refresher-right">
 				<text class="zp-custom-refresher-right-text"
-					:style="[refresherRightTextStyle]">{{refresherStatusTextMap[refresherStatus]||refresherDefaultText}}
+					:style="[refresherRightTextStyle,refresherTitleStyle]">{{refresherStatusTextMap[refresherStatus]||refresherDefaultText}}
 				</text>
 				<text class="zp-custom-refresher-right-text zp-custom-refresher-right-time-text"
-					:style="[refresherRightTextStyle]"
+					:style="[refresherRightTextStyle,refresherUpdateTimeStyle]"
 					v-if="showRefresherUpdateTime&&refresherTimeText.length">{{refresherTimeText}}
 				</text>
 			</view>
@@ -72,7 +72,16 @@
 			'showRefresherUpdateTime': {
 				default: false
 			},
-			'refresherUpdateTimeKey': {}
+			'refresherUpdateTimeKey': {},
+			'refresherImgStyle': {
+				default: {}
+			},
+			'refresherTitleStyle': {
+				default: {}
+			},
+			'refresherUpdateTimeStyle': {
+				default: {}
+			},
 		},
 		computed: {
 			refresherStatusTextMap() {

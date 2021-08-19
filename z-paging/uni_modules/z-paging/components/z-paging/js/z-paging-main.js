@@ -235,6 +235,27 @@ export default {
 				return _getConfig('refresherThemeStyle', '');
 			}
 		},
+		//自定义下拉刷新左侧图标的样式
+		refresherImgStyle: {
+			type: Object,
+			default: function() {
+				return _getConfig('refresherImgStyle', {});
+			}
+		},
+		//自定义下拉刷新右侧状态描述文字的样式
+		refresherTitleStyle: {
+			type: Object,
+			default: function() {
+				return _getConfig('refresherTitleStyle', {});
+			}
+		},
+		//自定义下拉刷新右侧最后更新时间文字的样式(show-refresher-update-time为true时有效)
+		refresherUpdateTimeStyle: {
+			type: Object,
+			default: function() {
+				return _getConfig('refresherUpdateTimeStyle', {});
+			}
+		},
 		//底部加载更多的主题样式，支持black，white，默认black
 		loadingMoreThemeStyle: {
 			type: String,
@@ -766,12 +787,17 @@ export default {
 			}
 			newVal = [...newVal];
 			if (this.autoFullHeight && this.usePageScroll && this.isTotalChangeFromAddData) {
+				// #ifndef APP-NVUE
 				this.$nextTick(() => {
 					this._checkScrollViewShouldFullHeight((scrollViewNode, pagingContainerNode) => {
 						this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal, scrollViewNode,
 							pagingContainerNode)
 					});
 				})
+				// #endif
+				// #ifdef APP-NVUE
+				this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal)
+				// #endif
 			} else {
 				this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal)
 			}

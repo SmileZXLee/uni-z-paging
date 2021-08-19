@@ -4,8 +4,8 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V2.0.1
-by ZXLee 2021-08-17
+V2.0.2
+by ZXLee 2021-08-20
 -- >
 <!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -73,7 +73,8 @@ by ZXLee 2021-08-17
 								<z-paging-refresh ref="refresh" v-if="!showCustomRefresher" :style="[{'height': `${finalRefresherThreshold}px`}]" :refresherStatus="refresherStatus"
 									:defaultThemeStyle="finalRefresherThemeStyle" :refresherDefaultText="finalRefresherDefaultText"
 									:refresherPullingText="finalRefresherPullingText" :refresherRefreshingText="finalRefresherRefreshingText" 
-									:showRefresherUpdateTime="showRefresherUpdateTime" :refresherUpdateTimeKey="refresherUpdateTimeKey"></z-paging-refresh>
+									:showRefresherUpdateTime="showRefresherUpdateTime" :refresherUpdateTimeKey="refresherUpdateTimeKey"
+									:refresherImgStyle="refresherImgStyle" :refresherTitleStyle="refresherTitleStyle" :refresherUpdateTimeStyle="refresherUpdateTimeStyle"></z-paging-refresh>
 							</view>
 						</view>
 						<view class="zp-paging-container">
@@ -152,7 +153,8 @@ by ZXLee 2021-08-17
 					<slot v-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
 					<z-paging-refresh ref="refresh" v-else :refresherStatus="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
 						:refresherDefaultText="finalRefresherDefaultText" :refresherPullingText="finalRefresherPullingText" :refresherRefreshingText="finalRefresherRefreshingText" 
-						:showRefresherUpdateTime="showRefresherUpdateTime" :refresherUpdateTimeKey="refresherUpdateTimeKey"></z-paging-refresh>
+						:showRefresherUpdateTime="showRefresherUpdateTime" :refresherUpdateTimeKey="refresherUpdateTimeKey"
+						:refresherImgStyle="refresherImgStyle" :refresherTitleStyle="refresherTitleStyle" :refresherUpdateTimeStyle="refresherUpdateTimeStyle"></z-paging-refresh>
 				</view>
 			</refresh>
 			<view ref="zp-n-list-top-tag" class="zp-n-list-top-tag" :is="nViewIs"></view>
@@ -160,7 +162,8 @@ by ZXLee 2021-08-17
 				<slot v-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
 				<z-paging-refresh ref="refresh" v-else :refresherStatus="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
 					:refresherDefaultText="finalRefresherDefaultText" :refresherPullingText="finalRefresherPullingText" :refresherRefreshingText="finalRefresherRefreshingText" 
-					:showRefresherUpdateTime="showRefresherUpdateTime" :refresherUpdateTimeKey="refresherUpdateTimeKey"></z-paging-refresh>
+					:showRefresherUpdateTime="showRefresherUpdateTime" :refresherUpdateTimeKey="refresherUpdateTimeKey"
+					:refresherImgStyle="refresherImgStyle" :refresherTitleStyle="refresherTitleStyle" :refresherUpdateTimeStyle="refresherUpdateTimeStyle"></z-paging-refresh>
 			</view>
 			<slot />
 			<!-- 空数据图 -->
@@ -239,6 +242,9 @@ by ZXLee 2021-08-17
 	 * @property {Number|String} auto-height-addition z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数
 	 * @property {String} default-theme-style loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
 	 * @property {String} refresher-theme-style 下拉刷新的主题样式，支持black，white，默认black
+	 * @property {Object} refresher-img-style 自定义下拉刷新左侧图标的样式
+	 * @property {Object} refresher-title-style 自定义下拉刷新右侧状态描述文字的样式
+	 * @property {Object} refresher-update-time-style 自定义下拉刷新右侧最后更新时间文字的样式(show-refresher-update-time为true时有效)
 	 * @property {String} loading-more-theme-style 底部加载更多的主题样式，支持black，white，默认black
 	 * @property {Boolean} refresher-only 是否只使用下拉刷新，设置为true后将关闭mounted自动请求数据、关闭滚动到底部加载更多，强制隐藏空数据图。默认为否
 	 * @property {Boolean} use-page-scroll 使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
@@ -359,6 +365,9 @@ by ZXLee 2021-08-17
 			autoHeightAddition: {type: [Number, String]},
 			defaultThemeStyle: {type: String},
 			refresherThemeStyle: {type: String},
+			refresherImgStyle: {type: Object},
+			refresherTitleStyle: {type: Object},
+			refresherUpdateTimeStyle: {type: Object},
 			loadingMoreThemeStyle: {type: String},
 			refresherOnly: {type: Boolean},
 			usePageScroll: {type: Boolean},
