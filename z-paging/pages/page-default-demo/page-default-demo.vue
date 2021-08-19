@@ -3,12 +3,11 @@
 	<view class="content">
 		<!-- 此时使用了页面的滚动，z-paging不需要有确定的高度，use-page-scroll需要设置为true -->
 		<!-- 注意注意！！这里的ref必须设置且必须等于"paging"，否则mixin方法无效 -->
-		<z-paging ref="paging" v-model="dataList" use-page-scroll @query="queryList" safe-area-inset-bottom lower-threshold="800rpx">
+		<z-paging ref="paging" v-model="dataList" use-page-scroll @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
-			<view style="background-color: red;height: 100rpx;">321312</view>
 			<view>
 				<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
 					<view class="item-title">{{item.title}}</view>
@@ -50,7 +49,7 @@
 				}
 				this.$request.queryList(params).then(res => {
 					//将请求的结果数组传递给z-paging
-					this.$refs.paging.complete(false);
+					this.$refs.paging.complete(res.data.list);
 				}).catch(res => {
 					//如果请求失败写this.$refs.paging.complete(false);
 					//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
