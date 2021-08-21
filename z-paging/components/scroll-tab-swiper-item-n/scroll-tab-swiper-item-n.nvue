@@ -1,8 +1,9 @@
+<!-- 在这个文件对每个tab对应的列表进行渲染 -->
 <template>
 	<view class="content">
 		<!-- 这里设置了z-paging加载时禁止自动调用reload方法，自行控制何时reload（懒加载）-->
 		<!--  :enable-back-to-top="currentIndex===tabIndex" 在nvue上可以多加这一句，因为默认是允许点击返回顶部的，但是这个页面有多个scroll-view，会全部返回顶部，所以需要控制是当前index才允许点击返回顶部 -->
-		<z-paging ref="paging" v-model="dataList" @query="queryList" :fixed="false" :mounted-auto-call-reload="false">
+		<z-paging ref="paging" v-model="dataList" @query="queryList" :fixed="false" :auto="false">
 			<!-- 在nvue中，z-paging中插入的列表item必须是cell，必须使用cell包住，因为在nvue中，z-paging使用的是nvue的list组件。 -->
 			<cell class="item" v-for="(item,index) in dataList" :key="item.title" @click="itemClick(item)">
 				<text class="item-title">{{item.title}}</text>

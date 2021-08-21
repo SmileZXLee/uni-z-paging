@@ -4,6 +4,7 @@
 <template>
 	<view class="content">
 		<z-paging ref="paging" v-model="dataList" use-page-scroll @query="queryList">
+			<view slot="loading" style="height: 200px;background-color: red;width: 200rpx; ">133132131231321</view>
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			<view class="item" v-for="(item,index) in dataList" :key="item.title" @click="itemClick(item)">
