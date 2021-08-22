@@ -4,8 +4,8 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V2.0.2
-by ZXLee 2021-08-20
+V2.0.3
+by ZXLee 2021-08-22
 -- >
 <!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -87,26 +87,28 @@ by ZXLee 2021-08-20
 								<image v-else :src="base64Flower" class="zp-chat-record-loading-custom-image">
 								</image>
 							</view>
-							<slot v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" name="loading" />
-							<!-- 空数据图 -->
-							<view class="zp-empty-view"
-								v-if="showEmpty">
-								<slot v-if="$slots.empty" name="empty" />
-								<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" :emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" :emptyViewImgStyle="emptyViewImgStyle" :emptyViewReloadStyle="emptyViewReloadStyle" :emptyViewZIndex="emptyViewZIndex" @reload="_emptyViewReload">
-								</z-paging-empty-view>
-							</view>
+							<slot v-if="$slots.loading&&showLoading" name="loading" />
 							<!-- 主体内容 -->
 							<view class="zp-paging-container-content" :style="[finalPagingContentStyle]">
 								<slot />
 							</view>
+							<!-- 空数据图 -->
+							<view class="zp-empty-view" v-if="showEmpty">
+								<slot v-if="$slots.empty" name="empty" />
+								<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
+								:emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" 
+								:emptyViewImgStyle="emptyViewImgStyle" :emptyViewReloadStyle="emptyViewReloadStyle" :emptyViewZIndex="emptyViewZIndex" :emptyViewFixed="emptyViewFixed" 
+								@reload="_emptyViewReload">
+								</z-paging-empty-view>
+							</view>
 							<!-- 上拉加载更多view -->
 							<!-- #ifndef MP-ALIPAY -->
-							<slot v-if="_shouldShowLoading('loadingMoreDefault')" name="loadingMoreDefault" />
-							<slot v-else-if="_shouldShowLoading('loadingMoreLoading')" name="loadingMoreLoading" />
-							<slot v-else-if="_shouldShowLoading('loadingMoreNoMore')" name="loadingMoreNoMore" />
-							<slot v-else-if="_shouldShowLoading('loadingMoreFail')" name="loadingMoreFail" />
+							<slot v-if="_shouldShowLoadingMore('loadingMoreDefault')" name="loadingMoreDefault" />
+							<slot v-else-if="_shouldShowLoadingMore('loadingMoreLoading')" name="loadingMoreLoading" />
+							<slot v-else-if="_shouldShowLoadingMore('loadingMoreNoMore')" name="loadingMoreNoMore" />
+							<slot v-else-if="_shouldShowLoadingMore('loadingMoreFail')" name="loadingMoreFail" />
 							<z-paging-load-more @click.native="_onLoadingMore('click')"
-								v-else-if="_shouldShowLoading('loadingMoreCustom')" :zConfig="zPagingLoadMoreConfig">
+								v-else-if="_shouldShowLoadingMore('loadingMoreCustom')" :zConfig="zPagingLoadMoreConfig">
 							</z-paging-load-more>
 							<!-- #endif -->
 							<!-- #ifdef MP-ALIPAY -->
@@ -170,13 +172,16 @@ by ZXLee 2021-08-20
 			<view style="flex: 1;" key="z-paging-empty-view" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="showEmpty" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
 				<view class="zp-empty-view">
 					<slot v-if="$slots.empty" name="empty" />
-					<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" :emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" :emptyViewImgStyle="emptyViewImgStyle" :emptyViewReloadStyle="emptyViewReloadStyle" :emptyViewZIndex="emptyViewZIndex" @reload="_emptyViewReload">
+					<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
+					:emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" 
+					:emptyViewImgStyle="emptyViewImgStyle" :emptyViewReloadStyle="emptyViewReloadStyle" :emptyViewZIndex="emptyViewZIndex" :emptyViewFixed="emptyViewFixed" 
+					@reload="_emptyViewReload">
 					</z-paging-empty-view>
 				</view>
 			</view>
 			<view ref="zp-n-list-bottom-tag" class="zp-n-list-bottom-tag" is="header"></view>
 			<!-- 全屏 -->
-			<view style="flex: 1;" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="$slots.loading&&!firstPageLoaded&&(autoHideLoadingAfterFirstLoaded?!pagingLoaded:true)&&loading" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
+			<view style="flex: 1;" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="$slots.loading&&showLoading" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
 				<slot name="loading" />
 			</view>
 			<!-- 上拉加载更多view -->
@@ -197,12 +202,12 @@ by ZXLee 2021-08-20
 					</view>
 				</view>
 				<view :style="nLoadingMoreFixedHeight?{height:loadingMoreCustomStyle&&loadingMoreCustomStyle.height?loadingMoreCustomStyle.height:'80rpx'}:{}">
-					<slot v-if="_shouldShowLoading('loadingMoreDefault')" name="loadingMoreDefault" />
-					<slot v-else-if="_shouldShowLoading('loadingMoreLoading')" name="loadingMoreLoading" />
-					<slot v-else-if="_shouldShowLoading('loadingMoreNoMore')" name="loadingMoreNoMore" />
-					<slot v-else-if="_shouldShowLoading('loadingMoreFail')" name="loadingMoreFail" />
+					<slot v-if="_shouldShowLoadingMore('loadingMoreDefault')" name="loadingMoreDefault" />
+					<slot v-else-if="_shouldShowLoadingMore('loadingMoreLoading')" name="loadingMoreLoading" />
+					<slot v-else-if="_shouldShowLoadingMore('loadingMoreNoMore')" name="loadingMoreNoMore" />
+					<slot v-else-if="_shouldShowLoadingMore('loadingMoreFail')" name="loadingMoreFail" />
 					<z-paging-load-more @click.native="_onLoadingMore('click')"
-						v-else-if="_shouldShowLoading('loadingMoreCustom')" :zConfig="zPagingLoadMoreConfig">
+						v-else-if="_shouldShowLoadingMore('loadingMoreCustom')" :zConfig="zPagingLoadMoreConfig">
 					</z-paging-load-more>
 				</view>
 			</view>
@@ -294,6 +299,7 @@ by ZXLee 2021-08-20
 	 * @property {Object} empty-view-img-style 空数据图img样式
 	 * @property {Object} empty-view-title-style 空数据图描述文字样式
 	 * @property {Object} empty-view-reload-style 空数据图重新加载按钮样式
+	 * @property {Boolean} empty-view-fixed 空数据图片是否使用fixed布局并铺满z-paging，默认为是，若设置为false将紧贴z-paging插入的view下方
 	 * @property {Boolean} auto-hide-empty-view-when-loading 加载中时是否自动隐藏空数据图，默认为是
 	 * @property {Boolean} auto-hide-loading-after-first-loaded 第一次加载后是否自动隐藏loading slot，默认为是
 	 * @property {Boolean} auto-show-back-to-top 自动显示点击返回顶部按钮，默认为否
@@ -418,6 +424,7 @@ by ZXLee 2021-08-20
 			emptyViewImgStyle: {type: Object},
 			emptyViewTitleStyle: {type: Object},
 			emptyViewReloadStyle: {type: Object},
+			emptyViewFixed: {type: Boolean},
 			autoHideEmptyViewWhenLoading: {type: Boolean},
 			autoHideLoadingAfterFirstLoaded: {type: Boolean},
 			autoShowBackToTop: {type: Boolean},

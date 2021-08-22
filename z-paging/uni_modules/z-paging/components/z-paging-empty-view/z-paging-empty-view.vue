@@ -5,8 +5,8 @@
 
 <!-- 空数据占位view，此组件支持easycom规范，可以在项目中直接引用 -->
 <template>
-	<view class="zp-container" :style="[finalEmptyViewStyle]">
-		<view class="zp-main">
+	<view :class="{'zp-container':true,'zp-container-fixed':emptyViewFixed}" :style="[finalEmptyViewStyle]">
+		<view :class="{'zp-main':true,'zp-main-fixed':emptyViewFixed}">
 			<image v-if="!emptyViewImg.length" class="zp-main-image" :style="[emptyViewImgStyle]" :src="emptyImg"></image>
 			<image v-else class="zp-main-image" mode="aspectFit" :style="[emptyViewImgStyle]" :src="emptyViewImg"></image>
 			<text class="zp-main-title" :style="[emptyViewTitleStyle]">{{emptyViewText}}</text>
@@ -95,6 +95,13 @@
 				default: function() {
 					return 9
 				}
+			},
+			//空数据图片是否使用fixed布局并铺满z-paging
+			emptyViewFixed: {
+				type: Boolean,
+				default: function() {
+					return false
+				}
 			}
 		},
 		computed: {
@@ -119,32 +126,41 @@
 </script>
 
 <style scoped>
-	.zp-container {
+	.zp-container{
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		align-items: center;
+		justify-content: center;
+	}
+	.zp-container-fixed {
 		/* #ifndef APP-NVUE */
 		position: absolute;
 		top: 0;
 		left: 0;
 		width: 100%;
 		height: 100%;
-		display: flex;
 		/* #endif */
 		/* #ifdef APP-NVUE */
 		flex: 1;
 		/* #endif */
-		align-items: center;
-		justify-content: center;
 	}
 
-	.zp-main {
+	.zp-main{
 		/* #ifndef APP-NVUE */
 		display: flex;
+		/* #endif */
+		flex-direction: column;
+		align-items: center;
+	}
+	
+	.zp-main-fixed {
+		/* #ifndef APP-NVUE */
 		margin-top: -150rpx;
 		/* #endif */
 		/* #ifdef APP-NVUE */
 		margin-top: -100rpx;
 		/* #endif */
-		flex-direction: column;
-		align-items: center;
 	}
 
 	.zp-main-image {

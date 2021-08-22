@@ -11,7 +11,9 @@ import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
-const currentVersion = 'V1.9.8';
+import Enum from './z-paging-enum'
+
+const currentVersion = 'V2.0.3';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -93,11 +95,11 @@ export default {
 			refresherTransition: '',
 			finalRefresherDefaultStyle: 'black',
 			//当前加载类型 0-下拉刷新 1-上拉加载更多
-			loadingType: 0,
+			loadingType: Enum.LoadingType.Refresher,
 			//底部加载更多状态 0-默认状态 1.加载中 2.没有更多数据 3.加载失败
-			loadingStatus: 0,
+			loadingStatus: Enum.LoadingMoreStatus.Default,
 			//下拉刷新状态 0-默认状态 1.松手立即刷新 2.刷新中
-			refresherStatus: 0,
+			refresherStatus: Enum.RefresherStatus.Default,
 			scrollViewStyle: {},
 			pullDownTimeStamp: 0,
 			pageScrollTop: -1,
@@ -144,6 +146,7 @@ export default {
 			customRefresherHeight: -1,
 			showCustomRefresher: false,
 			checkScrolledToBottomTimeOut: null,
+			fromEmptyViewReload: false,
 			isIos13: systemInfo.system && systemInfo.system.length && systemInfo.system.indexOf('iOS 13') != -1
 		};
 	},
@@ -520,6 +523,13 @@ export default {
 			type: Object,
 			default: function() {
 				return _getConfig('emptyViewReloadStyle', {});
+			}
+		},
+		//空数据图片是否使用fixed布局并铺满z-paging，默认为是，若设置为false将紧贴z-paging插入的view下方
+		emptyViewFixed: {
+			type: Boolean,
+			default: function() {
+				return _getConfig('emptyViewFixed', true)
 			}
 		},
 		//加载中时是否自动隐藏空数据图，默认为是
@@ -1172,6 +1182,11 @@ export default {
 				.firstPageLoaded && !this.loading) : true);
 			return showEmpty;
 		},
+		showLoading() {
+			const showLoading = !this.firstPageLoaded && (this.autoHideLoadingAfterFirstLoaded ? (this
+				.fromEmptyViewReload ? true : !this.pagingLoaded) : true) && this.loading;
+			return showLoading;
+		},
 		tempLanguage() {
 			let systemLanguage = false;
 			const temp = this.tempLanguageUpdateKey;
@@ -1538,7 +1553,7 @@ export default {
 				}
 				// #endif
 				// #ifdef APP-NVUE
-				this.refresherStatus = 2;
+				this.refresherStatus = Enum.RefresherStatus.Loading;
 				this.refresherRevealStackCount++;
 				setTimeout(() => {
 					this._getNodeClientRect('zp-n-refresh-container', false).then((node) => {
@@ -1614,6 +1629,7 @@ export default {
 		//处理服务端返回的数组
 		_addData(data, success, isLocal) {
 			this.isAddedData = true;
+			this.fromEmptyViewReload = false;
 			this.isTotalChangeFromAddData = true;
 			if (!this.useCustomRefresher) {
 				uni.stopPullDownRefresh();
@@ -1653,7 +1669,7 @@ export default {
 				this.isLoadFailed = !success;
 			}
 			if (success) {
-				this.loadingStatus = 0;
+				this.loadingStatus = Enum.LoadingMoreStatus.Default;
 				if (isLocal) {
 					this.totalLocalPagingList = data;
 					this._localPagingQueryList(this.defaultPageNo, this.defaultPageSize, 0, (res) => {
@@ -1664,8 +1680,8 @@ export default {
 				}
 			} else {
 				this._currentDataChange(data, this.currentData);
-				this.loadingStatus = 3;
-				if (this.loadingType === 1) {
+				this.loadingStatus = Enum.LoadingMoreStatus.Fail;
+				if (this.loadingType === Enum.LoadingType.LoadingMore) {
 					this.pageNo--;
 				}
 			}
@@ -1683,12 +1699,12 @@ export default {
 			}
 			if (this.customNoMore !== -1) {
 				if (this.customNoMore === 0 || !newVal.length) {
-					this.loadingStatus = 2;
+					this.loadingStatus = Enum.LoadingMoreStatus.NoMore;
 				}
 			} else {
 				if (!newVal.length ||
 					(newVal.length && newVal.length < this.defaultPageSize)) {
-					this.loadingStatus = 2;
+					this.loadingStatus = Enum.LoadingMoreStatus.NoMore;
 				}
 			}
 			if (!this.totalData.length) {
@@ -1797,7 +1813,8 @@ export default {
 			if (from === 'toBottom' && (!this.toBottomLoadingMoreEnabled || this.useChatRecordMode)) {
 				return;
 			}
-			if (this.refresherOnly || !this.loadingMoreEnabled || !(this.loadingStatus === 0 || 3) || this.loading)
+			if (this.refresherOnly || !this.loadingMoreEnabled || !(this.loadingStatus === Enum.LoadingMoreStatus
+					.Default || this.loadingStatus === Enum.LoadingMoreStatus.Fail) || this.loading)
 				return;
 			this._doLoadingMore();
 		},
@@ -1811,7 +1828,7 @@ export default {
 			if (!this.useChatRecordMode) {
 				return;
 			}
-			if (this.loadingStatus === 2) {
+			if (this.loadingStatus === Enum.LoadingMoreStatus.NoMore) {
 				return;
 			}
 
@@ -1965,14 +1982,15 @@ export default {
 				this.oldScrollTop = this.scrollTop;
 			}
 		},
-		//是否要展示上拉加载更多view
-		_shouldShowLoading(type) {
-			if (!(this.loadingStatus === 0 ? this.nShowBottom : true)) {
+		//是否要展���上拉加载更多view
+		_shouldShowLoadingMore(type) {
+			if (!(this.loadingStatus === Enum.LoadingMoreStatus.Default ? this.nShowBottom : true)) {
 				return false;
 			}
-			if (((!this.showLoadingMoreWhenReload || this.isUserPullDown || this.loadingStatus !== 1) && !this
+			if (((!this.showLoadingMoreWhenReload || this.isUserPullDown || this.loadingStatus !== Enum
+						.LoadingMoreStatus.Loading) && !this
 					.showLoadingMore) || (!this.loadingMoreEnabled && (!this.showLoadingMoreWhenReload || this
-					.isUserPullDown || this.loadingStatus !== 1)) || this
+					.isUserPullDown || this.loadingStatus !== Enum.LoadingMoreStatus.Loading)) || this
 				.refresherOnly) {
 				return false;
 			}
@@ -1983,7 +2001,7 @@ export default {
 				return false;
 			}
 			if (type === 'loadingMoreDefault') {
-				const res = this.loadingStatus === 0 && this.$slots.loadingMoreDefault;
+				const res = this.loadingStatus === Enum.LoadingMoreStatus.Default && this.$slots.loadingMoreDefault;
 				if (res) {
 					// #ifdef APP-NVUE
 					if (!this.isIos) {
@@ -1993,7 +2011,7 @@ export default {
 				}
 				return res;
 			} else if (type === 'loadingMoreLoading') {
-				const res = this.loadingStatus === 1 && this.$slots.loadingMoreLoading;
+				const res = this.loadingStatus === Enum.LoadingMoreStatus.Loading && this.$slots.loadingMoreLoading;
 				if (res) {
 					// #ifdef APP-NVUE
 					if (!this.isIos) {
@@ -2003,7 +2021,8 @@ export default {
 				}
 				return res;
 			} else if (type === 'loadingMoreNoMore') {
-				const res = this.loadingStatus === 2 && this.$slots.loadingMoreNoMore && this.showLoadingMoreNoMoreView;
+				const res = this.loadingStatus === Enum.LoadingMoreStatus.NoMore && this.$slots.loadingMoreNoMore &&
+					this.showLoadingMoreNoMoreView;
 				if (res) {
 					// #ifdef APP-NVUE
 					if (!this.isIos) {
@@ -2013,7 +2032,7 @@ export default {
 				}
 				return res;
 			} else if (type === 'loadingMoreFail') {
-				const res = this.loadingStatus === 3 && this.$slots.loadingMoreFail;
+				const res = this.loadingStatus === Enum.LoadingMoreStatus.Fail && this.$slots.loadingMoreFail;
 				if (res) {
 					// #ifdef APP-NVUE
 					if (!this.isIos) {
@@ -2023,7 +2042,8 @@ export default {
 				}
 				return res;
 			} else if (type === 'loadingMoreCustom') {
-				const res = this.showDefaultLoadingMoreText && !(this.loadingStatus === 2 && !this
+				const res = this.showDefaultLoadingMoreText && !(this.loadingStatus === Enum.LoadingMoreStatus.NoMore &&
+					!this
 					.showLoadingMoreNoMoreView);
 				return res;
 			}
@@ -2032,13 +2052,13 @@ export default {
 		//处理开始加载更多状态
 		_startLoading(isReload = false) {
 			if ((this.showLoadingMoreWhenReload && !this.isUserPullDown) || !isReload) {
-				this.loadingStatus = 1;
+				this.loadingStatus = Enum.LoadingMoreStatus.Loading;
 			}
 			this.loading = true;
 		},
 		//处理开始加载更多
 		_doLoadingMore() {
-			if (this.pageNo >= this.defaultPageNo && this.loadingStatus !== 2) {
+			if (this.pageNo >= this.defaultPageNo && this.loadingStatus !== Enum.LoadingMoreStatus.NoMore) {
 				this.pageNo++;
 				this._startLoading(false);
 				if (this.isLocalPaging) {
@@ -2050,7 +2070,7 @@ export default {
 					this.$emit('query', this.pageNo, this.defaultPageSize);
 					this._callMyParentQuery();
 				}
-				this.loadingType = 1;
+				this.loadingType = Enum.LoadingType.LoadingMore;
 			}
 		},
 		_scroll(e) {
@@ -2077,7 +2097,7 @@ export default {
 			}
 			this.$emit('onRefresh');
 			this.$emit('Refresh');
-			this.loadingType = 0;
+			this.loadingType = Enum.LoadingType.Refresher;
 		},
 		//自定义下拉刷新被复位
 		_onRestore() {
@@ -2160,9 +2180,9 @@ export default {
 			//this.refresherTransition = '';
 			this.isTouchEnded = false;
 			if (moveDistance >= this.finalRefresherThreshold) {
-				this.refresherStatus = 1;
+				this.refresherStatus = Enum.RefresherStatus.PullToRefresh;
 			} else {
-				this.refresherStatus = 0;
+				this.refresherStatus = Enum.RefresherStatus.Default;
 			}
 			// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 			// this.scrollEnable = false;
@@ -2204,12 +2224,13 @@ export default {
 				}
 			}
 			this.isTouchEnded = true;
-			if (moveDistance >= this.finalRefresherThreshold && this.refresherStatus === 1) {
+			if (moveDistance >= this.finalRefresherThreshold && this.refresherStatus === Enum.RefresherStatus
+				.PullToRefresh) {
 				// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 				this.refresherTransform = `translateY(${this.finalRefresherThreshold}px)`;
 				// #endif
 				this.moveDistance = this.finalRefresherThreshold;
-				this.refresherStatus = 2;
+				this.refresherStatus = Enum.RefresherStatus.Loading;
 				this._doRefresherLoad();
 			} else {
 				this._refresherEnd(true, false);
@@ -2254,10 +2275,10 @@ export default {
 				if (stackCount > 1) {
 					return;
 				}
-				this.refresherStatus = 0;
+				this.refresherStatus = Enum.RefresherStatus.Default;
 			} else {
 				setTimeout(() => {
-					this.refresherStatus = 0;
+					this.refresherStatus = Enum.RefresherStatus.Default;
 				}, commonDelayTime);
 			}
 			// #endif
@@ -2292,7 +2313,7 @@ export default {
 			this.wxsPropType = 'begin' + (new Date()).getTime();
 			// #endif
 			this.moveDistance = this.finalRefresherThreshold;
-			this.refresherStatus = 2;
+			this.refresherStatus = Enum.RefresherStatus.Loading;
 			this.isTouchmoving = true;
 		},
 		//触发下拉刷新
@@ -2311,10 +2332,11 @@ export default {
 		},
 		//(预处理)判断当没有更多数据且分页内容未超出z-paging时是否显示没有更多数据的view
 		_preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal, scrollViewNode, pagingContainerNode) {
-			if (this.loadingStatus === 2 && this.hideLoadingMoreWhenNoMoreByLimit > 0 &&
+			if (this.loadingStatus === Enum.LoadingMoreStatus.NoMore && this.hideLoadingMoreWhenNoMoreByLimit > 0 &&
 				newVal.length) {
 				this.showLoadingMore = newVal.length > this.hideLoadingMoreWhenNoMoreByLimit;
-			} else if ((this.loadingStatus === 2 && this.hideLoadingMoreWhenNoMoreAndInsideOfPaging &&
+			} else if ((this.loadingStatus === Enum.LoadingMoreStatus.NoMore && this
+					.hideLoadingMoreWhenNoMoreAndInsideOfPaging &&
 					newVal.length) || (this.insideMore && this.insideOfPaging !== false &&
 					newVal.length)) {
 				this.$nextTick(() => {
@@ -2617,12 +2639,14 @@ export default {
 			let callbacked = false;
 			this.$emit('emptyViewReload', (reload) => {
 				if (reload === undefined || reload === true) {
+					this.fromEmptyViewReload = true;
 					this.reload();
 				}
 				callbacked = true;
 			});
 			this.$nextTick(() => {
 				if (!callbacked) {
+					this.fromEmptyViewReload = true;
 					this.reload();
 				}
 			})
@@ -2697,20 +2721,20 @@ export default {
 				return;
 			}
 			this.nRefresherLoading = true;
-			this.refresherStatus = 2;
+			this.refresherStatus = Enum.RefresherStatus.Loading;
 			this._doRefresherLoad();
 		},
 		//下拉刷新下拉中
 		_nOnPullingdown(e) {
-			if (this.refresherStatus === 2 || (this.isIos && !this.nListIsDragging)) {
+			if (this.refresherStatus === Enum.RefresherStatus.Loading || (this.isIos && !this.nListIsDragging)) {
 				return;
 			}
 			const viewHeight = e.viewHeight;
 			const pullingDistance = e.pullingDistance;
 			if (pullingDistance >= viewHeight) {
-				this.refresherStatus = 1;
+				this.refresherStatus = Enum.RefresherStatus.PullToRefresh;
 			} else {
-				this.refresherStatus = 0;
+				this.refresherStatus = Enum.RefresherStatus.Default;
 			}
 		},
 		//下拉刷新结束
@@ -2732,7 +2756,7 @@ export default {
 		_nDoRefresherEndAnimation(height, translateY, animate = true, checkStack = true) {
 			if (!this.showRefresherWhenReload && !this.privateShowRefresherWhenReload) {
 				setTimeout(() => {
-					this.refresherStatus = 0;
+					this.refresherStatus = Enum.RefresherStatus.Default;
 				}, commonDelayTime);
 				return;
 			}
@@ -2742,10 +2766,10 @@ export default {
 				if (stackCount > 1) {
 					return;
 				}
-				this.refresherStatus = 0;
+				this.refresherStatus = Enum.RefresherStatus.Default;
 			}
 			if (stackCount > 1) {
-				this.refresherStatus = 2;
+				this.refresherStatus = Enum.RefresherStatus.Loading;
 			}
 			const duration = animate ? 120 : 0;
 			weexAnimation.transition(this.$refs['zp-n-list-refresher-reveal'], {
