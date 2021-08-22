@@ -169,7 +169,7 @@ by ZXLee 2021-08-22
 			</view>
 			<slot />
 			<!-- 空数据图 -->
-			<view style="flex: 1;" key="z-paging-empty-view" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="showEmpty" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
+			<view style="flex: 1;" key="z-paging-empty-view" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="showEmpty" :is="nViewIs">
 				<view class="zp-empty-view">
 					<slot v-if="$slots.empty" name="empty" />
 					<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
@@ -181,7 +181,7 @@ by ZXLee 2021-08-22
 			</view>
 			<view ref="zp-n-list-bottom-tag" class="zp-n-list-bottom-tag" is="header"></view>
 			<!-- 全屏 -->
-			<view style="flex: 1;" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="$slots.loading&&showLoading" :is="finalNvueListIs==='scroller'?'view':finalNvueListIs==='waterfall'?'header':'cell'">
+			<view style="flex: 1;" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="$slots.loading&&showLoading" :is="nViewIs">
 				<slot name="loading" />
 			</view>
 			<!-- 上拉加载更多view -->
