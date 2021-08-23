@@ -736,7 +736,6 @@ export default {
 		}
 	},
 	mounted() {
-		console.log(Enum)
 		this.wxsPropType = (new Date()).getTime().toString();
 		this.renderJsIgnore;
 		if (!this.refresherOnly && (this.mountedAutoCallReload && this.auto)) {
