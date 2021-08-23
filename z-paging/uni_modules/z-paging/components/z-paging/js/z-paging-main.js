@@ -1216,6 +1216,12 @@ export default {
 			}
 			return 0;
 		},
+		windowHeight(){
+			if (!this.systemInfo) {
+				return 0;
+			}
+			return this.systemInfo.windowHeight;
+		},
 		windowTop() {
 			if (!this.systemInfo) {
 				return 0;
@@ -1613,7 +1619,7 @@ export default {
 				// #ifndef APP-NVUE
 				if (!this.usePageScroll && this.useChatRecordMode) {
 					if (this.showConsoleError) {
-						zUtils.consoleWarn('使用聊天记录模式时，建议使用页面滚动，可���usePageScroll设置为true以启用页面滚动！！');
+						zUtils.consoleWarn('使用聊天记录模式时，建议使用页面滚动，可将usePageScroll设置为true以启用页面滚动！！');
 					}
 				}
 				// #endif
@@ -1982,7 +1988,7 @@ export default {
 				this.oldScrollTop = this.scrollTop;
 			}
 		},
-		//是否要展���上拉加载更多view
+		//是否要展示上拉加载更多view
 		_shouldShowLoadingMore(type) {
 			if (!(this.loadingStatus === Enum.LoadingMoreStatus.Default ? this.nShowBottom : true)) {
 				return false;
@@ -2358,7 +2364,7 @@ export default {
 				if (this.usePageScroll) {
 					if (scrollViewNode) {
 						const scrollViewTotalH = scrollViewNode[0].top + scrollViewNode[0].height;
-						this.insideOfPaging = scrollViewTotalH < this.systemInfo.windowHeight;
+						this.insideOfPaging = scrollViewTotalH < this.windowHeight;
 						if (this.hideLoadingMoreWhenNoMoreAndInsideOfPaging) {
 							this.showLoadingMore = !this.insideOfPaging;
 						}
@@ -2395,7 +2401,7 @@ export default {
 				const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
 				if (scrollViewNode) {
 					const scrollViewTotalH = scrollViewNode[0].top + scrollViewNode[0].height;
-					if (scrollViewTotalH > this.systemInfo.windowHeight + 100) {
+					if (scrollViewTotalH > this.windowHeight + 100) {
 						if (this.showConsoleError) {
 							zUtils.consoleWarn(
 								'检测到z-paging的高度超出页面高度，这将导致滚动或展示出现异常，请设置【:fixed="true"】或【确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}】，此时z-paging的百分比高度才能生效。详情参考demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
@@ -2417,7 +2423,7 @@ export default {
 				}
 				const scrollViewHeight = pagingContainerNode[0].height;
 				const scrollViewTop = scrollViewNode[0].top;
-				if (this.isAddedData && scrollViewHeight + scrollViewTop <= this.systemInfo.windowHeight) {
+				if (this.isAddedData && scrollViewHeight + scrollViewTop <= this.windowHeight) {
 					this._setAutoHeight(true, scrollViewNode);
 					callback(scrollViewNode, pagingContainerNode);
 				} else {
@@ -2436,7 +2442,7 @@ export default {
 						'.scroll-view');
 					if (finalScrollViewNode) {
 						const scrollViewTop = finalScrollViewNode[0].top;
-						const scrollViewHeight = this.systemInfo.windowHeight - scrollViewTop;
+						const scrollViewHeight = this.windowHeight - scrollViewTop;
 						let additionHeight = this._convertTextToPx(this.autoHeightAddition);
 						this.$set(this.scrollViewStyle, 'height', scrollViewHeight + additionHeight - (this
 							.insideMore ? 1 : 0) + 'px');

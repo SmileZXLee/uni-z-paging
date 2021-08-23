@@ -20,7 +20,7 @@ const Enum = {
 	LoadingMoreStatus: {
 		Default: 0,
 		Loading: 1,
-		Nomore: 2,
+		NoMore: 2,
 		Fail: 3
 	}
 }

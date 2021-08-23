@@ -139,11 +139,11 @@ by ZXLee 2021-08-22
 	</view>
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
-	<view :is="finalNvueSuperListIs">
+	<view :is="finalNvueSuperListIs" :class="{'z-paging-content-fixed':fixed&&!usePageScroll}">
 		<view ref="zp-page-scroll-top" :is="nViewIs" class="zp-page-scroll-top" v-if="$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
 			<slot name="top"></slot>
 		</view>
-		<view ref="n-list" id="z-paging-nlist" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" :is="finalNvueListIs" alwaysScrollableVertical="true"
+		<view ref="n-list" id="z-paging-nlist" :style="[{'flex': 1},scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" :is="finalNvueListIs" alwaysScrollableVertical="true"
 			:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar" :loadmoreoffset="finalLowerThreshold"
 			:scrollable="scrollable&&scrollEnable" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 			:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap"
@@ -169,7 +169,7 @@ by ZXLee 2021-08-22
 			</view>
 			<slot />
 			<!-- 空数据图 -->
-			<view style="flex: 1;" key="z-paging-empty-view" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="showEmpty" :is="nViewIs">
+			<view class="z-paging-empty-view" :class="{'z-paging-content-fixed':usePageScroll}" style="flex: 1;" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="showEmpty" :is="nViewIs">
 				<view class="zp-empty-view">
 					<slot v-if="$slots.empty" name="empty" />
 					<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
@@ -180,8 +180,8 @@ by ZXLee 2021-08-22
 				</view>
 			</view>
 			<view ref="zp-n-list-bottom-tag" class="zp-n-list-bottom-tag" is="header"></view>
-			<!-- 全屏 -->
-			<view style="flex: 1;" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="$slots.loading&&showLoading" :is="nViewIs">
+			<!-- 全屏Loading -->
+			<view :class="{'z-paging-content-fixed':usePageScroll}" style="flex: 1;" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="$slots.loading&&showLoading" :is="nViewIs">
 				<slot name="loading" />
 			</view>
 			<!-- 上拉加载更多view -->

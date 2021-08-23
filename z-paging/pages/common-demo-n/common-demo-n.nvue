@@ -58,16 +58,6 @@
 </script>
 
 <style>
-	/* 注意，在nvue中使用z-paging一定要设置页面根节点铺满屏幕 */
-	.content {
-		background-color: white;
-		position: absolute;
-		top: 0;
-		left: 0;
-		bottom: 0;
-		right: 0;
-	}
-
 	.item {
 		flex-direction: row;
 		position: relative;
