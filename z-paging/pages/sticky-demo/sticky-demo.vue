@@ -16,13 +16,10 @@
 			<!-- 注意注意注意！！如果您的项目不是QQ小程序，:status="refresherStatus有更简化的写法，请参阅custom-demo.vue -->
 
 			<custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>
-			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
-			<view>
-				<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
-					<view class="item-title">{{item.title}}</view>
-					<view class="item-detail">{{item.detail}}</view>
-					<view class="item-line"></view>
-				</view>
+			<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
+				<view class="item-title">{{item.title}}</view>
+				<view class="item-detail">{{item.detail}}</view>
+				<view class="item-line"></view>
 			</view>
 		</z-paging>
 	</view>
