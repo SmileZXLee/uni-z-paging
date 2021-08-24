@@ -1216,7 +1216,7 @@ export default {
 			}
 			return 0;
 		},
-		windowHeight(){
+		windowHeight() {
 			if (!this.systemInfo) {
 				return 0;
 			}

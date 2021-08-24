@@ -22,4 +22,7 @@
 		background-color: white;
 	}
 	/* #endif */
+	.content{
+		background-color: white;
+	}
 </style>
