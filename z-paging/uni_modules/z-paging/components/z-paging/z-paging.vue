@@ -43,7 +43,7 @@ by ZXLee 2021-08-22
 				<!-- #endif -->
 				>	
 					<view v-if="finalRefresherFixedBacHeight>0" class="zp-fixed-bac-view" :style="[{'background-color': refresherFixedBackground,'height': `${finalRefresherFixedBacHeight}px`}]"></view>
-					<view class="zp-paging-main" :style="[{'transform': finalRefresherTransform,'transition': refresherTransition}]"
+					<view class="zp-paging-main" :style="[scrollViewInStyle,{'transform': finalRefresherTransform,'transition': refresherTransition}]"
 					<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 					:change:prop="pagingWxs.propObserver" :prop="wxsPropType"
 					:data-refresherThreshold="finalRefresherThreshold" :data-isIos="isIos" :data-isIos13="isIos13"
@@ -238,7 +238,7 @@ by ZXLee 2021-08-22
 	 * @property {Number|Object} data-key 为保证数据一致，设置当前tab切换时的标识key，并在complete中传递相同key，若二者不一致，则complete将不会生效
 	 * @property {String} autowire-list-name 【极简写法】自动注入的list名，可自动修改父view(包含ref="paging")中对应name的list值(z-paging标签必须设置`ref="paging"`)
 	 * @property {String} autowire-query-name 【极简写法】自动注入的query名，可自动调用父view(包含ref="paging")中的query方法(z-paging标签必须设置`ref="paging"`)
-	 * @property {Number|Object} delay 调用complete后延迟处理的时间，单位为毫秒
+	 * @property {Number|String} delay 调用complete后延迟处理的时间，单位为毫秒
 	 * @property {String} language i18n国际化设置语言，支持简体中文(zh-cn)、繁体中文(zh-hant-cn)和英文(en)
 	 * @property {Boolean} follow-system-language i18n国际化默认是否跟随系统语言，默认为是
 	 * @property {Object} paging-style 设置z-paging的style，部分平台可能无法直接修改组件的style，可使用此属性代替

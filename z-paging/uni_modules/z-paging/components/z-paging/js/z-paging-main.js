@@ -101,6 +101,7 @@ export default {
 			//下拉刷新状态 0-默认状态 1.松手立即刷新 2.刷新中
 			refresherStatus: Enum.RefresherStatus.Default,
 			scrollViewStyle: {},
+			scrollViewInStyle: {},
 			pullDownTimeStamp: 0,
 			pageScrollTop: -1,
 			isTouchmoving: false,
@@ -805,10 +806,13 @@ export default {
 			if (this.autoFullHeight && this.usePageScroll && this.isTotalChangeFromAddData) {
 				// #ifndef APP-NVUE
 				this.$nextTick(() => {
-					this._checkScrollViewShouldFullHeight((scrollViewNode, pagingContainerNode) => {
-						this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal, scrollViewNode,
-							pagingContainerNode)
-					});
+					setTimeout(() => {
+						this._checkScrollViewShouldFullHeight((scrollViewNode, pagingContainerNode) => {
+							this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal,
+								scrollViewNode,
+								pagingContainerNode)
+						});
+					}, 200)
 				})
 				// #endif
 				// #ifdef APP-NVUE
@@ -1787,7 +1791,7 @@ export default {
 				} else {
 					if (this.finalConcat) {
 						this.totalData = [...this.totalData, ...newVal];
-					}else{
+					} else {
 						this.totalData = [...newVal];
 					}
 				}
@@ -2465,6 +2469,12 @@ export default {
 		},
 		//设置z-paging高度
 		async _setAutoHeight(shouldFullHeight = true, scrollViewNode = null) {
+			let heightKey = 'height';
+			// #ifndef APP-NVUE
+			if (this.usePageScroll) {
+				heightKey = 'min-height';
+			}
+			// #endif
 			try {
 				if (shouldFullHeight) {
 					let finalScrollViewNode = scrollViewNode ? scrollViewNode : await this._getNodeClientRect(
@@ -2473,11 +2483,14 @@ export default {
 						const scrollViewTop = finalScrollViewNode[0].top;
 						const scrollViewHeight = this.windowHeight - scrollViewTop;
 						let additionHeight = this._convertTextToPx(this.autoHeightAddition);
-						this.$set(this.scrollViewStyle, 'height', scrollViewHeight + additionHeight - (this
+						this.$set(this.scrollViewStyle, heightKey, scrollViewHeight + additionHeight - (this
+							.insideMore ? 1 : 0) + 'px');
+						this.$set(this.scrollViewInStyle, heightKey, scrollViewHeight + additionHeight - (this
 							.insideMore ? 1 : 0) + 'px');
 					}
 				} else {
-					this.$delete(this.scrollViewStyle, 'height');
+					this.$delete(this.scrollViewStyle, heightKey);
+					this.$delete(this.scrollViewInStyle, heightKey);
 				}
 			} catch (e) {
 
