@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V2.0.3
+V2.0.4
 by ZXLee 2021-08-22
 -- >
 <!-- API文档地址：http://z-paging.com -->
@@ -143,7 +143,7 @@ by ZXLee 2021-08-22
 		<view ref="zp-page-scroll-top" :is="nViewIs" class="zp-page-scroll-top" v-if="$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
 			<slot name="top"></slot>
 		</view>
-		<view ref="n-list" id="z-paging-nlist" :style="[{'flex': 1},scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" :is="finalNvueListIs" alwaysScrollableVertical="true"
+		<view ref="n-list" :id="nvueListId" :style="[{'flex': 1},scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" :is="finalNvueListIs" alwaysScrollableVertical="true"
 			:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar" :loadmoreoffset="finalLowerThreshold"
 			:scrollable="scrollable&&scrollEnable" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 			:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap"

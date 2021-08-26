@@ -13,7 +13,7 @@ import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
 import Enum from './z-paging-enum'
 
-const currentVersion = 'V2.0.3';
+const currentVersion = 'V2.0.4';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -113,6 +113,7 @@ export default {
 			isUserPullDown: false,
 			privateRefresherEnabled: -1,
 			privateScrollWithAnimation: -1,
+			privateConcat: true,
 			myParentQuery: -1,
 			chatRecordLoadingMoreText: '',
 			moveDistance: 0,
@@ -720,6 +721,11 @@ export default {
 				return _getConfig('nvueFastScroll', false);
 			}
 		},
+		//nvue中list的id
+		nvueListId: {
+			type: String,
+			default: _getConfig('nvueListId', '')
+		},
 		//是否将错误信息打印至控制台，默认为是
 		showConsoleError: {
 			type: Boolean,
@@ -1176,6 +1182,9 @@ export default {
 			}
 			return this.refresherTransform;
 		},
+		finalConcat() {
+			return this.concat && this.privateConcat;
+		},
 		showEmpty() {
 			const showEmpty = !this.refresherOnly && !this.totalData.length && (this.autoHideEmptyViewWhenLoading ? this
 				.isAddedData : true) && !this.hideEmptyView && (this.autoHideEmptyViewWhenLoading ? (!this
@@ -1446,6 +1455,17 @@ export default {
 			}
 			this._preReload(animate, false);
 		},
+		//刷新列表数据，pageNo和pageSize不会重置，列表数据会重新从服务端获取。使用此方法需保证@query绑定的方法中的pageNo和pageSize必须和传给服务端的一致！
+		refresh() {
+			const disPageNo = this.pageNo - this.defaultPageNo + 1;
+			if (disPageNo >= 1) {
+				this.loading = true;
+				this.privateConcat = false;
+				const totalPageSize = disPageNo * this.pageSize;
+				this.$emit('query', this.defaultPageNo, totalPageSize);
+				this._callMyParentQuery(this.defaultPageNo, totalPageSize);
+			}
+		},
 		//清空分页数据
 		clean() {
 			this._reload(true);
@@ -1536,6 +1556,10 @@ export default {
 			});
 		},
 		//设置nvue List的specialEffects
+		setSpecialEffects(args) {
+			this.setListSpecialEffects(args);
+		},
+		//与setSpecialEffects等效，兼容旧版本
 		setListSpecialEffects(args) {
 			this.nFixFreezing = args !== {};
 			if (!this.usePageScroll) {
@@ -1675,7 +1699,9 @@ export default {
 				this.isLoadFailed = !success;
 			}
 			if (success) {
-				this.loadingStatus = Enum.LoadingMoreStatus.Default;
+				if (!(this.privateConcat === false && this.loadingStatus === Enum.LoadingMoreStatus.NoMore)) {
+					this.loadingStatus = Enum.LoadingMoreStatus.Default;
+				}
 				if (isLocal) {
 					this.totalLocalPagingList = data;
 					this._localPagingQueryList(this.defaultPageNo, this.defaultPageSize, 0, (res) => {
@@ -1700,7 +1726,7 @@ export default {
 				newVal.reverse();
 			}
 			// #endif
-			if (this.pageNo === this.defaultPageNo && this.concat) {
+			if (this.pageNo === this.defaultPageNo && this.finalConcat) {
 				this.totalData = [];
 			}
 			if (this.customNoMore !== -1) {
@@ -1714,7 +1740,7 @@ export default {
 				}
 			}
 			if (!this.totalData.length) {
-				if (this.concat) {
+				if (this.finalConcat) {
 					this.totalData = newVal;
 				}
 				if (this.useChatRecordMode) {
@@ -1759,11 +1785,14 @@ export default {
 					//#endif
 
 				} else {
-					if (this.concat) {
+					if (this.finalConcat) {
 						this.totalData = [...this.totalData, ...newVal];
+					}else{
+						this.totalData = [...newVal];
 					}
 				}
 			}
+			this.privateConcat = true;
 		},
 		//通过@scroll事件检测是否滚动到了底部
 		_checkScrolledToBottom(scrollDiff, checked = false) {
@@ -2680,7 +2709,7 @@ export default {
 			}
 		},
 		//调用父view的query
-		_callMyParentQuery() {
+		_callMyParentQuery(customPageNo = 0, customPageSize = 0) {
 			if (this.autowireQueryName) {
 				if (this.myParentQuery === -1) {
 					const myParent = zUtils.getParent(this.$parent);
@@ -2689,7 +2718,11 @@ export default {
 					}
 				}
 				if (this.myParentQuery !== -1) {
-					this.myParentQuery(this.pageNo, this.defaultPageSize);
+					if (customPageSize > 0) {
+						this.myParentQuery(customPageNo, customPageSize);
+					} else {
+						this.myParentQuery(this.pageNo, this.defaultPageSize);
+					}
 				}
 			}
 		},

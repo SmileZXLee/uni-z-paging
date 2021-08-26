@@ -26,6 +26,7 @@
 		methods: {
 			tabChange(index) {
 				this.tabIndex = index;
+				console.log(this.$refs)
 				//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
 				this.$refs.paging.reload();
 			},

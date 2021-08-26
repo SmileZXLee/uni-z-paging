@@ -170,6 +170,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/sticky-and-scroll-tab-demo-n/sticky-and-scroll-tab-demo-n",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

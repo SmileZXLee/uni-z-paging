@@ -46,7 +46,7 @@
 						subTitle: '使用了uView的tabsSwiper组件'
 					},
 					{
-						title: '滑动切换选项卡演示(简化写法)',
+						title: '滑动切换选项卡演示(简化写法,不不推荐)',
 						file: 'scroll-tab-swiper-easy-demo',
 						subTitle: '使用了uView的tabsSwiper组件'
 					},
@@ -123,7 +123,7 @@
 						subTitle: ''
 					},
 					{
-						title: '滑动切换选项卡演示(简化写法)(nvue)',
+						title: '滑动切换选项卡演示(简化写法,不推荐)(nvue)',
 						file: 'scroll-tab-swiper-easy-demo-n',
 						subTitle: ''
 					},
@@ -140,6 +140,10 @@
 					{
 						title: '聊天记录模式演示(nvue)',
 						file: 'chat-history-demo-n',
+						subTitle: ''
+					},{
+						title: '滑动切换选项卡+吸顶演示(nvue)',
+						file: 'sticky-and-scroll-tab-demo-n',
 						subTitle: ''
 					}
 				]

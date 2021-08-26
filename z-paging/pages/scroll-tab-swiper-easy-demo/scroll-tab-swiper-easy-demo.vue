@@ -1,4 +1,4 @@
-<!-- 滑动切换选项卡演示(简化写法，不建议。建议使用标准写法scroll-tab-swiper-demo.vue)(vue) -->
+<!-- 滑动切换选项卡演示(简化写法，不推荐。建议使用标准写法scroll-tab-swiper-demo.vue)(vue) -->
 <!--  此demo使用了uView的tabsSwiper全屏选项卡 https://uviewui.com/components/tabsSwiper.html -->
 <!-- 简化写法灵活性不如标准写法高，暂时无法设置内部z-paging自定义下拉刷新view，自定义上拉加载view等slot插入的view，设置z-paging只支持全局配置 -->
 <!-- 适用于简单的低自定义场景 -->
