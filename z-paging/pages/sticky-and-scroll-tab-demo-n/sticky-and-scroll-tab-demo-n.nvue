@@ -1,35 +1,34 @@
 <!-- 滑动切换选项卡+吸顶演示（nvue） -->
 <template>
-	<view class="content">
-		<z-paging ref="paging" nvue-list-id="z-paging-nlist" refresher-only @onRefresh="onRefresh">
-			<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
-			<custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus">
-			</custom-refresher>
-			<cell>
-				<view class="banner-view" style="height: 250rpx;">
-					<view style="font-size: 40rpx;font-weight: 700;">这是一个banner</view>
-					<view style="font-size: 24rpx;margin-top: 5rpx;">下方tab滚动时可吸附在顶部</view>
+	<z-paging ref="paging" nvue-list-id="z-paging-nlist" refresher-only @onRefresh="onRefresh">
+		<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
+		<custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus">
+		</custom-refresher>
+		<!-- 这个cell是吸顶view上方跟随页面列表滚动的view -->
+		<cell>
+			<view class="banner-view" style="height: 250rpx;">
+				<view style="font-size: 40rpx;font-weight: 700;">这是一个banner</view>
+				<view style="font-size: 24rpx;margin-top: 5rpx;">下方tab滚动时可吸附在顶部</view>
+			</view>
+		</cell>
+		<!-- 这个cell包含了吸顶view和主体列表 -->
+		<cell>
+			<view class="tabs" :style="'height:' + pageHeight + 'px'">
+				<view>
+					<tabs-view @change="tabsChange" :current="current" :items="['测试1','测试2','测试3','测试4']">
+					</tabs-view>
 				</view>
-			</cell>
-			<cell>
-				<view class="tabs" :style="'height:' + pageHeight + 'px'">
-					<!-- 小程序中直接修改组件style为position: sticky;无效，需要在组件外层套一层view -->
-					<view style="z-index: 100;position: sticky;top :0;">
-						<tabs-view @change="tabsChange" :current="current" :items="['测试1','测试2','测试3','测试4']">
-						</tabs-view>
-					</view>
-					<swiper class="swiper" :current="current" @transition="transition"
-						@animationfinish="animationfinish">
-						<swiper-item class="swiper-item" v-for="(item, index) in list" :key="index">
-							<sticky-and-scroll-tab-item-n style="flex: 1;" class="swiper-item-content" ref="swiperItem" :tabIndex="index"
-								:currentIndex="current">
-							</sticky-and-scroll-tab-item-n>
-						</swiper-item>
-					</swiper>
-				</view>
-			</cell>
-		</z-paging>
-	</view>
+				<swiper class="swiper" :current="current" @transition="transition"
+					@animationfinish="animationfinish" @change="onswiperchange">
+					<swiper-item class="swiper-item" v-for="(item, index) in list" :key="index">
+						<sticky-and-scroll-tab-item-n style="flex: 1;" class="swiper-item-content" ref="swiperItem"
+							:tabIndex="index" :currentIndex="current">
+						</sticky-and-scroll-tab-item-n>
+					</swiper-item>
+				</swiper>
+			</view>
+		</cell>
+	</z-paging>
 </template>
 
 <script>
@@ -53,6 +52,16 @@
 		onLoad() {
 			this.pageHeight = uni.getSystemInfoSync().windowHeight;
 		},
+		watch: {
+			current: {
+				handler(newVal) {
+					this.$nextTick(()=>{
+						this.$refs.swiperItem[newVal].setScrollRef(uni.upx2px(150));
+					})
+				},
+				immediate: true
+			}
+		},
 		methods: {
 			onRefresh() {
 				//触发了下拉刷新，通过当前tabIndex对应的列表下拉刷新
@@ -63,7 +72,6 @@
 			// tabs通知swiper切换
 			tabsChange(index) {
 				this.current = index;
-				this.$refs.swiperItem[index].setScrollRef(uni.upx2px(250));
 			},
 			// swiper-item左右移动，通知tabs的滑块跟随移动
 			transition(e) {
@@ -111,7 +119,7 @@
 
 	.swiper-item-content {
 		flex: 1;
-		
+
 		background-color: yellow;
 	}
 </style>
