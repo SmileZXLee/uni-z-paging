@@ -5,6 +5,7 @@
 
 import zStatic from './z-paging-static'
 import zConfig from './z-paging-config'
+import zLocalConfig from '../config/index'
 import zUtils from './z-paging-utils'
 import zI18n from './z-paging-i18n'
 import zPagingRefresh from '../components/z-paging-refresh'
@@ -39,9 +40,13 @@ try {
 //获取默认配置信息
 function _getConfig(key, defaultValue) {
 	if (!config) {
-		const temConfig = zConfig.getConfig();
-		if (zConfig && temConfig) {
-			config = temConfig;
+		if(zLocalConfig){
+			config = zLocalConfig;
+		}else{
+			const temConfig = zConfig.getConfig();
+			if (zConfig && temConfig) {
+				config = temConfig;
+			}
 		}
 	}
 	if (!config) {
@@ -125,7 +130,7 @@ export default {
 			isLoadFailed: false,
 			isIos: systemInfo.platform === 'ios',
 			privateShowRefresherWhenReload: false,
-			nRefresherLoading: true,
+			nRefresherLoading: false,
 			nListIsDragging: false,
 			nShowBottom: true,
 			nFixFreezing: false,

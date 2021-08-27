@@ -4,26 +4,25 @@
 		<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
 		<custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus">
 		</custom-refresher>
-		<!-- 这个cell是吸顶view上方跟随页面列表滚动的view -->
+		<!-- 这个cell是吸顶view上方跟随页面列表滚动的view(header) -->
 		<cell>
-			<view class="banner-view" style="height: 250rpx;">
-				<view style="font-size: 40rpx;font-weight: 700;">这是一个banner</view>
-				<view style="font-size: 24rpx;margin-top: 5rpx;">下方tab滚动时可吸附在顶部</view>
+			<view ref="header" class="banner-view" style="height: 250rpx;">
+				<text style="font-size: 40rpx;font-weight: 700;color: white;">这是一个banner</text>
+				<text style="font-size: 24rpx;margin-top: 5rpx;color: white;">下方tab滚动时可吸附在顶部</text>
 			</view>
 		</cell>
 		<!-- 这个cell包含了吸顶view和主体列表 -->
 		<cell>
-			<view class="tabs" :style="'height:' + pageHeight + 'px'">
-				<view>
-					<tabs-view @change="tabsChange" :current="current" :items="['测试1','测试2','测试3','测试4']">
-					</tabs-view>
-				</view>
-				<swiper class="swiper" :current="current" @transition="transition"
-					@animationfinish="animationfinish" @change="onswiperchange">
-					<swiper-item class="swiper-item" v-for="(item, index) in list" :key="index">
-						<sticky-and-scroll-tab-item-n style="flex: 1;" class="swiper-item-content" ref="swiperItem"
+			<view :style="'height:' + pageHeight + 'px'">
+				<!-- 吸顶view -->
+				<tabs-view @change="tabsChange" :current="current" :items="tabList"></tabs-view>
+				<!-- swiper -->
+				<swiper class="swiper" :current="current" @transition="transition" @animationfinish="animationfinish"
+					@change="onswiperchange">
+					<swiper-item class="swiper-item" v-for="(item, index) in tabList" :key="index">
+						<sticky-swiper-item-n style="flex: 1;" class="swiper-item-content" ref="swiperItem"
 							:tabIndex="index" :currentIndex="current">
-						</sticky-and-scroll-tab-item-n>
+						</sticky-swiper-item-n>
 					</swiper-item>
 				</swiper>
 			</view>
@@ -32,39 +31,42 @@
 </template>
 
 <script>
+	// #ifdef APP-NVUE
+	const dom = weex.requireModule('dom')
+	// #endif
 	export default {
 		data() {
 			return {
-				list: [{
-					name: '测试1'
-				}, {
-					name: '测试2'
-				}, {
-					name: '测试3'
-				}, {
-					name: '测试4'
-				}],
+				tabList: ['测试1', '测试2', '测试3', '测试4'],
+				// 页面高度
 				pageHeight: 0,
+				// header高度
+				headerHeight: 0,
 				// 因为内部的滑动机制限制，请将tabs组件和swiper组件的current用不同变量赋值
 				current: 0, // tabs组件的current值，表示当前活动的tab选项
 			}
 		},
 		onLoad() {
 			this.pageHeight = uni.getSystemInfoSync().windowHeight;
+			this.$nextTick(() => {
+				dom.getComponentRect(this.$refs.header, option => {
+					if (option && option.result && option.result) {
+						this.headerHeight = option.size.height;
+					}
+				})
+			})
 		},
 		watch: {
-			current: {
-				handler(newVal) {
-					this.$nextTick(()=>{
-						this.$refs.swiperItem[newVal].setScrollRef(uni.upx2px(150));
-					})
-				},
-				immediate: true
+			current() {
+				this.updateScrollRef();
+			},
+			headerHeight() {
+				this.updateScrollRef();
 			}
 		},
 		methods: {
 			onRefresh() {
-				//触发了下拉刷新，通过当前tabIndex对应的列表下拉刷新
+				//触发了下拉刷新，通过当前tabIndex对应子组件的下拉刷新
 				this.$refs.swiperItem[this.current].reload(() => {
 					this.$refs.paging.complete();
 				});
@@ -86,6 +88,11 @@
 			animationfinish(e) {
 				let current = e.detail.current;
 				this.current = current;
+			},
+			updateScrollRef() {
+				this.$nextTick(() => {
+					this.$refs.swiperItem[this.current].setScrollRef(this.headerHeight);
+				})
 			}
 		}
 	}
@@ -94,20 +101,8 @@
 <style>
 	.banner-view {
 		background-color: #007AFF;
-		color: white;
-		display: flex;
-		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-	}
-
-	.tabs {
-		flex-direction: column;
-		overflow: hidden;
-		background-color: yellow;
-		/* #ifdef MP-ALIPAY || MP-BAIDU */
-		height: 100vh;
-		/* #endif */
 	}
 
 	.swiper,

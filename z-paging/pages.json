@@ -20,7 +20,7 @@
 			}
 
 		}, {
-			"path": "pages/scroll-tab-swiper-demo/scroll-tab-swiper-demo",
+			"path": "pages/swiper-demo/swiper-demo",
 			"style": {
 				"navigationBarTitleText": "滑动切换选项卡演示(标准写法)",
 				"enablePullDownRefresh": false
@@ -48,7 +48,7 @@
 			}
 
 		}, {
-			"path": "pages/scroll-tab-swiper-demo-n/scroll-tab-swiper-demo-n",
+			"path": "pages/swiper-demo-n/swiper-demo-n",
 			"style": {
 				"navigationBarTitleText": "滑动切换选项卡演示(标准写法)(nvue)",
 				"enablePullDownRefresh": false
@@ -144,7 +144,7 @@
             
         }
         ,{
-            "path" : "pages/scroll-tab-swiper-easy-demo/scroll-tab-swiper-easy-demo",
+            "path" : "pages/swiper-easy-demo/swiper-easy-demo",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "滑动切换选项卡演示(简化写法)",
@@ -153,7 +153,7 @@
             
         }
         ,{
-            "path" : "pages/scroll-tab-swiper-easy-demo-n/scroll-tab-swiper-easy-demo-n",
+            "path" : "pages/swiper-easy-demo-n/swiper-easy-demo-n",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "滑动切换选项卡演示(简化写法)(nvue)",
@@ -171,10 +171,10 @@
             
         }
         ,{
-            "path" : "pages/sticky-and-scroll-tab-demo-n/sticky-and-scroll-tab-demo-n",
+            "path" : "pages/sticky-swiper-demo-n/sticky-swiper-demo-n",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "滑动切换选项卡+吸顶演示(nvue)",
                 "enablePullDownRefresh": false
             }
             

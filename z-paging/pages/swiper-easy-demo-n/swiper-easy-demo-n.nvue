@@ -1,4 +1,4 @@
-<!-- 滑动切换选项卡演示(简化写法，不推荐。建议使用标准写法scroll-tab-swiper-demo-n.nvue)(nvue) -->
+<!-- 滑动切换选项卡演示(简化写法，不推荐。建议使用标准写法swiper-demo-n.nvue)(nvue) -->
 <!-- 简化写法灵活性不如标 准写法高，暂时无法设置内部z-paging自定义下拉刷新view，自定义上拉加载view等slot插入的view，设置z-paging只支持全局配置 -->
 <!-- 适用于简单的低自定义场景 -->
 <template>
