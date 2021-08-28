@@ -810,13 +810,11 @@ export default {
 			if (this.autoFullHeight && this.usePageScroll && this.isTotalChangeFromAddData) {
 				// #ifndef APP-NVUE
 				this.$nextTick(() => {
-					setTimeout(() => {
-						this._checkScrollViewShouldFullHeight((scrollViewNode, pagingContainerNode) => {
-							this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal,
-								scrollViewNode,
-								pagingContainerNode)
-						});
-					}, 200)
+					this._checkScrollViewShouldFullHeight((scrollViewNode, pagingContainerNode) => {
+						this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal,
+							scrollViewNode,
+							pagingContainerNode)
+					});
 				})
 				// #endif
 				// #ifdef APP-NVUE
