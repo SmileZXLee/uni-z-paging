@@ -1056,10 +1056,10 @@ export default {
 			return this.enableBackToTop;
 		},
 		finalBackToTopThreshold() {
-			return this._convertTextToPx(this.backToTopThreshold);
+			return zUtils.convertTextToPx(this.backToTopThreshold);
 		},
 		finalLowerThreshold() {
-			return this._convertTextToPx(this.lowerThreshold);
+			return zUtils.convertTextToPx(this.lowerThreshold);
 		},
 		finalRefresherThreshold() {
 			let refresherThreshold = this.refresherThreshold;
@@ -1073,10 +1073,10 @@ export default {
 			if (idDefault && this.customRefresherHeight > 0) {
 				return this.customRefresherHeight;
 			}
-			return this._convertTextToPx(refresherThreshold);
+			return zUtils.convertTextToPx(refresherThreshold);
 		},
 		finalRefresherFixedBacHeight() {
-			return this._convertTextToPx(this.refresherFixedBacHeight);
+			return zUtils.convertTextToPx(this.refresherFixedBacHeight);
 		},
 		finalScrollTop() {
 			if (this.usePageScroll) {
@@ -1087,7 +1087,7 @@ export default {
 		finalBackToTopStyle() {
 			let tempBackToTopStyle = this.backToTopStyle;
 			if (!tempBackToTopStyle.bottom) {
-				tempBackToTopStyle.bottom = this.windowBottom + this._convertTextToPx(this.backToTopBottom) + 'px';
+				tempBackToTopStyle.bottom = this.windowBottom + zUtils.convertTextToPx(this.backToTopBottom) + 'px';
 			}
 			return tempBackToTopStyle;
 		},
@@ -2496,7 +2496,7 @@ export default {
 					if (finalScrollViewNode) {
 						const scrollViewTop = finalScrollViewNode[0].top;
 						const scrollViewHeight = this.windowHeight - scrollViewTop;
-						let additionHeight = this._convertTextToPx(this.autoHeightAddition);
+						let additionHeight = zUtils.convertTextToPx(this.autoHeightAddition);
 						this.$set(this.scrollViewStyle, heightKey, scrollViewHeight + additionHeight - (this
 							.insideMore ? 1 : 0) + 'px');
 						this.$set(this.scrollViewInStyle, heightKey, scrollViewHeight + additionHeight - (this
@@ -2604,28 +2604,6 @@ export default {
 				callback(arg);
 			}, localPagingLoadingTime)
 		},
-		//将文本的px或者rpx转为px的值
-		_convertTextToPx(text) {
-			const dataType = Object.prototype.toString.call(text);
-			if (dataType === '[object Number]') {
-				return text;
-			}
-			let isRpx = false;
-			if (text.indexOf('rpx') !== -1 || text.indexOf('upx') !== -1) {
-				text = text.replace('rpx', '').replace('upx', '');
-				isRpx = true;
-			} else if (text.indexOf('px') !== -1) {
-				text = text.replace('px', '');
-			}
-			if (!isNaN(text)) {
-				if (isRpx) {
-					return Number(uni.upx2px(text));
-				}
-				return Number(text);
-			}
-			return 0;
-		},
-
 		//判断是否要显示返回顶部按钮
 		_checkShouldShowBackToTop(newVal, oldVal) {
 			if (!this.autoShowBackToTop) {
