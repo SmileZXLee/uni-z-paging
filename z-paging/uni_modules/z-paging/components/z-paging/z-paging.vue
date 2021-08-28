@@ -148,7 +148,7 @@ by ZXLee 2021-08-22
 			:scrollable="scrollable&&scrollEnable" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 			:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap"
 			@loadmore="_nOnLoadmore" @scroll="_nOnScroll">
-			<refresh class="zp-n-refresh" v-if="finalNvueListIs!=='view'&&refresherEnabled&&!nShowRefresherReveal&&!useChatRecordMode" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
+			<refresh class="zp-n-refresh" v-if="finalNvueListIs!=='view'&&finalRefresherEnabled&&!nShowRefresherReveal&&!useChatRecordMode" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
 				@pullingdown="_nOnPullingdown">
 				<view ref="zp-n-refresh-container" class="zp-n-refresh-container">
 					<!-- 下拉刷新view -->

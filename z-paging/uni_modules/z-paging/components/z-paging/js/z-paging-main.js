@@ -1463,7 +1463,7 @@ export default {
 			}
 			this._preReload(animate, false);
 		},
-		//刷新列表数据，pageNo和pageSize不会重置，列表数据会重新从服务端获取。使用此方法需保证@query绑定的方法中的pageNo和pageSize必须和传给服务端的一致！
+		//刷新列表数据，pageNo和pageSize不会重置，列表数据会重新从服务端获取。必须保证@query绑定的方法中的pageNo和pageSize和传给服务端的一致
 		refresh() {
 			const disPageNo = this.pageNo - this.defaultPageNo + 1;
 			if (disPageNo >= 1) {
@@ -1570,6 +1570,9 @@ export default {
 		//与setSpecialEffects等效，兼容旧版本
 		setListSpecialEffects(args) {
 			this.nFixFreezing = args !== {};
+			if(this.isIos){
+				this.privateRefresherEnabled = 0;
+			}
 			if (!this.usePageScroll) {
 				this.$refs['n-list'].setSpecialEffects(args);
 			}
