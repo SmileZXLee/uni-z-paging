@@ -37,7 +37,7 @@
 				default: function(){
 					return 0
 				}
-			},
+			}
 		},
 		watch: {
 			currentIndex: {

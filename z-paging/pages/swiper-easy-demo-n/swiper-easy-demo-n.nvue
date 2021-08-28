@@ -6,11 +6,11 @@
 		<z-paging-swiper>
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中 -->
 			<view style="height: 80rpx;" slot="top">
-				<tabs-view @change="tabChange" :current="current" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
+				<tabs-view @change="tabChange" :current="current" :items="tabList"></tabs-view>
 			</view>
 			<!-- 因swiper与swiper-item无法封装在不同组件中，因此这边依然需要设置swiper包裹swiper-item -->
 			<swiper style="flex: 1;" :current="current" @transition="transition" @animationfinish="animationfinish" @change="onswiperchange">
-				<swiper-item v-for="(item,index) in list" :key="index">
+				<swiper-item v-for="(item,index) in tabList" :key="index">
 					<z-paging-swiper-item ref="swiperItem" :tabIndex="index" :currentIndex="current" @query="queryList"
 						@updateList="updateList">
 						<cell class="item" v-for="(subItem,subIndex) in dataList[index]" :key="subItem.title">
@@ -32,15 +32,7 @@
 			return {
 				//v-model绑定的这个变量不要自己赋值、不要自己赋值、不要自己赋值！！！
 				dataList: [],
-				list: [{
-					name: '测试1'
-				}, {
-					name: '测试2'
-				}, {
-					name: '测试3'
-				}, {
-					name: '测试4'
-				}],
+				tabList: ['测试1', '测试2', '测试3', '测试4'],
 				current: 0, // tabs组件的current值，表示当前活动的tab选项
 			}
 		},

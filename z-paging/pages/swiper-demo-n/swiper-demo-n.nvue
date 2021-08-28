@@ -4,11 +4,11 @@
 	<z-paging-swiper>
 		<!-- 需要固定在顶部不滚动的view放在slot="top"的view中 -->
 		<view slot="top">
-			<tabs-view @change="tabsChange" :current="current" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
+			<tabs-view @change="tabsChange" :current="current" :items="tabList"></tabs-view>
 		</view>
 		<!-- swiper必须设置flex:1，因为swiper有默认的高度，只有设置flex:1才可以铺满页面  -->
 		<swiper class="swiper" :current="current" @transition="transition" @animationfinish="animationfinish" @change="onswiperchange">
-			<swiper-item class="swiper-item" v-for="(item, index) in list" :key="index">
+			<swiper-item class="swiper-item" v-for="(item, index) in tabList" :key="index">
 				<swiper-item-n :tabIndex="index" :currentIndex="current"></swiper-item-n>
 			</swiper-item>
 		</swiper>
@@ -19,15 +19,7 @@
 	export default {
 		data() {
 			return {
-				list: [{
-					name: '测试1'
-				}, {
-					name: '测试2'
-				}, {
-					name: '测试3'
-				}, {
-					name: '测试4'
-				}],
+				tabList: ['测试1', '测试2', '测试3', '测试4'],
 				// 因为内部的滑动机制限制，请将tabs组件和swiper组件的current用不同变量赋值
 				current: 0, // tabs组件的current值，表示当前活动的tab选项
 			};

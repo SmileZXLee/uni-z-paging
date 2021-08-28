@@ -7,12 +7,12 @@
 	<z-paging-swiper>
 		<!-- 需要固定在顶部不滚动的view放在slot="top"的view中 -->
 		<view style="height: 80rpx;" slot="top">
-			<u-tabs-swiper ref="uTabs" :list="list" :current="current" @change="tabsChange" :is-scroll="false"
+			<u-tabs-swiper ref="uTabs" :list="tabList" :current="current" @change="tabsChange" :is-scroll="false"
 				swiperWidth="750"></u-tabs-swiper>
 		</view>
 		<!-- 因swiper与swiper-item无法封装在不同组件中，因此这边依然需要设置swiper包裹swiper-item -->
 		<swiper style="height: 100%;" :current="swiperCurrent" @transition="transition" @animationfinish="animationfinish">
-			<swiper-item v-for="(item,index) in list" :key="index">
+			<swiper-item v-for="(item,index) in tabList" :key="index">
 				<z-paging-swiper-item ref="swiperItem" :tabIndex="index" :currentIndex="current" @query="queryList"
 					@updateList="updateList">
 					<view class="item" v-for="(subItem,subIndex) in dataList[index]" :key="subIndex">
@@ -32,7 +32,7 @@
 			return {
 				//注意，这个数组是一个二维数组，数组里面包含的是所有tabs的list数组
 				dataList: [],
-				list: [{
+				tabList: [{
 					name: '测试1'
 				}, {
 					name: '测试2'

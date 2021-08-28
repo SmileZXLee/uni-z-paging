@@ -179,7 +179,7 @@ by ZXLee 2021-08-22
 					</z-paging-empty-view>
 				</view>
 			</view>
-			<view ref="zp-n-list-bottom-tag" class="zp-n-list-bottom-tag" is="header"></view>
+			<view v-if="!hideNvueBottomTag" ref="zp-n-list-bottom-tag" class="zp-n-list-bottom-tag" is="header"></view>
 			<!-- 全屏Loading -->
 			<view :class="{'z-paging-content-fixed':usePageScroll}" style="flex: 1;" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="$slots.loading&&showLoading" :is="nViewIs">
 				<slot name="loading" />
@@ -247,9 +247,9 @@ by ZXLee 2021-08-22
 	 * @property {Number|String} auto-height-addition z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数
 	 * @property {String} default-theme-style loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
 	 * @property {String} refresher-theme-style 下拉刷新的主题样式，支持black，white，默认black
-	 * @property {Object} refresher-img-style 自定义下拉刷新左侧图标的样式
-	 * @property {Object} refresher-title-style 自定义下拉刷新右侧状态描述文字的样式
-	 * @property {Object} refresher-update-time-style 自定义下拉刷新右侧最后更新时间文字的样式(show-refresher-update-time为true时有效)
+	 * @property {Object} refresher-img-style 自定义下拉刷新中左侧图标的样式
+	 * @property {Object} refresher-title-style 自定义下拉刷新中右侧状态描述文字的样式
+	 * @property {Object} refresher-update-time-style 自定义下拉刷新中右侧最后更新时间文字的样式(show-refresher-update-time为true时有效)
 	 * @property {String} loading-more-theme-style 底部加载更多的主题样式，支持black，white，默认black
 	 * @property {Boolean} refresher-only 是否只使用下拉刷新，设置为true后将关闭mounted自动请求数据、关闭滚动到底部加载更多，强制隐藏空数据图。默认为否
 	 * @property {Boolean} use-page-scroll 使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
@@ -333,6 +333,7 @@ by ZXLee 2021-08-22
 	 * @property {Boolean} nvue-bounce nvue 控制是否回弹效果，iOS不支持动态修改(若禁用回弹效果，下拉刷新将失效)，默认为是
 	 * @property {Boolean} nvue-fast-scroll nvue中通过代码滚动到顶部/底部时，是否加快动画效果(无滚动动画时无效)，默认为否
 	 * @property {String} nvue-list-id nvue中list的id
+	 * @property {Boolean} hide-nvue-bottom-tag 是否隐藏nvue列表底部的tagView，此view用于标识滚动到底部位置，若隐藏则滚动到底部功能将失效，在nvue中实现吸顶+swiper功能时需将最外层z-paging的此属性设置为true。默认为否
 	 * @property {Boolean} show-console-error 是否将错误信息打印至控制台，默认为是
 	 * @event {Function} query 组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用。pageNo和pageSize会自动计算好，直接传给服务器即可。
 	 * @event {Function} refresherStatusChange 自定义下拉刷新状态改变(use-custom-refresher为true时生效)【注：通过`:refresher-status.sync`绑定当前data中的指定变量亦可】
@@ -463,6 +464,7 @@ by ZXLee 2021-08-22
 			nvueBounce: {type: Boolean},
 			nvueFastScroll: {type: Boolean},
 			nvueListId: {type: String},
+			hideNvueBottomTag: {type: Boolean},
 			showConsoleError: {type: Boolean},
 			value: {type: Array}
 		}

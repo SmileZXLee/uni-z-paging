@@ -1,9 +1,11 @@
-<!-- 滑动切换选项卡+吸顶演示（nvue） -->
+<!-- 滑动切换选项卡+吸顶演示，在vue中暂不支持！！（nvue） -->
 <template>
-	<z-paging ref="paging" nvue-list-id="z-paging-nlist" refresher-only @onRefresh="onRefresh">
+	<!-- refresher-only为true代表只使用下拉刷新功能 -->
+	<!-- hide-nvue-bottom-tag必须设置为true，因为在安卓设备中，插入的swiper cell下面，不能有其他的view -->
+	<!-- @onRefresh代表监听下拉刷新事件 -->
+	<z-paging ref="paging" nvue-list-id="z-paging-nlist" refresher-only hide-nvue-bottom-tag @onRefresh="onRefresh">
 		<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
-		<custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus">
-		</custom-refresher>
+		<custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus"></custom-refresher>
 		<!-- 这个cell是吸顶view上方跟随页面列表滚动的view(header) -->
 		<cell>
 			<view ref="header" class="banner-view" style="height: 250rpx;">
@@ -11,7 +13,7 @@
 				<text style="font-size: 24rpx;margin-top: 5rpx;color: white;">下方tab滚动时可吸附在顶部</text>
 			</view>
 		</cell>
-		<!-- 这个cell包含了吸顶view和主体列表 -->
+		<!-- 这个cell包含了吸顶view和主体列表，其高度必须等于页面可见高度 -->
 		<cell>
 			<view :style="'height:' + pageHeight + 'px'">
 				<!-- 吸顶view -->
@@ -20,8 +22,7 @@
 				<swiper class="swiper" :current="current" @transition="transition" @animationfinish="animationfinish"
 					@change="onswiperchange">
 					<swiper-item class="swiper-item" v-for="(item, index) in tabList" :key="index">
-						<sticky-swiper-item-n style="flex: 1;" class="swiper-item-content" ref="swiperItem"
-							:tabIndex="index" :currentIndex="current">
+						<sticky-swiper-item-n ref="swiperItem" :tabIndex="index" :currentIndex="current">
 						</sticky-swiper-item-n>
 					</swiper-item>
 				</swiper>
@@ -47,21 +48,25 @@
 			}
 		},
 		onLoad() {
+			// 获取页面可见高度，除去header以外的高度必须等于页面可见高度！
 			this.pageHeight = uni.getSystemInfoSync().windowHeight;
 			this.$nextTick(() => {
+				// 获取header的高度
 				dom.getComponentRect(this.$refs.header, option => {
-					if (option && option.result && option.result) {
+					if (option && option.result) {
 						this.headerHeight = option.size.height;
 					}
 				})
 			})
 		},
 		watch: {
+			//当current或者headerHeight改变的时候，调用子组件的设置嵌套list父容器支持swiper-list吸顶滚动效果的方法
 			current() {
-				this.updateScrollRef();
+				this.setListSpecialEffects();
 			},
+			//当current或者headerHeight改变的时候，调用子组件的设置嵌套list父容器支持swiper-list吸顶滚动效果的方法
 			headerHeight() {
-				this.updateScrollRef();
+				this.setListSpecialEffects();
 			}
 		},
 		methods: {
@@ -89,9 +94,10 @@
 				let current = e.detail.current;
 				this.current = current;
 			},
-			updateScrollRef() {
+			//设置子组件嵌套list父容器支持swiper-list吸顶滚动效果的方法
+			setListSpecialEffects() {
 				this.$nextTick(() => {
-					this.$refs.swiperItem[this.current].setScrollRef(this.headerHeight);
+					this.$refs.swiperItem[this.current].setSpecialEffects(this.headerHeight);
 				})
 			}
 		}
@@ -106,15 +112,8 @@
 	}
 
 	.swiper,
-	.swiper-item {
-		flex: 1;
-		flex-direction: row;
-		background-color: pink;
-	}
-
+	.swiper-item,
 	.swiper-item-content {
 		flex: 1;
-
-		background-color: yellow;
 	}
 </style>

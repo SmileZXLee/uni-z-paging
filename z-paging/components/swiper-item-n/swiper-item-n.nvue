@@ -25,18 +25,20 @@
 			}
 		},
 		props: {
+			//当前组件的index，也就是当前组件是swiper中的第几个
 			tabIndex: {
 				type: Number,
-				default: function() {
+				default: function(){
 					return 0
 				}
 			},
+			//当前swiper切换到第几个index
 			currentIndex: {
 				type: Number,
-				default: function() {
+				default: function(){
 					return 0
 				}
-			},
+			}
 		},
 		watch: {
 			currentIndex: {

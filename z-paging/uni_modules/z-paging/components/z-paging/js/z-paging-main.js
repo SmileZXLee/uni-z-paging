@@ -40,9 +40,9 @@ try {
 //获取默认配置信息
 function _getConfig(key, defaultValue) {
 	if (!config) {
-		if(zLocalConfig){
+		if (zLocalConfig) {
 			config = zLocalConfig;
-		}else{
+		} else {
 			const temConfig = zConfig.getConfig();
 			if (zConfig && temConfig) {
 				config = temConfig;
@@ -245,21 +245,21 @@ export default {
 				return _getConfig('refresherThemeStyle', '');
 			}
 		},
-		//自定义下拉刷新左侧图标的样式
+		//自定义下拉刷新中左侧图标的样式
 		refresherImgStyle: {
 			type: Object,
 			default: function() {
 				return _getConfig('refresherImgStyle', {});
 			}
 		},
-		//自定义下拉刷新右侧状态描述文字的样式
+		//自定义下拉刷新中右侧状态描述文字的样式
 		refresherTitleStyle: {
 			type: Object,
 			default: function() {
 				return _getConfig('refresherTitleStyle', {});
 			}
 		},
-		//自定义下拉刷新右侧最后更新时间文字的样式(show-refresher-update-time为true时有效)
+		//自定义下拉刷新中右侧最后更新时间文字的样式(show-refresher-update-time为true时有效)
 		refresherUpdateTimeStyle: {
 			type: Object,
 			default: function() {
@@ -716,28 +716,27 @@ export default {
 		//nvue 控制是否回弹效果，iOS不支持动态修改
 		nvueBounce: {
 			type: Boolean,
-			default: function() {
-				return _getConfig('nvueBounce', true);
-			}
+			default: _getConfig('nvueBounce', true)
 		},
 		//nvue中通过代码滚动到顶部/底部时，是否加快动画效果(无滚动动画时无效)，默认为否
 		nvueFastScroll: {
 			type: Boolean,
-			default: function() {
-				return _getConfig('nvueFastScroll', false);
-			}
+			default: _getConfig('nvueFastScroll', false)
 		},
 		//nvue中list的id
 		nvueListId: {
 			type: String,
 			default: _getConfig('nvueListId', '')
 		},
+		//是否隐藏nvue列表底部的tagView，此view用于标识滚动到底部位置，若隐藏则滚动到底部功能将失效，在nvue中实现吸顶+swiper功能时需将最外层z-paging的此属性设置为true。默认为否
+		hideNvueBottomTag: {
+			type: Boolean,
+			default: _getConfig('hideNvueBottomTag', false)
+		},
 		//是否将错误信息打印至控制台，默认为是
 		showConsoleError: {
 			type: Boolean,
-			default: function() {
-				return _getConfig('showConsoleError', true);
-			}
+			default: _getConfig('showConsoleError', true)
 		},
 		//父组件v-model所绑定的list的值
 		value: {
@@ -1927,10 +1926,14 @@ export default {
 		async _scrollToBottom(animate = true) {
 			// #ifdef APP-NVUE
 			const el = this.$refs['zp-n-list-bottom-tag'];
-			weexDom.scrollToElement(el, {
-				offset: 0,
-				animated: animate
-			});
+			if (el) {
+				weexDom.scrollToElement(el, {
+					offset: 0,
+					animated: animate
+				});
+			} else {
+				zUtils.consoleErr('滚动到底部失败，因为您设置了hideNvueBottomTag为true');
+			}
 			return;
 			// #endif
 			if (this.usePageScroll) {
@@ -2149,6 +2152,7 @@ export default {
 			this.$emit('onRestore');
 			this.$emit('Restore');
 		},
+		// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
 		//拖拽开始
 		_refresherTouchstart(e) {
 			if (this._getRefresherTouchDisabled()) {
@@ -2157,6 +2161,7 @@ export default {
 			const touch = zUtils.getCommonTouch(e);
 			this._handleRefresherTouchstart(touch);
 		},
+		// #endif
 		//进一步处理拖拽开始结果
 		_handleRefresherTouchstart(touch) {
 			if (!this.loading && this.isTouchEnded) {
@@ -2172,6 +2177,7 @@ export default {
 			this.$emit('refresherTouchstart', this.refresherTouchstartY);
 			this.lastRefresherTouchmove = touch;
 		},
+		// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
 		//拖拽中
 		_refresherTouchmove(e) {
 			const currentTimeStamp = (new Date()).getTime();
@@ -2215,6 +2221,7 @@ export default {
 				this.disabledBounce = true;
 			}
 		},
+		// #endif
 		//进一步处理拖拽中结果
 		_handleRefresherTouchmove(moveDistance, touch) {
 			this.refresherReachMaxAngle = true;
@@ -2236,6 +2243,7 @@ export default {
 			this.moveDistance = moveDistance;
 			this.$emit('refresherTouchmove', moveDistance);
 		},
+		// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
 		//拖拽结束
 		_refresherTouchend(e) {
 			if (this._getRefresherTouchDisabled() || !this.isTouchmoving) {
@@ -2251,6 +2259,7 @@ export default {
 			});
 			this.disabledBounce = false;
 		},
+		// #endif
 		//进一步处理拖拽结束结果
 		_handleRefresherTouchend(moveDistance) {
 			// #ifndef APP-PLUS || H5 || MP-WEIXIN
@@ -2517,7 +2526,7 @@ export default {
 			if (ref) {
 				return new Promise((resolve, reject) => {
 					weexDom.getComponentRect(ref, option => {
-						if (option && option.result && option.result) {
+						if (option && option.result) {
 							resolve([option.size]);
 						} else {
 							resolve(false);
@@ -2765,6 +2774,7 @@ export default {
 			};
 		},
 		// ------------nvue独有的方法----------------
+		// #ifdef APP-NVUE
 		//列表滚动时触发
 		_nOnScroll(e) {
 			const contentOffsetY = e.contentOffset.y;
@@ -2774,10 +2784,10 @@ export default {
 		},
 		//下拉刷新刷新中
 		_nOnRrefresh() {
+			this.nRefresherLoading = true;
 			if (this.nShowRefresherReveal) {
 				return;
 			}
-			this.nRefresherLoading = true;
 			this.refresherStatus = Enum.RefresherStatus.Loading;
 			this._doRefresherLoad();
 		},
@@ -2864,5 +2874,6 @@ export default {
 			}
 			return defaultValue;
 		}
+		// #endif
 	},
 };

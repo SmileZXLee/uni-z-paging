@@ -1,9 +1,10 @@
 <!-- 在这个文件对每个tab对应的列表进行渲染 -->
 <template>
-	<view class="uni-swiper-page">
-		<!-- 这里设置了z-paging加载时禁止自动调用reload方法，自行控制何时reload（懒加载）-->
-		<!--  :enable-back-to-top="currentIndex===tabIndex" 在nvue上可以多加这一句，因为默认是允许点击返回顶部的，但是这个页面有多个scroll-view，会全部返回顶部，所以需要控制是当前index才允许点击返回顶部 -->
-		<z-paging class="list" ref="paging" v-model="dataList" @query="queryList" :fixed="false" :auto="false" :refresher-enabled="false">
+	<view class="content">
+		<!-- :auto="false" 这里设置了z-paging加载时禁止自动调用reload方法，自行控制何时reload（懒加载）-->
+		<!-- :fixed="false" 设置z-paging不铺满全屏，使用局部滚动-->
+		<!-- :auto-clean-list-when-reload="false" reload时不自动清空list，用于页面中父组件触发此组件reload方法时，不清空原list-->
+		<z-paging class="list" ref="paging" v-model="dataList" @query="queryList" :fixed="false" :auto="false" :auto-clean-list-when-reload="false">
 			<!-- 在nvue中，z-paging中插入的列表item必须是cell，必须使用cell包住，因为在nvue中，z-paging使用的是nvue的list组件。 -->
 			<cell class="item" v-for="(item,index) in dataList" :key="item.title">
 				<text class="item-title">{{item.title}}</text>
@@ -26,15 +27,17 @@
 			}
 		},
 		props: {
+			//当前组件的index，也就是当前组件是swiper中的第几个
 			tabIndex: {
 				type: Number,
-				default: function() {
+				default: function(){
 					return 0
 				}
 			},
+			//当前swiper切换到第几个index
 			currentIndex: {
 				type: Number,
-				default: function() {
+				default: function(){
 					return 0
 				}
 			}
@@ -68,6 +71,7 @@
 					//将请求的结果数组传递给z-paging
 					this.$refs.paging.complete(res.data.list);
 					this.firstLoaded = true;
+					//请求结束，调用父组件的下拉刷新结束回调函数，使得父组件中的z-paging下拉刷新结束
 					if (this.completeFunc) {
 						this.completeFunc();
 					}
@@ -76,17 +80,23 @@
 					//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
 					//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
 					this.$refs.paging.complete(false);
+					//请求结束，调用父组件的下拉刷新结束回调函数，使得父组件中的z-paging下拉刷新结束
 					if (this.completeFunc) {
 						this.completeFunc();
 					}
 				})
 			},
+			//父组件下拉刷新了，通知子组件，子组件调用内部z-paging的reload方法，这里的参数func代表下拉刷新结束的回调函数
 			reload(func) {
+				//先把父组件下拉刷新的回调函数存起来
 				this.completeFunc = func;
+				//调用z-paging的reload方法
 				this.$refs.paging.reload();
 			},
-			setScrollRef(height) {
-				this.$refs.paging.setListSpecialEffects({
+			//设置嵌套list父容器支持swiper-list吸顶滚动效果
+			setSpecialEffects(height) {
+				this.$refs.paging.setSpecialEffects({
+					//这个id就是sticky-swiper-demo-n中设置的nvue-list-id，二者的值必须完全一致！
 					id: 'z-paging-nlist',
 					headerHeight: height
 				});
@@ -96,7 +106,7 @@
 </script>
 
 <style scoped>
-	.uni-swiper-page {
+	.content {
 		flex: 1;
 	}
 	.item {
