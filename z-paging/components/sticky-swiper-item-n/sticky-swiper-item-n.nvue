@@ -117,7 +117,6 @@
 		justify-content: space-between;
 		padding: 0rpx 30rpx;
 	}
-
 	.item-detail {
 		padding: 5rpx 15rpx;
 		border-radius: 10rpx;
@@ -125,7 +124,6 @@
 		color: white;
 		background-color: #007AFF;
 	}
-
 	.item-line {
 		position: absolute;
 		bottom: 0;
