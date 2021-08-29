@@ -14,7 +14,7 @@ import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
 import Enum from './z-paging-enum'
 
-const currentVersion = 'V2.0.4';
+const currentVersion = 'V2.0.5';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -990,19 +990,19 @@ export default {
 		},
 		zPagingLoadMoreConfig() {
 			return {
-				loadingStatus: this.loadingStatus,
+				status: this.loadingStatus,
 				defaultThemeStyle: this.finalLoadingMoreThemeStyle,
-				loadingMoreCustomStyle: this.loadingMoreCustomStyle,
-				loadingMoreLoadingIconCustomStyle: this.loadingMoreLoadingIconCustomStyle,
-				loadingMoreLoadingIconType: this.loadingMoreLoadingIconType,
-				loadingMoreLoadingIconCustomImage: this.loadingMoreLoadingIconCustomImage,
-				loadingMoreLoadingAnimated: this.loadingMoreLoadingAnimated,
-				showLoadingMoreNoMoreLine: this.showLoadingMoreNoMoreLine,
-				loadingMoreNoMoreLineCustomStyle: this.loadingMoreNoMoreLineCustomStyle,
-				loadingMoreDefaultText: this.finalLoadingMoreDefaultText,
-				loadingMoreLoadingText: this.finalLoadingMoreLoadingText,
-				loadingMoreNoMoreText: this.finalLoadingMoreNoMoreText,
-				loadingMoreFailText: this.finalLoadingMoreFailText
+				customStyle: this.loadingMoreCustomStyle,
+				iconCustomStyle: this.loadingMoreLoadingIconCustomStyle,
+				loadingIconType: this.loadingMoreLoadingIconType,
+				loadingIconCustomImage: this.loadingMoreLoadingIconCustomImage,
+				loadingAnimated: this.loadingMoreLoadingAnimated,
+				showNoMoreLine: this.showLoadingMoreNoMoreLine,
+				noMoreLineCustomStyle: this.loadingMoreNoMoreLineCustomStyle,
+				defaultText: this.finalLoadingMoreDefaultText,
+				loadingText: this.finalLoadingMoreLoadingText,
+				noMoreText: this.finalLoadingMoreNoMoreText,
+				failText: this.finalLoadingMoreFailText
 			};
 		},
 		zScopedSlots() {
@@ -1265,6 +1265,7 @@ export default {
 			// #endif
 			return showRefresher;
 		},
+		// #ifdef APP-NVUE
 		nWaterfallColumnCount() {
 			if (this.finalNvueListIs !== 'waterfall') {
 				return 0;
@@ -1291,6 +1292,7 @@ export default {
 		nSafeAreaBottomHeight() {
 			return this.safeAreaInsetBottom ? this.safeAreaBottom : 0;
 		}
+		// #endif
 	},
 	methods: {
 		//请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认是是）

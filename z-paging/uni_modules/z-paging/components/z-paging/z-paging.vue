@@ -4,8 +4,8 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V2.0.4
-by ZXLee 2021-08-28
+V2.0.5
+by ZXLee 2021-08-29
 -- >
 <!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -70,11 +70,11 @@ by ZXLee 2021-08-28
 									<!-- #endif -->
 									name="refresher" />
 								</view>
-								<z-paging-refresh ref="refresh" v-if="!showCustomRefresher" :style="[{'height': `${finalRefresherThreshold}px`}]" :refresherStatus="refresherStatus"
-									:defaultThemeStyle="finalRefresherThemeStyle" :refresherDefaultText="finalRefresherDefaultText"
-									:refresherPullingText="finalRefresherPullingText" :refresherRefreshingText="finalRefresherRefreshingText" 
-									:showRefresherUpdateTime="showRefresherUpdateTime" :refresherUpdateTimeKey="refresherUpdateTimeKey"
-									:refresherImgStyle="refresherImgStyle" :refresherTitleStyle="refresherTitleStyle" :refresherUpdateTimeStyle="refresherUpdateTimeStyle"></z-paging-refresh>
+								<z-paging-refresh ref="refresh" v-if="!showCustomRefresher" :style="[{'height': `${finalRefresherThreshold}px`}]" :status="refresherStatus"
+									:defaultThemeStyle="finalRefresherThemeStyle" :defaultText="finalRefresherDefaultText"
+									:pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" 
+									:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey"
+									:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle"></z-paging-refresh>
 							</view>
 						</view>
 						<view class="zp-paging-container">
@@ -153,19 +153,19 @@ by ZXLee 2021-08-28
 				<view ref="zp-n-refresh-container" class="zp-n-refresh-container">
 					<!-- 下拉刷新view -->
 					<slot v-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
-					<z-paging-refresh ref="refresh" v-else :refresherStatus="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
-						:refresherDefaultText="finalRefresherDefaultText" :refresherPullingText="finalRefresherPullingText" :refresherRefreshingText="finalRefresherRefreshingText" 
-						:showRefresherUpdateTime="showRefresherUpdateTime" :refresherUpdateTimeKey="refresherUpdateTimeKey"
-						:refresherImgStyle="refresherImgStyle" :refresherTitleStyle="refresherTitleStyle" :refresherUpdateTimeStyle="refresherUpdateTimeStyle"></z-paging-refresh>
+					<z-paging-refresh ref="refresh" v-else :status="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
+						:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" 
+						:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey"
+						:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle"></z-paging-refresh>
 				</view>
 			</refresh>
 			<view ref="zp-n-list-top-tag" class="zp-n-list-top-tag" :is="nViewIs"></view>
 			<view v-if="nShowRefresherReveal" ref="zp-n-list-refresher-reveal" :style="[{transform:`translateY(-${nShowRefresherRevealHeight}px)`,height:'0px'}]" :is="nViewIs">
 				<slot v-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
-				<z-paging-refresh ref="refresh" v-else :refresherStatus="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
-					:refresherDefaultText="finalRefresherDefaultText" :refresherPullingText="finalRefresherPullingText" :refresherRefreshingText="finalRefresherRefreshingText" 
-					:showRefresherUpdateTime="showRefresherUpdateTime" :refresherUpdateTimeKey="refresherUpdateTimeKey"
-					:refresherImgStyle="refresherImgStyle" :refresherTitleStyle="refresherTitleStyle" :refresherUpdateTimeStyle="refresherUpdateTimeStyle"></z-paging-refresh>
+				<z-paging-refresh ref="refresh" v-else :status="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
+					:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" 
+					:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey"
+					:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle"></z-paging-refresh>
 			</view>
 			<slot />
 			<!-- 空数据图 -->
@@ -195,7 +195,7 @@ by ZXLee 2021-08-28
 								:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
 							<view>
 								<loading-indicator v-if="loadingStatus===1" :animating="true"
-									class="zp-loading-more-line-loading-image">
+									class="zp-line-loading-image">
 								</loading-indicator>
 							</view>
 						</view>

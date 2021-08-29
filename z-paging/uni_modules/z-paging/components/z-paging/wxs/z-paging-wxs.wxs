@@ -12,13 +12,13 @@ function propObserver(newValue, oldValue, ownerInstance, instance) {
 	var dataset = instance.getDataset();
 	var loading = dataset.loading == true;
 	if (newValue.indexOf('end') != -1) {
-		_setTransform('translateY(0px)', instance)
+		_setTransform('translateY(0px)', instance, false)
 		state.moveDistance = 0;
 		state.oldMoveDistance = 0;
 		currentMoveDistance = 0;
 	} else if (newValue.indexOf('begin') != -1) {
 		var refresherThreshold = instance.getDataset().refresherthreshold
-		_setTransformValue(refresherThreshold, instance, state);
+		_setTransformValue(refresherThreshold, instance, state, false);
 	}
 }
 
@@ -60,7 +60,7 @@ function touchmove(e, ownerInstance) {
 	var moveDistance = moveDistanceObj.currentMoveDistance;
 	var prevent = moveDistanceObj.isDown;
 	if (moveDistance < 0) {
-		_setTransformValue(0, instance, state);
+		_setTransformValue(0, instance, state, false);
 		_handleTouchMovePullingDown(state, ownerInstance, false);
 		return true;
 	}
@@ -72,7 +72,7 @@ function touchmove(e, ownerInstance) {
 		_handleTouchMovePullingDown(state, ownerInstance, prevent);
 		return !prevent;
 	}
-	_setTransformValue(moveDistance, instance, state);
+	_setTransformValue(moveDistance, instance, state, false);
 	var oldRefresherStatus = state.refresherStatus;
 	var dataset = instance.getDataset();
 	var oldIsTouchmoving = _getIsTrue(dataset.oldistouchmoving);
@@ -178,7 +178,7 @@ function mouseleave(e, ins) {
 // #endif
 
 
-function _setTransformValue(value, instance, state, animate = false) {
+function _setTransformValue(value, instance, state, animate) {
 	value = value || 0;
 	if (state.moveDistance == value) {
 		return;
@@ -187,7 +187,7 @@ function _setTransformValue(value, instance, state, animate = false) {
 	_setTransform('translateY(' + value + 'px)', instance, animate);
 }
 
-function _setTransform(transform, instance, animate = false) {
+function _setTransform(transform, instance, animate) {
 	if (transform == 'translateY(0px)') {
 		transform = 'none';
 	}

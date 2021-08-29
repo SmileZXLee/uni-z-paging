@@ -5,39 +5,39 @@
 
 <!-- 上拉加载更多view -->
 <template>
-	<view class="zp-load-more-container" :style="[zConfig.loadingMoreCustomStyle]">
+	<view class="zp-l-container" :style="[zConfig.customStyle]">
 		<text
-			:class="zConfig.defaultThemeStyle==='white'?'zp-loading-more-line zp-loading-more-line-white':'zp-loading-more-line zp-loading-more-line-black'"
-			:style="[zConfig.loadingMoreNoMoreLineCustomStyle]"
-			v-if="zConfig.showLoadingMoreNoMoreLine&&zConfig.loadingStatus===2"></text>
+			:class="zConfig.defaultThemeStyle==='white'?'zp-l-line zp-l-line-white':'zp-l-line zp-l-line-black'"
+			:style="[zConfig.noMoreLineCustomStyle]"
+			v-if="zConfig.showNoMoreLine&&zConfig.status===2"></text>
 		<!-- #ifndef APP-NVUE -->
-		<image v-if="zConfig.loadingStatus===1&&zConfig.loadingMoreLoadingIconCustomImage.length"
-			:src="zConfig.loadingMoreLoadingIconCustomImage" :class="{'zp-loading-more-line-loading-custom-image':true,'zp-loading-more-line-loading-custom-image-animated':zConfig.loadingMoreLoadingAnimated}">
+		<image v-if="zConfig.status===1&&zConfig.loadingIconCustomImage.length"
+			:src="zConfig.loadingIconCustomImage" :class="{'zp-l-line-loading-custom-image':true,'zp-l-line-loading-custom-image-animated':zConfig.loadingAnimated}">
 		</image>
 		<image
-			v-if="zConfig.loadingStatus===1&&zConfig.loadingMoreLoadingIconType==='flower'&&!zConfig.loadingMoreLoadingIconCustomImage.length"
-			class="zp-loading-more-line-loading-image" :style="[zConfig.loadingMoreLoadingIconCustomStyle]"
+			v-if="zConfig.status===1&&zConfig.loadingIconType==='flower'&&!zConfig.loadingIconCustomImage.length"
+			class="zp-line-loading-image" :style="[zConfig.iconCustomStyle]"
 			:src="zConfig.defaultThemeStyle==='white'?base64FlowerWhite:base64Flower">
 		</image>
 		<!-- #endif -->
 		<!-- #ifdef APP-NVUE -->
 		<view>
-			<loading-indicator v-if="zConfig.loadingStatus===1"
+			<loading-indicator v-if="zConfig.status===1"
 				:style="[{color:zConfig.defaultThemeStyle==='white'?'white':'#777777'}]" :animating="true"
-				class="zp-loading-more-line-loading-image">
+				class="zp-line-loading-image">
 			</loading-indicator>
 		</view>
 		<!-- #endif -->
 		<text
-			v-if="zConfig.loadingStatus===1&&zConfig.loadingMoreLoadingIconType==='circle'&&!zConfig.loadingMoreLoadingIconCustomImage.length"
-			:class="zConfig.defaultThemeStyle==='white'?'zp-loading-more-line-loading-view zp-loading-more-line-loading-view-white':'zp-loading-more-line-loading-view zp-loading-more-line-loading-view-black'"
-			:style="[zConfig.loadingMoreLoadingIconCustomStyle]"></text>
+			v-if="zConfig.status===1&&zConfig.loadingIconType==='circle'&&!zConfig.loadingIconCustomImage.length"
+			:class="zConfig.defaultThemeStyle==='white'?'zp-l-line-loading-view zp-l-line-loading-view-white':'zp-l-line-loading-view zp-l-line-loading-view-black'"
+			:style="[zConfig.iconCustomStyle]"></text>
 		<text
-			:class="zConfig.defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{ownLoadingMoreText}}</text>
+			:class="zConfig.defaultThemeStyle==='white'?'zp-l-text zp-l-text-white':'zp-l-text zp-l-text-black'">{{ownLoadingMoreText}}</text>
 		<text
-			:class="zConfig.defaultThemeStyle==='white'?'zp-loading-more-line zp-loading-more-line-white':'zp-loading-more-line zp-loading-more-line-black'"
-			:style="[zConfig.loadingMoreNoMoreLineCustomStyle]"
-			v-if="zConfig.showLoadingMoreNoMoreLine&&zConfig.loadingStatus===2"></text>
+			:class="zConfig.defaultThemeStyle==='white'?'zp-l-line zp-l-line-white':'zp-l-line zp-l-line-black'"
+			:style="[zConfig.noMoreLineCustomStyle]"
+			v-if="zConfig.showNoMoreLine&&zConfig.status===2"></text>
 	</view>
 </template>
 <script>
@@ -54,25 +54,25 @@
 		props: ['zConfig'],
 		computed: {
 			ownLoadingMoreText() {
-				const loadingMoreText = this.loadingStatusTextMap[this.zConfig.loadingStatus];
+				const loadingMoreText = this.loadingStatusTextMap[this.zConfig.status];
 				return loadingMoreText;
 			},
 			loadingStatusTextMap() {
 				return {
-					0: this.zConfig.loadingMoreDefaultText,
-					1: this.zConfig.loadingMoreLoadingText,
-					2: this.zConfig.loadingMoreNoMoreText,
-					3: this.zConfig.loadingMoreFailText,
+					0: this.zConfig.defaultText,
+					1: this.zConfig.loadingText,
+					2: this.zConfig.noMoreText,
+					3: this.zConfig.failText,
 				}
 			}
 		}
 	}
 </script>
 
-<style scoped>
+<style>
 	@import "../css/z-paging-static.css";
 
-	.zp-load-more-container {
+	.zp-l-container {
 		height: 80rpx;
 		font-size: 27rpx;
 		/* #ifndef APP-NVUE */
@@ -84,20 +84,20 @@
 		justify-content: center;
 	}
 
-	.zp-loading-more-line-loading-custom-image {
+	.zp-l-line-loading-custom-image {
 		color: #a4a4a4;
 		margin-right: 8rpx;
 		width: 28rpx;
 		height: 28rpx;
 	}
 	
-	.zp-loading-more-line-loading-custom-image-animated{
+	.zp-l-line-loading-custom-image-animated{
 		/* #ifndef APP-NVUE */
 		animation: loading-circle 1s linear infinite;
 		/* #endif */
 	}
 
-	.zp-loading-more-line-loading-view {
+	.zp-l-line-loading-view {
 		margin-right: 8rpx;
 		width: 22rpx;
 		height: 23rpx;
@@ -108,42 +108,42 @@
 		/* #endif */
 	}
 
-	.zp-loading-more-line-loading-view-black {
+	.zp-l-line-loading-view-black {
 		border-color: #c8c8c8;
 		border-top-color: #444444;
 	}
 
-	.zp-loading-more-line-loading-view-white {
+	.zp-l-line-loading-view-white {
 		border-color: #aaaaaa;
 		border-top-color: #ffffff;
 	}
 
-	.zp-loading-more-text {
+	.zp-l-text {
 		/* #ifdef APP-NVUE */
 		font-size: 30rpx;
 		margin: 0rpx 10rpx;
 		/* #endif */
 	}
 
-	.zp-loading-more-text-black {
+	.zp-l-text-black {
 		color: #a4a4a4;
 	}
 
-	.zp-loading-more-text-white {
+	.zp-l-text-white {
 		color: #efefef;
 	}
 
-	.zp-loading-more-line {
+	.zp-l-line {
 		height: 1px;
 		width: 100rpx;
 		margin: 0rpx 10rpx;
 	}
 
-	.zp-loading-more-line-black {
+	.zp-l-line-black {
 		background-color: #eeeeee;
 	}
 
-	.zp-loading-more-line-white {
+	.zp-l-line-white {
 		background-color: #efefef;
 	}
 
