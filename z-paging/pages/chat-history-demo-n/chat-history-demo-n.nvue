@@ -6,6 +6,7 @@
 			<!-- list数据，建议像下方这样在item外层套一个view，而非直接for循环item，因为slot插入有数量限制 -->
 			<template v-for="(item,index) in dataList">
 				<!-- 在nvue中，z-paging中插入的列表item必须是cell，必须使用cell包住，因为在nvue中，z-paging使用的是nvue的list组件。 -->
+				<!-- 不能使用index作为key的唯一标识，:key必须添加并且必须是唯一的 -->
 				<!-- 注意！！！！这里ref必须绑定index，且格式为z-paging-${index}，格式不能变，否则会导致滑动到顶部加载更多数据时滚动位置不正确！！！！！！ -->
 				<!-- :style="cellStyle"必须写，必须写！！！ -->
 				<cell :style="cellStyle" class="item" :key="item.title" :ref="`z-paging-${index}`"
@@ -28,7 +29,7 @@
 	export default {
 		data() {
 			return {
-				//v-model绑定的这个变量不要自己赋值、不要自己赋值、不要自己赋值！！！
+				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
 				dataList: [],
 				tabIndex: 0,
 				newIndex: 0,

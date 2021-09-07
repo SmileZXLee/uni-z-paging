@@ -18,7 +18,7 @@
 	export default {
 		data() {
 			return {
-				//v-model绑定的这个变量不要自己赋值、不要自己赋值、不要自己赋值！！！
+				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
 				dataList: [],
 				firstLoaded: false
 			}

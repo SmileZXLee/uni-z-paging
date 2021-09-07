@@ -47,9 +47,11 @@
 					if (newVal === this.tabIndex) {
 						//懒加载，当滑动到当前的item时，才去加载
 						if (!this.firstLoaded) {
-							setTimeout(() => {
-								this.$refs.paging.reload();
-							}, 5);
+							this.$nextTick(()=>{
+								setTimeout(() => {
+									this.$refs.paging.reload();
+								}, 5);
+							})
 						}
 					}
 				},

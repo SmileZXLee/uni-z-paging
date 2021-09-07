@@ -9,7 +9,7 @@
 		<view
 			:class="['zp-r-container',{'zp-r-container-padding':showUpdateTime}]"
 			style="height: 100%;">
-			<view class="zp-r-left">
+			<view class="zp-r-left" v-if="status!==3">
 				<image v-if="status!==2" :class="refresherLeftImageClass"
 					:style="[{width: showUpdateTime?'36rpx':'30rpx',height: showUpdateTime?'36rpx':'30rpx','margin-right': showUpdateTime?'20rpx':'8rpx'},imgStyle]"
 					:src="defaultThemeStyle==='white'?base64ArrowWhite:base64Arrow">
@@ -68,6 +68,7 @@
 			'defaultText': {},
 			'pullingText': {},
 			'refreshingText': {},
+			'completeText': {},
 			'showUpdateTime': {
 				default: false
 			},
@@ -84,11 +85,13 @@
 		},
 		computed: {
 			refresherStatusTextMap() {
+				console.log(this.completeText)
 				this.updateTime(this.updateTimeKey);
 				return {
 					0: this.defaultText,
 					1: this.pullingText,
-					2: this.refreshingText
+					2: this.refreshingText,
+					3: this.completeText
 				};
 			},
 			refresherLeftImageClass() {

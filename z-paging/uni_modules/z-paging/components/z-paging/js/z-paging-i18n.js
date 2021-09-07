@@ -21,6 +21,11 @@ const refresherRefreshingText = {
 	'zh-cn': '正在刷新...',
 	'zh-hant-cn': '正在重繪...',
 }
+const refresherCompleteText = {
+	'en': 'Complete',
+	'zh-cn': '刷新完成',
+	'zh-hant-cn': '重繪完成',
+}
 
 const loadingMoreDefaultText = {
 	'en': 'Click to load more',
@@ -132,6 +137,7 @@ module.exports = {
 	refresherDefaultText,
 	refresherPullingText,
 	refresherRefreshingText,
+	refresherCompleteText,
 	loadingMoreDefaultText,
 	loadingMoreLoadingText,
 	loadingMoreNoMoreText,

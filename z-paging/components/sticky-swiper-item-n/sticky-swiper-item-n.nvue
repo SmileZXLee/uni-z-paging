@@ -6,6 +6,7 @@
 		<!-- :auto-clean-list-when-reload="false" reload时不自动清空list，用于页面中父组件触发此组件reload方法时，不清空原list-->
 		<z-paging class="list" ref="paging" v-model="dataList" @query="queryList" :fixed="false" :auto="false" :auto-clean-list-when-reload="false">
 			<!-- 在nvue中，z-paging中插入的列表item必须是cell，必须使用cell包住，因为在nvue中，z-paging使用的是nvue的list组件。 -->
+			<!-- 不能使用index作为key的唯一标识，:key必须添加并且必须是唯一的 -->
 			<cell class="item" v-for="(item,index) in dataList" :key="item.title">
 				<text class="item-title">{{item.title}}</text>
 				<text class="item-detail">{{item.detail}}</text>
@@ -20,7 +21,7 @@
 	export default {
 		data() {
 			return {
-				//v-model绑定的这个变量不要自己赋值、不要自己赋值、不要自己赋值！！！
+				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
 				dataList: [],
 				firstLoaded: false,
 				completeFunc: null

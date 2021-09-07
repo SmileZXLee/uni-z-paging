@@ -1,5 +1,5 @@
 <!-- 自定义导航栏演示 -->
-<!--  此demo使用了uView的Navbar 自定义导航栏 https://uviewui.com/components/navbar.html -->
+<!--  此demo使用了uView的Navbar 自定义导航栏 https://uviewui.com/components/navbar.html -->
 <template>
 	<view class="content">
 		<z-paging ref="paging" v-model="dataList" @query="queryList">
@@ -26,7 +26,7 @@
 	export default {
 		data() {
 			return {
-				//v-model绑定的这个变量不要自己赋值、不要自己赋值、不要自己赋值！！！
+				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
 				dataList: [],
 				tabIndex: 0
 			}

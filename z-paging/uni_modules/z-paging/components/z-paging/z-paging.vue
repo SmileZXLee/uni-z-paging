@@ -72,7 +72,7 @@ by ZXLee 2021-08-29
 								</view>
 								<z-paging-refresh ref="refresh" v-if="!showCustomRefresher" :style="[{'height': `${finalRefresherThreshold}px`}]" :status="refresherStatus"
 									:defaultThemeStyle="finalRefresherThemeStyle" :defaultText="finalRefresherDefaultText"
-									:pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" 
+									:pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText"
 									:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey"
 									:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle"></z-paging-refresh>
 							</view>
@@ -148,13 +148,13 @@ by ZXLee 2021-08-29
 			:scrollable="scrollable&&scrollEnable" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 			:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap"
 			@loadmore="_nOnLoadmore" @scroll="_nOnScroll">
-			<refresh class="zp-n-refresh" v-if="finalNvueListIs!=='view'&&finalRefresherEnabled&&!nShowRefresherReveal&&!useChatRecordMode" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
+			<refresh class="zp-n-refresh" :style="[nvueRefresherStyle]" v-if="finalNvueListIs!=='view'&&finalRefresherEnabled&&!nShowRefresherReveal&&!useChatRecordMode" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
 				@pullingdown="_nOnPullingdown">
 				<view ref="zp-n-refresh-container" class="zp-n-refresh-container">
 					<!-- 下拉刷新view -->
 					<slot v-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
 					<z-paging-refresh ref="refresh" v-else :status="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
-						:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" 
+						:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText"
 						:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey"
 						:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle"></z-paging-refresh>
 				</view>
@@ -163,7 +163,7 @@ by ZXLee 2021-08-29
 			<view v-if="nShowRefresherReveal" ref="zp-n-list-refresher-reveal" :style="[{transform:`translateY(-${nShowRefresherRevealHeight}px)`,height:'0px'}]" :is="nViewIs">
 				<slot v-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
 				<z-paging-refresh ref="refresh" v-else :status="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
-					:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" 
+					:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText" 
 					:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey"
 					:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle"></z-paging-refresh>
 			</view>
@@ -333,6 +333,7 @@ by ZXLee 2021-08-29
 	 * @property {Boolean} nvue-bounce nvue 控制是否回弹效果，iOS不支持动态修改(若禁用回弹效果，下拉刷新将失效)，默认为是
 	 * @property {Boolean} nvue-fast-scroll nvue中通过代码滚动到顶部/底部时，是否加快动画效果(无滚动动画时无效)，默认为否
 	 * @property {String} nvue-list-id nvue中list的id
+	 * @property {Object} nvue-refresher-style nvue中refresh组件的样式
 	 * @property {Boolean} hide-nvue-bottom-tag 是否隐藏nvue列表底部的tagView，此view用于标识滚动到底部位置，若隐藏则滚动到底部功能将失效，在nvue中实现吸顶+swiper功能时需将最外层z-paging的此属性设置为true。默认为否
 	 * @property {Boolean} show-console-error 是否将错误信息打印至控制台，默认为是
 	 * @event {Function} query 组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用。pageNo和pageSize会自动计算好，直接传给服务器即可。
@@ -464,6 +465,7 @@ by ZXLee 2021-08-29
 			nvueBounce: {type: Boolean},
 			nvueFastScroll: {type: Boolean},
 			nvueListId: {type: String},
+			nvueRefresherStyle: {type: Object},
 			hideNvueBottomTag: {type: Boolean},
 			showConsoleError: {type: Boolean},
 			value: {type: Array}
