@@ -79,7 +79,7 @@ export default {
 			base64Arrow: zStatic.base64Arrow,
 			base64Flower: zStatic.base64Flower,
 			base64BackToTop: zStatic.base64BackToTop,
-			
+
 			//-------------全局数据相关--------------
 			currentData: [],
 			totalData: [],
@@ -114,8 +114,9 @@ export default {
 			renderPropScrollTop: -1,
 			renderPropUsePageScroll: -1,
 			checkScrolledToBottomTimeOut: null,
+			refresherCompleteTimeout: null,
 			systemInfo: null,
-			
+
 			//--------------状态&判断---------------
 			showLoadingMore: false,
 			insideOfPaging: -1,
@@ -146,8 +147,9 @@ export default {
 			customRefresherHeight: -1,
 			showCustomRefresher: false,
 			fromEmptyViewReload: false,
+			doRefreshAnimateAfter: false,
 			isIos13: systemInfo.system && systemInfo.system.length && systemInfo.system.indexOf('iOS 13') != -1,
-			
+
 			//--------------nvue相关---------------
 			nRefresherLoading: false,
 			nListIsDragging: false,
@@ -158,7 +160,7 @@ export default {
 			nFirstPageAndNoMoreChecked: false,
 			nLoadingMoreFixedHeight: false,
 			nShowRefresherRevealHeight: 0,
-			
+
 			//---------------wxs相关---------------
 			wxsIsScrollTopInTopRange: true,
 			wxsScrollTop: 0,
@@ -1215,6 +1217,9 @@ export default {
 		finalConcat() {
 			return this.concat && this.privateConcat;
 		},
+		finalShowRefresherWhenReload(){
+			return this.showRefresherWhenReload || this.privateShowRefresherWhenReload;
+		},
 		showEmpty() {
 			const showEmpty = !this.refresherOnly && !this.totalData.length && (this.autoHideEmptyViewWhenLoading ? this
 				.isAddedData : true) && !this.hideEmptyView && (this.autoHideEmptyViewWhenLoading ? (!this
@@ -1371,7 +1376,7 @@ export default {
 			this.addData(data, success);
 		},
 		//简写，与completeByTotalCount完全相同
-		completeByTotal(data, totalCount, success = true){
+		completeByTotal(data, totalCount, success = true) {
 			this.completeByTotalCount(data, totalCount, success);
 		},
 		//简写，与completeByTotalCount完全相同
@@ -1602,7 +1607,7 @@ export default {
 		//与setSpecialEffects等效，兼容旧版本
 		setListSpecialEffects(args) {
 			this.nFixFreezing = args !== {};
-			if(this.isIos){
+			if (this.isIos) {
 				this.privateRefresherEnabled = 0;
 			}
 			if (!this.usePageScroll) {
@@ -1616,6 +1621,10 @@ export default {
 		//reload之前的一些处理
 		_preReload(animate = this.showRefresherWhenReload, isFromMounted = true) {
 			this.isUserReload = true;
+			if(this.refresherCompleteTimeout){
+				clearTimeout(this.refresherCompleteTimeout);
+				this.refresherCompleteTimeout = null;
+			}
 			if (animate) {
 				this.privateShowRefresherWhenReload = animate;
 				// #ifndef APP-NVUE
@@ -2357,7 +2366,7 @@ export default {
 		//下拉刷新结束
 		_refresherEnd(shouldEndLoadingDelay = true, fromAddData = false) {
 			// #ifndef APP-NVUE
-			if (this.showRefresherWhenReload || this.privateShowRefresherWhenReload) {
+			if (this.finalShowRefresherWhenReload) {
 				const stackCount = this.refresherRevealStackCount;
 				this.refresherRevealStackCount--;
 				if (stackCount > 1) {
@@ -2370,15 +2379,18 @@ export default {
 				}, commonDelayTime);
 			}
 			// #endif
-			if (this.refresherEndBounceEnabled && fromAddData) {
-				this.refresherTransition = 'transform .3s cubic-bezier(0.19,1.64,0.42,0.72)';
-			}
-			// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
-			this.refresherTransform = 'translateY(0px)';
-			// #endif
-			// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
-			this.wxsPropType = 'end' + (new Date()).getTime();
-			// #endif
+			this.refresherCompleteTimeout = setTimeout(()=> {
+				if (this.refresherEndBounceEnabled && fromAddData) {
+					this.refresherTransition = 'transform .3s cubic-bezier(0.19,1.64,0.42,0.72)';
+				}
+				// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
+				this.refresherTransform = 'translateY(0px)';
+				// #endif
+				// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
+				this.wxsPropType = 'end' + (new Date()).getTime();
+				// #endif
+				console.log('进来了',fromAddData)
+			}, fromAddData?1000:0);
 			this.moveDistance = 0;
 			if (shouldEndLoadingDelay) {
 				setTimeout(() => {
@@ -2395,6 +2407,14 @@ export default {
 		},
 		//模拟用户手动触发下拉刷新
 		_doRefresherRefreshAnimate() {
+			// #ifndef APP-NVUE
+			const doRefreshAnimateAfter = !this.doRefreshAnimateAfter && (this.finalShowRefresherWhenReload) && this.customRefresherHeight === -1 && this.refresherThreshold === '80rpx';
+			if (doRefreshAnimateAfter) {
+				this.doRefreshAnimateAfter = true;
+				return;
+			}
+			// #endif
+			
 			this.refresherRevealStackCount++;
 			this.refresherTransform = `translateY(${this.finalRefresherThreshold}px)`;
 			// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
@@ -2707,6 +2727,10 @@ export default {
 				} else {
 					this.customRefresherHeight = 0;
 				}
+				if(this.doRefreshAnimateAfter){
+					this.doRefreshAnimateAfter = false;
+					this._doRefresherRefreshAnimate();
+				}
 			});
 		},
 		//点击了空数据view重新加载按钮
@@ -2834,7 +2858,7 @@ export default {
 		},
 		//执行主动触发下拉刷新动画
 		_nDoRefresherEndAnimation(height, translateY, animate = true, checkStack = true) {
-			if (!this.showRefresherWhenReload && !this.privateShowRefresherWhenReload) {
+			if (!this.finalShowRefresherWhenReload) {
 				setTimeout(() => {
 					this.refresherStatus = Enum.RefresherStatus.Default;
 				}, commonDelayTime);

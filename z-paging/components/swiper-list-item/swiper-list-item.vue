@@ -5,6 +5,8 @@
 		<!--  :enable-back-to-top="currentIndex===tabIndex" 在微信小程序上可以多加这一句，因为默认是允许点击返回顶部的，但是这个页面有多个scroll-view，会全部返回顶部，所以需要控制是当前index才允许点击返回顶部 -->
 		<z-paging ref="paging" v-model="dataList" @query="queryList" :fixed="false" :auto="false">
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
+			<custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus">
+			</custom-refresher>
 			<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
 				<view class="item-title">{{item.title}}</view>
 				<view class="item-detail">{{item.detail}}</view>
@@ -46,7 +48,7 @@
 						//懒加载，当滑动到当前的item时，才去加载
 						if(!this.firstLoaded){
 							setTimeout(() => {
-								this.$refs.paging.reload();
+								this.$refs.paging.reload(true);
 							}, 5);
 						}
 					}
