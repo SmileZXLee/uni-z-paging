@@ -85,7 +85,6 @@
 		},
 		computed: {
 			refresherStatusTextMap() {
-				console.log(this.completeText)
 				this.updateTime(this.updateTimeKey);
 				return {
 					0: this.defaultText,
