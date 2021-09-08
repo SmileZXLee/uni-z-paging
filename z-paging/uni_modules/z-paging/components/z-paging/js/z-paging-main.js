@@ -1,7 +1,4 @@
-// z-paging
-// github地址:https://github.com/SmileZXLee/uni-z-paging
-// dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
-// 反馈QQ群：790460711
+// [z-paging]核心js
 
 import zStatic from './z-paging-static'
 import zConfig from './z-paging-config'
@@ -308,6 +305,11 @@ export default {
 		refresherCompleteDelay: {
 			type: [Number, String],
 			default: _getConfig('refresherCompleteDelay', 1000)
+		},
+		//自定义下拉刷新结束回弹动画时间，单位为毫秒，默认为300毫秒
+		refresherCompleteDuration: {
+			type: [Number, String],
+			default: _getConfig('refresherCompleteDuration', 300)
 		},
 		//使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
 		usePageScroll: {
@@ -1652,10 +1654,6 @@ export default {
 		//reload之前的一些处理
 		_preReload(animate = this.showRefresherWhenReload, isFromMounted = true) {
 			this.isUserReload = true;
-			if (this.refresherCompleteTimeout) {
-				clearTimeout(this.refresherCompleteTimeout);
-				this.refresherCompleteTimeout = null;
-			}
 			if (animate) {
 				this.privateShowRefresherWhenReload = animate;
 				// #ifndef APP-NVUE
@@ -2210,10 +2208,6 @@ export default {
 			if (this.loading || this.nShowRefresherReveal) {
 				return;
 			}
-			if (this.refresherCompleteTimeout) {
-				clearTimeout(this.refresherCompleteTimeout);
-				this.refresherCompleteTimeout = null;
-			}
 			this.isUserPullDown = true;
 			this.isUserReload = false;
 			this._startLoading(true);
@@ -2255,6 +2249,7 @@ export default {
 			this.refresherTouchstartY = touch.touchY;
 			this.$emit('refresherTouchstart', this.refresherTouchstartY);
 			this.lastRefresherTouchmove = touch;
+			this._cleanRefresherCompleteTimeout();
 		},
 		// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
 		//拖拽中
@@ -2430,7 +2425,7 @@ export default {
 			// #endif
 			this.refresherCompleteTimeout = setTimeout(() => {
 				if (this.refresherEndBounceEnabled && fromAddData) {
-					this.refresherTransition = 'transform .3s cubic-bezier(0.19,1.64,0.42,0.72)';
+					this.refresherTransition = `transform ${this.refresherCompleteDuration / 1000}s cubic-bezier(0.19,1.64,0.42,0.72)`;
 				}
 				// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 				this.refresherTransform = 'translateY(0px)';
@@ -2455,6 +2450,7 @@ export default {
 		},
 		//模拟用户手动触发下拉刷新
 		_doRefresherRefreshAnimate() {
+			this._cleanRefresherCompleteTimeout();
 			// #ifndef APP-NVUE
 			const doRefreshAnimateAfter = !this.doRefreshAnimateAfter && (this.finalShowRefresherWhenReload) && this
 				.customRefresherHeight === -1 && this.refresherThreshold === '80rpx';
@@ -2463,7 +2459,6 @@ export default {
 				return;
 			}
 			// #endif
-
 			this.refresherRevealStackCount++;
 			this.refresherTransform = `translateY(${this.finalRefresherThreshold}px)`;
 			// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
@@ -2839,6 +2834,13 @@ export default {
 				}
 			}
 		},
+		//清除refresherCompleteTimeout
+		_cleanRefresherCompleteTimeout(){
+			if (this.refresherCompleteTimeout) {
+				clearTimeout(this.refresherCompleteTimeout);
+				this.refresherCompleteTimeout = null;
+			}
+		},
 		//检查complete data的类型
 		_checkDataType(data, success, isLocal) {
 			const dataType = Object.prototype.toString.call(data);
@@ -2907,6 +2909,7 @@ export default {
 		},
 		//执行主动触发下拉刷新动画
 		_nDoRefresherEndAnimation(height, translateY, animate = true, checkStack = true) {
+			this._cleanRefresherCompleteTimeout();
 			if (!this.finalShowRefresherWhenReload) {
 				setTimeout(() => {
 					this.refresherStatus = Enum.RefresherStatus.Default;

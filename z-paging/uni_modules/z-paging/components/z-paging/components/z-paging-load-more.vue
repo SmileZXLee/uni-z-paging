@@ -1,9 +1,5 @@
-<!-- z-paging -->
-<!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
-<!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
-<!-- 反馈QQ群：790460711 -->
+<!-- [z-paging]上拉加载更多view -->
 
-<!-- 上拉加载更多view -->
 <template>
 	<view class="zp-l-container" :style="[zConfig.customStyle]">
 		<text

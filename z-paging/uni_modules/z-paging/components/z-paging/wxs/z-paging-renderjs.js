@@ -1,8 +1,4 @@
-// z-paging
-// github地址:https://github.com/SmileZXLee/uni-z-paging
-// dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
-// 反馈QQ群：790460711
-// 使用renderjs在app-vue和h5中对touchmove事件冒泡进行处理
+// [z-paging]使用renderjs在app-vue和h5中对touchmove事件冒泡进行处理
 
 import zUtils from '../js/z-paging-utils'
 var data = {

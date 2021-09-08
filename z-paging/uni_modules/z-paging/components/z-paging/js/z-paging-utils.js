@@ -1,8 +1,4 @@
-// z-paging
-// github地址:https://github.com/SmileZXLee/uni-z-paging
-// dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
-// 反馈QQ群：790460711
-// z-paging工具类
+// [z-paging]工具类
 
 import zI18n from './z-paging-i18n'
 

@@ -1,7 +1,3 @@
-// z-paging
-// github地址:https://github.com/SmileZXLee/uni-z-paging
-// dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
-// 反馈QQ群：790460711
 // z-paging国际化(支持中文、中文繁体和英文)
 
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -22,9 +18,9 @@ const refresherRefreshingText = {
 	'zh-hant-cn': '正在重繪...',
 }
 const refresherCompleteText = {
-	'en': 'Complete',
-	'zh-cn': '刷新完成',
-	'zh-hant-cn': '重繪完成',
+	'en': 'Refresh succeeded',
+	'zh-cn': '刷新成功',
+	'zh-hant-cn': '重繪成功',
 }
 
 const loadingMoreDefaultText = {

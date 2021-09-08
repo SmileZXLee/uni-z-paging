@@ -1,18 +1,14 @@
-<!-- z-paging -->
-<!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
-<!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
-<!-- 反馈QQ群：790460711 -->
+<!-- [z-paging]下拉刷新view -->
 
-<!-- 下拉刷新view -->
 <template>
 	<view style="height: 100%;">
 		<view
 			:class="['zp-r-container',{'zp-r-container-padding':showUpdateTime}]"
 			style="height: 100%;">
-			<view class="zp-r-left" v-if="status!==3">
+			<view class="zp-r-left">
 				<image v-if="status!==2" :class="refresherLeftImageClass"
 					:style="[{width: showUpdateTime?'36rpx':'30rpx',height: showUpdateTime?'36rpx':'30rpx','margin-right': showUpdateTime?'20rpx':'8rpx'},imgStyle]"
-					:src="defaultThemeStyle==='white'?base64ArrowWhite:base64Arrow">
+					:src="defaultThemeStyle==='white'?(status===3?base64SuccessWhite:base64ArrowWhite):(status===3?base64Success:base64Arrow)">
 				</image>
 				<!-- #ifndef APP-NVUE -->
 				<image v-else class="zp-line-loading-image zp-r-left-image"
@@ -56,6 +52,8 @@
 				base64ArrowWhite: zStatic.base64ArrowWhite,
 				base64Flower: zStatic.base64Flower,
 				base64FlowerWhite: zStatic.base64FlowerWhite,
+				base64Success: zStatic.base64Success,
+				base64SuccessWhite: zStatic.base64SuccessWhite,
 				refresherTimeText: '',
 				leftImageLoaded: false
 			};
@@ -94,6 +92,9 @@
 				};
 			},
 			refresherLeftImageClass() {
+				if(this.status === 3){
+					return '';
+				}
 				let refresherLeftImageClass = '';
 				if (this.status === 0) {
 					if (this.leftImageLoaded) {

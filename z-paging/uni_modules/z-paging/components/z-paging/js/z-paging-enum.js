@@ -1,8 +1,4 @@
-// z-paging
-// github地址:https://github.com/SmileZXLee/uni-z-paging
-// dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935
-// 反馈QQ群：790460711
-// z-paging枚举
+// [z-paging]枚举
 
 const Enum = {
 	//当前加载类型 0-下拉刷新 1-上拉加载更多
