@@ -14,7 +14,7 @@ import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
 import Enum from './z-paging-enum'
 
-const currentVersion = 'V2.0.5';
+const currentVersion = 'V2.0.6';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -225,6 +225,21 @@ export default {
 				return _getConfig('pagingStyle', {});
 			},
 		},
+		//z-paging的高度，优先级低于pagingStyle中设置的height；传字符串，如100px、100rpx
+		height: {
+			type: String,
+			default: _getConfig('height', '')
+		},
+		//z-paging的宽度，优先级低于pagingStyle中设置的width；传字符串，如100px、100rpx
+		width: {
+			type: String,
+			default: _getConfig('width', '')
+		},
+		//z-paging的背景色，优先级低于pagingStyle中设置的background-color。传字符串，如"#ffffff"
+		bgColor: {
+			type: String,
+			default: _getConfig('bgColor', '')
+		},
 		//设置z-paging的容器(插槽的父view)的style
 		pagingContentStyle: {
 			type: Object,
@@ -288,6 +303,11 @@ export default {
 		refresherOnly: {
 			type: Boolean,
 			default: _getConfig('refresherOnly', false)
+		},
+		//自定义下拉刷新结束以后延迟回弹的时间，单位为毫秒，默认为0
+		refresherCompleteDelay: {
+			type: [Number, String],
+			default: _getConfig('refresherCompleteDelay', 1000)
 		},
 		//使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
 		usePageScroll: {
@@ -1056,17 +1076,28 @@ export default {
 			const windowTop = this.systemInfo.windowTop;
 			const windowBottom = this.systemInfo.windowBottom;
 			if (!this.usePageScroll && this.fixed) {
-				if (windowTop && windowTop !== undefined) {
+				if (windowTop && windowTop !== undefined && !pagingStyle.top) {
 					pagingStyle.top = windowTop + 'px';
 				}
-				let bottom = 0;
-				if (windowBottom && windowBottom !== undefined) {
-					bottom = windowBottom;
+				if (!pagingStyle.bottom) {
+					let bottom = 0;
+					if (windowBottom && windowBottom !== undefined) {
+						bottom = windowBottom;
+					}
+					if (this.safeAreaInsetBottom) {
+						bottom += this.safeAreaBottom;
+					}
+					pagingStyle.bottom = bottom + 'px';
 				}
-				if (this.safeAreaInsetBottom) {
-					bottom += this.safeAreaBottom;
-				}
-				pagingStyle.bottom = bottom + 'px';
+			}
+			if (this.bgColor.length && !pagingStyle['background']) {
+				pagingStyle['background-color'] = this.bgColor;
+			}
+			if (this.height.length && !pagingStyle['height']) {
+				pagingStyle['height'] = this.height;
+			}
+			if (this.width.length && !pagingStyle['width']) {
+				pagingStyle['width'] = this.width;
 			}
 			return pagingStyle;
 		},
@@ -1217,7 +1248,7 @@ export default {
 		finalConcat() {
 			return this.concat && this.privateConcat;
 		},
-		finalShowRefresherWhenReload(){
+		finalShowRefresherWhenReload() {
 			return this.showRefresherWhenReload || this.privateShowRefresherWhenReload;
 		},
 		showEmpty() {
@@ -1621,7 +1652,7 @@ export default {
 		//reload之前的一些处理
 		_preReload(animate = this.showRefresherWhenReload, isFromMounted = true) {
 			this.isUserReload = true;
-			if(this.refresherCompleteTimeout){
+			if (this.refresherCompleteTimeout) {
 				clearTimeout(this.refresherCompleteTimeout);
 				this.refresherCompleteTimeout = null;
 			}
@@ -2179,6 +2210,10 @@ export default {
 			if (this.loading || this.nShowRefresherReveal) {
 				return;
 			}
+			if (this.refresherCompleteTimeout) {
+				clearTimeout(this.refresherCompleteTimeout);
+				this.refresherCompleteTimeout = null;
+			}
 			this.isUserPullDown = true;
 			this.isUserReload = false;
 			this._startLoading(true);
@@ -2379,7 +2414,21 @@ export default {
 				}, commonDelayTime);
 			}
 			// #endif
-			this.refresherCompleteTimeout = setTimeout(()=> {
+			// #ifdef APP-NVUE
+			if (this.finalShowRefresherWhenReload) {
+				const stackCount = this.refresherRevealStackCount;
+				this.refresherRevealStackCount--;
+				if (stackCount > 1) {
+					return;
+				}
+				this.refresherStatus = Enum.RefresherStatus.Complete;
+			} else {
+				setTimeout(() => {
+					this.refresherStatus = Enum.RefresherStatus.Complete;
+				}, commonDelayTime);
+			}
+			// #endif
+			this.refresherCompleteTimeout = setTimeout(() => {
 				if (this.refresherEndBounceEnabled && fromAddData) {
 					this.refresherTransition = 'transform .3s cubic-bezier(0.19,1.64,0.42,0.72)';
 				}
@@ -2389,32 +2438,32 @@ export default {
 				// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
 				this.wxsPropType = 'end' + (new Date()).getTime();
 				// #endif
-				console.log('进来了',fromAddData)
-			}, fromAddData?1000:0);
-			this.moveDistance = 0;
-			if (shouldEndLoadingDelay) {
-				setTimeout(() => {
+				// #ifdef APP-NVUE
+				this._nRefresherEnd();
+				// #endif
+				this.moveDistance = 0;
+				if (shouldEndLoadingDelay) {
+					setTimeout(() => {
+						this.loading = false;
+					}, commonDelayTime);
+				} else {
 					this.loading = false;
-				}, commonDelayTime);
-			} else {
-				this.loading = false;
-			}
+				}
+			}, fromAddData ? this.refresherCompleteDelay : 0);
 			this.$emit('onRestore');
 			this.$emit('Restore');
-			// #ifdef APP-NVUE
-			this._nRefresherEnd();
-			// #endif
 		},
 		//模拟用户手动触发下拉刷新
 		_doRefresherRefreshAnimate() {
 			// #ifndef APP-NVUE
-			const doRefreshAnimateAfter = !this.doRefreshAnimateAfter && (this.finalShowRefresherWhenReload) && this.customRefresherHeight === -1 && this.refresherThreshold === '80rpx';
+			const doRefreshAnimateAfter = !this.doRefreshAnimateAfter && (this.finalShowRefresherWhenReload) && this
+				.customRefresherHeight === -1 && this.refresherThreshold === '80rpx';
 			if (doRefreshAnimateAfter) {
 				this.doRefreshAnimateAfter = true;
 				return;
 			}
 			// #endif
-			
+
 			this.refresherRevealStackCount++;
 			this.refresherTransform = `translateY(${this.finalRefresherThreshold}px)`;
 			// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
@@ -2727,7 +2776,7 @@ export default {
 				} else {
 					this.customRefresherHeight = 0;
 				}
-				if(this.doRefreshAnimateAfter){
+				if (this.doRefreshAnimateAfter) {
 					this.doRefreshAnimateAfter = false;
 					this._doRefresherRefreshAnimate();
 				}

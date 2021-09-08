@@ -4,8 +4,8 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V2.0.5
-by ZXLee 2021-08-29
+V2.0.6
+by ZXLee 2021-09-08
 -- >
 <!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -248,6 +248,9 @@ by ZXLee 2021-08-29
 	 * @property {String} language i18n国际化设置语言，支持简体中文(zh-cn)、繁体中文(zh-hant-cn)和英文(en)
 	 * @property {Boolean} follow-system-language i18n国际化默认是否跟随系统语言，默认为是
 	 * @property {Object} paging-style 设置z-paging的style，部分平台可能无法直接修改组件的style，可使用此属性代替
+	 * @property {String} height z-paging的高度，优先级低于pagingStyle中设置的height，传字符串，如100px、100rpx
+	 * @property {String} width z-paging的宽度，优先级低于pagingStyle中设置的width，传字符串，如100px、100rpx
+	 * @property {String} bg-color z-paging的背景色，优先级低于pagingStyle中设置的background-color。传字符串，如"#ffffff"
 	 * @property {Object} paging-content-style 设置z-paging的容器(插槽的父view)的style
 	 * @property {Boolean} auto-height z-paging是否自动高度，若自动高度则会自动铺满屏幕，默认为否
 	 * @property {Number|String} auto-height-addition z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数
@@ -258,6 +261,7 @@ by ZXLee 2021-08-29
 	 * @property {Object} refresher-update-time-style 自定义下拉刷新中右侧最后更新时间文字的样式(show-refresher-update-time为true时有效)
 	 * @property {String} loading-more-theme-style 底部加载更多的主题样式，支持black，white，默认black
 	 * @property {Boolean} refresher-only 是否只使用下拉刷新，设置为true后将关闭mounted自动请求数据、关闭滚动到底部加载更多，强制隐藏空数据图。默认为否
+	 * @property {Number|String} refresher-complete-delay 自定义下拉刷新结束以后延迟回弹的时间，单位为毫秒，默认为0
 	 * @property {Boolean} use-page-scroll 使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
 	 * @property {Boolean} fixed z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为否(当使用内置scroll-view滚动时有效)
 	 * @property {Boolean} safe-area-inset-bottom 是否开启底部安全区域适配，默认为否
@@ -275,6 +279,7 @@ by ZXLee 2021-08-29
 	 * @property {String|Object} refresher-default-text 自定义下拉刷新默认状态下的文字(use-custom-refresher为true时生效)
 	 * @property {String|Object} refresher-pulling-text 自定义下拉刷新松手立即刷新状态下的文字(use-custom-refresher为true时生效)
 	 * @property {String|Object} refresher-refreshing-text 自定义下拉刷新刷新中状态下的文字(use-custom-refresher为true时生效)
+	 * @property {String|Object} refresher-complete-text 自定义下拉刷新刷新结束状态下的文字(use-custom-refresher为true时生效)
 	 * @property {Boolean} refresher-end-bounce-enabled 是否开启自定义下拉刷新刷新结束回弹效果，默认为是(use-custom-refresher为true时生效)
 	 * @property {Object} loading-more-custom-style 自定义底部加载更多样式
 	 * @property {Object} loading-more-loading-icon-custom-style 自定义底部加载更多加载中动画样式
@@ -375,6 +380,9 @@ by ZXLee 2021-08-29
 			language: {type: String},
 			followSystemLanguage: {type: Boolean},
 			pagingStyle: {type: Object},
+			height: {type: String},
+			width: {type: String},
+			bgColor: {type: String},
 			pagingContentStyle: {type: Object},
 			autoHeight: {type: Boolean},
 			autoHeightAddition: {type: [Number, String]},
@@ -385,6 +393,7 @@ by ZXLee 2021-08-29
 			refresherUpdateTimeStyle: {type: Object},
 			loadingMoreThemeStyle: {type: String},
 			refresherOnly: {type: Boolean},
+			refresherCompleteDelay: {type: [Number, String]},
 			usePageScroll: {type: Boolean},
 			fixed: {type: Boolean},
 			safeAreaInsetBottom: {type: Boolean},
@@ -402,6 +411,7 @@ by ZXLee 2021-08-29
 			refresherDefaultText: {type: [String, Object]},
 			refresherPullingText: {type: [String, Object]},
 			refresherRefreshingText: {type: [String, Object]},
+			refresherCompleteText: {type: [String, Object]},
 			refresherEndBounceEnabled: {type: Boolean},
 			loadingMoreCustomStyle: {type: Object},
 			loadingMoreLoadingIconCustomStyle: {type: Object},
