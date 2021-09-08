@@ -304,9 +304,9 @@ export default {
 		//自定义下拉刷新结束以后延迟回弹的时间，单位为毫秒，默认为0
 		refresherCompleteDelay: {
 			type: [Number, String],
-			default: _getConfig('refresherCompleteDelay', 1000)
+			default: _getConfig('refresherCompleteDelay', 0)
 		},
-		//自定义下拉刷新结束回弹动画时间，单位为毫秒，默认为300毫秒
+		//自定义下拉刷新结束回弹动画时间，单位为毫秒，默认为300毫秒(refresherEndBounceEnabled为false时，refresherCompleteDuration为设定值的1/3)
 		refresherCompleteDuration: {
 			type: [Number, String],
 			default: _getConfig('refresherCompleteDuration', 300)
@@ -2424,8 +2424,10 @@ export default {
 			}
 			// #endif
 			this.refresherCompleteTimeout = setTimeout(() => {
-				if (this.refresherEndBounceEnabled && fromAddData) {
-					this.refresherTransition = `transform ${this.refresherCompleteDuration / 1000}s cubic-bezier(0.19,1.64,0.42,0.72)`;
+				if (fromAddData) {
+					const animateType = this.refresherEndBounceEnabled ? 'cubic-bezier(0.19,1.64,0.42,0.72)' : 'linear';
+					const animateDuration = this.refresherEndBounceEnabled ? this.refresherCompleteDuration / 1000 : this.refresherCompleteDuration / 3000;
+					this.refresherTransition = `transform ${animateDuration}s ${animateType}`;
 				}
 				// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 				this.refresherTransform = 'translateY(0px)';
