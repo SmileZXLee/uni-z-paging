@@ -24,7 +24,7 @@ by ZXLee 2021-08-29
 		<view :class="{'zp-scroll-view-super':!usePageScroll}" :style="[finalScrollViewStyle]">
 			<scroll-view
 				:class="{'zp-scroll-view':true,'zp-scroll-view-absolute':!usePageScroll}"
-				:scroll-top="scrollTop"
+				:scroll-top="scrollTop" scroll-x
 				:scroll-y="scrollable&&!usePageScroll&&scrollEnable" :enable-back-to-top="finalEnableBackToTop"
 				:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
 				:scroll-into-view="scrollIntoView" :lower-threshold="finalLowerThreshold" :upper-threshold="5"
@@ -87,6 +87,7 @@ by ZXLee 2021-08-29
 								<image v-else :src="base64Flower" class="zp-chat-record-loading-custom-image">
 								</image>
 							</view>
+							<!-- 全屏Loading -->
 							<slot v-if="$slots.loading&&showLoading" name="loading" />
 							<!-- 主体内容 -->
 							<view class="zp-paging-container-content" :style="[finalPagingContentStyle]">
@@ -128,10 +129,12 @@ by ZXLee 2021-08-29
 				</view>
 			</scroll-view>
 		</view>
+		<!-- 底部固定的slot -->
 		<slot v-if="!usePageScroll&&$slots.bottom" name="bottom"></slot>
 		<view class="zp-page-scroll-bottom" v-else-if="usePageScroll&&$slots.bottom" :style="[{'bottom': `${windowBottom}px`}]">
 			<slot name="bottom"></slot>
 		</view>
+		<!-- 点击返回顶部view -->
 		<view v-if="showBackToTopClass" :class="backToTopClass" :style="[finalBackToTopStyle]" @click.stop="_backToTopClick">
 			<slot v-if="$slots.backToTop" name="backToTop" />
 			<image v-else class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop"></image>
@@ -140,6 +143,7 @@ by ZXLee 2021-08-29
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
 	<view :is="finalNvueSuperListIs" :class="{'z-paging-content-fixed':fixed&&!usePageScroll}">
+		<!-- 顶部固定的slot -->
 		<view ref="zp-page-scroll-top" :is="nViewIs" class="zp-page-scroll-top" v-if="$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
 			<slot name="top"></slot>
 		</view>
@@ -212,7 +216,9 @@ by ZXLee 2021-08-29
 				</view>
 			</view>
 		</view>
+		<!-- 底部固定的slot -->
 		<slot name="bottom"></slot>
+		<!-- 点击返回顶部view -->
 		<view v-if="showBackToTopClass" :class="backToTopClass" :style="[finalBackToTopStyle]" @click.stop="_backToTopClick">
 			<slot v-if="$slots.backToTop" name="backToTop" />
 			<image v-else class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop"></image>
