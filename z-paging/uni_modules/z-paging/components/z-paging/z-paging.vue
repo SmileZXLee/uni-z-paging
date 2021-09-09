@@ -247,9 +247,9 @@ by ZXLee 2021-09-08
 	 * @property {Number|String} delay 调用complete后延迟处理的时间，单位为毫秒
 	 * @property {String} language i18n国际化设置语言，支持简体中文(zh-cn)、繁体中文(zh-hant-cn)和英文(en)
 	 * @property {Boolean} follow-system-language i18n国际化默认是否跟随系统语言，默认为是
-	 * @property {Object} paging-style 设置z-paging的style，部分平台可能无法直接修改组件的style，可使用此属性代替
-	 * @property {String} height z-paging的高度，优先级低于pagingStyle中设置的height，传字符串，如100px、100rpx
-	 * @property {String} width z-paging的宽度，优先级低于pagingStyle中设置的width，传字符串，如100px、100rpx
+	 * @property {Object} paging-style 设置z-paging的style，部分平台(如微信小程序)无法直接修改组件的style，可使用此属性代替
+	 * @property {String} height z-paging的高度，优先级低于pagingStyle中设置的height，传字符串，如100px、100rpx、100%
+	 * @property {String} width z-paging的宽度，优先级低于pagingStyle中设置的width，传字符串，如100px、100rpx、100%
 	 * @property {String} bg-color z-paging的背景色，优先级低于pagingStyle中设置的background-color。传字符串，如"#ffffff"
 	 * @property {Object} paging-content-style 设置z-paging的容器(插槽的父view)的style
 	 * @property {Boolean} auto-height z-paging是否自动高度，若自动高度则会自动铺满屏幕，默认为否

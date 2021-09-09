@@ -3,8 +3,7 @@
 <template>
 	<view style="height: 100%;">
 		<view
-			:class="['zp-r-container',{'zp-r-container-padding':showUpdateTime}]"
-			style="height: 100%;">
+			:class="['zp-r-container',{'zp-r-container-padding':showUpdateTime}]" style="height: 100%;">
 			<view class="zp-r-left">
 				<image v-if="status!==2" :class="refresherLeftImageClass"
 					:style="[{width: showUpdateTime?'36rpx':'30rpx',height: showUpdateTime?'36rpx':'30rpx','margin-right': showUpdateTime?'20rpx':'8rpx'},imgStyle]"
@@ -93,7 +92,7 @@
 			},
 			refresherLeftImageClass() {
 				if(this.status === 3){
-					return '';
+					return 'zp-r-left-image-no-transform';
 				}
 				let refresherLeftImageClass = '';
 				if (this.status === 0) {
@@ -175,14 +174,16 @@
 	.zp-r-left-image {
 		/* #ifndef APP-NVUE */
 		transform: rotate(180deg);
-		margin-top: 2rpx;
-		/* #endif */
-		/* #ifdef MP-ALIPAY */
-		margin-top: 0rpx;
 		/* #endif */
 		/* #ifdef APP-NVUE */
 		transition-duration: .2s;
 		transition-property: transform;
+		color: #666666;
+		/* #endif */
+	}
+	
+	.zp-r-left-image-no-transform {
+		/* #ifdef APP-NVUE */
 		color: #666666;
 		/* #endif */
 	}

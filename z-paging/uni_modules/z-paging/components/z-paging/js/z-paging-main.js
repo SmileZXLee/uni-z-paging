@@ -215,19 +215,19 @@ export default {
 			type: Boolean,
 			default: _getConfig('followSystemLanguage', true)
 		},
-		//设置z-paging的style，部分平台可能无法直接修改组件的style，可使用此属性代替
+		//设置z-paging的style，部分平台(如微信小程序)无法直接修改组件的style，可使用此属性代替
 		pagingStyle: {
 			type: Object,
 			default: function() {
 				return _getConfig('pagingStyle', {});
 			},
 		},
-		//z-paging的高度，优先级低于pagingStyle中设置的height；传字符串，如100px、100rpx
+		//z-paging的高度，优先级低于pagingStyle中设置的height；传字符串，如100px、100rpx、100%
 		height: {
 			type: String,
 			default: _getConfig('height', '')
 		},
-		//z-paging的宽度，优先级低于pagingStyle中设置的width；传字符串，如100px、100rpx
+		//z-paging的宽度，优先级低于pagingStyle中设置的width；传字符串，如100px、100rpx、100%
 		width: {
 			type: String,
 			default: _getConfig('width', '')
@@ -2446,7 +2446,7 @@ export default {
 				} else {
 					this.loading = false;
 				}
-			}, fromAddData ? this.refresherCompleteDelay : 0);
+			}, fromAddData && this.pageNo === this.defaultPageNo ? this.refresherCompleteDelay : 0);
 			this.$emit('onRestore');
 			this.$emit('Restore');
 		},
