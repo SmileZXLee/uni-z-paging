@@ -144,7 +144,7 @@
 	}
 </script>
 
-<style>
+<style scoped>
 	@import "../css/z-paging-static.css";
 
 	.zp-r-container {
