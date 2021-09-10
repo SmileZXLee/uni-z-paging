@@ -184,6 +184,8 @@
 	
 	.zp-r-left-image-no-transform {
 		/* #ifdef APP-NVUE */
+		transition-duration: .2s;
+		transition-property: transform;
 		color: #666666;
 		/* #endif */
 	}

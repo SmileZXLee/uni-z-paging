@@ -112,6 +112,7 @@ export default {
 			renderPropUsePageScroll: -1,
 			checkScrolledToBottomTimeOut: null,
 			refresherCompleteTimeout: null,
+			refresherCompleteSubTimeout: null,
 			systemInfo: null,
 
 			//--------------状态&判断---------------
@@ -1750,14 +1751,15 @@ export default {
 				uni.stopPullDownRefresh();
 			}
 			// #endif
-			if (this.isUserPullDown && this.showRefresherUpdateTime && this.pageNo === this.defaultPageNo) {
+			const tempIsUserPullDown = this.isUserPullDown;
+			if (tempIsUserPullDown && this.showRefresherUpdateTime && this.pageNo === this.defaultPageNo) {
 				zUtils.setRefesrherTime((new Date()).getTime(), this.refresherUpdateTimeKey);
 				this.tempLanguageUpdateKey = (new Date()).getTime();
 				if (this.$refs.refresh) {
 					this.$refs.refresh.updateTime();
 				}
 			}
-			if (this.isUserPullDown && this.pageNo === this.defaultPageNo) {
+			if (tempIsUserPullDown && this.pageNo === this.defaultPageNo) {
 				this.isUserPullDown = false;
 			}
 			let dataTypeRes = this._checkDataType(data, success, true);
@@ -1773,7 +1775,7 @@ export default {
 			}
 			// #endif
 			setTimeout(() => {
-				this._refresherEnd(true, true);
+				this._refresherEnd(true, true, tempIsUserPullDown);
 				this.pagingLoaded = true;
 			}, delayTime)
 			if (this.pageNo === this.defaultPageNo) {
@@ -2394,7 +2396,9 @@ export default {
 			}
 		},
 		//下拉刷新结束
-		_refresherEnd(shouldEndLoadingDelay = true, fromAddData = false) {
+		_refresherEnd(shouldEndLoadingDelay = true, fromAddData = false, isUserPullDown = false) {
+			const refresherCompleteDelay = fromAddData && isUserPullDown ? this.refresherCompleteDelay : 0;
+			const refresherStatus = refresherCompleteDelay > 0 ? Enum.RefresherStatus.Complete : Enum.RefresherStatus.Default;
 			// #ifndef APP-NVUE
 			if (this.finalShowRefresherWhenReload) {
 				const stackCount = this.refresherRevealStackCount;
@@ -2402,10 +2406,10 @@ export default {
 				if (stackCount > 1) {
 					return;
 				}
-				this.refresherStatus = Enum.RefresherStatus.Complete;
+				this.refresherStatus = refresherStatus;
 			} else {
 				setTimeout(() => {
-					this.refresherStatus = Enum.RefresherStatus.Complete;
+					this.refresherStatus = refresherStatus;
 				}, commonDelayTime);
 			}
 			// #endif
@@ -2416,17 +2420,21 @@ export default {
 				if (stackCount > 1) {
 					return;
 				}
-				this.refresherStatus = Enum.RefresherStatus.Complete;
+				this.refresherStatus = refresherStatus;
 			} else {
 				setTimeout(() => {
-					this.refresherStatus = Enum.RefresherStatus.Complete;
+					this.refresherStatus = refresherStatus;
 				}, commonDelayTime);
 			}
 			// #endif
+			this._cleanRefresherCompleteTimeout();
 			this.refresherCompleteTimeout = setTimeout(() => {
+				let animateDuration = 1;
 				if (fromAddData) {
-					const animateType = this.refresherEndBounceEnabled ? 'cubic-bezier(0.19,1.64,0.42,0.72)' : 'linear';
-					const animateDuration = this.refresherEndBounceEnabled ? this.refresherCompleteDuration / 1000 : this.refresherCompleteDuration / 3000;
+					const animateType = this.refresherEndBounceEnabled ? 'cubic-bezier(0.19,1.64,0.42,0.72)' :
+						'linear';
+					animateDuration = this.refresherEndBounceEnabled ? this.refresherCompleteDuration / 1000 :
+						this.refresherCompleteDuration / 3000;
 					this.refresherTransition = `transform ${animateDuration}s ${animateType}`;
 				}
 				// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
@@ -2446,7 +2454,20 @@ export default {
 				} else {
 					this.loading = false;
 				}
-			}, fromAddData && this.pageNo === this.defaultPageNo ? this.refresherCompleteDelay : 0);
+				// #ifndef APP-NVUE
+				if(this.refresherStatus === Enum.RefresherStatus.Complete){
+					if(this.refresherCompleteSubTimeout){
+						clearTimeout(this.refresherCompleteSubTimeout);
+						this.refresherCompleteSubTimeout = null;
+					}
+					this.refresherCompleteSubTimeout = setTimeout(() => {
+						this.$nextTick(() => {
+							this.refresherStatus = Enum.RefresherStatus.Default;
+						})
+					}, animateDuration * 1000);
+				}
+				// #endif
+			}, refresherCompleteDelay);
 			this.$emit('onRestore');
 			this.$emit('Restore');
 		},
@@ -2837,10 +2858,11 @@ export default {
 			}
 		},
 		//清除refresherCompleteTimeout
-		_cleanRefresherCompleteTimeout(){
+		_cleanRefresherCompleteTimeout() {
 			if (this.refresherCompleteTimeout) {
 				clearTimeout(this.refresherCompleteTimeout);
 				this.refresherCompleteTimeout = null;
+				this.refresherStatus = Enum.RefresherStatus.Default;
 			}
 		},
 		//检查complete data的类型
