@@ -142,7 +142,7 @@ by ZXLee 2021-09-08
 	</view>
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
-	<view :is="finalNvueSuperListIs" :class="{'z-paging-content-fixed':fixed&&!usePageScroll}">
+	<view :is="finalNvueSuperListIs" :style="[finalPagingStyle]" :class="{'z-paging-content-fixed':fixed&&!usePageScroll}">
 		<!-- 顶部固定的slot -->
 		<view ref="zp-page-scroll-top" :is="nViewIs" class="zp-page-scroll-top" v-if="$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
 			<slot name="top"></slot>
@@ -274,14 +274,14 @@ by ZXLee 2021-09-08
 	 * @property {Boolean} show-loading-more-when-reload 调用reload方法时自动显示加载更多view，且为加载中状态(仅初始设置有效，不可动态修改)
 	 * @property {Boolean} refresher-update-time-key 如果需要区别不同页面的最后更新时间，请为不同页面的z-paging的`refresher-update-time-key`设置不同的字符串
 	 * @property {Boolean} use-custom-refresher 是否使用自定义的下拉刷新，默认为是，即使用z-paging的下拉刷新。设置为false即代表使用uni scroll-view自带的下拉刷新，h5、App、微信小程序以外的平台不支持uni scroll-view自带的下拉刷新
-	 * @property {Number|String} refresher-fps 自定义下拉刷新下拉帧率，默认为40，过高可能会出现抖动问题(use-custom-refresher为true时生效)
+	 * @property {Number|String} refresher-fps 自定义下拉刷新下拉帧率，默认为40，过高可能会出现抖动问题
 	 * @property {Number|String} refresher-max-angle 自定义下拉刷新允许触发的最大下拉角度，默认为40度，当下拉角度小于设定值时，自定义下拉刷新动画不会被触发
 	 * @property {Boolean} refresher-angle-enable-change-continued 自定义下拉刷新的角度由未达到最大角度变到达到最大角度时，是否继续下拉刷新手势，默认为否
-	 * @property {String|Object} refresher-default-text 自定义下拉刷新默认状态下的文字(use-custom-refresher为true时生效)
-	 * @property {String|Object} refresher-pulling-text 自定义下拉刷新松手立即刷新状态下的文字(use-custom-refresher为true时生效)
-	 * @property {String|Object} refresher-refreshing-text 自定义下拉刷新刷新中状态下的文字(use-custom-refresher为true时生效)
-	 * @property {String|Object} refresher-complete-text 自定义下拉刷新刷新结束状态下的文字(use-custom-refresher为true时生效)
-	 * @property {Boolean} refresher-end-bounce-enabled 是否开启自定义下拉刷新刷新结束回弹效果，默认为是(use-custom-refresher为true时生效)
+	 * @property {String|Object} refresher-default-text 自定义下拉刷新默认状态下的文字
+	 * @property {String|Object} refresher-pulling-text 自定义下拉刷新松手立即刷新状态下的文字
+	 * @property {String|Object} refresher-refreshing-text 自定义下拉刷新刷新中状态下的文字
+	 * @property {String|Object} refresher-complete-text 自定义下拉刷新刷新结束状态下的文字
+	 * @property {Boolean} refresher-end-bounce-enabled 是否开启自定义下拉刷新刷新结束回弹效果，默认为是
 	 * @property {Object} loading-more-custom-style 自定义底部加载更多样式
 	 * @property {Object} loading-more-loading-icon-custom-style 自定义底部加载更多加载中动画样式
 	 * @property {String} loading-more-loading-icon-type 自定义底部加载更多加载中动画图标类型，可选circle或flower，默认为circle

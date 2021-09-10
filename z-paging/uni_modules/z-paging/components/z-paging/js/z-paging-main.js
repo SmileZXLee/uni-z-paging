@@ -366,7 +366,7 @@ export default {
 			type: Boolean,
 			default: _getConfig('useCustomRefresher', true)
 		},
-		//自定义下拉刷新下拉帧率，默认为40，过高可能会出现抖动问题(use-custom-refresher为true时生效)
+		//自定义下拉刷新下拉帧率，默认为40，过高可能会出现抖动问题
 		refresherFps: {
 			type: [Number, String],
 			default: _getConfig('refresherFps', 40)
@@ -381,27 +381,27 @@ export default {
 			type: Boolean,
 			default: _getConfig('refresherAngleEnableChangeContinued', false)
 		},
-		//自定义下拉刷新默认状态下的文字(use-custom-refresher为true时生效)
+		//自定义下拉刷新默认状态下的文字
 		refresherDefaultText: {
 			type: [String, Object],
 			default: _getConfig('refresherDefaultText', null)
 		},
-		//自定义下拉刷新松手立即刷新状态下的文字(use-custom-refresher为true时生效)
+		//自定义下拉刷新松手立即刷新状态下的文字
 		refresherPullingText: {
 			type: [String, Object],
 			default: _getConfig('refresherPullingText', null)
 		},
-		//自定义下拉刷新刷新中状态下的文字(use-custom-refresher为true时生效)
+		//自定义下拉刷新刷新中状态下的文字
 		refresherRefreshingText: {
 			type: [String, Object],
 			default: _getConfig('refresherRefreshingText', null)
 		},
-		//自定义下拉刷新刷新结束状态下的文字(use-custom-refresher为true时生效)
+		//自定义下拉刷新刷新结束状态下的文字
 		refresherCompleteText: {
 			type: [String, Object],
 			default: _getConfig('refresherCompleteText', null)
 		},
-		//是否开启自定义下拉刷新刷新结束回弹效果，默认为是(use-custom-refresher为true时生效)
+		//是否开启自定义下拉刷新刷新结束回弹效果，默认为是
 		refresherEndBounceEnabled: {
 			type: Boolean,
 			default: _getConfig('refresherEndBounceEnabled', true)
