@@ -156,6 +156,9 @@
 	height: 100%;
 	/* #endif */
 	flex: 1;
+}
+
+.zp-empty-view-center {
 	/* #ifndef APP-NVUE */
 	display: flex;
 	/* #endif */

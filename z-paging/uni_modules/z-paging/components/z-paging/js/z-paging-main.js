@@ -572,11 +572,18 @@ export default {
 				return _getConfig('emptyViewReloadStyle', {});
 			}
 		},
-		//空数据图片是否使用fixed布局并铺满z-paging，默认为否，会铺满z-paging剩余部分并居中
+		//空数据图片是否使用fixed布局并铺满z-paging，默认为否，其父view会填充满z-paging的剩余部分
 		emptyViewFixed: {
 			type: Boolean,
 			default: function() {
 				return _getConfig('emptyViewFixed', false)
+			}
+		},
+		//空数据图片是否垂直居中，默认为是。emptyViewFixed为false时有效
+		emptyViewCenter: {
+			type: Boolean,
+			default: function() {
+				return _getConfig('emptyViewCenter', true)
 			}
 		},
 		//加载中时是否自动隐藏空数据图，默认为是

@@ -94,7 +94,7 @@ by ZXLee 2021-09-08
 								<slot />
 							</view>
 							<!-- 空数据图 -->
-							<view class="zp-empty-view" v-if="showEmpty">
+							<view :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}" v-if="showEmpty">
 								<slot v-if="$slots.empty" name="empty" />
 								<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
 								:emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" 
@@ -174,7 +174,7 @@ by ZXLee 2021-09-08
 			<slot />
 			<!-- 空数据图 -->
 			<view class="z-paging-empty-view" :class="{'z-paging-content-fixed':usePageScroll}" style="flex: 1;" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="showEmpty" :is="nViewIs">
-				<view class="zp-empty-view">
+				<view :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}">
 					<slot v-if="$slots.empty" name="empty" />
 					<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
 					:emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" 
@@ -311,7 +311,8 @@ by ZXLee 2021-09-08
 	 * @property {Object} empty-view-img-style 空数据图img样式
 	 * @property {Object} empty-view-title-style 空数据图描述文字样式
 	 * @property {Object} empty-view-reload-style 空数据图重新加载按钮样式
-	 * @property {Boolean} empty-view-fixed 空数据图片是否使用fixed布局并铺满z-paging，默认为是，若设置为false将紧贴z-paging插入的view下方
+	 * @property {Boolean} empty-view-fixed 空数据图片是否使用fixed布局并铺满z-paging，默认为否，其父view会填充满z-paging的剩余部分
+	 * @property {Boolean} empty-view-center 空数据图片是否垂直居中，默认为是。emptyViewFixed为false时有效
 	 * @property {Boolean} auto-hide-empty-view-when-loading 加载中时是否自动隐藏空数据图，默认为是
 	 * @property {Boolean} auto-hide-loading-after-first-loaded 第一次加载后是否自动隐藏loading slot，默认为是
 	 * @property {Boolean} auto-show-back-to-top 自动显示点击返回顶部按钮，默认为否
@@ -447,6 +448,7 @@ by ZXLee 2021-09-08
 			emptyViewTitleStyle: {type: Object},
 			emptyViewReloadStyle: {type: Object},
 			emptyViewFixed: {type: Boolean},
+			emptyViewCenter: {type: Boolean},
 			autoHideEmptyViewWhenLoading: {type: Boolean},
 			autoHideLoadingAfterFirstLoaded: {type: Boolean},
 			autoShowBackToTop: {type: Boolean},

@@ -1,8 +1,15 @@
 <!-- 普通模式演示(vue) -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" v-model="dataList" @query="queryList" refresher-complete-delay="1000">
-			<view style="height: 800px;background-color: red;"></view>
+		<z-paging ref="paging" v-model="dataList" @query="queryList">
+			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
+			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
+			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
+			<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item,index)">
+				<view class="item-title">{{item.title}}</view>
+				<view class="item-detail">{{item.detail}}</view>
+				<view class="item-line"></view>
+			</view>
 		</z-paging>
 	</view>
 </template>
@@ -33,7 +40,7 @@
 				}
 				this.$request.queryList(params).then(res => {
 					//将请求的结果数组传递给z-paging
-					this.$refs.paging.complete([]);
+					this.$refs.paging.complete(res.data.list);
 				}).catch(res => {
 					//如果请求失败写this.$refs.paging.complete(false);
 					//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理

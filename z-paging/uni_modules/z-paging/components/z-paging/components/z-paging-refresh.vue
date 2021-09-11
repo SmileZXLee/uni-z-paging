@@ -92,7 +92,7 @@
 			},
 			refresherLeftImageClass() {
 				if(this.status === 3){
-					return 'zp-r-left-image-no-transform zp-r-left-image-pre-size';
+					return 'zp-r-left-image-no-transform .zp-r-left-image-pre-size';
 				}
 				let refresherLeftImageClass = 'zp-r-left-image ';
 				if (this.status === 0) {
