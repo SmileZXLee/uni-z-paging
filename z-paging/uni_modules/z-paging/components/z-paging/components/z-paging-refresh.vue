@@ -6,12 +6,12 @@
 			:class="['zp-r-container',{'zp-r-container-padding':showUpdateTime}]" style="height: 100%;">
 			<view class="zp-r-left">
 				<image v-if="status!==2" :class="refresherLeftImageClass"
-					:style="[{width: showUpdateTime?'36rpx':'30rpx',height: showUpdateTime?'36rpx':'30rpx','margin-right': showUpdateTime?'20rpx':'10rpx'},imgStyle]"
+					:style="[{width: showUpdateTime?'36rpx':'30rpx',height: showUpdateTime?'36rpx':'30rpx','margin-right': showUpdateTime?'20rpx':'9rpx'},imgStyle]"
 					:src="defaultThemeStyle==='white'?(status===3?base64SuccessWhite:base64ArrowWhite):(status===3?base64Success:base64Arrow)">
 				</image>
 				<!-- #ifndef APP-NVUE -->
 				<image v-else class="zp-line-loading-image zp-r-left-image"
-					:style="[{width: showUpdateTime?'36rpx':'30rpx',height: showUpdateTime?'36rpx':'30rpx','margin-right': showUpdateTime?'20rpx':'10rpx'},imgStyle]"
+					:style="[{width: showUpdateTime?'36rpx':'30rpx',height: showUpdateTime?'36rpx':'30rpx','margin-right': showUpdateTime?'20rpx':'9rpx'},imgStyle]"
 					:src="defaultThemeStyle==='white'?base64FlowerWhite:base64Flower">
 				</image>
 				<!-- #endif -->
@@ -94,19 +94,18 @@
 				if(this.status === 3){
 					return 'zp-r-left-image-no-transform';
 				}
-				let refresherLeftImageClass = '';
+				let refresherLeftImageClass = 'zp-r-left-image ';
 				if (this.status === 0) {
 					if (this.leftImageLoaded) {
-						refresherLeftImageClass = 'zp-r-left-image zp-r-arrow-down';
+						refresherLeftImageClass += 'zp-r-arrow-down';
 					} else {
 						this.leftImageLoaded = true;
-						refresherLeftImageClass =
-							'zp-r-left-image zp-r-arrow-down-no-duration';
+						refresherLeftImageClass += 'zp-r-arrow-down-no-duration';
 					}
 				} else {
-					refresherLeftImageClass = 'zp-r-left-image zp-r-arrow-top';
+					refresherLeftImageClass += 'zp-r-arrow-top';
 				}
-				return refresherLeftImageClass;
+				return refresherLeftImageClass + ' zp-r-left-image-pre-size';
 			},
 			refresherRightTextStyle() {
 				let refresherRightTextStyle = {};
@@ -174,6 +173,7 @@
 	.zp-r-left-image {
 		/* #ifndef APP-NVUE */
 		transform: rotate(180deg);
+		margin-top: 2rpx;
 		/* #endif */
 		/* #ifdef APP-NVUE */
 		transition-duration: .2s;
@@ -183,10 +183,20 @@
 	}
 	
 	.zp-r-left-image-no-transform {
+		/* #ifndef APP-NVUE */
+		margin-top: 2rpx;
+		/* #endif */
 		/* #ifdef APP-NVUE */
 		transition-duration: .2s;
 		transition-property: transform;
 		color: #666666;
+		/* #endif */
+	}
+	
+	.zp-r-left-image-pre-size{
+		/* #ifndef APP-NVUE */
+		width: 30rpx;
+		width: 30rpx;
 		/* #endif */
 	}
 

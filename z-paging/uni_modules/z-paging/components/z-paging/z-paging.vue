@@ -23,8 +23,8 @@ by ZXLee 2021-09-08
 		</view>
 		<view :class="{'zp-scroll-view-super':!usePageScroll}" :style="[finalScrollViewStyle]">
 			<scroll-view
-				:class="{'zp-scroll-view':true,'zp-scroll-view-absolute':!usePageScroll}"
-				:scroll-top="scrollTop" scroll-x
+				:class="{'zp-scroll-view':true,'zp-scroll-view-absolute':!usePageScroll,'zp-scroll-view-hide-scrollbar':!showScrollbar}"
+				:scroll-top="scrollTop" :scroll-x="scrollX"
 				:scroll-y="scrollable&&!usePageScroll&&scrollEnable&&refresherStatus!==3" :enable-back-to-top="finalEnableBackToTop"
 				:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
 				:scroll-into-view="scrollIntoView" :lower-threshold="finalLowerThreshold" :upper-threshold="5"
@@ -320,7 +320,8 @@ by ZXLee 2021-09-08
 	 * @property {Boolean} back-to-top-with-animate 点击返回顶部按钮返回到顶部时是否展示过渡动画，默认为是
 	 * @property {Number|String} back-to-top-bottom 点击返回顶部按钮与底部的距离，注意添加单位px或rpx，默认为160rpx
 	 * @property {Object} back-to-top-style 点击返回顶部按钮的自定义样式
-	 * @property {Boolean} show-scrollbar 在设置滚动条位置时是否使用动画过渡，默认为否
+	 * @property {Boolean} show-scrollbar 控制是否出现滚动条，默认为是
+	 * @property {Boolean} scroll-x 是否允许横向滚动，默认为否
 	 * @property {Boolean} scroll-to-top-bounce-enabled iOS设备上滚动到顶部时是否允许回弹效果，默认为否。关闭回弹效果后可使滚动到顶部与下拉刷新更连贯，但是有吸顶view时滚动到顶部时可能出现抖动。
 	 * @property {Boolean} scroll-with-animation 控制是否出现滚动条，默认为否
 	 * @property {String} scroll-into-view 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素
@@ -455,6 +456,7 @@ by ZXLee 2021-09-08
 			backToTopBottom: {type: [Number, String]},
 			backToTopStyle: {type: Object},
 			showScrollbar: {type: Boolean},
+			scrollX: {type: Boolean},
 			scrollToTopBounceEnabled: {type: Boolean},
 			scrollToBottomBounceEnabled: {type: Boolean},
 			scrollWithAnimation: {type: Boolean},

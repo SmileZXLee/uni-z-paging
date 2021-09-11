@@ -620,10 +620,15 @@ export default {
 				return _getConfig('backToTopStyle', {});
 			},
 		},
-		//控制是否出现滚动条，默认为否
+		//控制是否出现滚动条，默认为是
 		showScrollbar: {
 			type: Boolean,
-			default: _getConfig('showScrollbar', false)
+			default: _getConfig('showScrollbar', true)
+		},
+		//是否允许横向滚动，默认为否
+		scrollX: {
+			type: Boolean,
+			default: _getConfig('scrollX', false)
 		},
 		//iOS设备上滚动到顶部时是否允许回弹效果，默认为否。关闭回弹效果后可使滚动到顶部与下拉刷新更连贯，但是有吸顶view时滚动到顶部时可能出现抖动。
 		scrollToTopBounceEnabled: {
