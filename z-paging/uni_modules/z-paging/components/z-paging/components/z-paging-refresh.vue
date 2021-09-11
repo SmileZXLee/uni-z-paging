@@ -92,7 +92,7 @@
 			},
 			refresherLeftImageClass() {
 				if(this.status === 3){
-					return 'zp-r-left-image-no-transform';
+					return 'zp-r-left-image-no-transform zp-r-left-image-pre-size';
 				}
 				let refresherLeftImageClass = 'zp-r-left-image ';
 				if (this.status === 0) {
@@ -197,6 +197,7 @@
 		/* #ifndef APP-NVUE */
 		width: 30rpx;
 		width: 30rpx;
+		overflow: hidden;
 		/* #endif */
 	}
 

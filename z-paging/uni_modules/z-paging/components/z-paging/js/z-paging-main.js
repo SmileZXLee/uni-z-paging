@@ -146,6 +146,7 @@ export default {
 			showCustomRefresher: false,
 			fromEmptyViewReload: false,
 			doRefreshAnimateAfter: false,
+			isRefresherInComplete: false,
 			isIos13: systemInfo.system && systemInfo.system.length && systemInfo.system.indexOf('iOS 13') != -1,
 
 			//--------------nvue相关---------------
@@ -571,11 +572,11 @@ export default {
 				return _getConfig('emptyViewReloadStyle', {});
 			}
 		},
-		//空数据图片是否使用fixed布局并铺满z-paging，默认为是，若设置为false将紧贴z-paging插入的view下方
+		//空数据图片是否使用fixed布局并铺满z-paging，默认为否，会铺满z-paging剩余部分并居中
 		emptyViewFixed: {
 			type: Boolean,
 			default: function() {
-				return _getConfig('emptyViewFixed', true)
+				return _getConfig('emptyViewFixed', false)
 			}
 		},
 		//加载中时是否自动隐藏空数据图，默认为是
@@ -2212,7 +2213,7 @@ export default {
 		_onRefresh() {
 			this.$emit('onRefresh');
 			this.$emit('Refresh');
-			if (this.loading || this.nShowRefresherReveal) {
+			if (this.loading || this.isRefresherInComplete || this.nShowRefresherReveal) {
 				return;
 			}
 			this.isUserPullDown = true;
@@ -2403,7 +2404,8 @@ export default {
 		//下拉刷新结束
 		_refresherEnd(shouldEndLoadingDelay = true, fromAddData = false, isUserPullDown = false) {
 			const refresherCompleteDelay = fromAddData && isUserPullDown ? this.refresherCompleteDelay : 0;
-			const refresherStatus = refresherCompleteDelay > 0 ? Enum.RefresherStatus.Complete : Enum.RefresherStatus.Default;
+			const refresherStatus = refresherCompleteDelay > 0 ? Enum.RefresherStatus.Complete : Enum.RefresherStatus
+				.Default;
 			// #ifndef APP-NVUE
 			if (this.finalShowRefresherWhenReload) {
 				const stackCount = this.refresherRevealStackCount;
@@ -2432,6 +2434,16 @@ export default {
 				}, commonDelayTime);
 			}
 			// #endif
+			if (shouldEndLoadingDelay) {
+				setTimeout(() => {
+					this.loading = false;
+				}, commonDelayTime);
+			} else {
+				this.loading = false;
+			}
+			if(refresherCompleteDelay > 0){
+				this.isRefresherInComplete = true;
+			}
 			this._cleanRefresherCompleteTimeout();
 			this.refresherCompleteTimeout = setTimeout(() => {
 				let animateDuration = 1;
@@ -2452,24 +2464,18 @@ export default {
 				this._nRefresherEnd();
 				// #endif
 				this.moveDistance = 0;
-				if (shouldEndLoadingDelay) {
-					setTimeout(() => {
-						this.loading = false;
-					}, commonDelayTime);
-				} else {
-					this.loading = false;
-				}
 				// #ifndef APP-NVUE
-				if(this.refresherStatus === Enum.RefresherStatus.Complete){
-					if(this.refresherCompleteSubTimeout){
+				if (this.refresherStatus === Enum.RefresherStatus.Complete) {
+					if (this.refresherCompleteSubTimeout) {
 						clearTimeout(this.refresherCompleteSubTimeout);
 						this.refresherCompleteSubTimeout = null;
 					}
 					this.refresherCompleteSubTimeout = setTimeout(() => {
 						this.$nextTick(() => {
 							this.refresherStatus = Enum.RefresherStatus.Default;
+							this.isRefresherInComplete = false;
 						})
-					}, animateDuration * 1000);
+					}, animateDuration * 800);
 				}
 				// #endif
 			}, refresherCompleteDelay);
@@ -2515,10 +2521,7 @@ export default {
 			if (this.loadingStatus === Enum.LoadingMoreStatus.NoMore && this.hideLoadingMoreWhenNoMoreByLimit > 0 &&
 				newVal.length) {
 				this.showLoadingMore = newVal.length > this.hideLoadingMoreWhenNoMoreByLimit;
-			} else if ((this.loadingStatus === Enum.LoadingMoreStatus.NoMore && this
-					.hideLoadingMoreWhenNoMoreAndInsideOfPaging &&
-					newVal.length) || (this.insideMore && this.insideOfPaging !== false &&
-					newVal.length)) {
+			} else if ((this.loadingStatus === Enum.LoadingMoreStatus.NoMore && this.hideLoadingMoreWhenNoMoreAndInsideOfPaging && newVal.length) || (this.insideMore && this.insideOfPaging !== false && newVal.length)) {
 				this.$nextTick(() => {
 					this._checkShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal, scrollViewNode,
 						pagingContainerNode);
@@ -2694,7 +2697,7 @@ export default {
 		//判断touch手势是否要触发
 		_getRefresherTouchDisabled() {
 			let checkOldScrollTop = this.oldScrollTop > 5;
-			const res = this.loading || this.useChatRecordMode || !this.refresherEnabled || !this.useCustomRefresher ||
+			const res = this.loading || this.isRefresherInComplete || this.useChatRecordMode || !this.refresherEnabled || !this.useCustomRefresher ||
 				(
 					this.usePageScroll && this
 					.useCustomRefresher && this

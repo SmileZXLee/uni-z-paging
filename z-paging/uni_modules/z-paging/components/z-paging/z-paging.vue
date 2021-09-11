@@ -47,7 +47,7 @@ by ZXLee 2021-09-08
 					<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 					:change:prop="pagingWxs.propObserver" :prop="wxsPropType"
 					:data-refresherThreshold="finalRefresherThreshold" :data-isIos="isIos" :data-isIos13="isIos13"
-					:data-loading="loading" :data-useChatRecordMode="useChatRecordMode" 
+					:data-loading="loading||isRefresherInComplete" :data-useChatRecordMode="useChatRecordMode" 
 					:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="wxsPageScrollTop"
 					:data-scrollTop="wxsScrollTop" :data-refresherMaxAngle="refresherMaxAngle" 
 					:data-refresherAecc="refresherAngleEnableChangeContinued" :data-usePageScroll="usePageScroll"

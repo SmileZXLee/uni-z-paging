@@ -84,6 +84,10 @@
 .zp-paging-container {
 	flex: 1;
 	position: relative;
+	/* #ifndef APP-NVUE */
+	display: flex;
+	/* #endif */
+	flex-direction: column;
 }
 
 .zp-chat-record-loading-container {
@@ -152,6 +156,12 @@
 	height: 100%;
 	/* #endif */
 	flex: 1;
+	/* #ifndef APP-NVUE */
+	display: flex;
+	/* #endif */
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 }
 
 .zp-n-refresh-container {
