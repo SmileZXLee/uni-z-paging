@@ -2411,8 +2411,7 @@ export default {
 		//下拉刷新结束
 		_refresherEnd(shouldEndLoadingDelay = true, fromAddData = false, isUserPullDown = false) {
 			const refresherCompleteDelay = fromAddData && isUserPullDown ? this.refresherCompleteDelay : 0;
-			const refresherStatus = refresherCompleteDelay > 0 ? Enum.RefresherStatus.Complete : Enum.RefresherStatus
-				.Default;
+			const refresherStatus = refresherCompleteDelay > 0 ? Enum.RefresherStatus.Complete : Enum.RefresherStatus.Default;
 			// #ifndef APP-NVUE
 			if (this.finalShowRefresherWhenReload) {
 				const stackCount = this.refresherRevealStackCount;
@@ -2425,6 +2424,9 @@ export default {
 				setTimeout(() => {
 					this.refresherStatus = refresherStatus;
 				}, commonDelayTime);
+			}
+			if (refresherCompleteDelay > 0) {
+				this.isRefresherInComplete = true;
 			}
 			// #endif
 			// #ifdef APP-NVUE
@@ -2448,15 +2450,12 @@ export default {
 			} else {
 				this.loading = false;
 			}
-			if(refresherCompleteDelay > 0){
-				this.isRefresherInComplete = true;
-			}
+			
 			this._cleanRefresherCompleteTimeout();
 			this.refresherCompleteTimeout = setTimeout(() => {
 				let animateDuration = 1;
 				if (fromAddData) {
-					const animateType = this.refresherEndBounceEnabled ? 'cubic-bezier(0.19,1.64,0.42,0.72)' :
-						'linear';
+					const animateType = this.refresherEndBounceEnabled ? 'cubic-bezier(0.19,1.64,0.42,0.72)' : 'linear';
 					animateDuration = this.refresherEndBounceEnabled ? this.refresherCompleteDuration / 1000 :
 						this.refresherCompleteDuration / 3000;
 					this.refresherTransition = `transform ${animateDuration}s ${animateType}`;
@@ -2528,7 +2527,9 @@ export default {
 			if (this.loadingStatus === Enum.LoadingMoreStatus.NoMore && this.hideLoadingMoreWhenNoMoreByLimit > 0 &&
 				newVal.length) {
 				this.showLoadingMore = newVal.length > this.hideLoadingMoreWhenNoMoreByLimit;
-			} else if ((this.loadingStatus === Enum.LoadingMoreStatus.NoMore && this.hideLoadingMoreWhenNoMoreAndInsideOfPaging && newVal.length) || (this.insideMore && this.insideOfPaging !== false && newVal.length)) {
+			} else if ((this.loadingStatus === Enum.LoadingMoreStatus.NoMore && this
+					.hideLoadingMoreWhenNoMoreAndInsideOfPaging && newVal.length) || (this.insideMore && this
+					.insideOfPaging !== false && newVal.length)) {
 				this.$nextTick(() => {
 					this._checkShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal, scrollViewNode,
 						pagingContainerNode);
@@ -2704,7 +2705,8 @@ export default {
 		//判断touch手势是否要触发
 		_getRefresherTouchDisabled() {
 			let checkOldScrollTop = this.oldScrollTop > 5;
-			const res = this.loading || this.isRefresherInComplete || this.useChatRecordMode || !this.refresherEnabled || !this.useCustomRefresher ||
+			const res = this.loading || this.isRefresherInComplete || this.useChatRecordMode || !this
+				.refresherEnabled || !this.useCustomRefresher ||
 				(
 					this.usePageScroll && this
 					.useCustomRefresher && this
@@ -2877,7 +2879,6 @@ export default {
 			if (this.refresherCompleteTimeout) {
 				clearTimeout(this.refresherCompleteTimeout);
 				this.refresherCompleteTimeout = null;
-				this.refresherStatus = Enum.RefresherStatus.Default;
 			}
 		},
 		//检查complete data的类型
