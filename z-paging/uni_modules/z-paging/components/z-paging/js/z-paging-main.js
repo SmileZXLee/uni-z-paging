@@ -308,7 +308,7 @@ export default {
 			type: [Number, String],
 			default: _getConfig('refresherCompleteDelay', 0)
 		},
-		//自定义下拉刷新结束回弹动画时间，单位为毫秒，默认为300毫秒(refresherEndBounceEnabled为false时，refresherCompleteDuration为设定值的1/3)
+		//自定义下拉刷新结束回弹动画时间，单位为毫秒，默认为300毫秒(refresherEndBounceEnabled为false时，refresherCompleteDuration为设定值的1/3)，nvue无效
 		refresherCompleteDuration: {
 			type: [Number, String],
 			default: _getConfig('refresherCompleteDuration', 300)
@@ -572,11 +572,11 @@ export default {
 				return _getConfig('emptyViewReloadStyle', {});
 			}
 		},
-		//空数据图片是否使用fixed布局并铺满z-paging，默认为否，其父view会填充满z-paging的剩余部分
+		//空数据图片是否使用fixed布局并铺满z-paging，默认为是，即铺满屏幕。若设置为否，则其父view会填充满z-paging的剩余部分
 		emptyViewFixed: {
 			type: Boolean,
 			default: function() {
-				return _getConfig('emptyViewFixed', false)
+				return _getConfig('emptyViewFixed', true)
 			}
 		},
 		//空数据图片是否垂直居中，默认为是。emptyViewFixed为false时有效

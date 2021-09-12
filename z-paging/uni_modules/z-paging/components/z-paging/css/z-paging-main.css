@@ -53,11 +53,14 @@
 	left: 0;
 }
 
+/* #ifndef APP-NVUE */
 .zp-scroll-view-hide-scrollbar ::-webkit-scrollbar {
 	width: 0;
 	height: 0;
 	background-color: transparent;
 }
+
+/* #endif */
 
 .zp-paging-touch-view {
 	width: 100%;
