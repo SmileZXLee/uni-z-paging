@@ -2314,9 +2314,7 @@ export default {
 		//进一步处理拖拽中结果
 		_handleRefresherTouchmove(moveDistance, touch) {
 			this.refresherReachMaxAngle = true;
-			if (!this.isTouchmoving) {
-				this.isTouchmoving = true;
-			}
+			this.isTouchmoving = true;
 			//this.refresherTransition = '';
 			this.isTouchEnded = false;
 			if (moveDistance >= this.finalRefresherThreshold) {
