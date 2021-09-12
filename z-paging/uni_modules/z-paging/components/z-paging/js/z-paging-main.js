@@ -2410,7 +2410,13 @@ export default {
 		},
 		//下拉刷新结束
 		_refresherEnd(shouldEndLoadingDelay = true, fromAddData = false, isUserPullDown = false) {
-			const refresherCompleteDelay = fromAddData && isUserPullDown ? this.refresherCompleteDelay : 0;
+			let refresherCompleteDelay = 0;
+			if(fromAddData && isUserPullDown){
+				refresherCompleteDelay = this.refresherCompleteDelay;
+				if(this.refresherCompleteDuration > 700){
+					refresherCompleteDelay = 1;
+				}
+			}
 			const refresherStatus = refresherCompleteDelay > 0 ? Enum.RefresherStatus.Complete : Enum.RefresherStatus.Default;
 			// #ifndef APP-NVUE
 			if (this.finalShowRefresherWhenReload) {
@@ -2450,14 +2456,12 @@ export default {
 			} else {
 				this.loading = false;
 			}
-			
 			this._cleanRefresherCompleteTimeout();
 			this.refresherCompleteTimeout = setTimeout(() => {
 				let animateDuration = 1;
 				if (fromAddData) {
 					const animateType = this.refresherEndBounceEnabled ? 'cubic-bezier(0.19,1.64,0.42,0.72)' : 'linear';
-					animateDuration = this.refresherEndBounceEnabled ? this.refresherCompleteDuration / 1000 :
-						this.refresherCompleteDuration / 3000;
+					animateDuration = this.refresherEndBounceEnabled ? this.refresherCompleteDuration / 1000 : this.refresherCompleteDuration / 3000;
 					this.refresherTransition = `transform ${animateDuration}s ${animateType}`;
 				}
 				// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
@@ -2471,7 +2475,7 @@ export default {
 				// #endif
 				this.moveDistance = 0;
 				// #ifndef APP-NVUE
-				if (this.refresherStatus === Enum.RefresherStatus.Complete) {
+				if (refresherStatus === Enum.RefresherStatus.Complete) {
 					if (this.refresherCompleteSubTimeout) {
 						clearTimeout(this.refresherCompleteSubTimeout);
 						this.refresherCompleteSubTimeout = null;
