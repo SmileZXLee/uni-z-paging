@@ -572,7 +572,7 @@ export default {
 				return _getConfig('emptyViewReloadStyle', {});
 			}
 		},
-		//空数据图片是否使用fixed布局并铺满z-paging，默认为是，即铺满屏幕。若设置为否，则其父view会填充满z-paging的剩余部分
+		//空数据图片是否铺满z-paging，默认为是。若设置为否，则为填充满z-paging的剩余部分
 		emptyViewFixed: {
 			type: Boolean,
 			default: function() {

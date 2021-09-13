@@ -62,8 +62,7 @@ by ZXLee 2021-09-08
 							:style="[{'margin-top': `-${finalRefresherThreshold}px`,'background-color': refresherBackground}]">
 							<view class="zp-custom-refresher-container" :style="[{'height': `${finalRefresherThreshold}px`,'background-color': refresherBackground}]">
 								<!-- 下拉刷新view -->
-								<view
-								class="zp-custom-refresher-slot-view">
+								<view class="zp-custom-refresher-slot-view">
 									<slot
 									<!-- #ifndef MP-QQ -->
 									:refresherStatus="refresherStatus"
@@ -92,6 +91,28 @@ by ZXLee 2021-09-08
 							<!-- 主体内容 -->
 							<view class="zp-paging-container-content" :style="[finalPagingContentStyle]">
 								<slot />
+								<!-- 上拉加载更多view -->
+								<!-- #ifndef MP-ALIPAY -->
+								<slot v-if="_shouldShowLoadingMore('loadingMoreDefault')" name="loadingMoreDefault" />
+								<slot v-else-if="_shouldShowLoadingMore('loadingMoreLoading')" name="loadingMoreLoading" />
+								<slot v-else-if="_shouldShowLoadingMore('loadingMoreNoMore')" name="loadingMoreNoMore" />
+								<slot v-else-if="_shouldShowLoadingMore('loadingMoreFail')" name="loadingMoreFail" />
+								<z-paging-load-more @click.native="_onLoadingMore('click')"
+									v-else-if="_shouldShowLoadingMore('loadingMoreCustom')" :zConfig="zPagingLoadMoreConfig">
+								</z-paging-load-more>
+								<!-- #endif -->
+								<!-- #ifdef MP-ALIPAY -->
+								<slot v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
+									name="loadingMoreDefault" />
+								<slot v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled"
+									name="loadingMoreLoading" />
+								<slot v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled&&!useChatRecordMode"
+									name="loadingMoreNoMore" />
+								<slot v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
+									name="loadingMoreFail" />
+								<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode" :zConfig="zPagingLoadMoreConfig">
+								</z-paging-load-more>
+								<!-- #endif -->
 							</view>
 							<!-- 空数据图 -->
 							<view :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}" v-if="showEmpty">
@@ -102,28 +123,6 @@ by ZXLee 2021-09-08
 								@reload="_emptyViewReload">
 								</z-paging-empty-view>
 							</view>
-							<!-- 上拉加载更多view -->
-							<!-- #ifndef MP-ALIPAY -->
-							<slot v-if="_shouldShowLoadingMore('loadingMoreDefault')" name="loadingMoreDefault" />
-							<slot v-else-if="_shouldShowLoadingMore('loadingMoreLoading')" name="loadingMoreLoading" />
-							<slot v-else-if="_shouldShowLoadingMore('loadingMoreNoMore')" name="loadingMoreNoMore" />
-							<slot v-else-if="_shouldShowLoadingMore('loadingMoreFail')" name="loadingMoreFail" />
-							<z-paging-load-more @click.native="_onLoadingMore('click')"
-								v-else-if="_shouldShowLoadingMore('loadingMoreCustom')" :zConfig="zPagingLoadMoreConfig">
-							</z-paging-load-more>
-							<!-- #endif -->
-							<!-- #ifdef MP-ALIPAY -->
-							<slot v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
-								name="loadingMoreDefault" />
-							<slot v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled"
-								name="loadingMoreLoading" />
-							<slot v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled&&!useChatRecordMode"
-								name="loadingMoreNoMore" />
-							<slot v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
-								name="loadingMoreFail" />
-							<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode" :zConfig="zPagingLoadMoreConfig">
-							</z-paging-load-more>
-							<!-- #endif -->
 						</view>
 					</view>
 				</view>
@@ -311,7 +310,7 @@ by ZXLee 2021-09-08
 	 * @property {Object} empty-view-img-style 空数据图img样式
 	 * @property {Object} empty-view-title-style 空数据图描述文字样式
 	 * @property {Object} empty-view-reload-style 空数据图重新加载按钮样式
-	 * @property {Boolean} empty-view-fixed 空数据图片是否使用fixed布局并铺满z-paging，默认为是，即铺满屏幕。若设置为否，则其父view会填充满z-paging的剩余部分
+	 * @property {Boolean} empty-view-fixed 空数据图片是否铺满z-paging，默认为是。若设置为否，则为填充满z-paging的剩余部分
 	 * @property {Boolean} empty-view-center 空数据图片是否垂直居中，默认为是。emptyViewFixed为false时有效
 	 * @property {Boolean} auto-hide-empty-view-when-loading 加载中时是否自动隐藏空数据图，默认为是
 	 * @property {Boolean} auto-hide-loading-after-first-loaded 第一次加载后是否自动隐藏loading slot，默认为是
