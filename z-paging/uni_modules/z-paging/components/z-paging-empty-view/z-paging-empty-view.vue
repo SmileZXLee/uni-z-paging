@@ -100,7 +100,7 @@
 			emptyViewFixed: {
 				type: Boolean,
 				default: function() {
-					return false
+					return true
 				}
 			}
 		},

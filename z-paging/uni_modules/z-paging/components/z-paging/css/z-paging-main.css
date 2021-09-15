@@ -55,9 +55,11 @@
 
 /* #ifndef APP-NVUE */
 .zp-scroll-view-hide-scrollbar ::-webkit-scrollbar {
-	width: 0;
-	height: 0;
-	background-color: transparent;
+	display: none;
+	-webkit-appearance: none;
+	width: 0 !important;
+	height: 0 !important;
+	background: transparent;
 }
 
 /* #endif */

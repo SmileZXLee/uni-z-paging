@@ -11,7 +11,7 @@ import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
 import Enum from './z-paging-enum'
 
-const currentVersion = 'V2.0.6';
+const currentVersion = 'V2.0.7';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -2779,6 +2779,12 @@ export default {
 			// #endif
 			const node = `.zp-page-scroll-${type}`;
 			const marginText = `margin${type.slice(0,1).toUpperCase() + type.slice(1)}`;
+			let safeAreaInsetBottomAdd = this.safeAreaInsetBottom;
+			// #ifdef APP-NVUE
+			if (!this.usePageScroll) {
+				safeAreaInsetBottomAdd = false;
+			}
+			// #endif
 			this.$nextTick(() => {
 				let delayTime = 0;
 				// #ifdef MP-BAIDU
@@ -2789,15 +2795,14 @@ export default {
 						if (res) {
 							let pageScrollNodeHeight = res[0].height;
 							if (type === 'bottom') {
-								if (this.safeAreaInsetBottom) {
+								if (safeAreaInsetBottomAdd) {
 									pageScrollNodeHeight += this.safeAreaBottom;
 								}
 							}
 							this.$set(this.scrollViewStyle, marginText,
 								`${pageScrollNodeHeight}px`);
-						} else if (this.safeAreaInsetBottom) {
-							this.$set(this.scrollViewStyle, marginText,
-								`${this.safeAreaBottom}px`);
+						} else if (safeAreaInsetBottomAdd) {
+							this.$set(this.scrollViewStyle, marginText, `${this.safeAreaBottom}px`);
 						}
 					});
 				}, delayTime)
