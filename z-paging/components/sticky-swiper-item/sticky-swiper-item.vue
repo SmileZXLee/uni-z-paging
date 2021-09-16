@@ -2,11 +2,10 @@
 <template>
 	<view class="content">
 		<!-- 这里设置了z-paging加载时禁止自动调用reload方法，自行控制何时reload（懒加载）-->
-		<z-paging @scroll="scroll" :scrollable="scrollable" :show-console-error="false" :scroll-to-top-bounce-enabled="false" :auto-clean-list-when-reload="false"
-			:refresher-enabled="false" :fixed="false" ref="paging" @query="queryList" v-model="dataList"
-			:auto="false" style="height: 100%;">
+		<z-paging ref="paging" @scroll="scroll" v-model="dataList" @query="queryList" :fixed="false" :scrollable="scrollable"
+			:refresher-enabled="false" @scrolltoupper="scrolltoupper" :auto="false">
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
-			<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
+			<view class="item" v-for="(item,index) in dataList" :key="index">
 				<view class="item-title">{{item.title}}</view>
 				<view class="item-detail">{{item.detail}}</view>
 				<view class="item-line"></view>
@@ -22,22 +21,23 @@
 				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
 				dataList: [],
 				firstLoaded: false,
-				height: 0,
-				scrollable: true,
-				completeFunc: null,
-				scrollCallback: null
+				scrollable: false,
+				stickyed: false,
+				completeFunc: null
 			}
 		},
 		props: {
+			//当前组件的index，也就是当前组件是swiper中的第几个
 			tabIndex: {
 				type: Number,
-				default: function() {
+				default: function(){
 					return 0
 				}
 			},
+			//当前swiper切换到第几个index
 			currentIndex: {
 				type: Number,
-				default: function() {
+				default: function(){
 					return 0
 				}
 			}
@@ -47,22 +47,27 @@
 				handler(newVal) {
 					if (newVal === this.tabIndex) {
 						//懒加载，当滑动到当前的item时，才去加载
-						if (!this.firstLoaded) {
-							// #ifdef MP-TOUTIAO
+						if(!this.firstLoaded){
 							setTimeout(() => {
 								this.$refs.paging.reload();
-							}, 10)
-							// #endif
-							// #ifndef MP-TOUTIAO
-							this.$nextTick(() => {
-								this.$refs.paging.reload();
-							})
-							// #endif
+								setTimeout(()=> {
+									this.$emit('setScrollable', true);
+									if(this.stickyed){
+										this.scrollable = true;
+									}
+								}, 100);
+							}, 5);
 						}
 					}
 				},
 				immediate: true
 			},
+			scrollable(newVal){
+				uni.showToast({
+					title: '1111'+newVal,
+					icon: 'none'
+				})
+			}
 		},
 		methods: {
 			queryList(pageNo, pageSize) {
@@ -75,9 +80,10 @@
 					type: this.tabIndex + 1
 				}
 				this.$request.queryList(params).then(res => {
-					this.$refs.paging.complete(data);
+					this.$refs.paging.complete(res.data.list);
 					this.firstLoaded = true;
-					if(this.completeFunc){
+					//请求结束，调用父组件的下拉刷新结束回调函数，使得父组件中的z-paging下拉刷新结束
+					if (this.completeFunc) {
 						this.completeFunc();
 					}
 				}).catch(res => {
@@ -85,25 +91,31 @@
 					//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
 					//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
 					this.$refs.paging.complete(false);
+					//请求结束，调用父组件的下拉刷新结束回调函数，使得父组件中的z-paging下拉刷新结束
+					if (this.completeFunc) {
+						this.completeFunc();
+					}
 				})
 			},
+			//当滚动到顶部时
+			scrolltoupper() {
+				this.$emit('setScrollable', true);
+			},
 			scroll(e){
-				if(this.scrollCallback){
-					this.scrollCallback(e.detail.scrollTop);
+				const scrollTop = e.detail.scrollTop;
+				if(scrollTop > 10){
+					this.$emit('setScrollable', false);
 				}
 			},
-			reload(completeFunc) {
-				this.completeFunc = completeFunc;
-				this.$refs.paging.reload();
-			},
-			itemClick(item) {
-				console.log('点击了', item.title);
-			},
-			updateScrollEnable(scrollable) {
+			setScrollable(scrollable) {
 				this.scrollable = scrollable;
+				this.stickyed = this.scrollable;
 			},
-			setScrollCallback(callback){
-				this.scrollCallback = callback;
+			reload(completeFunc) {
+				//先把父组件下拉刷新的回调函数存起来
+				this.completeFunc = completeFunc;
+				//调用z-paging的reload方法
+				this.$refs.paging.reload();
 			}
 		}
 	}
@@ -114,9 +126,6 @@
 	/* 注意，2、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突 */
 	.content {
 		height: 100%;
-		/* 父节点建议开启flex布局 */
-		display: flex;
-		flex-direction: column;
 	}
 
 	.item {

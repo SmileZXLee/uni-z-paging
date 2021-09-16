@@ -349,7 +349,7 @@ by ZXLee 2021-09-08
 	 * @property {Object} nvue-refresher-style nvue中refresh组件的样式
 	 * @property {Boolean} hide-nvue-bottom-tag 是否隐藏nvue列表底部的tagView，此view用于标识滚动到底部位置，若隐藏则滚动到底部功能将失效，在nvue中实现吸顶+swiper功能时需将最外层z-paging的此属性设置为true。默认为否
 	 * @property {Boolean} show-console-error 是否将错误信息打印至控制台，默认为是
-	 * @event {Function} query 组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用。pageNo和pageSize会自动计算好，直接传给服务器即可。
+	 * @event {Function} query 下拉刷新或滚动到底部时会自动触发此方法。z-paging加载时也会触发(若要禁止，请设置:auto="false")。pageNo和pageSize会自动计算好，直接传给服务器即可。
 	 * @event {Function} refresherStatusChange 自定义下拉刷新状态改变(use-custom-refresher为true时生效)【注：通过`:refresher-status.sync`绑定当前data中的指定变量亦可】
 	 * @event {Function} loadingStatusChange 上拉加载更多状态改变
 	 * @event {Function} refresherTouchstart 自定义下拉刷新下拉开始(use-custom-refresher为true时生效)【注：当需要更细致定制自定义下拉刷新时使用，如果只需监听下拉刷新各个状态改变，使用`refresherStatusChange`即可】

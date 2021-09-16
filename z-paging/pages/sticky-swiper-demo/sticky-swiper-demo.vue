@@ -1,16 +1,15 @@
 <!-- 滑动切换选项卡+吸顶演示（待完善） -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" @scroll="scroll" :fixed="false" :show-console-error="false" :hide-empty-view="true"
-			refresher-threshold="160rpx" :refresher-status.sync="refresherStatus" @query="queryList"
-			:paging-content-style="{height:'calc(100% + 260rpx)'}">
+		<z-paging ref="paging" @scroll="scroll" :scrollable="scrollable" :hide-empty-view="true"
+			:refresher-status.sync="refresherStatus" @query="queryList">
 			<!-- 自定义下拉刷新view -->
 			<custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>
-			<view class="paging-content">
-				<view class="banner-view" style="height: 250rpx;">
-					<view style="font-size: 40rpx;font-weight: 700;">这是一个banner</view>
-					<view style="font-size: 24rpx;margin-top: 5rpx;">下方tab滚动时可吸附在顶部</view>
-				</view>
+			<view class="banner-view" style="height: 250rpx;">
+				<view style="font-size: 40rpx;font-weight: 700;">这是一个banner</view>
+				<view style="font-size: 24rpx;margin-top: 5rpx;">下方tab滚动时可吸附在顶部</view>
+			</view>
+			<view class="paging-content" :style="'height:' + pageHeight + 'px'">
 				<!-- 小程序中直接修改组件style为position: sticky;无效，需要在组件外层套一层view -->
 				<view style="z-index: 100;position: sticky;top :0;">
 					<u-tabs-swiper ref="uTabs" :list="list" :current="current" @change="tabsChange" :is-scroll="false"
@@ -19,8 +18,9 @@
 				<swiper class="swiper" :current="swiperCurrent" @transition="transition"
 					@animationfinish="animationfinish">
 					<swiper-item class="swiper-item" v-for="(item, index) in list" :key="index">
-						<sticky-and-scroll-tab-item ref="swiperItem" :tabIndex="index" :currentIndex="swiperCurrent">
-						</sticky-and-scroll-tab-item>
+						<sticky-swiper-item ref="swiperItem" :tabIndex="index" :currentIndex="swiperCurrent"
+							@setScrollable="setScrollable">
+						</sticky-swiper-item>
 					</swiper-item>
 				</swiper>
 			</view>
@@ -34,6 +34,11 @@
 			return {
 				refresherStatus: 0,
 				scrollTopMap: {},
+				// 页面高度
+				pageHeight: 0,
+				// header高度
+				headerHeight: 0,
+				scrollable: true,
 				list: [{
 					name: '测试1'
 				}, {
@@ -49,10 +54,13 @@
 			}
 		},
 		onLoad() {
+			this.pageHeight = uni.getSystemInfoSync().windowHeight;
+
 			this.$nextTick(() => {
-				this.$refs.swiperItem[this.current].setScrollCallback((y) => {
-					this.$refs.paging.updateScrollViewScrollTop(y, false);
-				})
+				const query = uni.createSelectorQuery();
+				query.select('.banner-view').boundingClientRect(data => {
+					this.headerHeight = data.height;
+				}).exec();
 			})
 		},
 		methods: {
@@ -64,10 +72,22 @@
 			},
 			scroll(e) {
 				const scrollTop = e.detail.scrollTop;
-				const stickyPx = uni.upx2px(250);
-				//this.$refs.swiperItem[this.current].updateScrollEnable(scrollTop >= stickyPx);
+				//如果当前页面的scroll-view的scrollTop大于等于headerView的高度，则代表吸顶了
+				if (scrollTop < this.headerHeight) {
+					//还没吸顶
+					//禁止子组件的z-paging(scroll-view)滚动，当前页面的z-paging(scroll-view)允许滚动
+					this.scrollable = true;
+					this.$refs.swiperItem[this.current].setScrollable(false);
+				} else {
+					//吸顶了
+					//允许子组件的z-paging(scroll-view)滚动，当前页面的z-paging(scroll-view)禁止滚动
+					this.scrollable = false;
+					this.$refs.swiperItem[this.current].setScrollable(true);
+				}
 			},
-
+			setScrollable(scrollable) {
+				this.scrollable = scrollable;
+			},
 			// tabs通知swiper切换
 			tabsChange(index) {
 				this.swiperCurrent = index;
@@ -85,25 +105,13 @@
 				this.$refs.uTabs.setFinishCurrent(current);
 				this.swiperCurrent = current;
 				this.current = current;
-				this.$refs.swiperItem[this.current].setScrollCallback((y) => {
-					this.$refs.paging.updateScrollViewScrollTop(y, false);
-				})
+				this.$refs.swiperItem[this.current].setScrollable(!this.scrollable);
 			}
 		}
 	}
 </script>
 
 <style>
-	/* 注意，1、父节点需要固定高度，z-paging的height:100%才会生效 */
-	/* 注意，2、请确保z-paging与同级的其他view的总高度不得超过屏幕宽度，以避免超出屏幕高度时页面的滚动与z-paging内部的滚动冲突 */
-
-	/*如果有scoped，page的css设置建议放在App.vue中 */
-
-	page,
-	.content {
-		height: 100%;
-	}
-
 	.banner-view {
 		background-color: #007AFF;
 		color: white;
@@ -115,7 +123,6 @@
 
 	.paging-content {
 		flex: 1;
-		height: 100%;
 		display: flex;
 		flex-direction: column;
 	}
