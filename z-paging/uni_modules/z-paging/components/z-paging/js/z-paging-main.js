@@ -857,6 +857,7 @@ export default {
 				return;
 			}
 			if (!zUtils.arrayIsEqual(newVal, this.totalData)) {
+				this.isTotalChangeFromAddData = true;
 				this.totalData = newVal;
 			}
 		},
