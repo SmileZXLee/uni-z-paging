@@ -2217,8 +2217,12 @@ export default {
 				this._checkScrolledToBottom(scrollDiff);
 			}
 		},
-		//自定义下拉刷新被触发
-		_onRefresh() {
+		_onRefresh(fromScrollView=false) {
+			if (fromScrollView){
+				if (!(this.finalRefresherEnabled && !this.useCustomRefresher)){
+					return;
+				}
+			}
 			this.$emit('onRefresh');
 			this.$emit('Refresh');
 			if (this.loading || this.isRefresherInComplete || this.nShowRefresherReveal) {
