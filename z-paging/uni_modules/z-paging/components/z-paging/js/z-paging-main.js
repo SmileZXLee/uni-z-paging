@@ -1085,6 +1085,9 @@ export default {
 			}
 			return 'scroller';
 		},
+		finalNvueRefresherEnabled() {
+			return this.finalNvueListIs !== 'view' && this.finalRefresherEnabled && !this.nShowRefresherReveal && !this.useChatRecordMode;
+		},
 		finalPagingStyle() {
 			let pagingStyle = this.pagingStyle;
 			if (!this.systemInfo) {
