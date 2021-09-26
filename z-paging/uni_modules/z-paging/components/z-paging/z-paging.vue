@@ -42,7 +42,7 @@ by ZXLee 2021-09-08
 				@mousedown="pagingWxs.mousedown" @mousemove="pagingWxs.mousemove" @mouseup="pagingWxs.mouseup" @mouseleave="pagingWxs.mouseleave"
 				<!-- #endif -->
 				>	
-					<view v-if="finalRefresherFixedBacHeight>0" class="zp-fixed-bac-view" :style="[{'background-color': refresherFixedBackground,'height': `${finalRefresherFixedBacHeight}px`}]"></view>
+					<view v-if="finalRefresherFixedBacHeight>0" class="zp-fixed-bac-view" :style="[{'background': refresherFixedBackground,'height': `${finalRefresherFixedBacHeight}px`}]"></view>
 					<view class="zp-paging-main" :style="[scrollViewInStyle,{'transform': finalRefresherTransform,'transition': refresherTransition}]"
 					<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 					:change:prop="pagingWxs.propObserver" :prop="wxsPropType"
@@ -59,8 +59,8 @@ by ZXLee 2021-09-08
 					<!-- #endif -->
 					>	
 						<view v-if="showRefresher" class="zp-custom-refresher-view"
-							:style="[{'margin-top': `-${finalRefresherThreshold}px`,'background-color': refresherBackground}]">
-							<view class="zp-custom-refresher-container" :style="[{'height': `${finalRefresherThreshold}px`,'background-color': refresherBackground}]">
+							:style="[{'margin-top': `-${finalRefresherThreshold}px`,'background': refresherBackground}]">
+							<view class="zp-custom-refresher-container" :style="[{'height': `${finalRefresherThreshold}px`,'background': refresherBackground}]">
 								<!-- 下拉刷新view -->
 								<view class="zp-custom-refresher-slot-view">
 									<slot

@@ -684,12 +684,12 @@ export default {
 			type: String,
 			default: _getConfig('refresherDefaultStyle', 'black')
 		},
-		//设置自定义下拉刷新区域背景颜色
+		//设置自定义下拉刷新区域背景
 		refresherBackground: {
 			type: String,
 			default: _getConfig('refresherBackground', '#ffffff00')
 		},
-		//设置固定的自定义下拉刷新区域背景颜色
+		//设置固定的自定义下拉刷新区域背景
 		refresherFixedBackground: {
 			type: String,
 			default: _getConfig('refresherFixedBackground', '#ffffff00')
@@ -1161,6 +1161,9 @@ export default {
 			let tempBackToTopStyle = this.backToTopStyle;
 			if (!tempBackToTopStyle.bottom) {
 				tempBackToTopStyle.bottom = this.windowBottom + zUtils.convertTextToPx(this.backToTopBottom) + 'px';
+			}
+			if(!tempBackToTopStyle.position){
+				tempBackToTopStyle.position = this.usePageScroll ? 'fixed': 'absolute';
 			}
 			return tempBackToTopStyle;
 		},
