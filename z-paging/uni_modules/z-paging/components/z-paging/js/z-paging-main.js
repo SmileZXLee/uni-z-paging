@@ -113,6 +113,7 @@ export default {
 			checkScrolledToBottomTimeOut: null,
 			refresherCompleteTimeout: null,
 			refresherCompleteSubTimeout: null,
+			lastBackToTopShowTime: 0,
 			systemInfo: null,
 
 			//--------------状态&判断---------------
@@ -2765,16 +2766,22 @@ export default {
 				if (newVal > this.finalBackToTopThreshold) {
 					if (!this.showBackToTopClass) {
 						this.showBackToTopClass = true;
+						this.lastBackToTopShowTime = new Date().getTime();
 						setTimeout(() => {
 							this.backToTopClass = 'zp-back-to-top zp-back-to-top-show';
 						}, 300)
 					}
 				} else {
 					if (this.showBackToTopClass) {
+						const currentTime = new Date().getTime();
+						let dalayTime = 300;
+						if(currentTime - this.lastBackToTopShowTime < 500){
+							dalayTime = 0;
+						}
 						this.backToTopClass = 'zp-back-to-top zp-back-to-top-hide';
 						setTimeout(() => {
 							this.showBackToTopClass = false;
-						}, 300)
+						}, dalayTime)
 					}
 				}
 			}

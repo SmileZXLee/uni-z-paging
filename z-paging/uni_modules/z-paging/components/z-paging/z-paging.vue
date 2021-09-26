@@ -147,7 +147,7 @@ by ZXLee 2021-09-08
 			<slot name="top"></slot>
 		</view>
 		<view ref="n-list" :id="nvueListId" :style="[{'flex': 1},scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" :is="finalNvueListIs" alwaysScrollableVertical="true"
-			:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar" :loadmoreoffset="finalLowerThreshold"
+			:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar" :loadmoreoffset="finalLowerThreshold" :enable-back-to-top="enableBackToTop"
 			:scrollable="scrollable&&scrollEnable&&refresherStatus!==3" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 			:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap"
 			@loadmore="_nOnLoadmore" @scroll="_nOnScroll">

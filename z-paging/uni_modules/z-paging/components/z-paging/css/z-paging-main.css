@@ -130,7 +130,7 @@
 	width: 76rpx;
 	height: 76rpx;
 	z-index: 999;
-	position: absolute;
+	position: fixed;
 	bottom: 0rpx;
 	right: 25rpx;
 	transition-duration: .3s;
