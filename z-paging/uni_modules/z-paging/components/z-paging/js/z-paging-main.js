@@ -918,7 +918,7 @@ export default {
 			this.$emit('loadingStatusChange', newVal);
 			// #ifdef APP-NVUE
 			if (this.useChatRecordMode) {
-				if (this.pageNo === this.defaultPageNo && newVal === 2) {
+				if (this.pageNo === this.defaultPageNo && newVal === Enum.LoadingMoreStatus.NoMore) {
 					this.nIsFirstPageAndNoMore = true;
 					return;
 				}
@@ -1845,6 +1845,11 @@ export default {
 			}
 			if (!this.totalData.length) {
 				if (this.finalConcat) {
+					// #ifdef APP-NVUE
+					if(this.useChatRecordMode && this.pageNo === this.defaultPageNo && this.loadingStatus === Enum.LoadingMoreStatus.NoMore){
+						newVal.reverse();
+					}
+					// #endif
 					this.totalData = newVal;
 				}
 				if (this.useChatRecordMode) {
