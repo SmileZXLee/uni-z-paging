@@ -56,7 +56,7 @@
 					this.$refs.paging.complete(false);
 				})
 			},
-			addChatRecordClick(item) {
+			addChatRecordClick() {
 				this.newIndex++;
 				this.$refs.paging.addChatRecordData({
 					'title': '新增数据' + this.newIndex,

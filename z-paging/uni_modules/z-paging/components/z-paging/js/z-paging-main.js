@@ -1587,6 +1587,14 @@ export default {
 		},
 		//滚动到顶部，animate为是否展示滚动动画，默认为是
 		scrollToTop(animate) {
+			// #ifdef APP-NVUE
+			if (this.useChatRecordMode) {
+				if(!this.nIsFirstPageAndNoMore){
+					this.scrollToBottom(animate);
+					return;
+				}
+			}
+			// #endif
 			this.$nextTick(() => {
 				this._scrollToTop(animate, false);
 				// #ifdef APP-NVUE
@@ -1600,6 +1608,14 @@ export default {
 		},
 		//滚动到底部，animate为是否展示滚动动画，默认为是
 		scrollToBottom(animate) {
+			// #ifdef APP-NVUE
+			if (this.useChatRecordMode) {
+				if(!this.nIsFirstPageAndNoMore){
+					this.scrollToTop(animate);
+					return;
+				}
+			}
+			// #endif
 			this.$nextTick(() => {
 				this._scrollToBottom(animate);
 				// #ifdef APP-NVUE
@@ -1991,13 +2007,14 @@ export default {
 			const el = this.$refs['zp-n-list-top-tag'];
 			if (this.usePageScroll) {
 				this._getNodeClientRect('zp-page-scroll-top', false).then((node) => {
+					let nodeHeight = 0;
 					if (node) {
-						let nodeHeight = node[0].height;
-						weexDom.scrollToElement(el, {
-							offset: -nodeHeight,
-							animated: animate
-						});
+						nodeHeight = node[0].height;
 					}
+					weexDom.scrollToElement(el, {
+						offset: -nodeHeight,
+						animated: animate
+					});
 				});
 			} else {
 				weexDom.scrollToElement(el, {
