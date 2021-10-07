@@ -30,7 +30,7 @@ by ZXLee 2021-09-08
 				:scroll-into-view="scrollIntoView" :lower-threshold="finalLowerThreshold" :upper-threshold="5"
 				:refresher-enabled="finalRefresherEnabled&&!useCustomRefresher" :refresher-threshold="finalRefresherThreshold"
 				:refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
-				:refresher-triggered="refresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
+				:refresher-triggered="finalRefresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
 				@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh(true)"  
 				>	
 				<view class="zp-paging-touch-view"

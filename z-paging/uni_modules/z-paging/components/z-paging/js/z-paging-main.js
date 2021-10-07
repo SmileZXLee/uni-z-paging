@@ -1275,6 +1275,12 @@ export default {
 		finalShowRefresherWhenReload() {
 			return this.showRefresherWhenReload || this.privateShowRefresherWhenReload;
 		},
+		finalRefresherTriggered() {
+			if(!(this.finalRefresherEnabled && !this.useCustomRefresher)){
+				return false;
+			}
+			return this.refresherTriggered;
+		},
 		showEmpty() {
 			const showEmpty = !this.refresherOnly && !this.totalData.length && (this.autoHideEmptyViewWhenLoading ? this
 				.isAddedData : true) && !this.hideEmptyView && (this.autoHideEmptyViewWhenLoading ? (!this
