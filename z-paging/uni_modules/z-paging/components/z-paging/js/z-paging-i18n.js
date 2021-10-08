@@ -86,8 +86,30 @@ const refresherUpdateTimeYesterdayText = {
 	'zh-hant-cn': '昨天',
 }
 
+// 获取当前语言，格式为:zh-cn、zh-hant-cn、en。followSystemLanguage:获取的结果是否是在不跟随系统语言下获取到的
+function getLanguage(followSystemLanguage = true) {
+	return getPrivateLanguage(false, followSystemLanguage);
+}
+
+// 获取当前语言，格式为:简体中文、繁體中文、English。followSystemLanguage:获取的结果是否是在不跟随系统语言下获取到的
+function getLanguageName(followSystemLanguage = true) {
+	const language = getLanguage(followSystemLanguage);
+	const languageNameMap = {
+		'zh-cn': '简体中文',
+		'zh-hant-cn': '繁體中文',
+		'en': 'English'
+	};
+	return languageNameMap[language];
+}
+
+//设置当前语言，格式为:zh-cn、zh-hant-cn、en
+function setLanguage(myLanguage) {
+	uni.setStorageSync(i18nUpdateKey, myLanguage);
+	uni.$emit(i18nUpdateKey, myLanguage);
+}
+
 // 插件内部使用，请勿直接调用
-function getPrivateLanguage(myLanguage, followSystemLanguage = true) {
+function _getPrivateLanguage(myLanguage, followSystemLanguage = true) {
 	let systemLanguage = '';
 	if (followSystemLanguage) {
 		systemLanguage = uni.getSystemInfoSync().language;
@@ -108,32 +130,15 @@ function getPrivateLanguage(myLanguage, followSystemLanguage = true) {
 	return 'zh-cn';
 }
 
-// 获取当前语言，格式为:zh-cn、zh-hant-cn、en。followSystemLanguage:获取的结果是否是在不跟随系统语言下获取到的
-function getLanguage(followSystemLanguage = true) {
-	return getPrivateLanguage(false, followSystemLanguage);
-}
-
-// 获取当前语言，格式为:简体中文、繁體中文、English。followSystemLanguage:获取的结果是否是在不跟随系统语言下获取到的
-function getLanguageName(followSystemLanguage = true) {
-	const language = getLanguage(followSystemLanguage);
-	const languageNameMap = {
-		'zh-cn': '简体中文',
-		'zh-hant-cn': '繁體中文',
-		'en': 'English'
-	};
-	return languageNameMap[language];
-}
-
-function setLanguage(myLanguage) {
-	uni.setStorageSync(i18nUpdateKey, myLanguage);
-	uni.$emit(i18nUpdateKey, myLanguage);
-}
-
 module.exports = {
 	refresherDefaultText,
 	refresherPullingText,
 	refresherRefreshingText,
 	refresherCompleteText,
+	refresherUpdateTimeText,
+	refresherUpdateTimeNoneText,
+	refresherUpdateTimeTodayText,
+	refresherUpdateTimeYesterdayText,
 	loadingMoreDefaultText,
 	loadingMoreLoadingText,
 	loadingMoreNoMoreText,
@@ -141,12 +146,8 @@ module.exports = {
 	emptyViewText,
 	emptyViewReloadText,
 	emptyViewErrorText,
-	getPrivateLanguage,
 	getLanguage,
 	getLanguageName,
 	setLanguage,
-	refresherUpdateTimeText,
-	refresherUpdateTimeNoneText,
-	refresherUpdateTimeTodayText,
-	refresherUpdateTimeYesterdayText
+	_getPrivateLanguage,
 }

@@ -1175,7 +1175,7 @@ export default {
 		},
 		finalLanguage() {
 			let language = this.finalTempLanguage.toLowerCase();
-			return zI18n.getPrivateLanguage(language, this.followSystemLanguage);
+			return zI18n._getPrivateLanguage(language, this.followSystemLanguage);
 		},
 		finalRefresherDefaultText() {
 			return this._getI18nText('refresherDefaultText', this.refresherDefaultText);
