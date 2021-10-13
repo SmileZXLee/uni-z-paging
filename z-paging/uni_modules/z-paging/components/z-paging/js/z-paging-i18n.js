@@ -88,7 +88,7 @@ const refresherUpdateTimeYesterdayText = {
 
 // 获取当前语言，格式为:zh-cn、zh-hant-cn、en。followSystemLanguage:获取的结果是否是在不跟随系统语言下获取到的
 function getLanguage(followSystemLanguage = true) {
-	return getPrivateLanguage(false, followSystemLanguage);
+	return _getPrivateLanguage(false, followSystemLanguage);
 }
 
 // 获取当前语言，格式为:简体中文、繁體中文、English。followSystemLanguage:获取的结果是否是在不跟随系统语言下获取到的

@@ -11,7 +11,7 @@ import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
 import Enum from './z-paging-enum'
 
-const currentVersion = 'V2.0.7';
+const currentVersion = 'V2.0.8';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -1349,7 +1349,9 @@ export default {
 			// #ifndef APP-NVUE
 			if (this.customRefresherHeight === -1 && showRefresher) {
 				setTimeout(() => {
-					this._updateCustomRefresherHeight();
+					this.$nextTick(()=>{
+						this._updateCustomRefresherHeight();
+					})
 				}, 100)
 			}
 			// #endif
@@ -1592,11 +1594,11 @@ export default {
 			this.refresherTriggered = false;
 		},
 		//滚动到顶部，animate为是否展示滚动动画，默认为是
-		scrollToTop(animate) {
+		scrollToTop(animate,checkReverse = true) {
 			// #ifdef APP-NVUE
-			if (this.useChatRecordMode) {
+			if (checkReverse && this.useChatRecordMode) {
 				if(!this.nIsFirstPageAndNoMore){
-					this.scrollToBottom(animate);
+					this.scrollToBottom(animate, false);
 					return;
 				}
 			}
@@ -1613,11 +1615,11 @@ export default {
 			})
 		},
 		//滚动到底部，animate为是否展示滚动动画，默认为是
-		scrollToBottom(animate) {
+		scrollToBottom(animate,checkReverse = true) {
 			// #ifdef APP-NVUE
-			if (this.useChatRecordMode) {
+			if (checkReverse && this.useChatRecordMode) {
 				if(!this.nIsFirstPageAndNoMore){
-					this.scrollToTop(animate);
+					this.scrollToTop(animate, false);
 					return;
 				}
 			}
@@ -1997,7 +1999,6 @@ export default {
 			if (this.loadingStatus === Enum.LoadingMoreStatus.NoMore) {
 				return;
 			}
-
 			this._onLoadingMore('click');
 		},
 		//点击返回顶部
@@ -2251,6 +2252,9 @@ export default {
 			if (!this.isIos) {
 				this._checkScrolledToBottom(scrollDiff);
 			}
+			//虚拟列表处理
+			const itemHeight = 75;
+			//console.log(parseInt(this.oldScrollTop/itemHeight))
 		},
 		_onRefresh(fromScrollView=false) {
 			if (fromScrollView){

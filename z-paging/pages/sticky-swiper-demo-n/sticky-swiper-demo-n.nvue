@@ -1,4 +1,4 @@
-<!-- 滑动切换选项卡+吸顶演示，在vue中暂不支持！！（nvue） -->
+<!-- 滑动切换选项卡+吸顶演示（nvue） -->
 <template>
 	<!-- refresher-only为true代表只使用下拉刷新功能 -->
 	<!-- hide-nvue-bottom-tag必须设置为true，因为在安卓设备中，插入的swiper cell下面，不能有其他的view -->
@@ -6,7 +6,7 @@
 	<z-paging ref="paging" nvue-list-id="z-paging-nlist" refresher-only hide-nvue-bottom-tag @onRefresh="onRefresh">
 		<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
 		<custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus"></custom-refresher>
-		<!-- 这个cell是吸顶view上方跟随页面列表滚动的view(header) -->
+		<!-- 这个cell是吸顶view上方跟随列表滚动的view(header) -->
 		<cell>
 			<view ref="header" class="banner-view" style="height: 250rpx;">
 				<text style="font-size: 40rpx;font-weight: 700;color: white;">这是一个banner</text>
@@ -71,7 +71,7 @@
 		},
 		methods: {
 			onRefresh() {
-				//触发了下拉刷新，通过当前tabIndex对应子组件的下拉刷新
+				//触发了下拉刷新，通知当前tabIndex对应子组件的下拉刷新
 				this.$refs.swiperItem[this.current].reload(() => {
 					this.$refs.paging.complete();
 				});
