@@ -1,3 +1,7 @@
+## 2.0.8（2021-10-14）
+1.修复`ReferenceError: getPrivateLanguage is not defined`报错的问题  
+2.修复在nvue中使用聊天记录模式时，手动调用`scrollToTop`或`scrollToBottom`时递归调用的问题。  
+3.修复使用`u-grid`时，内部item元素过多时。`z-paging`自定义的下拉刷新view与默认下拉刷新view同时展示的问题。
 ## 2.0.7（2021-10-08）
 1.修复在一些平台中，底部加载更多会被遮挡的问题。  
 2.修复在nvue中`safe-area-inset-bottom`为true时，可能出现的顶部异常偏移的问题。  

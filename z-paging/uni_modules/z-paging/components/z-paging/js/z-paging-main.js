@@ -11,7 +11,7 @@ import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
 import Enum from './z-paging-enum'
 
-const currentVersion = 'V2.0.8';
+const currentVersion = 'V2.0.9';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -37,7 +37,7 @@ try {
 //获取默认配置信息
 function _getConfig(key, defaultValue) {
 	if (!config) {
-		if (zLocalConfig) {
+		if (zLocalConfig && Object.keys(zLocalConfig).length) {
 			config = zLocalConfig;
 		} else {
 			const temConfig = zConfig.getConfig();
@@ -552,6 +552,13 @@ export default {
 				return _getConfig('emptyViewStyle', {});
 			}
 		},
+        //空数据图容器样式
+        emptyViewSuperStyle: {
+        	type: Object,
+        	default: function() {
+        		return _getConfig('emptyViewSuperStyle', {});
+        	}
+        },
 		//空数据图img样式
 		emptyViewImgStyle: {
 			type: Object,
@@ -1565,6 +1572,10 @@ export default {
 		},
 		//刷新列表数据，pageNo和pageSize不会重置，列表数据会重新从服务端获取。必须保证@query绑定的方法中的pageNo和pageSize和传给服务端的一致
 		refresh() {
+			if(!this.realTotalData.length){
+				this.reload();
+				return;
+			}
 			const disPageNo = this.pageNo - this.defaultPageNo + 1;
 			if (disPageNo >= 1) {
 				this.loading = true;
@@ -1923,6 +1934,7 @@ export default {
 					} else {
 						this.totalData = [...newVal];
 					}
+					
 				}
 			}
 			this.privateConcat = true;
@@ -2166,6 +2178,7 @@ export default {
 				.refresherOnly) {
 				return false;
 			}
+			
 			if (this.useChatRecordMode && type !== 'loadingMoreLoading') {
 				return false;
 			}
@@ -2252,9 +2265,6 @@ export default {
 			if (!this.isIos) {
 				this._checkScrolledToBottom(scrollDiff);
 			}
-			//虚拟列表处理
-			const itemHeight = 75;
-			//console.log(parseInt(this.oldScrollTop/itemHeight))
 		},
 		_onRefresh(fromScrollView=false) {
 			if (fromScrollView){

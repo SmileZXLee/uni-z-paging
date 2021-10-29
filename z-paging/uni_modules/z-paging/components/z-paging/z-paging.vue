@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-V2.0.8
+V2.0.9
 by ZXLee 2021-10-08
 -- >
 <!-- API文档地址：http://z-paging.com -->
@@ -115,7 +115,7 @@ by ZXLee 2021-10-08
 								<!-- #endif -->
 							</view>
 							<!-- 空数据图 -->
-							<view :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}" v-if="showEmpty">
+							<view :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}" :style="[{emptyViewSuperStyle}]" v-if="showEmpty">
 								<slot v-if="$slots.empty" name="empty" />
 								<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
 								:emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" 
@@ -172,7 +172,7 @@ by ZXLee 2021-10-08
 			</view>
 			<slot />
 			<!-- 空数据图 -->
-			<view class="z-paging-empty-view" :class="{'z-paging-content-fixed':usePageScroll}" style="flex: 1;" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="showEmpty" :is="nViewIs">
+			<view class="z-paging-empty-view" :class="{'z-paging-content-fixed':usePageScroll}" style="flex: 1;" :style="[scrollViewStyle,emptyViewSuperStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="showEmpty" :is="nViewIs">
 				<view :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}">
 					<slot v-if="$slots.empty" name="empty" />
 					<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
@@ -307,6 +307,7 @@ by ZXLee 2021-10-08
 	 * @property {String|Object} empty-view-error-text 空数据图“加载失败”描述文字
 	 * @property {String} empty-view-error-img 空数据图“加载失败”图片，默认使用z-paging内置的图片(建议使用绝对路径)
 	 * @property {Object} empty-view-style 空数据图样式
+     * @property {Object} empty-view-super-style 空数据图容器样式
 	 * @property {Object} empty-view-img-style 空数据图img样式
 	 * @property {Object} empty-view-title-style 空数据图描述文字样式
 	 * @property {Object} empty-view-reload-style 空数据图重新加载按钮样式
@@ -443,6 +444,7 @@ by ZXLee 2021-10-08
 			emptyViewErrorText: {type: [String, Object]},
 			emptyViewErrorImg: {type: String},
 			emptyViewStyle: {type: Object},
+            emptyViewSuperStyle: {type: Object},
 			emptyViewImgStyle: {type: Object},
 			emptyViewTitleStyle: {type: Object},
 			emptyViewReloadStyle: {type: Object},
