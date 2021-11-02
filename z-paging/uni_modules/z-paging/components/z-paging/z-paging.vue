@@ -141,7 +141,7 @@ by ZXLee 2021-10-08
 	</view>
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
-	<view :is="finalNvueSuperListIs" :style="[finalPagingStyle]" :class="{'z-paging-content-fixed':fixed&&!usePageScroll}">
+	<view :is="finalNvueSuperListIs" :style="[finalPagingStyle]" :class="{'z-paging-content-fixed':fixed&&!usePageScroll}" :scrollable="false">
 		<!-- 顶部固定的slot -->
 		<view ref="zp-page-scroll-top" :is="nViewIs" class="zp-page-scroll-top" v-if="$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
 			<slot name="top"></slot>
@@ -315,6 +315,7 @@ by ZXLee 2021-10-08
 	 * @property {Boolean} empty-view-fixed 空数据图片是否铺满z-paging，默认为是。若设置为否，则为填充满z-paging的剩余部分
 	 * @property {Boolean} empty-view-center 空数据图片是否垂直居中，默认为是。emptyViewFixed为false时有效
 	 * @property {Boolean} auto-hide-empty-view-when-loading 加载中时是否自动隐藏空数据图，默认为是
+	 * @property {Boolean} auto-hide-empty-view-when-pull 用户下拉列表触发下拉刷新加载中时是否自动隐藏空数据图，默认为是
 	 * @property {Boolean} auto-hide-loading-after-first-loaded 第一次加载后是否自动隐藏loading slot，默认为是
 	 * @property {Boolean} auto-show-back-to-top 自动显示点击返回顶部按钮，默认为否
 	 * @property {Number|String} back-to-top-threshold 点击返回顶部按钮显示/隐藏的阈值(滚动距离)，单位为px，默认为400rpx
@@ -453,6 +454,7 @@ by ZXLee 2021-10-08
 			emptyViewFixed: {type: Boolean},
 			emptyViewCenter: {type: Boolean},
 			autoHideEmptyViewWhenLoading: {type: Boolean},
+			autoHideEmptyViewWhenPull: {type: Boolean},
 			autoHideLoadingAfterFirstLoaded: {type: Boolean},
 			autoShowBackToTop: {type: Boolean},
 			backToTopThreshold: {type: [Number, String]},

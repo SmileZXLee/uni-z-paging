@@ -605,6 +605,11 @@ export default {
 			type: Boolean,
 			default: _getConfig('autoHideEmptyViewWhenLoading', true)
 		},
+		//用户下拉列表触发下拉刷新加载中时是否自动隐藏空数据图，默认为是
+		autoHideEmptyViewWhenPull: {
+			type: Boolean,
+			default: _getConfig('autoHideEmptyViewWhenPull', true)
+		},
 		//第一次加载后自动隐藏loading slot，默认为是
 		autoHideLoadingAfterFirstLoaded: {
 			type: Boolean,
@@ -1295,10 +1300,20 @@ export default {
 			return this.refresherTriggered;
 		},
 		showEmpty() {
-			const showEmpty = !this.refresherOnly && !this.totalData.length && (this.autoHideEmptyViewWhenLoading ? this
-				.isAddedData : true) && !this.hideEmptyView && (this.autoHideEmptyViewWhenLoading ? (!this
-				.firstPageLoaded && !this.loading) : true);
-			return showEmpty;
+			if(this.refresherOnly || this.hideEmptyView || this.totalData.length){
+				return false;
+			}
+			if(this.autoHideEmptyViewWhenLoading){
+				if(this.isAddedData && !this.firstPageLoaded && !this.loading){
+					return true;
+				}
+			}else{
+				return true;
+			}
+			if(!this.autoHideEmptyViewWhenPullRefresh && !this.isUserReload){
+				return true;
+			}
+			return false;
 		},
 		showLoading() {
 			const showLoading = !this.firstPageLoaded && (this.autoHideLoadingAfterFirstLoaded ? (this
@@ -1828,7 +1843,7 @@ export default {
 			}
 			// #endif
 			const tempIsUserPullDown = this.isUserPullDown;
-			if (tempIsUserPullDown && this.showRefresherUpdateTime && this.pageNo === this.defaultPageNo) {
+			if (this.finalShowRefresherWhenReload && this.pageNo === this.defaultPageNo) {
 				zUtils.setRefesrherTime((new Date()).getTime(), this.refresherUpdateTimeKey);
 				this.tempLanguageUpdateKey = (new Date()).getTime();
 				if (this.$refs.refresh) {
