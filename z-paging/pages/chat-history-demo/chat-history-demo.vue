@@ -9,6 +9,10 @@
 				<view class="item-detail">{{item.detail}}</view>
 				<view class="item-line"></view>
 			</view>
+			<view class="input" style="display: flex;background-color: white;height: 100rpx;align-items: center;" slot="bottom">
+				<input type="text" placeholder="请输入内容">
+                <view @click="addChatRecordClick">发送</view>
+			</view>
 		</z-paging>
 		<view class="add-chat-record" @click="addChatRecordClick">
 			新增

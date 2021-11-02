@@ -100,6 +100,7 @@ export default {
 			scrollViewStyle: {},
 			scrollViewInStyle: {},
 			pullDownTimeStamp: 0,
+			requestTimeStamp: 0,
 			pageScrollTop: -1,
 			chatRecordLoadingMoreText: '',
 			moveDistance: 0,
@@ -203,10 +204,15 @@ export default {
 				return _getConfig('autowireQueryName', '');
 			},
 		},
-		//调用complete后延迟处理的时间，单位为毫秒，默认0毫秒
+		//调用complete后延迟处理的时间，单位为毫秒，默认0毫秒，优先级高于minDelay
 		delay: {
 			type: [Number, String],
 			default: _getConfig('delay', 0),
+		},
+		//触发@query后最小延迟处理的时间，单位为毫秒，默认0毫秒，优先级低于delay（假设设置为300毫秒，若分页请求时间小于300毫秒，则在调用complete后延迟[300毫秒-请求时长]；若请求时长大于300毫秒，则不延迟），当show-refresher-when-reload为true或reload(true)时，其最小值为400
+		minDelay: {
+			type: [Number, String],
+			default: _getConfig('minDelay', 0),
 		},
 		//i18n国际化设置语言，支持简体中文(zh-cn)、繁体中文(zh-hant-cn)和英文(en)
 		language: {
@@ -1470,13 +1476,27 @@ export default {
 		},
 		//与上方complete方法功能一致，新版本中设置服务端回调数组请使用complete方法
 		addData(data, success = true) {
+			const currentTimeStamp = Number((new Date()).getTime());
+			let addDataDalay = 0;
+			const disTime = currentTimeStamp - this.requestTimeStamp;
+			let minDelay = this.minDelay;
+			if(this.pageNo === this.defaultPageNo && this.finalShowRefresherWhenReload){
+				if(minDelay < 400){
+					minDelay = 400;
+				}
+			}
+			if(this.requestTimeStamp > 0 && disTime < minDelay){
+				addDataDalay = minDelay - disTime;
+			}
 			this.$nextTick(() => {
 				if (this.delay > 0) {
 					setTimeout(() => {
 						this._addData(data, success, false);
 					}, this.delay)
 				} else {
-					this._addData(data, success, false);
+					setTimeout(() => {
+						this._addData(data, success, false);
+					}, addDataDalay)
 				}
 			})
 		},
@@ -1581,7 +1601,7 @@ export default {
 				this.loading = true;
 				this.privateConcat = false;
 				const totalPageSize = disPageNo * this.pageSize;
-				this.$emit('query', this.defaultPageNo, totalPageSize);
+				this._emitQuery(this.defaultPageNo, totalPageSize);
 				this._callMyParentQuery(this.defaultPageNo, totalPageSize);
 			}
 		},
@@ -1761,7 +1781,7 @@ export default {
 			this.isTotalChangeFromAddData = false;
 			this.totalData = [];
 			if (!isClean) {
-				this.$emit('query', this.pageNo, this.defaultPageSize);
+				this._emitQuery(this.pageNo, this.defaultPageSize);
 				let delay = 0;
 				// #ifdef MP-TOUTIAO
 				delay = 5;
@@ -2252,7 +2272,7 @@ export default {
 						this.addData(res);
 					})
 				} else {
-					this.$emit('query', this.pageNo, this.defaultPageSize);
+					this._emitQuery(this.pageNo, this.defaultPageSize);
 					this._callMyParentQuery();
 				}
 				this.loadingType = Enum.LoadingType.LoadingMore;
@@ -2940,6 +2960,11 @@ export default {
 					}
 				}
 			}
+		},
+        //发射query事件
+		_emitQuery(pageNo,pageSize){
+			this.requestTimeStamp = Number((new Date()).getTime());
+			this.$emit('query',pageNo,pageSize);
 		},
 		//清除refresherCompleteTimeout
 		_cleanRefresherCompleteTimeout() {

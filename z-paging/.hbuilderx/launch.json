@@ -14,6 +14,10 @@
      	{
      		"launchtype" : "remote"
      	},
+     	"mp-alipay" : 
+     	{
+     		"launchtype" : "remote"
+     	},
      	"mp-baidu" : 
      	{
      		"launchtype" : "remote"

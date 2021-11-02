@@ -244,6 +244,7 @@ by ZXLee 2021-10-08
 	 * @property {String} autowire-list-name 【极简写法】自动注入的list名，可自动修改父view(包含ref="paging")中对应name的list值(z-paging标签必须设置`ref="paging"`)
 	 * @property {String} autowire-query-name 【极简写法】自动注入的query名，可自动调用父view(包含ref="paging")中的query方法(z-paging标签必须设置`ref="paging"`)
 	 * @property {Number|String} delay 调用complete后延迟处理的时间，单位为毫秒
+	 * @property {Number|String} min-delay 触发@query后最小延迟处理的时间，单位为毫秒，默认0毫秒，优先级低于delay（假设设置为300毫秒，若分页请求时间小于300毫秒，则在调用complete后延迟[300毫秒-请求时长]；若请求时长大于300毫秒，则不延迟），当show-refresher-when-reload为true或reload(true)时，其最小值为400
 	 * @property {String} language i18n国际化设置语言，支持简体中文(zh-cn)、繁体中文(zh-hant-cn)和英文(en)
 	 * @property {Boolean} follow-system-language i18n国际化默认是否跟随系统语言，默认为是
 	 * @property {Object} paging-style 设置z-paging的style，部分平台(如微信小程序)无法直接修改组件的style，可使用此属性代替
@@ -380,6 +381,7 @@ by ZXLee 2021-10-08
 			autowireListName: {type: String},
 			autowireQueryName: {type: String},
 			delay: {type: [Number, String]},
+			minDelay: {type: [Number, String]},
 			language: {type: String},
 			followSystemLanguage: {type: Boolean},
 			pagingStyle: {type: Object},
