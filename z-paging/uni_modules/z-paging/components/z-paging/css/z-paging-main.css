@@ -10,7 +10,7 @@
 	flex-direction: column;
 }
 
-.z-paging-content-fixed {
+.z-paging-content-fixed, .zp-loading-fixed {
 	position: fixed;
 	/* #ifndef APP-NVUE */
 	height: auto;
@@ -170,6 +170,10 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+}
+
+.zp-loading-fixed{
+	z-index: 9999;
 }
 
 .zp-n-refresh-container {

@@ -40,7 +40,7 @@
 				}
 				this.$request.queryList(params).then(res => {
 					//将请求的结果数组传递给z-paging
-					this.$refs.paging.complete([]);
+					this.$refs.paging.complete(res.data.list);
 				}).catch(res => {
 					//如果请求失败写this.$refs.paging.complete(false);
 					//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理

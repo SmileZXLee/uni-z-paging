@@ -615,6 +615,11 @@ export default {
 			type: Boolean,
 			default: _getConfig('autoHideLoadingAfterFirstLoaded', true)
 		},
+		//loading slot是否铺满屏幕并固定，默认为否
+		loadingFullFixed: {
+			type: Boolean,
+			default: _getConfig('loadingFullFixed', false)
+		},
 		//自动显示点击返回顶部按钮，默认为否
 		autoShowBackToTop: {
 			type: Boolean,
@@ -1310,7 +1315,7 @@ export default {
 			}else{
 				return true;
 			}
-			if(!this.autoHideEmptyViewWhenPullRefresh && !this.isUserReload){
+			if(!this.autoHideEmptyViewWhenPull && !this.isUserReload){
 				return true;
 			}
 			return false;

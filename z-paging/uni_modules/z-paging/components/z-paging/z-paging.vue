@@ -87,7 +87,7 @@ by ZXLee 2021-10-08
 								</image>
 							</view>
 							<!-- 全屏Loading -->
-							<slot v-if="$slots.loading&&showLoading" name="loading" />
+							<slot v-if="$slots.loading&&showLoading&&!loadingFullFixed" name="loading" />
 							<!-- 主体内容 -->
 							<view class="zp-paging-container-content" :style="[finalPagingContentStyle]">
 								<slot />
@@ -137,7 +137,11 @@ by ZXLee 2021-10-08
 		<view v-if="showBackToTopClass" :class="backToTopClass" :style="[finalBackToTopStyle]" @click.stop="_backToTopClick">
 			<slot v-if="$slots.backToTop" name="backToTop" />
 			<image v-else class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop"></image>
-		</view>  
+		</view>
+		<!-- 全屏Loading(铺满z-paging并固定) -->
+		<view v-if="$slots.loading&&showLoading&&loadingFullFixed" class="zp-loading-fixed">
+			<slot name="loading" />
+		</view>
 	</view>
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
@@ -184,7 +188,7 @@ by ZXLee 2021-10-08
 			</view>
 			<view v-if="!hideNvueBottomTag" ref="zp-n-list-bottom-tag" class="zp-n-list-bottom-tag" is="header"></view>
 			<!-- 全屏Loading -->
-			<view :class="{'z-paging-content-fixed':usePageScroll}" style="flex: 1;" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="$slots.loading&&showLoading" :is="nViewIs">
+			<view :class="{'z-paging-content-fixed':usePageScroll}" style="flex: 1;" :style="[scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="$slots.loading&&showLoading&&!loadingFullFixed" :is="nViewIs">
 				<slot name="loading" />
 			</view>
 			<!-- 上拉加载更多view -->
@@ -221,6 +225,10 @@ by ZXLee 2021-10-08
 		<view v-if="showBackToTopClass" :class="backToTopClass" :style="[finalBackToTopStyle]" @click.stop="_backToTopClick">
 			<slot v-if="$slots.backToTop" name="backToTop" />
 			<image v-else class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop"></image>
+		</view>
+		<!-- 全屏Loading(铺满z-paging并固定) -->
+		<view v-if="$slots.loading&&showLoading&&loadingFullFixed" class="zp-loading-fixed">
+			<slot name="loading" />
 		</view>
 	</view>
 	<!-- #endif -->
@@ -317,6 +325,7 @@ by ZXLee 2021-10-08
 	 * @property {Boolean} auto-hide-empty-view-when-loading 加载中时是否自动隐藏空数据图，默认为是
 	 * @property {Boolean} auto-hide-empty-view-when-pull 用户下拉列表触发下拉刷新加载中时是否自动隐藏空数据图，默认为是
 	 * @property {Boolean} auto-hide-loading-after-first-loaded 第一次加载后是否自动隐藏loading slot，默认为是
+	 * @property {Boolean} loading-full-fixed loading slot是否铺满屏幕并固定，默认为否
 	 * @property {Boolean} auto-show-back-to-top 自动显示点击返回顶部按钮，默认为否
 	 * @property {Number|String} back-to-top-threshold 点击返回顶部按钮显示/隐藏的阈值(滚动距离)，单位为px，默认为400rpx
 	 * @property {String} back-to-top-img 点击返回顶部按钮的自定义图片地址，默认使用z-paging内置的图片
@@ -456,6 +465,7 @@ by ZXLee 2021-10-08
 			autoHideEmptyViewWhenLoading: {type: Boolean},
 			autoHideEmptyViewWhenPull: {type: Boolean},
 			autoHideLoadingAfterFirstLoaded: {type: Boolean},
+			loadingFullFixed: {type: Boolean},
 			autoShowBackToTop: {type: Boolean},
 			backToTopThreshold: {type: [Number, String]},
 			backToTopImg: {type: String},
