@@ -241,7 +241,7 @@ export default {
 			type: String,
 			default: _getConfig('width', '')
 		},
-		//z-paging的背景色，优先级低于pagingStyle中设置的background-color。传字符串，如"#ffffff"
+		//z-paging的背景色，优先级低于pagingStyle中设置的background。传字符串，如"#ffffff"
 		bgColor: {
 			type: String,
 			default: _getConfig('bgColor', '')
@@ -558,13 +558,13 @@ export default {
 				return _getConfig('emptyViewStyle', {});
 			}
 		},
-        //空数据图容器样式
-        emptyViewSuperStyle: {
-        	type: Object,
-        	default: function() {
-        		return _getConfig('emptyViewSuperStyle', {});
-        	}
-        },
+		//空数据图容器样式
+		emptyViewSuperStyle: {
+			type: Object,
+			default: function() {
+				return _getConfig('emptyViewSuperStyle', {});
+			}
+		},
 		//空数据图img样式
 		emptyViewImgStyle: {
 			type: Object,
@@ -891,22 +891,7 @@ export default {
 				return;
 			}
 			newVal = [...newVal];
-			if (this.autoFullHeight && this.usePageScroll && this.isTotalChangeFromAddData) {
-				// #ifndef APP-NVUE
-				this.$nextTick(() => {
-					this._checkScrollViewShouldFullHeight((scrollViewNode, pagingContainerNode) => {
-						this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal,
-							scrollViewNode,
-							pagingContainerNode)
-					});
-				})
-				// #endif
-				// #ifdef APP-NVUE
-				this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal)
-				// #endif
-			} else {
-				this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal)
-			}
+			this._doCheckScrollViewShouldFullHeight(newVal);
 			if (!this.usePageScroll && (this.pageNo === this.defaultPageNo || this.defaultPageNo + 1)) {
 				setTimeout(() => {
 					this._checkScrollViewOutOfPage();
@@ -1135,7 +1120,7 @@ export default {
 				}
 			}
 			if (this.bgColor.length && !pagingStyle['background']) {
-				pagingStyle['background-color'] = this.bgColor;
+				pagingStyle['background'] = this.bgColor;
 			}
 			if (this.height.length && !pagingStyle['height']) {
 				pagingStyle['height'] = this.height;
@@ -1697,6 +1682,13 @@ export default {
 				this._scrollIntoViewByNodeTop(nodeTop, offset, animate);
 			})
 		},
+		//滚动到指定位置(vue中有效)。y为与顶部的距离，单位为px；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
+		scrollToY(y, offset, animate) {
+			this.scrollTop = this.oldScrollTop;
+			this.$nextTick(() => {
+				this._scrollToY(y, offset, animate);
+			})
+		},
 		//滚动到指定view(nvue中有效)。index为需要滚动的view的index(第几个)；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
 		scrollIntoViewByIndex(index, offset, animate) {
 			this._scrollIntoView(index, offset, animate);
@@ -1887,7 +1879,15 @@ export default {
 						this.complete(res);
 					})
 				} else {
-					this._currentDataChange(data, this.currentData);
+					let dataChangeDelayTime = 0;
+					// #ifdef APP-NVUE
+					if (this.privateShowRefresherWhenReload && this.finalNvueListIs === 'waterfall') {
+						dataChangeDelayTime = 150;
+					}
+					// #endif
+					setTimeout(() => {
+						this._currentDataChange(data, this.currentData);					
+					}, dataChangeDelayTime)
 				}
 			} else {
 				this._currentDataChange(data, this.currentData);
@@ -2076,10 +2076,23 @@ export default {
 					});
 				});
 			} else {
-				weexDom.scrollToElement(el, {
-					offset: 0,
-					animated: animate
-				});
+				if(!this.isIos && this.nvueListIs === 'scroller'){
+					this._getNodeClientRect('zp-n-refresh-container', false).then((node) => {
+						let nodeHeight = 0;
+						if (node) {
+							nodeHeight = node[0].height;
+						}
+						weexDom.scrollToElement(el, {
+							offset: -nodeHeight,
+							animated: animate
+						});
+					});
+				}else{
+					weexDom.scrollToElement(el, {
+						offset: 0,
+						animated: animate
+					});
+				}
 			}
 			return;
 			// #endif
@@ -2194,15 +2207,21 @@ export default {
 		},
 		//通过nodeTop滚动到指定view
 		_scrollIntoViewByNodeTop(nodeTop, offset = 0, animate = false) {
+			this._scrollToY(nodeTop,offset,animate,true);
+		},
+		//滚动到指定位置
+		_scrollToY(y, offset = 0, animate = false, addScrollTop = false) {
 			this.privateScrollWithAnimation = animate ? 1 : 0;
 			if (this.usePageScroll) {
 				uni.pageScrollTo({
-					scrollTop: nodeTop - offset,
+					scrollTop: y - offset,
 					duration: animate ? 100 : 0
 				});
 			} else {
-				nodeTop = nodeTop + this.oldScrollTop;
-				this.scrollTop = nodeTop - offset;
+				if(addScrollTop){
+				   y = y + this.oldScrollTop; 
+				}
+				this.scrollTop = y - offset;
 				this.oldScrollTop = this.scrollTop;
 			}
 		},
@@ -2694,6 +2713,24 @@ export default {
 
 			}
 		},
+		_doCheckScrollViewShouldFullHeight(totalData){
+			if (this.autoFullHeight && this.usePageScroll && this.isTotalChangeFromAddData) {
+				// #ifndef APP-NVUE
+				this.$nextTick(() => {
+					this._checkScrollViewShouldFullHeight((scrollViewNode, pagingContainerNode) => {
+						this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(totalData,
+							scrollViewNode,
+							pagingContainerNode)
+					});
+				})
+				// #endif
+				// #ifdef APP-NVUE
+				this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(totalData)
+				// #endif
+			} else {
+				this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(totalData)
+			} 
+		},
 		//检测z-paging是否要全屏覆盖(当使用页面滚动并且不满全屏时，默认z-paging需要铺满全屏，避免数据过少时内部的empty-view无法正确展示)
 		async _checkScrollViewShouldFullHeight(callback) {
 			try {
@@ -2725,11 +2762,14 @@ export default {
 			// #endif
 			try {
 				if (shouldFullHeight) {
-					let finalScrollViewNode = scrollViewNode ? scrollViewNode : await this._getNodeClientRect(
-						'.scroll-view');
+					let finalScrollViewNode = scrollViewNode ? scrollViewNode : await this._getNodeClientRect('.scroll-view');
+					let finalScrollBottomNode = await this._getNodeClientRect('.zp-page-scroll-bottom');
 					if (finalScrollViewNode) {
 						const scrollViewTop = finalScrollViewNode[0].top;
-						const scrollViewHeight = this.windowHeight - scrollViewTop;
+						let scrollViewHeight = this.windowHeight - scrollViewTop;
+						if(finalScrollBottomNode){
+							scrollViewHeight -= finalScrollBottomNode[0].height;
+						}
 						let additionHeight = zUtils.convertTextToPx(this.autoHeightAddition);
 						this.$set(this.scrollViewStyle, heightKey, scrollViewHeight + additionHeight - (this
 							.insideMore ? 1 : 0) + 'px');
@@ -2877,6 +2917,7 @@ export default {
 				return;
 			}
 			// #endif
+			this._doCheckScrollViewShouldFullHeight(this.realTotalData);
 			const node = `.zp-page-scroll-${type}`;
 			const marginText = `margin${type.slice(0,1).toUpperCase() + type.slice(1)}`;
 			let safeAreaInsetBottomAdd = this.safeAreaInsetBottom;
@@ -2981,7 +3022,7 @@ export default {
 				}
 			}
 		},
-        //发射query事件
+		//发射query事件
 		_emitQuery(pageNo,pageSize){
 			this.requestTimeStamp = Number((new Date()).getTime());
 			this.$emit('query',pageNo,pageSize);
@@ -3017,8 +3058,8 @@ export default {
 		// #ifdef APP-NVUE
 		//列表滚动时触发
 		_nOnScroll(e) {
-			const contentOffsetY = e.contentOffset.y;
 			this.$emit('scroll', e);
+			const contentOffsetY = e.contentOffset.y;
 			this.nListIsDragging = e.isDragging;
 			this._checkShouldShowBackToTop(-e.contentOffset.y, -e.contentOffset.y - 1);
 		},

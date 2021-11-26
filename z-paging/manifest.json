@@ -74,5 +74,6 @@
         "router" : {
             "base" : "/github/uni-z-paging/demo/"
         }
-    }
+    },
+    "vueVersion" : "2"
 }

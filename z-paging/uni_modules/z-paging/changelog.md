@@ -1,3 +1,12 @@
+## 2.0.9（2021-11-04）
+1.新增`loadingFullFixed`，支持设置loading铺满屏幕。  
+2.新增`minDelay`，支持设置触发@query后最小延迟处理的时间。  
+3.新增`autoHideEmptyViewWhenPull`，支持控制用户下拉刷新时是否自动隐藏空数据图。  
+4.修复在main.js中进行z-paging的全局配置无效的问题。  
+5.修复在微信小程序中使用自动显示下拉刷新view时，请求时间很短时刷新状态无法结束的问题。  
+6.修复在nvue中使用滑动切换选项卡可能出现的无法下拉刷新的问题。  
+7.修复自动显示下拉刷新view时，上次刷新时间不会更新的问题。  
+8.在z-paging中使用popup等组件时，未能盖住全屏的问题及z-paging内view position:fixed失效的问题可以通过更新最新版HbuilderX解决。
 ## 2.0.8（2021-10-14）
 1.修复`ReferenceError: getPrivateLanguage is not defined`报错的问题  
 2.修复在nvue中使用聊天记录模式时，手动调用`scrollToTop`或`scrollToBottom`时递归调用的问题。  

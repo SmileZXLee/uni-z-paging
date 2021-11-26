@@ -157,7 +157,7 @@ by ZXLee 2021-11-04
 			@loadmore="_nOnLoadmore" @scroll="_nOnScroll">
 			<refresh class="zp-n-refresh" :style="[nvueRefresherStyle]" v-if="finalNvueRefresherEnabled" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
 				@pullingdown="_nOnPullingdown">
-				<view ref="zp-n-refresh-container" class="zp-n-refresh-container">
+				<view ref="zp-n-refresh-container" class="zp-n-refresh-container" id="zp-n-refresh-container">
 					<!-- 下拉刷新view -->
 					<slot v-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
 					<z-paging-refresh ref="refresh" v-else :status="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
@@ -258,7 +258,7 @@ by ZXLee 2021-11-04
 	 * @property {Object} paging-style 设置z-paging的style，部分平台(如微信小程序)无法直接修改组件的style，可使用此属性代替
 	 * @property {String} height z-paging的高度，优先级低于pagingStyle中设置的height，传字符串，如100px、100rpx、100%
 	 * @property {String} width z-paging的宽度，优先级低于pagingStyle中设置的width，传字符串，如100px、100rpx、100%
-	 * @property {String} bg-color z-paging的背景色，优先级低于pagingStyle中设置的background-color。传字符串，如"#ffffff"
+	 * @property {String} bg-color z-paging的背景色，优先级低于pagingStyle中设置的background。传字符串，如"#ffffff"
 	 * @property {Object} paging-content-style 设置z-paging的容器(插槽的父view)的style
 	 * @property {Boolean} auto-height z-paging是否自动高度，若自动高度则会自动铺满屏幕，默认为否
 	 * @property {Number|String} auto-height-addition z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数
