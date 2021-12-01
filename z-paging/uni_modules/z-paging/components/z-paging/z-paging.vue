@@ -3,9 +3,9 @@
  |_  /____| '_ \ / _` |/ _` | | '_ \ / _` |
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
-          |_|          |___/         |___/ 
-V2.0.9
-by ZXLee 2021-11-04
+		  |_|          |___/         |___/ 
+V2.1.0
+by ZXLee 2021-12-01
 -- >
 <!-- API文档地址：http://z-paging.com -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -235,9 +235,9 @@ by ZXLee 2021-11-04
 </template>
 <!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 <script
-    src="./wxs/z-paging-wxs.wxs"
-    module="pagingWxs"
-    lang="wxs"
+	src="./wxs/z-paging-wxs.wxs"
+	module="pagingWxs"
+	lang="wxs"
 ></script>
 <!-- #endif -->
 <script module="pagingRenderjs" lang="renderjs">
@@ -276,6 +276,7 @@ by ZXLee 2021-11-04
 	 * @property {Boolean} safe-area-inset-bottom 是否开启底部安全区域适配，默认为否
 	 * @property {Boolean} scrollable 是否可以滚动，使用内置scroll-view和nvue时有效，默认为是
 	 * @property {Boolean} auto [z-paging]mounted后是否自动调用reload方法(mounted后自动调用接口)，默认为是
+	 * @property {Boolean} reload-when-refresh 用户下拉刷新时是否触发reload方法，默认为是
 	 * @property {Boolean} auto-scroll-to-top-when-reload reload时是否自动滚动到顶部，默认为是
 	 * @property {Boolean} auto-clean-list-when-reload reload时是否立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
 	 * @property {Boolean} show-refresher-when-reload 调用reload方法时是否自动显示下拉刷新view，默认为否
@@ -316,7 +317,7 @@ by ZXLee 2021-11-04
 	 * @property {String|Object} empty-view-error-text 空数据图“加载失败”描述文字
 	 * @property {String} empty-view-error-img 空数据图“加载失败”图片，默认使用z-paging内置的图片(建议使用绝对路径)
 	 * @property {Object} empty-view-style 空数据图样式
-     * @property {Object} empty-view-super-style 空数据图容器样式
+	 * @property {Object} empty-view-super-style 空数据图容器样式
 	 * @property {Object} empty-view-img-style 空数据图img样式
 	 * @property {Object} empty-view-title-style 空数据图描述文字样式
 	 * @property {Object} empty-view-reload-style 空数据图重新加载按钮样式
@@ -416,6 +417,7 @@ by ZXLee 2021-11-04
 			scrollable: {type: Boolean},
 			mountedAutoCallReload: {type: Boolean},
 			auto: {type: Boolean},
+			reloadWhenRefresh: {type: Boolean},
 			autoScrollToTopWhenReload: {type: Boolean},
 			autoCleanListWhenReload: {type: Boolean},
 			showRefresherWhenReload: {type: Boolean},
@@ -456,7 +458,7 @@ by ZXLee 2021-11-04
 			emptyViewErrorText: {type: [String, Object]},
 			emptyViewErrorImg: {type: String},
 			emptyViewStyle: {type: Object},
-            emptyViewSuperStyle: {type: Object},
+			emptyViewSuperStyle: {type: Object},
 			emptyViewImgStyle: {type: Object},
 			emptyViewTitleStyle: {type: Object},
 			emptyViewReloadStyle: {type: Object},
@@ -511,7 +513,7 @@ by ZXLee 2021-11-04
 	}
 </script>
 <script
-    src="./js/z-paging-main.js"></script>
+	src="./js/z-paging-main.js"></script>
 	
 <style scoped>
 	@import "./css/z-paging-main.css";

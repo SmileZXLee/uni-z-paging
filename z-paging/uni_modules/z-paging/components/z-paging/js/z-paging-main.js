@@ -11,7 +11,7 @@ import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
 import Enum from './z-paging-enum'
 
-const currentVersion = 'V2.0.9';
+const currentVersion = 'V2.1.0';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -350,6 +350,11 @@ export default {
 			type: Boolean,
 			default: _getConfig('auto', true)
 		},
+        //用户下拉刷新时是否触发reload方法，默认为是
+        reloadWhenRefresh: {
+            type: Boolean,
+            default: _getConfig('reloadWhenRefresh', true)
+        },
 		//reload时自动滚动到顶部，默认为是
 		autoScrollToTopWhenReload: {
 			type: Boolean,
@@ -1505,6 +1510,10 @@ export default {
 				}
 			})
 		},
+        //终止下拉刷新状态
+        endRefresh(){
+           this._refresherEnd();
+        },
 		//设置i18n国际化语言
 		setI18n(language) {
 			zI18n.setLanguage(language);
@@ -1624,10 +1633,6 @@ export default {
 		//手动触发上拉加载更多(非必须，可依据具体需求使用)
 		doLoadMore() {
 			this._onLoadingMore('toBottom');
-		},
-		//手动停止下拉刷新加载
-		endRefresh() {
-			this.refresherTriggered = false;
 		},
 		//滚动到顶部，animate为是否展示滚动动画，默认为是
 		scrollToTop(animate,checkReverse = true) {
@@ -1840,7 +1845,7 @@ export default {
 			}
 			// #endif
 			const tempIsUserPullDown = this.isUserPullDown;
-			if (this.finalShowRefresherWhenReload && this.pageNo === this.defaultPageNo) {
+			if (this.showRefresherUpdateTime && this.pageNo === this.defaultPageNo) {
 				zUtils.setRefesrherTime((new Date()).getTime(), this.refresherUpdateTimeKey);
 				this.tempLanguageUpdateKey = (new Date()).getTime();
 				if (this.$refs.refresh) {
@@ -2340,11 +2345,13 @@ export default {
 			this.isUserReload = false;
 			this._startLoading(true);
 			this.refresherTriggered = true;
-			if (this.useChatRecordMode) {
-				this._onLoadingMore('click')
-			} else {
-				this._reload();
-			}
+            if(this.reloadWhenRefresh){
+                if (this.useChatRecordMode) {
+                	this._onLoadingMore('click')
+                } else {
+                	this._reload();
+                }
+            }
 			this.loadingType = Enum.LoadingType.Refresher;
 		},
 		//自定义下拉刷新被复位
