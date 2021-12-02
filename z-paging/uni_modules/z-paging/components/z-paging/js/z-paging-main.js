@@ -104,6 +104,7 @@ export default {
 			pageScrollTop: -1,
 			chatRecordLoadingMoreText: '',
 			moveDistance: 0,
+			oldMoveDistance: 0,
 			loadingMoreDefaultSlot: null,
 			backToTopClass: 'zp-back-to-top zp-back-to-top-hide',
 			tempLanguageUpdateKey: 0,
@@ -298,6 +299,11 @@ export default {
 				return _getConfig('refresherUpdateTimeStyle', {});
 			}
 		},
+		//在微信小程序和QQ小程序中，是否实时监听下拉刷新中进度，默认为否
+		watchRefresherTouchmove: {
+			type: Boolean,
+			default: _getConfig('watchRefresherTouchmove', false)
+		},
 		//底部加载更多的主题样式，支持black，white，默认black
 		loadingMoreThemeStyle: {
 			type: String,
@@ -350,11 +356,11 @@ export default {
 			type: Boolean,
 			default: _getConfig('auto', true)
 		},
-        //用户下拉刷新时是否触发reload方法，默认为是
-        reloadWhenRefresh: {
-            type: Boolean,
-            default: _getConfig('reloadWhenRefresh', true)
-        },
+		//用户下拉刷新时是否触发reload方法，默认为是
+		reloadWhenRefresh: {
+			type: Boolean,
+			default: _getConfig('reloadWhenRefresh', true)
+		},
 		//reload时自动滚动到顶部，默认为是
 		autoScrollToTopWhenReload: {
 			type: Boolean,
@@ -1028,6 +1034,9 @@ export default {
 				}
 			}
 		},
+		moveDistance(newVal, oldVal){
+			this.oldMoveDistance = oldVal;
+		},
 		nIsFirstPageAndNoMore: {
 			handler(newVal) {
 				const cellStyle = !this.useChatRecordMode || newVal ? {} : {
@@ -1315,6 +1324,19 @@ export default {
 				.fromEmptyViewReload ? true : !this.pagingLoaded) : true) && this.loading;
 			return showLoading;
 		},
+		hasTouchmove(){
+			// #ifdef APP-VUE || H5
+			if(this.$listeners && !this.$listeners.refresherTouchmove){
+				return false;
+			}
+			// #endif
+			
+			// #ifdef MP-WEIXIN || MP-QQ
+			return this.watchRefresherTouchmove;
+			// #endif
+			
+			return true;
+		},
 		tempLanguage() {
 			let systemLanguage = false;
 			const temp = this.tempLanguageUpdateKey;
@@ -1510,10 +1532,10 @@ export default {
 				}
 			})
 		},
-        //终止下拉刷新状态
-        endRefresh(){
-           this._refresherEnd();
-        },
+		//终止下拉刷新状态
+		endRefresh(){
+		   this._refresherEnd();
+		},
 		//设置i18n国际化语言
 		setI18n(language) {
 			zI18n.setLanguage(language);
@@ -2345,13 +2367,13 @@ export default {
 			this.isUserReload = false;
 			this._startLoading(true);
 			this.refresherTriggered = true;
-            if(this.reloadWhenRefresh){
-                if (this.useChatRecordMode) {
-                	this._onLoadingMore('click')
-                } else {
-                	this._reload();
-                }
-            }
+			if(this.reloadWhenRefresh){
+				if (this.useChatRecordMode) {
+					this._onLoadingMore('click')
+				} else {
+					this._reload();
+				}
+			}
 			this.loadingType = Enum.LoadingType.Refresher;
 		},
 		//自定义下拉刷新被复位
@@ -2429,6 +2451,7 @@ export default {
 				});
 				this.disabledBounce = true;
 			}
+			this._emitTouchmove({pullingDistance:moveDistance,dy:this.moveDistance - this.oldMoveDistance});
 		},
 		// #endif
 		//进一步处理拖拽中结果
@@ -2448,7 +2471,6 @@ export default {
 			this.lastRefresherTouchmove = touch;
 			// #endif
 			this.moveDistance = moveDistance;
-			this.$emit('refresherTouchmove', moveDistance);
 		},
 		// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
 		//拖拽结束
@@ -2517,14 +2539,18 @@ export default {
 				}
 			}
 		},
-		//wxs正在下拉处理
-		_handleWxsOnPullingDown(onPullingDown) {
+		//wxs正在下拉状态改变处理
+		_handleWxsPullingDownStatusChange(onPullingDown) {
 			this.wxsOnPullingDown = onPullingDown;
 			if (onPullingDown) {
 				if (!this.useChatRecordMode) {
 					this.renderPropScrollTop = 0;
 				}
 			}
+		},
+		//wxs正在下拉处理
+		_handleWxsPullingDown(e){
+			this._emitTouchmove({pullingDistance:e.moveDistance,dy:e.diffDis});
 		},
 		//下拉刷新结束
 		_refresherEnd(shouldEndLoadingDelay = true, fromAddData = false, isUserPullDown = false) {
@@ -3034,6 +3060,16 @@ export default {
 			this.requestTimeStamp = Number((new Date()).getTime());
 			this.$emit('query',pageNo,pageSize);
 		},
+		//发射pullingDown事件
+		_emitTouchmove(e){
+			// #ifndef APP-NVUE
+			e.viewHeight = this.finalRefresherThreshold;
+			// #endif
+			e.rate = e.pullingDistance / e.viewHeight;
+			if(this.hasTouchmove){
+				this.$emit('refresherTouchmove',e);
+			}
+		},
 		//清除refresherCompleteTimeout
 		_cleanRefresherCompleteTimeout() {
 			if (this.refresherCompleteTimeout) {
@@ -3084,6 +3120,7 @@ export default {
 			if (this.refresherStatus === Enum.RefresherStatus.Loading || (this.isIos && !this.nListIsDragging)) {
 				return;
 			}
+			this._emitTouchmove(e);
 			const viewHeight = e.viewHeight;
 			const pullingDistance = e.pullingDistance;
 			if (pullingDistance >= viewHeight) {

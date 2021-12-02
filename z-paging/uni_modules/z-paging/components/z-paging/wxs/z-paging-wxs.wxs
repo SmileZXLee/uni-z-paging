@@ -72,6 +72,7 @@ function touchmove(e, ownerInstance) {
 	var oldRefresherStatus = state.refresherStatus;
 	var dataset = instance.getDataset();
 	var oldIsTouchmoving = _getIsTrue(dataset.oldistouchmoving);
+	var hasTouchmove = _getIsTrue(dataset.hastouchmove);
 	var isTouchmoving = state.isTouchmoving;
 	if (moveDistance >= refresherThreshold) {
 		state.refresherStatus = 1;
@@ -84,6 +85,9 @@ function touchmove(e, ownerInstance) {
 	}
 	if (state.isTouchEnded) {
 		state.isTouchEnded = false;
+	}
+	if (hasTouchmove) {
+		ownerInstance.callMethod('_handleWxsPullingDown', {moveDistance:moveDistance, diffDis:moveDistanceObj.diffDis});
 	}
 	if (oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus || oldIsTouchmoving !=
 		isTouchmoving) {
@@ -224,6 +228,7 @@ function _getMoveDistance(e, instance) {
 	}
 	return {
 		currentMoveDistance: currentMoveDistance,
+		diffDis: diffDis,
 		isDown: diffDis > 0
 	};
 }
@@ -320,7 +325,7 @@ function _getAngleIsInRange(e, touch, state, dataset) {
 function _handleTouchMovePullingDown(state, instance, onPullingDown) {
 	var oldOnPullingDown = state.onPullingDown || false;
 	if (oldOnPullingDown != onPullingDown) {
-		instance.callMethod('_handleWxsOnPullingDown', onPullingDown);
+		instance.callMethod('_handleWxsPullingDownStatusChange', onPullingDown);
 	}
 	state.onPullingDown = onPullingDown;
 }

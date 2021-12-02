@@ -51,7 +51,7 @@ by ZXLee 2021-12-01
 					:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="wxsPageScrollTop"
 					:data-scrollTop="wxsScrollTop" :data-refresherMaxAngle="refresherMaxAngle" 
 					:data-refresherAecc="refresherAngleEnableChangeContinued" :data-usePageScroll="usePageScroll"
-					:data-oldIsTouchmoving="isTouchmoving" :data-refresherOutRate="finalRefresherOutRate"
+					:data-oldIsTouchmoving="isTouchmoving" :data-refresherOutRate="finalRefresherOutRate" :data-hasTouchmove="hasTouchmove"
 					<!-- #endif -->
 					<!-- #ifdef APP-VUE || H5 -->
 					:change:renderPropScrollTop="pagingRenderjs.renderPropScrollTopChange" :renderPropScrollTop="renderPropScrollTop"
@@ -267,6 +267,7 @@ by ZXLee 2021-12-01
 	 * @property {Object} refresher-img-style 自定义下拉刷新中左侧图标的样式
 	 * @property {Object} refresher-title-style 自定义下拉刷新中右侧状态描述文字的样式
 	 * @property {Object} refresher-update-time-style 自定义下拉刷新中右侧最后更新时间文字的样式(show-refresher-update-time为true时有效)
+	 * @property {Boolean} watch-refresher-touchmove 在微信小程序和QQ小程序中，是否实时监听下拉刷新中进度，默认为否
 	 * @property {String} loading-more-theme-style 底部加载更多的主题样式，支持black，white，默认black
 	 * @property {Boolean} refresher-only 是否只使用下拉刷新，设置为true后将关闭mounted自动请求数据、关闭滚动到底部加载更多，强制隐藏空数据图。默认为否
 	 * @property {Number|String} refresher-complete-delay 自定义下拉刷新结束以后延迟回弹的时间，单位为毫秒，默认为0
@@ -407,6 +408,7 @@ by ZXLee 2021-12-01
 			refresherImgStyle: {type: Object},
 			refresherTitleStyle: {type: Object},
 			refresherUpdateTimeStyle: {type: Object},
+			watchRefresherTouchmove: {type: Object},
 			loadingMoreThemeStyle: {type: String},
 			refresherOnly: {type: Boolean},
 			refresherCompleteDelay: {type: [Number, String]},
