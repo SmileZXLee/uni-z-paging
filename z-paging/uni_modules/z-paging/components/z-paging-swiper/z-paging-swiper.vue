@@ -9,7 +9,7 @@
 		<slot v-if="$slots.top" name="top"></slot>
 		<view class="zp-swiper-super">
 			<view class="zp-swiper">
-				<slot/></slot>
+				<slot/>
 			</view>
 		</view>
 		<slot v-if="$slots.bottom" name="bottom"></slot>

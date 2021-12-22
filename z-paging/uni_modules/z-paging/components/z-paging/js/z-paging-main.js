@@ -1884,13 +1884,15 @@ export default {
 				this.refresherTriggered = false;
 			}
 			let delayTime = commonDelayTime;
+            let shouldEndLoadingDelay = true;
 			// #ifdef APP-NVUE
 			if (this.useChatRecordMode) {
 				delayTime = 0
 			}
+            shouldEndLoadingDelay = false;
 			// #endif
 			setTimeout(() => {
-				this._refresherEnd(true, true, tempIsUserPullDown);
+				this._refresherEnd(shouldEndLoadingDelay, true, tempIsUserPullDown);
 				this.pagingLoaded = true;
 			}, delayTime)
 			if (this.pageNo === this.defaultPageNo) {
@@ -2351,6 +2353,30 @@ export default {
 			if (!this.isIos) {
 				this._checkScrolledToBottom(scrollDiff);
 			}
+			// //虚拟列表
+			// const visibleCount = 55;
+			// const itemHeight = 75;
+			// const scrollIndex = parseInt(e.detail.scrollTop / itemHeight);
+			
+   //          let start = scrollIndex - 50;
+   //          let end = scrollIndex + 50;
+   //          if(start < 0){
+   //              start = 0;
+   //          }
+   //          const realTotalData = [].concat(this.realTotalData)
+   //          if(end > realTotalData.length){
+   //              end = realTotalData.length;
+   //          }
+   //          const currentArr = realTotalData.slice(start,end);
+   //          console.log(this.realTotalData);
+   //          this.$emit('input', currentArr);
+   //          this.$emit('update:list', currentArr);
+   //          this.$emit('listChange', currentArr);
+            
+            // this.scrollToY(10);
+			
+			// this.$emit('update:range', [scrollIndex - 10,scrollIndex+50]);
+			
 		},
 		_onRefresh(fromScrollView=false) {
 			if (fromScrollView){
@@ -2555,7 +2581,7 @@ export default {
 		//下拉刷新结束
 		_refresherEnd(shouldEndLoadingDelay = true, fromAddData = false, isUserPullDown = false) {
 			let refresherCompleteDelay = 0;
-			if(fromAddData && isUserPullDown){
+			if(fromAddData && (isUserPullDown || this.showRefresherWhenReload)){
 				refresherCompleteDelay = this.refresherCompleteDelay;
 				if(this.refresherCompleteDuration > 700){
 					refresherCompleteDelay = 1;
@@ -3108,10 +3134,10 @@ export default {
 		},
 		//下拉刷新刷新中
 		_nOnRrefresh() {
-			this.nRefresherLoading = true;
 			if (this.nShowRefresherReveal) {
 				return;
 			}
+            this.nRefresherLoading = true;
 			this.refresherStatus = Enum.RefresherStatus.Loading;
 			this._doRefresherLoad();
 		},

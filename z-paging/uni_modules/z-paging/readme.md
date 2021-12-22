@@ -6,8 +6,7 @@
 ## 【注意】由V1.9.0起，fixed属性默认值为true，z-paging默认会铺满屏幕。老项目更新请注意，使用侧滑滚动切换选项卡或需要局部使用z-paging请设置:fixed="false"。如果您希望fixed属性默认为false，请参考文档：z-paging.com，将fixed默认值设置为false。
 *** 
 
-### API文档地址：[https://z-paging.com](http://z-paging.com)
-### 备用API文档地址：[https://www.zxlee.cn/z-paging/index.html](https://www.zxlee.cn/z-paging/index.html) 
+### API文档地址：[https://z-paging.zxlee.cn](https://z-paging.zxlee.cn)
 
 ***  
 ### 功能&特点

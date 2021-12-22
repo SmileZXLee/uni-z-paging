@@ -7,7 +7,7 @@
 V2.1.0
 by ZXLee 2021-12-01
 -- >
-<!-- API文档地址：http://z-paging.com -->
+<!-- API文档地址：https://z-paging.zxlee.cn -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
 <!-- 反馈QQ群：790460711 -->
@@ -245,7 +245,7 @@ by ZXLee 2021-12-01
 	/**
 	 * z-paging 分页组件
 	 * @description 【uni-app自动分页器】超简单，低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view等。
-	 * @tutorial http://z-paging.com
+	 * @tutorial https://z-paging.zxlee.cn
 	 * @property {Number|String} default-page-no 自定义pageNo，默认为1
 	 * @property {Number|String} default-page-size 自定义pageSize，默认为10
 	 * @property {Number|Object} data-key 为保证数据一致，设置当前tab切换时的标识key，并在complete中传递相同key，若二者不一致，则complete将不会生效
