@@ -186,7 +186,7 @@ export default {
 		},
 		//为保证数据一致，设置当前tab切换时的标识key，并在complete中传递相同key，若二者不一致，则complete将不会生效
 		dataKey: {
-			type: [Number, Object],
+			type: [Number, String, Object],
 			default: function() {
 				return _getConfig('dataKey', null);
 			},

@@ -61,9 +61,9 @@ function touchmove(e, ownerInstance) {
 		return true;
 	}
 	if (prevent && !state.disabledBounce) {
-		ownerInstance.callMethod('_handleScrollViewDisableBounce', {
-			bounce: false
-		});
+		// ownerInstance.callMethod('_handleScrollViewDisableBounce', {
+		// 	bounce: false
+		// });
 		state.disabledBounce = true;
 		_handleTouchMovePullingDown(state, ownerInstance, prevent);
 		return !prevent;
