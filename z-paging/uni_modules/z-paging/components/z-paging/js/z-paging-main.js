@@ -117,6 +117,7 @@ export default {
 			refresherCompleteSubTimeout: null,
 			lastBackToTopShowTime: 0,
 			systemInfo: null,
+			cssSafeAreaInsetBottom: -1,
 
 			//--------------状态&判断---------------
 			showLoadingMore: false,
@@ -127,6 +128,7 @@ export default {
 			pagingLoaded: false,
 			loaded: false,
 			isUserReload: true,
+			valueLocked: false,
 			scrollEnable: true,
 			isTouchmoving: false,
 			isLocalPaging: false,
@@ -330,6 +332,11 @@ export default {
 		usePageScroll: {
 			type: Boolean,
 			default: _getConfig('usePageScroll', false)
+		},
+		//是否使用虚拟列表，默认为否
+		useVirtualList: {
+			type: Boolean,
+			default: _getConfig('useVirtualList', false)
 		},
 		//z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为否(当使用内置scroll-view滚动时有效)
 		fixed: {
@@ -721,12 +728,12 @@ export default {
 		//设置自定义下拉刷新区域背景
 		refresherBackground: {
 			type: String,
-			default: _getConfig('refresherBackground', '#ffffff00')
+			default: _getConfig('refresherBackground', 'transparent')
 		},
 		//设置固定的自定义下拉刷新区域背景
 		refresherFixedBackground: {
 			type: String,
-			default: _getConfig('refresherFixedBackground', '#ffffff00')
+			default: _getConfig('refresherFixedBackground', 'transparent')
 		},
 		//设置固定的自定义下拉刷新区域高度，默认为0
 		refresherFixedBacHeight: {
@@ -875,6 +882,7 @@ export default {
 			this.nLoadingMoreFixedHeight = true;
 		}
 		// #endif
+		this._getCssSafeAreaInsetBottom();
 	},
 	destroyed() {
 		uni.$off(i18nUpdateKey);
@@ -882,6 +890,10 @@ export default {
 	},
 	watch: {
 		value(newVal, oldVal) {
+			if(this.valueLocked){
+				this.valueLocked = false;
+				return;
+			}
 			let dataType = Object.prototype.toString.call(newVal);
 			if (dataType === '[object Undefined]') {
 				zUtils.consoleErr('v-model所绑定的值不存在！');
@@ -1048,6 +1060,9 @@ export default {
 		}
 	},
 	computed: {
+		localHeight() {
+			return 10000 * 75
+		},
 		pageSize() {
 			return this.defaultPageSize;
 		},
@@ -1096,8 +1111,7 @@ export default {
 				return 'view';
 			}
 			const nvueListIsLowerCase = this.nvueListIs.toLowerCase();
-			if (nvueListIsLowerCase === 'list' || nvueListIsLowerCase === 'waterfall' || nvueListIsLowerCase ===
-				'scroller') {
+			if (nvueListIsLowerCase === 'list' || nvueListIsLowerCase === 'waterfall' || nvueListIsLowerCase === 'scroller') {
 				return nvueListIsLowerCase;
 			}
 			return 'list';
@@ -1130,7 +1144,9 @@ export default {
 					if (this.safeAreaInsetBottom) {
 						bottom += this.safeAreaBottom;
 					}
-					pagingStyle.bottom = bottom + 'px';
+					if(bottom > 0){
+						pagingStyle.bottom = bottom + 'px';
+					}
 				}
 			}
 			if (this.bgColor.length && !pagingStyle['background']) {
@@ -1346,17 +1362,14 @@ export default {
 			return uni.getStorageSync(i18nUpdateKey) || systemLanguage || 'zh-cn';
 		},
 		safeAreaBottom() {
-			if (!this.systemInfo) {
-				return 0;
-			}
 			let safeAreaBottom = 0;
-			// #ifdef MP-WEIXIN
-			safeAreaBottom = this.systemInfo.screenHeight - this.systemInfo.safeArea.bottom;
-			// #endif
-			// #ifdef APP-PLUS || H5
+			// #ifdef APP-NVUE
 			safeAreaBottom = this.systemInfo.safeAreaInsets.bottom || 0;
 			// #endif
-			return Math.abs(safeAreaBottom);
+			// #ifndef APP-NVUE
+			safeAreaBottom = this.cssSafeAreaInsetBottom === -1 ? 0 : this.cssSafeAreaInsetBottom;
+			// #endif
+			return safeAreaBottom;
 		},
 		renderJsIgnore() {
 			if ((this.usePageScroll && this.useChatRecordMode) || !this.refresherEnabled || !this.useCustomRefresher) {
@@ -1884,12 +1897,12 @@ export default {
 				this.refresherTriggered = false;
 			}
 			let delayTime = commonDelayTime;
-            let shouldEndLoadingDelay = true;
+			let shouldEndLoadingDelay = true;
 			// #ifdef APP-NVUE
 			if (this.useChatRecordMode) {
 				delayTime = 0
 			}
-            shouldEndLoadingDelay = false;
+			shouldEndLoadingDelay = false;
 			// #endif
 			setTimeout(() => {
 				this._refresherEnd(shouldEndLoadingDelay, true, tempIsUserPullDown);
@@ -2353,31 +2366,8 @@ export default {
 			if (!this.isIos) {
 				this._checkScrolledToBottom(scrollDiff);
 			}
-			// //虚拟列表
-			// const visibleCount = 55;
-			// const itemHeight = 75;
-			// const scrollIndex = parseInt(e.detail.scrollTop / itemHeight);
-			
-   //          let start = scrollIndex - 50;
-   //          let end = scrollIndex + 50;
-   //          if(start < 0){
-   //              start = 0;
-   //          }
-   //          const realTotalData = [].concat(this.realTotalData)
-   //          if(end > realTotalData.length){
-   //              end = realTotalData.length;
-   //          }
-   //          const currentArr = realTotalData.slice(start,end);
-   //          console.log(this.realTotalData);
-   //          this.$emit('input', currentArr);
-   //          this.$emit('update:list', currentArr);
-   //          this.$emit('listChange', currentArr);
-            
-            // this.scrollToY(10);
-			
-			// this.$emit('update:range', [scrollIndex - 10,scrollIndex+50]);
-			
 		},
+		
 		_onRefresh(fromScrollView=false) {
 			if (fromScrollView){
 				if (!(this.finalRefresherEnabled && !this.useCustomRefresher)){
@@ -2843,6 +2833,13 @@ export default {
 
 			}
 		},
+		_getCssSafeAreaInsetBottom(){
+			this._getNodeClientRect('.zp-safe-area-inset-bottom').then((res) => {
+				if (res) {
+					this.cssSafeAreaInsetBottom = res[0].height;
+				}
+			});
+		},
 		//触发更新是否超出页面状态
 		_updateInsideOfPaging() {
 			if (this.insideMore && this.insideOfPaging === true) {
@@ -3137,7 +3134,7 @@ export default {
 			if (this.nShowRefresherReveal) {
 				return;
 			}
-            this.nRefresherLoading = true;
+			this.nRefresherLoading = true;
 			this.refresherStatus = Enum.RefresherStatus.Loading;
 			this._doRefresherLoad();
 		},

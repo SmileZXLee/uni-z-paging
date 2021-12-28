@@ -16,6 +16,7 @@ by ZXLee 2021-12-01
 	<!-- #ifndef APP-NVUE -->
 	<view :class="!usePageScroll&&fixed?'z-paging-content z-paging-content-fixed':'z-paging-content'"
 		:style="[finalPagingStyle]">
+        <view v-if="cssSafeAreaInsetBottom===-1" class="zp-safe-area-inset-bottom"></view>
 		<!-- 顶部固定的slot -->
 		<slot v-if="!usePageScroll&&$slots.top" name="top"></slot>
 		<view class="zp-page-scroll-top" v-else-if="usePageScroll&&$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
@@ -90,7 +91,7 @@ by ZXLee 2021-12-01
 							<slot v-if="$slots.loading&&showLoading&&!loadingFullFixed" name="loading" />
 							<!-- 主体内容 -->
 							<view class="zp-paging-container-content" :style="[finalPagingContentStyle]">
-								<slot />
+                                <slot />
 								<!-- 上拉加载更多view -->
 								<!-- #ifndef MP-ALIPAY -->
 								<slot v-if="_shouldShowLoadingMore('loadingMoreDefault')" name="loadingMoreDefault" />
@@ -141,6 +142,7 @@ by ZXLee 2021-12-01
 		<!-- 全屏Loading(铺满z-paging并固定) -->
 		<view v-if="$slots.loading&&showLoading&&loadingFullFixed" class="zp-loading-fixed">
 			<slot name="loading" />
+            <view>321</view>
 		</view>
 	</view>
 	<!-- #endif -->
@@ -157,7 +159,7 @@ by ZXLee 2021-12-01
 			@loadmore="_nOnLoadmore" @scroll="_nOnScroll">
 			<refresh class="zp-n-refresh" :style="[nvueRefresherStyle]" v-if="finalNvueRefresherEnabled" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh"
 				@pullingdown="_nOnPullingdown">
-				<view ref="zp-n-refresh-container" class="zp-n-refresh-container" id="zp-n-refresh-container">
+				<view ref="zp-n-refresh-container" class="zp-n-refresh-container" :style="[{background:refresherBackground}]" id="zp-n-refresh-container">
 					<!-- 下拉刷新view -->
 					<slot v-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
 					<z-paging-refresh ref="refresh" v-else :status="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
@@ -167,7 +169,7 @@ by ZXLee 2021-12-01
 				</view>
 			</refresh>
 			<view ref="zp-n-list-top-tag" class="zp-n-list-top-tag" style="margin-top: -1rpx;" :style="[{height:finalNvueRefresherEnabled?'0px':'1px'}]" :is="nViewIs"></view>
-			<view v-if="nShowRefresherReveal" ref="zp-n-list-refresher-reveal" :style="[{transform:`translateY(-${nShowRefresherRevealHeight}px)`,height:'0px'}]" :is="nViewIs">
+			<view v-if="nShowRefresherReveal" ref="zp-n-list-refresher-reveal" :style="[{transform:`translateY(-${nShowRefresherRevealHeight}px)`,height:'0px'},{background:refresherBackground}]" :is="nViewIs">
 				<slot v-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
 				<z-paging-refresh ref="refresh" v-else :status="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
 					:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText" 
@@ -273,6 +275,7 @@ by ZXLee 2021-12-01
 	 * @property {Number|String} refresher-complete-delay 自定义下拉刷新结束以后延迟回弹的时间，单位为毫秒，默认为0
 	 * @property {Number|String} refresher-complete-duration 自定义下拉刷新结束回弹动画时间，单位为毫秒，默认为300毫秒(refresherEndBounceEnabled为false时，refresherCompleteDuration为设定值的1/3)，nvue无效
 	 * @property {Boolean} use-page-scroll 使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
+     * @property {Boolean} use-virtual-list 是否使用虚拟列表，默认为否
 	 * @property {Boolean} fixed z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为否(当使用内置scroll-view滚动时有效)
 	 * @property {Boolean} safe-area-inset-bottom 是否开启底部安全区域适配，默认为否
 	 * @property {Boolean} scrollable 是否可以滚动，使用内置scroll-view和nvue时有效，默认为是
@@ -414,6 +417,7 @@ by ZXLee 2021-12-01
 			refresherCompleteDelay: {type: [Number, String]},
 			refresherCompleteDuration: {type: [Number, String]},
 			usePageScroll: {type: Boolean},
+            useVirtualList: {type: Boolean},
 			fixed: {type: Boolean},
 			safeAreaInsetBottom: {type: Boolean},
 			scrollable: {type: Boolean},

@@ -172,8 +172,13 @@
 	justify-content: center;
 }
 
-.zp-loading-fixed{
+.zp-loading-fixed {
 	z-index: 9999;
+}
+
+.zp-safe-area-inset-bottom {
+    position: absolute;
+    height: env(safe-area-inset-bottom);
 }
 
 .zp-n-refresh-container {
