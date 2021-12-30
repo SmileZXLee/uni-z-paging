@@ -909,17 +909,10 @@ export default {
 			}
 		},
 		totalData(newVal, oldVal) {
-			if ((!this.isUserReload || !this.autoCleanListWhenReload) && this.firstPageLoaded && !newVal.length &&
-				oldVal.length) {
+			if ((!this.isUserReload || !this.autoCleanListWhenReload) && this.firstPageLoaded && !newVal.length && oldVal.length) {
 				return;
 			}
-			newVal = [...newVal];
 			this._doCheckScrollViewShouldFullHeight(newVal);
-			if (!this.usePageScroll && (this.pageNo === this.defaultPageNo || this.defaultPageNo + 1)) {
-				setTimeout(() => {
-					this._checkScrollViewOutOfPage();
-				}, commonDelayTime)
-			}
 			this.realTotalData = newVal;
 			this.$emit('input', newVal);
 			this.$emit('update:list', newVal);
@@ -934,8 +927,7 @@ export default {
 					}
 				});
 				// #ifdef APP-NVUE
-				if (this.useChatRecordMode && this.nIsFirstPageAndNoMore && this.pageNo === this
-					.defaultPageNo && !this.nFirstPageAndNoMoreChecked) {
+				if (this.useChatRecordMode && this.nIsFirstPageAndNoMore && this.pageNo === this.defaultPageNo && !this.nFirstPageAndNoMoreChecked) {
 					this.nFirstPageAndNoMoreChecked = true;
 					this._scrollToBottom(false);
 				}
@@ -959,34 +951,12 @@ export default {
 		},
 		oldScrollTop(newVal, oldVal) {
 			if (!this.usePageScroll) {
-				this.$emit('scrollTopChange', newVal);
-				this.$emit('update:scrollTop', newVal);
-				this._checkShouldShowBackToTop(newVal, oldVal);
-				if (this.isIos) {
-					if (newVal > 5) {
-						this.wxsScrollTop = 6;
-					} else {
-						this.wxsScrollTop = 0;
-					}
-				} else {
-					this.wxsScrollTop = newVal;
-				}
+				this._scrollTopChange(newVal,oldVal,false);
 			}
 		},
 		pageScrollTop(newVal, oldVal) {
 			if (this.usePageScroll) {
-				this.$emit('scrollTopChange', newVal);
-				this.$emit('update:scrollTop', newVal);
-				this._checkShouldShowBackToTop(newVal, oldVal);
-				if (this.isIos) {
-					if (newVal > 5) {
-						this.wxsPageScrollTop = 6;
-					} else {
-						this.wxsPageScrollTop = 0;
-					}
-				} else {
-					this.wxsPageScrollTop = newVal;
-				}
+				this._scrollTopChange(newVal,oldVal,true);
 			}
 		},
 		defaultThemeStyle: {
@@ -1039,11 +1009,7 @@ export default {
 		},
 		finalScrollTop(newVal, oldVal) {
 			if (!this.useChatRecordMode) {
-				if (newVal < 6) {
-					this.renderPropScrollTop = 0;
-				} else {
-					this.renderPropScrollTop = 10;
-				}
+				this.renderPropScrollTop = newVal < 6 ? 0 : 10;
 			}
 		},
 		moveDistance(newVal, oldVal){
@@ -1051,18 +1017,13 @@ export default {
 		},
 		nIsFirstPageAndNoMore: {
 			handler(newVal) {
-				const cellStyle = !this.useChatRecordMode || newVal ? {} : {
-					transform: 'rotate(180deg)'
-				};
+				const cellStyle = !this.useChatRecordMode || newVal ? {} : {transform: 'rotate(180deg)'};
 				this.$emit('update:cellStyle', cellStyle);
 			},
 			immediate: true
 		}
 	},
 	computed: {
-		localHeight() {
-			return 10000 * 75
-		},
 		pageSize() {
 			return this.defaultPageSize;
 		},
@@ -1111,7 +1072,7 @@ export default {
 				return 'view';
 			}
 			const nvueListIsLowerCase = this.nvueListIs.toLowerCase();
-			if (nvueListIsLowerCase === 'list' || nvueListIsLowerCase === 'waterfall' || nvueListIsLowerCase === 'scroller') {
+			if (['list','waterfall','scroller'].indexOf(nvueListIsLowerCase) !== -1) {
 				return nvueListIsLowerCase;
 			}
 			return 'list';
@@ -1133,7 +1094,7 @@ export default {
 			const windowTop = this.systemInfo.windowTop;
 			const windowBottom = this.systemInfo.windowBottom;
 			if (!this.usePageScroll && this.fixed) {
-				if (windowTop && windowTop !== undefined && !pagingStyle.top) {
+				if (windowTop && !pagingStyle.top) {
 					pagingStyle.top = windowTop + 'px';
 				}
 				if (!pagingStyle.bottom) {
@@ -1293,13 +1254,10 @@ export default {
 			return this.scrollViewStyle;
 		},
 		finalRefresherOutRate() {
-			if (this.refresherOutRate < 0) {
-				return 0;
-			}
-			if (this.refresherOutRate > 1) {
-				return 1;
-			}
-			return this.refresherOutRate;
+			let rate = this.refresherOutRate;
+			rate = Math.max(0,rate);
+			rate = Math.min(1,rate);
+			return rate;
 		},
 		finalRefresherTransform() {
 			if (this.refresherTransform === 'translateY(0px)') {
@@ -1336,9 +1294,7 @@ export default {
 			return false;
 		},
 		showLoading() {
-			const showLoading = !this.firstPageLoaded && (this.autoHideLoadingAfterFirstLoaded ? (this
-				.fromEmptyViewReload ? true : !this.pagingLoaded) : true) && this.loading;
-			return showLoading;
+			return !this.firstPageLoaded && (this.autoHideLoadingAfterFirstLoaded ? (this.fromEmptyViewReload ? true : !this.pagingLoaded) : true) && this.loading;
 		},
 		hasTouchmove(){
 			// #ifdef APP-VUE || H5
@@ -1435,9 +1391,8 @@ export default {
 			return this._getNvueWaterfallSingleConfig('right-gap', 0);
 		},
 		nViewIs() {
-			const finalNvueListIs = this.finalNvueListIs;
-			return finalNvueListIs === 'scroller' || finalNvueListIs === 'view' ? 'view' : finalNvueListIs ===
-				'waterfall' ? 'header' : 'cell';
+			const is = this.finalNvueListIs;
+			return is === 'scroller' || is === 'view' ? 'view' : is === 'waterfall' ? 'header' : 'cell';
 		},
 		nSafeAreaBottomHeight() {
 			return this.safeAreaInsetBottom ? this.safeAreaBottom : 0;
@@ -2272,11 +2227,8 @@ export default {
 			if (!(this.loadingStatus === Enum.LoadingMoreStatus.Default ? this.nShowBottom : true)) {
 				return false;
 			}
-			if (((!this.showLoadingMoreWhenReload || this.isUserPullDown || this.loadingStatus !== Enum
-						.LoadingMoreStatus.Loading) && !this
-					.showLoadingMore) || (!this.loadingMoreEnabled && (!this.showLoadingMoreWhenReload || this
-					.isUserPullDown || this.loadingStatus !== Enum.LoadingMoreStatus.Loading)) || this
-				.refresherOnly) {
+			if (((!this.showLoadingMoreWhenReload || this.isUserPullDown || this.loadingStatus !== Enum.LoadingMoreStatus.Loading) && !this.showLoadingMore) || (!this.loadingMoreEnabled && (!this.showLoadingMoreWhenReload || this
+					.isUserPullDown || this.loadingStatus !== Enum.LoadingMoreStatus.Loading)) || this.refresherOnly) {
 				return false;
 			}
 			
@@ -2688,12 +2640,9 @@ export default {
 		},
 		//(预处理)判断当没有更多数据且分页内容未超出z-paging时是否显示没有更多数据的view
 		_preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal, scrollViewNode, pagingContainerNode) {
-			if (this.loadingStatus === Enum.LoadingMoreStatus.NoMore && this.hideLoadingMoreWhenNoMoreByLimit > 0 &&
-				newVal.length) {
+			if (this.loadingStatus === Enum.LoadingMoreStatus.NoMore && this.hideLoadingMoreWhenNoMoreByLimit > 0 && newVal.length) {
 				this.showLoadingMore = newVal.length > this.hideLoadingMoreWhenNoMoreByLimit;
-			} else if ((this.loadingStatus === Enum.LoadingMoreStatus.NoMore && this
-					.hideLoadingMoreWhenNoMoreAndInsideOfPaging && newVal.length) || (this.insideMore && this
-					.insideOfPaging !== false && newVal.length)) {
+			} else if ((this.loadingStatus === Enum.LoadingMoreStatus.NoMore && this.hideLoadingMoreWhenNoMoreAndInsideOfPaging && newVal.length) || (this.insideMore && this.insideOfPaging !== false && newVal.length)) {
 				this.$nextTick(() => {
 					this._checkShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal, scrollViewNode,
 						pagingContainerNode);
@@ -2744,24 +2693,7 @@ export default {
 				this._updateInsideOfPaging();
 			}
 		},
-		//检测z-paging是否超出了页面高度
-		async _checkScrollViewOutOfPage() {
-			try {
-				const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
-				if (scrollViewNode) {
-					const scrollViewTotalH = scrollViewNode[0].top + scrollViewNode[0].height;
-					if (scrollViewTotalH > this.windowHeight + 100) {
-						if (this.showConsoleError) {
-							zUtils.consoleWarn(
-								'检测到z-paging的高度超出页面高度，这将导致滚动或展示出现异常，请设置【:fixed="true"】或【确保z-paging有确定的高度(如果通过百分比设置z-paging的高度，请保证z-paging的所有父view已设置高度，同时确保page也设置了height:100%，如：page{height:100%}】，此时z-paging的百分比高度才能生效。详情参考demo或访问：https://ext.dcloud.net.cn/plugin?id=3935)'
-							);
-						}
-					}
-				}
-			} catch (e) {
-
-			}
-		},
+		//检测scrollView是否要铺满屏幕
 		_doCheckScrollViewShouldFullHeight(totalData){
 			if (this.autoFullHeight && this.usePageScroll && this.isTotalChangeFromAddData) {
 				// #ifndef APP-NVUE
@@ -2820,10 +2752,8 @@ export default {
 							scrollViewHeight -= finalScrollBottomNode[0].height;
 						}
 						let additionHeight = zUtils.convertTextToPx(this.autoHeightAddition);
-						this.$set(this.scrollViewStyle, heightKey, scrollViewHeight + additionHeight - (this
-							.insideMore ? 1 : 0) + 'px');
-						this.$set(this.scrollViewInStyle, heightKey, scrollViewHeight + additionHeight - (this
-							.insideMore ? 1 : 0) + 'px');
+						this.$set(this.scrollViewStyle, heightKey, scrollViewHeight + additionHeight - (this.insideMore ? 1 : 0) + 'px');
+						this.$set(this.scrollViewInStyle, heightKey, scrollViewHeight + additionHeight - (this.insideMore ? 1 : 0) + 'px');
 					}
 				} else {
 					this.$delete(this.scrollViewStyle, heightKey);
@@ -2897,13 +2827,7 @@ export default {
 		//判断touch手势是否要触发
 		_getRefresherTouchDisabled() {
 			let checkOldScrollTop = this.oldScrollTop > 5;
-			const res = this.loading || this.isRefresherInComplete || this.useChatRecordMode || !this
-				.refresherEnabled || !this.useCustomRefresher ||
-				(
-					this.usePageScroll && this
-					.useCustomRefresher && this
-					.pageScrollTop > 10) || (!(this.usePageScroll && this.useCustomRefresher) && checkOldScrollTop);
-			return res;
+			return this.loading || this.isRefresherInComplete || this.useChatRecordMode || !this.refresherEnabled || !this.useCustomRefresher ||(this.usePageScroll && this.useCustomRefresher && this.pageScrollTop > 10) || (!(this.usePageScroll && this.useCustomRefresher) && checkOldScrollTop);
 		},
 		//本地分页请求
 		_localPagingQueryList(pageNo, pageSize, localPagingLoadingTime, callback) {
@@ -3078,6 +3002,23 @@ export default {
 				}
 			}
 		},
+		//scrollTop改变时触发
+		_scrollTopChange(newVal,oldVal,isPageScrollTop){
+			this.$emit('scrollTopChange', newVal);
+			this.$emit('update:scrollTop', newVal);
+			this._checkShouldShowBackToTop(newVal, oldVal);
+			let scrollTop = 0;
+			if (this.isIos) {
+				scrollTop = newVal > 5 ? 6 : 0;
+			} else {
+				scrollTop = newVal;
+			}
+			if(isPageScrollTop){
+				this.wxsPageScrollTop = scrollTop;
+			}else{
+				this.wxsScrollTop = scrollTop;
+			}
+		},
 		//发射query事件
 		_emitQuery(pageNo,pageSize){
 			this.requestTimeStamp = Number((new Date()).getTime());
@@ -3146,11 +3087,7 @@ export default {
 			this._emitTouchmove(e);
 			const viewHeight = e.viewHeight;
 			const pullingDistance = e.pullingDistance;
-			if (pullingDistance >= viewHeight) {
-				this.refresherStatus = Enum.RefresherStatus.PullToRefresh;
-			} else {
-				this.refresherStatus = Enum.RefresherStatus.Default;
-			}
+			this.refresherStatus = pullingDistance >= viewHeight ? Enum.RefresherStatus.PullToRefresh : Enum.RefresherStatus.Default;
 		},
 		//下拉刷新结束
 		_nRefresherEnd() {

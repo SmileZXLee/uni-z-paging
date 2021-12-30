@@ -39,9 +39,7 @@
 <script>
 	const systemInfo = uni.getSystemInfoSync();
 	import zStatic from '../js/z-paging-static'
-	import {
-		getRefesrherFormatTimeByKey
-	} from '../js/z-paging-utils'
+	import {getRefesrherFormatTimeByKey} from '../js/z-paging-utils'
 	export default {
 		name: 'z-paging-refresh',
 		data() {
@@ -263,7 +261,6 @@
 			-webkit-transform: rotate(180deg);
 			transform: rotate(180deg);
 		}
-
 		100% {
 			-webkit-transform: rotate(0deg);
 			transform: rotate(0deg);
@@ -275,7 +272,6 @@
 			-webkit-transform: rotate(0deg);
 			transform: rotate(0deg);
 		}
-
 		100% {
 			-webkit-transform: rotate(180deg);
 			transform: rotate(180deg);
