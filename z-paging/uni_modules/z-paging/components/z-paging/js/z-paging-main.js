@@ -2765,6 +2765,7 @@ export default {
 
 			}
 		},
+        //通过获取css设置的底部安全区域占位view高度设置bottom距离
 		_getCssSafeAreaInsetBottom(){
 			this._getNodeClientRect('.zp-safe-area-inset-bottom').then((res) => {
 				if (res) {
