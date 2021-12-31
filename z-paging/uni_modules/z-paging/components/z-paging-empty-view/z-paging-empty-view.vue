@@ -6,7 +6,7 @@
 <!-- 空数据占位view，此组件支持easycom规范，可以在项目中直接引用 -->
 <template>
 	<view :class="{'zp-container':true,'zp-container-fixed':emptyViewFixed}" :style="[finalEmptyViewStyle]">
-		<view :class="{'zp-main':true,'zp-main-fixed':emptyViewFixed}">
+		<view class="zp-main">
 			<image v-if="!emptyViewImg.length" class="zp-main-image" :style="[emptyViewImgStyle]" :src="emptyImg"></image>
 			<image v-else class="zp-main-image" mode="aspectFit" :style="[emptyViewImgStyle]" :src="emptyViewImg"></image>
 			<text class="zp-main-title" :style="[emptyViewTitleStyle]">{{emptyViewText}}</text>
@@ -147,20 +147,15 @@
 	}
 
 	.zp-main{
+        /* #ifdef APP-NVUE */
+        margin-top: -100rpx;
+        /* #endif */
 		/* #ifndef APP-NVUE */
 		display: flex;
+        margin-top: -150rpx;
 		/* #endif */
 		flex-direction: column;
 		align-items: center;
-	}
-	
-	.zp-main-fixed {
-		/* #ifndef APP-NVUE */
-		margin-top: -150rpx;
-		/* #endif */
-		/* #ifdef APP-NVUE */
-		margin-top: -100rpx;
-		/* #endif */
 	}
 
 	.zp-main-image {

@@ -2032,9 +2032,9 @@ export default {
 			if (from === 'toBottom' && (!this.toBottomLoadingMoreEnabled || this.useChatRecordMode)) {
 				return;
 			}
-			if (this.refresherOnly || !this.loadingMoreEnabled || !(this.loadingStatus === Enum.LoadingMoreStatus
-					.Default || this.loadingStatus === Enum.LoadingMoreStatus.Fail) || this.loading)
+			if (this.refresherOnly || !this.loadingMoreEnabled || !(this.loadingStatus === Enum.LoadingMoreStatus.Default || this.loadingStatus === Enum.LoadingMoreStatus.Fail) || this.loading){
 				return;
+			}
 			this._doLoadingMore();
 		},
 		//当滚动到顶部时
@@ -2218,7 +2218,7 @@ export default {
 				});
 			} else {
 				if(addScrollTop){
-				   y = y + this.oldScrollTop; 
+				   y += this.oldScrollTop; 
 				}
 				this.scrollTop = y - offset;
 				this.oldScrollTop = this.scrollTop;
@@ -2261,8 +2261,7 @@ export default {
 				}
 				return res;
 			} else if (type === 'loadingMoreNoMore') {
-				const res = this.loadingStatus === Enum.LoadingMoreStatus.NoMore && this.$slots.loadingMoreNoMore &&
-					this.showLoadingMoreNoMoreView;
+				const res = this.loadingStatus === Enum.LoadingMoreStatus.NoMore && this.$slots.loadingMoreNoMore && this.showLoadingMoreNoMoreView;
 				if (res) {
 					// #ifdef APP-NVUE
 					if (!this.isIos) {
@@ -2282,10 +2281,7 @@ export default {
 				}
 				return res;
 			} else if (type === 'loadingMoreCustom') {
-				const res = this.showDefaultLoadingMoreText && !(this.loadingStatus === Enum.LoadingMoreStatus.NoMore &&
-					!this
-					.showLoadingMoreNoMoreView);
-				return res;
+				return this.showDefaultLoadingMoreText && !(this.loadingStatus === Enum.LoadingMoreStatus.NoMore && !this.showLoadingMoreNoMoreView);
 			}
 			return false;
 		},
@@ -2416,9 +2412,7 @@ export default {
 			moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
 			this._handleRefresherTouchmove(moveDistance, touch);
 			if (!this.disabledBounce) {
-				this._handleScrollViewDisableBounce({
-					bounce: false
-				});
+				this._handleScrollViewDisableBounce({bounce: false});
 				this.disabledBounce = true;
 			}
 			this._emitTouchmove({pullingDistance:moveDistance,dy:this.moveDistance - this.oldMoveDistance});
@@ -2453,9 +2447,7 @@ export default {
 			let moveDistance = refresherTouchendY - this.refresherTouchstartY;
 			moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
 			this._handleRefresherTouchend(moveDistance);
-			this._handleScrollViewDisableBounce({
-				bounce: true
-			});
+			this._handleScrollViewDisableBounce({bounce: true});
 			this.disabledBounce = false;
 		},
 		// #endif
@@ -2765,7 +2757,7 @@ export default {
 
 			}
 		},
-        //通过获取css设置的底部安全区域占位view高度设置bottom距离
+		//通过获取css设置的底部安全区域占位view高度设置bottom距离
 		_getCssSafeAreaInsetBottom(){
 			this._getNodeClientRect('.zp-safe-area-inset-bottom').then((res) => {
 				if (res) {

@@ -1,6 +1,7 @@
 // [z-paging]微信小程序、QQ小程序、app-vue、h5上使用wxs实现自定义下拉刷新，降低逻辑层与视图层的通信折损，提升性能
 
 var currentMoveDistance = 0;
+var isPCFlag = -1;
 
 function propObserver(newValue, oldValue, ownerInstance, instance) {
 	var state = ownerInstance.getState();
@@ -43,7 +44,7 @@ function touchmove(e, ownerInstance) {
 	var instance = ownerInstance.getState().currentInstance;
 	var dataset = instance.getDataset();
 	var refresherThreshold = dataset.refresherthreshold;
-    var isIos = _getIsTrue(dataset.isios);
+	var isIos = _getIsTrue(dataset.isios);
 	var state = instance.getState();
 	if (_getRefresherTouchDisabled(e, instance, 1)) {
 		_handleTouchMovePullingDown(state, ownerInstance, false);
@@ -62,9 +63,9 @@ function touchmove(e, ownerInstance) {
 		return true;
 	}
 	if (prevent && !state.disabledBounce) {
-        if(isIos){
-           ownerInstance.callMethod('_handleScrollViewDisableBounce', {bounce: false}); 
-        }
+		if(isIos){
+		   ownerInstance.callMethod('_handleScrollViewDisableBounce', {bounce: false}); 
+		}
 		state.disabledBounce = true;
 		_handleTouchMovePullingDown(state, ownerInstance, prevent);
 		return !prevent;
@@ -90,8 +91,7 @@ function touchmove(e, ownerInstance) {
 	if (hasTouchmove) {
 		ownerInstance.callMethod('_handleWxsPullingDown', {moveDistance:moveDistance, diffDis:moveDistanceObj.diffDis});
 	}
-	if (oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus || oldIsTouchmoving !=
-		isTouchmoving) {
+	if (oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus || oldIsTouchmoving != isTouchmoving) {
 		ownerInstance.callMethod('_handleRefresherTouchmove', moveDistance, touch);
 	}
 	_handleTouchMovePullingDown(state, ownerInstance, prevent);
@@ -140,16 +140,20 @@ function touchend(e, ownerInstance) {
 
 // #ifdef H5
 function isPC() {
+	if (isPCFlag != -1){
+		return isPCFlag;
+	}
 	var userAgentInfo = navigator.userAgent;
 	var Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
 	var flag = true;
-	for (var v = 0; v < Agents.length - 1; v++) {
-		if (userAgentInfo.indexOf(Agents[v]) > 0) {
+	for (var i = 0; i < Agents.length; i++) {
+		if (userAgentInfo.indexOf(Agents[i]) > 0) {
 			flag = false;
 			break;
 		}
 	}
-	return flag;
+	isPCFlag = flag;
+	return isPCFlag;
 }
 
 var movable = false;
@@ -284,7 +288,7 @@ function _getRefresherTouchDisabled(e, instance, processTag) {
 		fixedIsTop = true;
 	}
 	return loading || useChatRecordMode || !refresherEnabled || !useCustomRefresher || ((usePageScroll && useCustomRefresher && pageScrollTop > 5) && !fixedIsTop) || 
-    ((!usePageScroll && useCustomRefresher && scrollTop > 5) && !fixedIsTop);
+	((!usePageScroll && useCustomRefresher && scrollTop > 5) && !fixedIsTop);
 }
 
 function _getAngleIsInRange(e, touch, state, dataset) {
