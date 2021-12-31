@@ -30,7 +30,7 @@ function touchstart(e, ownerInstance) {
 	var touch = _getCommonTouch(e);
 	var loading = _getIsTrue(dataset.loading);
 	state.startY = touch.touchY;
-	state.lastRefresherTouchmove = touch;
+	state.lastTouch = touch;
 	if (!loading && isTouchEnded) {
 		state.isTouchmoving = false;
 	}
@@ -283,28 +283,25 @@ function _getRefresherTouchDisabled(e, instance, processTag) {
 	if (!isIos && processTag === 2) {
 		fixedIsTop = true;
 	}
-	var res = loading || useChatRecordMode || !refresherEnabled || !useCustomRefresher || ((
-		usePageScroll && useCustomRefresher && pageScrollTop > 5) && !fixedIsTop) || ((
-		!usePageScroll && useCustomRefresher && scrollTop > 5) && !fixedIsTop);
-	return res;
+	return loading || useChatRecordMode || !refresherEnabled || !useCustomRefresher || ((usePageScroll && useCustomRefresher && pageScrollTop > 5) && !fixedIsTop) || 
+    ((!usePageScroll && useCustomRefresher && scrollTop > 5) && !fixedIsTop);
 }
 
 function _getAngleIsInRange(e, touch, state, dataset) {
 	var refresherMaxAngle = dataset.refreshermaxangle;
 	var refresherAecc = _getIsTrue(dataset.refresheraecc);
-	var lastRefresherTouchmove = state.lastRefresherTouchmove;
+	var lastTouch = state.lastTouch;
 	var refresherReachMaxAngle = state.refresherReachMaxAngle;
 	var moveDistance = state.oldMoveDistance;
-	if (!lastRefresherTouchmove) {
+	if (!lastTouch) {
 		return true;
 	}
-	if (refresherMaxAngle >= 0 && refresherMaxAngle <= 90 && lastRefresherTouchmove) {
-		if ((!moveDistance || moveDistance < 1) && !refresherAecc && refresherReachMaxAngle != null && !
-			refresherReachMaxAngle) {
+	if (refresherMaxAngle >= 0 && refresherMaxAngle <= 90 && lastTouch) {
+		if ((!moveDistance || moveDistance < 1) && !refresherAecc && refresherReachMaxAngle != null && !refresherReachMaxAngle) {
 			return false;
 		}
-		var x = Math.abs(touch.touchX - lastRefresherTouchmove.touchX);
-		var y = Math.abs(touch.touchY - lastRefresherTouchmove.touchY);
+		var x = Math.abs(touch.touchX - lastTouch.touchX);
+		var y = Math.abs(touch.touchY - lastTouch.touchY);
 		var z = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 		if ((x || y) && x > 1) {
 			var angle = Math.asin(y / z) / Math.PI * 180;
@@ -312,14 +309,14 @@ function _getAngleIsInRange(e, touch, state, dataset) {
 				var hitReachMaxAngleCount = state.hitReachMaxAngleCount || 0;
 				state.hitReachMaxAngleCount = ++hitReachMaxAngleCount;
 				if (state.hitReachMaxAngleCount > 2) {
-					state.lastRefresherTouchmove = touch;
+					state.lastTouch = touch;
 					state.refresherReachMaxAngle = false;
 				}
 				return false;
 			}
 		}
 	}
-	state.lastRefresherTouchmove = touch;
+	state.lastTouch = touch;
 	return true;
 }
 
