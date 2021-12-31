@@ -608,7 +608,7 @@ export default {
 		emptyViewFixed: {
 			type: Boolean,
 			default: function() {
-				return _getConfig('emptyViewFixed', true)
+				return _getConfig('emptyViewFixed', false)
 			}
 		},
 		//空数据图片是否垂直居中，默认为是。emptyViewFixed为false时有效
@@ -882,7 +882,9 @@ export default {
 			this.nLoadingMoreFixedHeight = true;
 		}
 		// #endif
+		// #ifdef MP-WEIXIN
 		this._getCssSafeAreaInsetBottom();
+		// #endif
 	},
 	destroyed() {
 		uni.$off(i18nUpdateKey);
@@ -1319,10 +1321,10 @@ export default {
 		},
 		safeAreaBottom() {
 			let safeAreaBottom = 0;
-			// #ifdef APP-NVUE
+			// #ifndef MP-WEIXIN
 			safeAreaBottom = this.systemInfo.safeAreaInsets.bottom || 0;
 			// #endif
-			// #ifndef APP-NVUE
+			// #ifdef MP-WEIXIN
 			safeAreaBottom = this.cssSafeAreaInsetBottom === -1 ? 0 : this.cssSafeAreaInsetBottom;
 			// #endif
 			return safeAreaBottom;

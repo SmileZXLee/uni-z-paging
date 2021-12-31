@@ -177,8 +177,10 @@
 }
 
 .zp-safe-area-inset-bottom {
-    position: absolute;
-    height: env(safe-area-inset-bottom);
+	position: absolute;
+	/* #ifdef MP-WEIXIN */
+	height: env(safe-area-inset-bottom);
+	/* #endif */
 }
 
 .zp-n-refresh-container {

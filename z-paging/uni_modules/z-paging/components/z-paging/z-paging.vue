@@ -5,7 +5,7 @@
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
 		  |_|          |___/         |___/ 
 V2.1.0
-by ZXLee 2021-12-29
+by ZXLee 2021-12-31
 -- >
 <!-- API文档地址：https://z-paging.zxlee.cn -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -15,7 +15,9 @@ by ZXLee 2021-12-29
 <template name="z-paging">
 	<!-- #ifndef APP-NVUE -->
 	<view :class="!usePageScroll&&fixed?'z-paging-content z-paging-content-fixed':'z-paging-content'" :style="[finalPagingStyle]">
+		<!-- #ifdef MP-WEIXIN -->
 		<view v-if="cssSafeAreaInsetBottom===-1" class="zp-safe-area-inset-bottom"></view>
+		<!-- #endif -->
 		<!-- 顶部固定的slot -->
 		<slot v-if="!usePageScroll&&$slots.top" name="top"></slot>
 		<view class="zp-page-scroll-top" v-else-if="usePageScroll&&$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
