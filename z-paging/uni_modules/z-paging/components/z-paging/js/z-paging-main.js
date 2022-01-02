@@ -2462,9 +2462,7 @@ export default {
 			if (moveDistance < 0 && this.usePageScroll && this.loadingMoreEnabled && this.useCustomRefresher && this
 				.pageScrollTop === -1) {
 				if (this.showConsoleError) {
-					zUtils.consoleErr(
-						'usePageScroll为true并且自定义下拉刷新时必须引入mixin或在page滚动时通过调用z-paging组件的updatePageScrollTop方法设置当前的scrollTop'
-					)
+					zUtils.consoleErr('usePageScroll为true并且自定义下拉刷新时必须引入mixin或在page滚动时通过调用z-paging组件的updatePageScrollTop方法设置当前的scrollTop')
 				}
 			}
 			this.isTouchEnded = true;
