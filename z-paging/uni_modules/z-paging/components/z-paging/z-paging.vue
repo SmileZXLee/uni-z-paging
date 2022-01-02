@@ -4,8 +4,8 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
 		  |_|          |___/         |___/ 
-V2.1.0
-by ZXLee 2021-12-31
+V2.1.0 (2022-01-02)
+by ZXLee
 -- >
 <!-- API文档地址：https://z-paging.zxlee.cn -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
@@ -311,7 +311,7 @@ by ZXLee 2021-12-31
 	 * @property {Boolean} hide-empty-view 是否强制隐藏空数据图，默认为否
 	 * @property {String|Object} empty-view-text 空数据图描述文字，默认为“没有数据哦~”
 	 * @property {Boolean} show-empty-view-reload 是否显示空数据图重新加载按钮(无数据时)，默认为否
-	 * @property {Boolean} s how-empty-view-reload-when-error 加载失败时是否显示空数据图重新加载按钮，默认为是
+	 * @property {Boolean} show-empty-view-reload-when-error 加载失败时是否显示空数据图重新加载按钮，默认为是
 	 * @property {String} empty-view-img 空数据图图片，默认使用z-paging内置的图片
 	 * @property {String|Object} empty-view-reload-text 空数据图点击重新加载文字
 	 * @property {String|Object} empty-view-error-text 空数据图“加载失败”描述文字

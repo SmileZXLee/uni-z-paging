@@ -1483,9 +1483,7 @@ export default {
 			const disTime = currentTimeStamp - this.requestTimeStamp;
 			let minDelay = this.minDelay;
 			if(this.pageNo === this.defaultPageNo && this.finalShowRefresherWhenReload){
-				if(minDelay < 400){
-					minDelay = 400;
-				}
+				minDelay = Math.max(400,minDelay);
 			}
 			if(this.requestTimeStamp > 0 && disTime < minDelay){
 				addDataDalay = minDelay - disTime;
@@ -2393,8 +2391,7 @@ export default {
 			}
 			if (this.refresherMaxAngle >= 0 && this.refresherMaxAngle <= 90 && this.lastRefresherTouchmove && this
 				.lastRefresherTouchmove.touchY <= refresherTouchmoveY) {
-				if (!moveDistance && !this.refresherAngleEnableChangeContinued && this.moveDistance < 1 && !this
-					.refresherReachMaxAngle) {
+				if (!moveDistance && !this.refresherAngleEnableChangeContinued && this.moveDistance < 1 && !this.refresherReachMaxAngle) {
 					return;
 				}
 				const x = Math.abs(touch.touchX - this.lastRefresherTouchmove.touchX);
@@ -2466,8 +2463,7 @@ export default {
 				}
 			}
 			this.isTouchEnded = true;
-			if (moveDistance >= this.finalRefresherThreshold && this.refresherStatus === Enum.RefresherStatus
-				.PullToRefresh) {
+			if (moveDistance >= this.finalRefresherThreshold && this.refresherStatus === Enum.RefresherStatus.PullToRefresh) {
 				// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 				this.refresherTransform = `translateY(${this.finalRefresherThreshold}px)`;
 				// #endif
@@ -2836,12 +2832,9 @@ export default {
 			let totalPagingList = [...this.totalLocalPagingList];
 			let pageNoIndex = (pageNo - 1) * pageSize;
 			if (pageNoIndex + pageSize <= totalPagingList.length) {
-				this._localPagingQueryResult(callback, totalPagingList.splice(pageNoIndex, pageSize),
-					localPagingLoadingTime);
+				this._localPagingQueryResult(callback, totalPagingList.splice(pageNoIndex, pageSize), localPagingLoadingTime);
 			} else if (pageNoIndex < totalPagingList.length) {
-				this._localPagingQueryResult(callback, totalPagingList.splice(pageNoIndex, totalPagingList.length -
-						pageNoIndex),
-					localPagingLoadingTime);
+				this._localPagingQueryResult(callback, totalPagingList.splice(pageNoIndex, totalPagingList.length - pageNoIndex), localPagingLoadingTime);
 			} else {
 				this._localPagingQueryResult(callback, [], localPagingLoadingTime);
 			}
