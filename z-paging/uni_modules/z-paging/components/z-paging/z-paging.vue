@@ -4,9 +4,9 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
 		  |_|          |___/         |___/ 
-V2.1.0 (2022-01-02)
+V2.1.0 (2022-01-05)
 by ZXLee
--- >
+-->
 <!-- API文档地址：https://z-paging.zxlee.cn -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->

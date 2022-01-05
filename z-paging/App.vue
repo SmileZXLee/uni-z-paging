@@ -1,9 +1,14 @@
 <script>
+	import { version } from '@/uni_modules/z-paging/package.json'
 	export default {
 		onLaunch: function() {
 			console.log('App Launch')
 			// #ifdef APP-PLUS
 			plus.screen.lockOrientation("portrait-primary");
+			// #endif
+			
+			// #ifndef APP-APP-PLUS
+			console.log(`%c z-paging %c v${version} `,'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff','background:#007AFF ;padding: 1px; border-radius: 0 3px 3px 0;  color: #fff; font-weight: bold;')
 			// #endif
 		},
 		onShow: function() {

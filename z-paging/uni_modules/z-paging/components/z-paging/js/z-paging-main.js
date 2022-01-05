@@ -1614,6 +1614,10 @@ export default {
 			this._reload(true);
 			this._addData([], true, false);
 		},
+		//清空分页数据
+		clear() {
+			this.clean();
+		},
 		//手动触发滚动到顶部加载更多，聊天记录模式时有效
 		doChatRecordLoadMore() {
 			if (this.useChatRecordMode) {
