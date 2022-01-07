@@ -177,7 +177,7 @@
 
 .zp-safe-area-inset-bottom {
 	position: absolute;
-	/* #ifdef MP-WEIXIN */
+	/* #ifndef APP-PLUS || H5 */
 	height: env(safe-area-inset-bottom);
 	/* #endif */
 }

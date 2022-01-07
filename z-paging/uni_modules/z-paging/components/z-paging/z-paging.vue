@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
 		  |_|          |___/         |___/ 
-V2.1.0 (2022-01-05)
+v2.1.1 (2022-01-05)
 by ZXLee
 -->
 <!-- API文档地址：https://z-paging.zxlee.cn -->
@@ -15,7 +15,7 @@ by ZXLee
 <template name="z-paging">
 	<!-- #ifndef APP-NVUE -->
 	<view :class="!usePageScroll&&fixed?'z-paging-content z-paging-content-fixed':'z-paging-content'" :style="[finalPagingStyle]">
-		<!-- #ifdef MP-WEIXIN -->
+		<!-- #ifndef APP-PLUS || H5 -->
 		<view v-if="cssSafeAreaInsetBottom===-1" class="zp-safe-area-inset-bottom"></view>
 		<!-- #endif -->
 		<!-- 顶部固定的slot -->
@@ -65,11 +65,7 @@ by ZXLee
 							<view class="zp-custom-refresher-container" :style="[{'height': `${finalRefresherThreshold}px`,'background': refresherBackground}]">
 								<!-- 下拉刷新view -->
 								<view class="zp-custom-refresher-slot-view">
-									<slot
-									<!-- #ifndef MP-QQ -->
-									:refresherStatus="refresherStatus"
-									<!-- #endif -->
-									name="refresher" />
+									<slot :refresherStatus="refresherStatus" name="refresher" />
 								</view>
 								<z-paging-refresh ref="refresh" v-if="!showCustomRefresher" :style="[{'height': `${finalRefresherThreshold}px`}]" :status="refresherStatus"
 									:defaultThemeStyle="finalRefresherThemeStyle" :defaultText="finalRefresherDefaultText"

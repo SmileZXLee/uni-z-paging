@@ -6,7 +6,7 @@
 <!-- 滑动切换选项卡swiper，此组件支持easycom规范，可以在项目中直接引用 -->
 <template>
 	<view :class="fixed?'zp-swiper-container zp-swiper-container-fixed':'zp-swiper-container'" :style="[swiperStyle]">
-		<!-- #ifdef MP-WEIXIN -->
+		<!-- #ifndef APP-PLUS || H5 -->
 		<view v-if="cssSafeAreaInsetBottom===-1" class="zp-safe-area-inset-bottom"></view>
 		<!-- #endif -->
         <slot v-if="$slots.top" name="top"></slot>
@@ -44,7 +44,7 @@
 			this.$nextTick(() => {
 				this.systemInfo = uni.getSystemInfoSync();
 			})
-            // #ifdef MP-WEIXIN
+            // #ifndef APP-PLUS || H5
             this._getCssSafeAreaInsetBottom();
             // #endif
 		},
@@ -74,11 +74,14 @@
 				return swiperStyle;
 			},
 			safeAreaBottom() {
+                if(!this.systemInfo){
+                    return 0;
+                }
 				let safeAreaBottom = 0;
-				// #ifndef MP-WEIXIN
+				// #ifdef APP-PLUS || H5
 				safeAreaBottom = this.systemInfo.safeAreaInsets.bottom || 0;
 				// #endif
-				// #ifdef MP-WEIXIN
+				// #ifndef APP-PLUS || H5
 				safeAreaBottom = this.cssSafeAreaInsetBottom === -1 ? 0 : this.cssSafeAreaInsetBottom;
 				// #endif
 				return safeAreaBottom;
@@ -121,7 +124,7 @@
     
     .zp-safe-area-inset-bottom {
     	position: absolute;
-    	/* #ifdef MP-WEIXIN */
+    	/* #ifndef APP-PLUS || H5 */
     	height: env(safe-area-inset-bottom);
     	/* #endif */
     }

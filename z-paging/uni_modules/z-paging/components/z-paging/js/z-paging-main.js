@@ -11,7 +11,7 @@ import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
 import Enum from './z-paging-enum'
 
-const currentVersion = 'V2.1.0';
+const currentVersion = 'V2.1.1';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -882,7 +882,7 @@ export default {
 			this.nLoadingMoreFixedHeight = true;
 		}
 		// #endif
-		// #ifdef MP-WEIXIN
+		// #ifndef APP-PLUS || H5
 		this._getCssSafeAreaInsetBottom();
 		// #endif
 	},
@@ -1320,11 +1320,14 @@ export default {
 			return uni.getStorageSync(i18nUpdateKey) || systemLanguage || 'zh-cn';
 		},
 		safeAreaBottom() {
+			if(!this.systemInfo){
+				return 0;
+			}
 			let safeAreaBottom = 0;
-			// #ifndef MP-WEIXIN
+			// #ifdef APP-PLUS || H5
 			safeAreaBottom = this.systemInfo.safeAreaInsets.bottom || 0;
 			// #endif
-			// #ifdef MP-WEIXIN
+			// #ifndef APP-PLUS || H5
 			safeAreaBottom = this.cssSafeAreaInsetBottom === -1 ? 0 : this.cssSafeAreaInsetBottom;
 			// #endif
 			return safeAreaBottom;
