@@ -3,7 +3,7 @@
 > 【uni-app自动分页器】超简单，低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view，支持吸顶效果，支持国际化等。
 
 ## API文档地址：[https://z-paging.com](http://z-paging.com)
-## 备用API文档地址：[https://www.zxlee.cn/z-paging/index.html](https://www.zxlee.cn/z-paging/index.html) 
+## 备用API文档地址：[https://z-paging.zxlee.cn](https://z-paging.zxlee.cn) 
 
 ## 在DCloud插件市场中访问：[https://ext.dcloud.net.cn/plugin?name=z-paging](https://ext.dcloud.net.cn/plugin?name=z-paging)
 
