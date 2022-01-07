@@ -2463,8 +2463,7 @@ export default {
 			}
 			// #endif
 			this.refresherReachMaxAngle = true;
-			if (moveDistance < 0 && this.usePageScroll && this.loadingMoreEnabled && this.useCustomRefresher && this
-				.pageScrollTop === -1) {
+			if (moveDistance < 0 && this.usePageScroll && this.loadingMoreEnabled && this.useCustomRefresher && this.pageScrollTop === -1) {
 				if (this.showConsoleError) {
 					zUtils.consoleErr('usePageScroll为true并且自定义下拉刷新时必须引入mixin或在page滚动时通过调用z-paging组件的updatePageScrollTop方法设置当前的scrollTop')
 				}
@@ -2628,8 +2627,7 @@ export default {
 		_getFinalRefresherMoveDistance(moveDistance) {
 			moveDistance = moveDistance * 0.85;
 			if (moveDistance >= this.finalRefresherThreshold) {
-				moveDistance = this.finalRefresherThreshold + (moveDistance - this.finalRefresherThreshold) * (1 - this
-					.finalRefresherOutRate);
+				moveDistance = this.finalRefresherThreshold + (moveDistance - this.finalRefresherThreshold) * (1 - this.finalRefresherOutRate);
 			}
 			return moveDistance;
 		},
@@ -2639,11 +2637,9 @@ export default {
 				this.showLoadingMore = newVal.length > this.hideLoadingMoreWhenNoMoreByLimit;
 			} else if ((this.loadingStatus === Enum.LoadingMoreStatus.NoMore && this.hideLoadingMoreWhenNoMoreAndInsideOfPaging && newVal.length) || (this.insideMore && this.insideOfPaging !== false && newVal.length)) {
 				this.$nextTick(() => {
-					this._checkShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal, scrollViewNode,
-						pagingContainerNode);
+					this._checkShowLoadingMoreWhenNoMoreAndInsideOfPaging(newVal, scrollViewNode, pagingContainerNode);
 				})
-				if (this.insideMore && this.insideOfPaging !== false &&
-					newVal.length) {
+				if (this.insideMore && this.insideOfPaging !== false && newVal.length) {
 					this.showLoadingMore = newVal.length;
 				}
 			} else {
@@ -2666,8 +2662,7 @@ export default {
 				} else {
 					let pagingContainerH = 0;
 					let scrollViewH = 0;
-					const pagingContainerNode = oldPagingContainerNode || await this._getNodeClientRect(
-						'.zp-paging-container-content');
+					const pagingContainerNode = oldPagingContainerNode || await this._getNodeClientRect('.zp-paging-container-content');
 					if (pagingContainerNode) {
 						pagingContainerH = pagingContainerNode[0].height;
 					}
@@ -2694,9 +2689,7 @@ export default {
 				// #ifndef APP-NVUE
 				this.$nextTick(() => {
 					this._checkScrollViewShouldFullHeight((scrollViewNode, pagingContainerNode) => {
-						this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(totalData,
-							scrollViewNode,
-							pagingContainerNode)
+						this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(totalData, scrollViewNode, pagingContainerNode)
 					});
 				})
 				// #endif
@@ -2779,8 +2772,8 @@ export default {
 			// #ifdef APP-NVUE
 			select = select.replace('.', '').replace('#', '');
 			const ref = this.$refs[select];
-			if (ref) {
-				return new Promise((resolve, reject) => {
+			return new Promise((resolve, reject) => {
+				if (ref) {
 					weexDom.getComponentRect(ref, option => {
 						if (option && option.result) {
 							resolve([option.size]);
@@ -2788,12 +2781,10 @@ export default {
 							resolve(false);
 						}
 					})
-				});
-			} else {
-				return new Promise((resolve, reject) => {
+				} else {
 					resolve(false);
-				});
-			}
+				}
+			});
 			return;
 			// #endif
 			let res = null;
