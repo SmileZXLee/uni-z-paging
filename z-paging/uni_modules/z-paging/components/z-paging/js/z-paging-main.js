@@ -2405,7 +2405,11 @@ export default {
 			moveDistance = this._getFinalRefresherMoveDistance(moveDistance);
 			this._handleRefresherTouchmove(moveDistance, touch);
 			if (!this.disabledBounce) {
-				this._handleScrollViewDisableBounce({bounce: false});
+				if(this.isIos){
+					// #ifndef MP-LARK
+					this._handleScrollViewDisableBounce({bounce: false});
+					// #endif
+				}
 				this.disabledBounce = true;
 			}
 			this._emitTouchmove({pullingDistance:moveDistance,dy:this.moveDistance - this.oldMoveDistance});
