@@ -144,7 +144,7 @@
             
         }
         ,{
-            "path" : "pages/swiper-easy-demo/swiper-easy-demo",
+            "path" : "pages/swiper-simplify-demo/swiper-simplify-demo",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "滑动切换选项卡演示(简化写法)",
@@ -153,7 +153,7 @@
             
         }
         ,{
-            "path" : "pages/swiper-easy-demo-n/swiper-easy-demo-n",
+            "path" : "pages/swiper-simplify-demo-n/swiper-simplify-demo-n",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "滑动切换选项卡演示(简化写法)(nvue)",

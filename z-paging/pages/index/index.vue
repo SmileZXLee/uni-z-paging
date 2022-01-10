@@ -46,7 +46,7 @@
 					},
 					{
 						title: '滑动切换选项卡演示(简化写法,不推荐)',
-						file: 'swiper-easy-demo',
+						file: 'swiper-simplify-demo',
 						subTitle: '使用了uView的tabsSwiper组件'
 					},
 					{
@@ -123,7 +123,7 @@
 					},
 					{
 						title: '滑动切换选项卡演示(简化写法,不推荐)(nvue)',
-						file: 'swiper-easy-demo-n',
+						file: 'swiper-simplify-demo-n',
 						subTitle: ''
 					},
 					{

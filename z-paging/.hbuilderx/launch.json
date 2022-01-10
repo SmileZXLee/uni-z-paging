@@ -22,6 +22,10 @@
      	{
      		"launchtype" : "remote"
      	},
+     	"mp-feishu" : 
+     	{
+     		"launchtype" : "remote"
+     	},
      	"mp-qq" : 
      	{
      		"launchtype" : "remote"
