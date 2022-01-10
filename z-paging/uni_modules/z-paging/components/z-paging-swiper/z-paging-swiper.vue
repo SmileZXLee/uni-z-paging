@@ -9,13 +9,13 @@
 		<!-- #ifndef APP-PLUS || H5 -->
 		<view v-if="cssSafeAreaInsetBottom===-1" class="zp-safe-area-inset-bottom"></view>
 		<!-- #endif -->
-        <slot v-if="$slots.top" name="top"></slot>
+		<slot v-if="$slots.top" name="top" />
 		<view class="zp-swiper-super">
 			<view class="zp-swiper">
-				<slot/>
+				<slot />
 			</view>
 		</view>
-		<slot v-if="$slots.bottom" name="bottom"></slot>
+		<slot v-if="$slots.bottom" name="bottom" />
 	</view>
 </template>
 
@@ -25,7 +25,7 @@
 		data() {
 			return {
 				systemInfo: null,
-                cssSafeAreaInsetBottom: -1
+				cssSafeAreaInsetBottom: -1
 			};
 		},
 		props: {
@@ -44,9 +44,9 @@
 			this.$nextTick(() => {
 				this.systemInfo = uni.getSystemInfoSync();
 			})
-            // #ifndef APP-PLUS || H5
-            this._getCssSafeAreaInsetBottom();
-            // #endif
+			// #ifndef APP-PLUS || H5
+			this._getCssSafeAreaInsetBottom();
+			// #endif
 		},
 		computed: {
 			swiperStyle() {
@@ -67,16 +67,16 @@
 					if (this.safeAreaInsetBottom) {
 						bottom += this.safeAreaBottom;
 					}
-                    if(bottom > 0){
-                    	swiperStyle.bottom = bottom + 'px';
-                    }
+					if(bottom > 0){
+						swiperStyle.bottom = bottom + 'px';
+					}
 				}
 				return swiperStyle;
 			},
 			safeAreaBottom() {
-                if(!this.systemInfo){
-                    return 0;
-                }
+				if(!this.systemInfo){
+					return 0;
+				}
 				let safeAreaBottom = 0;
 				// #ifdef APP-PLUS || H5
 				safeAreaBottom = this.systemInfo.safeAreaInsets.bottom || 0;
@@ -87,17 +87,17 @@
 				return safeAreaBottom;
 			}
 		},
-        methods: {
-            //通过获取css设置的底部安全区域占位view高度设置bottom距离
-            _getCssSafeAreaInsetBottom(){
-                const query = uni.createSelectorQuery().in(this);
-                query.select('.zp-safe-area-inset-bottom').boundingClientRect(res => {
-                    if (res) {
-                        this.cssSafeAreaInsetBottom = res.height;
-                    }
-                }).exec();
-            }
-        }
+		methods: {
+			//通过获取css设置的底部安全区域占位view高度设置bottom距离
+			_getCssSafeAreaInsetBottom(){
+				const query = uni.createSelectorQuery().in(this);
+				query.select('.zp-safe-area-inset-bottom').boundingClientRect(res => {
+					if (res) {
+						this.cssSafeAreaInsetBottom = res.height;
+					}
+				}).exec();
+			}
+		}
 	}
 </script>
 
@@ -121,13 +121,13 @@
 		bottom: 0;
 		right: 0;
 	}
-    
-    .zp-safe-area-inset-bottom {
-    	position: absolute;
-    	/* #ifndef APP-PLUS || H5 */
-    	height: env(safe-area-inset-bottom);
-    	/* #endif */
-    }
+	
+	.zp-safe-area-inset-bottom {
+		position: absolute;
+		/* #ifndef APP-PLUS || H5 */
+		height: env(safe-area-inset-bottom);
+		/* #endif */
+	}
 
 	.zp-swiper-super {
 		flex: 1;

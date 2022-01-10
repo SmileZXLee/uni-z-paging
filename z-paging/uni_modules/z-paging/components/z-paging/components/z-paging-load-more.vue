@@ -39,7 +39,7 @@
 				return loadingMoreText;
 			},
 			loadingStatusTextArr() {
-                return [this.zConfig.defaultText,this.zConfig.loadingText,this.zConfig.noMoreText,this.zConfig.failText];
+				return [this.zConfig.defaultText,this.zConfig.loadingText,this.zConfig.noMoreText,this.zConfig.failText];
 			}
 		}
 	}

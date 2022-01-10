@@ -16,7 +16,7 @@
 				<!-- #ifdef APP-NVUE -->
 				<view v-else :style="[{'margin-right':showUpdateTime?'18rpx':'12rpx'}]">
 					<loading-indicator :class="systemInfo.platform==='ios'?'zp-loading-image-ios':'zp-loading-image-android'" 
-                    :style="[{color:defaultThemeStyle==='white'?'white':'#777777'},imgStyle]" animating />
+					:style="[{color:defaultThemeStyle==='white'?'white':'#777777'},imgStyle]" animating />
 				</view>
 				<!-- #endif -->
 			</view>
@@ -25,7 +25,7 @@
 					:style="[refresherRightTextStyle,titleStyle]">{{refresherStatusTextArr[status]||defaultText}}
 				</text>
 				<text v-if="showUpdateTime&&refresherTimeText.length" class="zp-r-right-text zp-r-right-time-text" :style="[refresherRightTextStyle,updateTimeStyle]">
-                    {{refresherTimeText}}
+					{{refresherTimeText}}
 				</text>
 			</view>
 		</view>
@@ -76,7 +76,7 @@
 		computed: {
 			refresherStatusTextArr() {
 				this.updateTime(this.updateTimeKey);
-                return [this.defaultText,this.pullingText,this.refreshingText,this.completeText];
+				return [this.defaultText,this.pullingText,this.refreshingText,this.completeText];
 			},
 			refresherLeftImageClass() {
 				if(this.status === 3){

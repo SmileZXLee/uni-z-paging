@@ -7,8 +7,8 @@
 <template>
 	<view :class="{'zp-container':true,'zp-container-fixed':emptyViewFixed}" :style="[finalEmptyViewStyle]">
 		<view class="zp-main">
-			<image v-if="!emptyViewImg.length" class="zp-main-image" :style="[emptyViewImgStyle]" :src="emptyImg"></image>
-			<image v-else class="zp-main-image" mode="aspectFit" :style="[emptyViewImgStyle]" :src="emptyViewImg"></image>
+			<image v-if="!emptyViewImg.length" class="zp-main-image" :style="[emptyViewImgStyle]" :src="emptyImg" />
+			<image v-else class="zp-main-image" mode="aspectFit" :style="[emptyViewImgStyle]" :src="emptyViewImg" />
 			<text class="zp-main-title" :style="[emptyViewTitleStyle]">{{emptyViewText}}</text>
 			<text v-if="showEmptyViewReload" class="zp-main-error-btn" :style="[emptyViewReloadStyle]" @click="reloadClick">{{emptyViewReloadText}}</text>
 		</view>

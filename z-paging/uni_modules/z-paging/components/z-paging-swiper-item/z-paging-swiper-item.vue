@@ -6,9 +6,8 @@
 <!-- 滑动切换选项卡swiper-item，此组件支持easycom规范，可以在项目中直接引用 -->
 <template>
 	<view class="zp-swiper-item-container">
-		<z-paging ref="paging" :fixed="false" @query="_queryList" @listChange="_updateList" :mounted-auto-call-reload="false"
-			style="height: 100%;">
-			<slot></slot>
+		<z-paging ref="paging" :fixed="false" @query="_queryList" @listChange="_updateList" :mounted-auto-call-reload="false" style="height: 100%;">
+			<slot />
 		</z-paging>
 	</view>
 </template>

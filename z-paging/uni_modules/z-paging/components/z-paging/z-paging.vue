@@ -19,9 +19,9 @@ by ZXLee
 		<view v-if="cssSafeAreaInsetBottom===-1" class="zp-safe-area-inset-bottom"></view>
 		<!-- #endif -->
 		<!-- 顶部固定的slot -->
-		<slot v-if="!usePageScroll&&$slots.top" name="top"></slot>
+		<slot v-if="!usePageScroll&&$slots.top" name="top" />
 		<view class="zp-page-scroll-top" v-else-if="usePageScroll&&$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
-			<slot name="top"></slot>
+			<slot name="top" />
 		</view>
 		<view :class="{'zp-scroll-view-super':!usePageScroll}" :style="[finalScrollViewStyle]">
 			<scroll-view
@@ -72,18 +72,15 @@ by ZXLee
 									:defaultThemeStyle="finalRefresherThemeStyle" :defaultText="finalRefresherDefaultText"
 									:pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText"
 									:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey"
-									:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle"></z-paging-refresh>
+									:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle" />
 							</view>
 						</view>
 						<view class="zp-paging-container">
-							<slot v-if="useChatRecordMode&&$slots.chatLoading&&loadingStatus!==2&&realTotalData.length"
-								name="chatLoading" />
-							<view v-else-if="useChatRecordMode&&loadingStatus!==2&&realTotalData.length"
-								class="zp-chat-record-loading-container">
+							<slot v-if="useChatRecordMode&&$slots.chatLoading&&loadingStatus!==2&&realTotalData.length" name="chatLoading" />
+							<view v-else-if="useChatRecordMode&&loadingStatus!==2&&realTotalData.length" class="zp-chat-record-loading-container">
 								<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
 									:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
-								<image v-else :src="base64Flower" class="zp-chat-record-loading-custom-image">
-								</image>
+								<image v-else :src="base64Flower" class="zp-chat-record-loading-custom-image" />
 							</view>
 							<!-- 全屏Loading -->
 							<slot v-if="$slots.loading&&showLoading&&!loadingFullFixed" name="loading" />
@@ -96,21 +93,14 @@ by ZXLee
 								<slot v-else-if="_shouldShowLoadingMore('loadingMoreLoading')" name="loadingMoreLoading" />
 								<slot v-else-if="_shouldShowLoadingMore('loadingMoreNoMore')" name="loadingMoreNoMore" />
 								<slot v-else-if="_shouldShowLoadingMore('loadingMoreFail')" name="loadingMoreFail" />
-								<z-paging-load-more @click.native="_onLoadingMore('click')"
-									v-else-if="_shouldShowLoadingMore('loadingMoreCustom')" :zConfig="zPagingLoadMoreConfig">
-								</z-paging-load-more>
+								<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="_shouldShowLoadingMore('loadingMoreCustom')" :zConfig="zPagingLoadMoreConfig" />
 								<!-- #endif -->
 								<!-- #ifdef MP-ALIPAY -->
-								<slot v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
-									name="loadingMoreDefault" />
-								<slot v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled"
-									name="loadingMoreLoading" />
-								<slot v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled&&!useChatRecordMode"
-									name="loadingMoreNoMore" />
-								<slot v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode"
-									name="loadingMoreFail" />
-								<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode" :zConfig="zPagingLoadMoreConfig">
-								</z-paging-load-more>
+								<slot v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreDefault" />
+								<slot v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled" name="loadingMoreLoading" />
+								<slot v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreNoMore" />
+								<slot v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreFail" />
+								<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode" :zConfig="zPagingLoadMoreConfig" />
 								<!-- #endif -->
 							</view>
 							<!-- 空数据图 -->
@@ -119,8 +109,7 @@ by ZXLee
 								<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
 								:emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" 
 								:emptyViewImgStyle="emptyViewImgStyle" :emptyViewReloadStyle="emptyViewReloadStyle" :emptyViewZIndex="emptyViewZIndex" :emptyViewFixed="emptyViewFixed" 
-								@reload="_emptyViewReload">
-								</z-paging-empty-view>
+								@reload="_emptyViewReload" />
 							</view>
 						</view>
 					</view>
@@ -128,14 +117,14 @@ by ZXLee
 			</scroll-view>
 		</view>
 		<!-- 底部固定的slot -->
-		<slot v-if="!usePageScroll&&$slots.bottom" name="bottom"></slot>
+		<slot v-if="!usePageScroll&&$slots.bottom" name="bottom" />
 		<view class="zp-page-scroll-bottom" v-else-if="usePageScroll&&$slots.bottom" :style="[{'bottom': `${windowBottom}px`}]">
-			<slot name="bottom"></slot>
+			<slot name="bottom" />
 		</view>
 		<!-- 点击返回顶部view -->
 		<view v-if="showBackToTopClass" :class="backToTopClass" :style="[finalBackToTopStyle]" @click.stop="_backToTopClick">
 			<slot v-if="$slots.backToTop" name="backToTop" />
-			<image v-else class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop"></image>
+			<image v-else class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop" />
 		</view>
 		<!-- 全屏Loading(铺满z-paging并固定) -->
 		<view v-if="$slots.loading&&showLoading&&loadingFullFixed" class="zp-loading-fixed">
@@ -147,7 +136,7 @@ by ZXLee
 	<view :is="finalNvueSuperListIs" :style="[finalPagingStyle]" :class="{'z-paging-content-fixed':fixed&&!usePageScroll}" :scrollable="false">
 		<!-- 顶部固定的slot -->
 		<view ref="zp-page-scroll-top" :is="nViewIs" class="zp-page-scroll-top" v-if="$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
-			<slot name="top"></slot>
+			<slot name="top" />
 		</view>
 		<view ref="n-list" :id="nvueListId" :style="[{'flex': 1,'top':isIos?'0px':'-1px'},scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" :is="finalNvueListIs" alwaysScrollableVertical="true"
 			:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar&&!useChatRecordMode" :loadmoreoffset="finalLowerThreshold" :enable-back-to-top="enableBackToTop"
@@ -163,7 +152,7 @@ by ZXLee
 					<z-paging-refresh ref="refresh" v-else :status="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
 						:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText"
 						:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey"
-						:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle"></z-paging-refresh>
+						:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle" />
 				</view>
 			</refresh>
 			<view ref="zp-n-list-top-tag" class="zp-n-list-top-tag" style="margin-top: -1rpx;" :style="[{height:finalNvueRefresherEnabled?'0px':'1px'}]" :is="nViewIs"></view>
@@ -174,7 +163,7 @@ by ZXLee
 				<z-paging-refresh ref="refresh" v-else :status="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
 					:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText" 
 					:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey"
-					:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle"></z-paging-refresh>
+					:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle" />
 			</view>
 			<slot />
 			<!-- 空数据图 -->
@@ -184,8 +173,7 @@ by ZXLee
 					<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
 					:emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" 
 					:emptyViewImgStyle="emptyViewImgStyle" :emptyViewReloadStyle="emptyViewReloadStyle" :emptyViewZIndex="emptyViewZIndex" :emptyViewFixed="emptyViewFixed" 
-					@reload="_emptyViewReload">
-					</z-paging-empty-view>
+					@reload="_emptyViewReload" />
 				</view>
 			</view>
 			<view v-if="!hideNvueBottomTag" ref="zp-n-list-bottom-tag" class="zp-n-list-bottom-tag" is="header"></view>
@@ -197,15 +185,12 @@ by ZXLee
 			<view :is="nViewIs" v-if="!refresherOnly&&loadingMoreEnabled">
 				<view v-if="useChatRecordMode">
 					<view v-if="loadingStatus!==2&&realTotalData.length">
-						<slot v-if="$slots.chatLoading"
-							name="chatLoading" />
+						<slot v-if="$slots.chatLoading" name="chatLoading" />
 						<view v-else class="zp-chat-record-loading-container">
 							<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
 								:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
 							<view>
-								<loading-indicator v-if="loadingStatus===1" :animating="true"
-									class="zp-line-loading-image">
-								</loading-indicator>
+								<loading-indicator v-if="loadingStatus===1" class="zp-line-loading-image" animating />
 							</view>
 						</view>
 					</view>
@@ -215,18 +200,16 @@ by ZXLee
 					<slot v-else-if="_shouldShowLoadingMore('loadingMoreLoading')" name="loadingMoreLoading" />
 					<slot v-else-if="_shouldShowLoadingMore('loadingMoreNoMore')" name="loadingMoreNoMore" />
 					<slot v-else-if="_shouldShowLoadingMore('loadingMoreFail')" name="loadingMoreFail" />
-					<z-paging-load-more @click.native="_onLoadingMore('click')"
-						v-else-if="_shouldShowLoadingMore('loadingMoreCustom')" :zConfig="zPagingLoadMoreConfig">
-					</z-paging-load-more>
+					<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="_shouldShowLoadingMore('loadingMoreCustom')" :zConfig="zPagingLoadMoreConfig" />
 				</view>
 			</view>
 		</view>
 		<!-- 底部固定的slot -->
-		<slot name="bottom"></slot>
+		<slot name="bottom" />
 		<!-- 点击返回顶部view -->
 		<view v-if="showBackToTopClass" :class="backToTopClass" :style="[finalBackToTopStyle]" @click.stop="_backToTopClick">
 			<slot v-if="$slots.backToTop" name="backToTop" />
-			<image v-else class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop"></image>
+			<image v-else class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop" />
 		</view>
 		<!-- 全屏Loading(铺满z-paging并固定) -->
 		<view v-if="$slots.loading&&showLoading&&loadingFullFixed" class="zp-loading-fixed">
