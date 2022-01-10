@@ -1158,10 +1158,7 @@ export default {
 			return zUtils.convertTextToPx(this.refresherFixedBacHeight);
 		},
 		finalScrollTop() {
-			if (this.usePageScroll) {
-				return this.pageScrollTop;
-			}
-			return this.oldScrollTop;
+			return this.usePageScroll ? this.pageScrollTop : this.oldScrollTop;
 		},
 		finalBackToTopStyle() {
 			let tempBackToTopStyle = this.backToTopStyle;
@@ -1346,17 +1343,10 @@ export default {
 			return 0;
 		},
 		windowHeight() {
-			if (!this.systemInfo) {
-				return 0;
-			}
-			return this.systemInfo.windowHeight;
+			return !this.systemInfo ? 0 : this.systemInfo.windowHeight || 0;
 		},
 		windowTop() {
-			if (!this.systemInfo) {
-				return 0;
-			}
-			const windowTop = this.systemInfo.windowTop;
-			return windowTop || 0;
+			return !this.systemInfo ? 0 : this.systemInfo.windowTop || 0;
 		},
 		windowBottom() {
 			if (!this.systemInfo) {
@@ -1497,15 +1487,10 @@ export default {
 				addDataDalay = minDelay - disTime;
 			}
 			this.$nextTick(() => {
-				if (this.delay > 0) {
-					setTimeout(() => {
-						this._addData(data, success, false);
-					}, this.delay)
-				} else {
-					setTimeout(() => {
-						this._addData(data, success, false);
-					}, addDataDalay)
-				}
+				let delay = this.delay > 0 ? this.delay : addDataDalay;
+				setTimeout(() => {
+					this._addData(data, success, false);
+				}, delay)
 			})
 		},
 		//终止下拉刷新状态
@@ -1522,7 +1507,7 @@ export default {
 		},
 		//当前版本号
 		getVersion() {
-			return `z-paging ${currentVersion}`;
+			return `z-paging v${currentVersion}`;
 		},
 		//添加聊天记录
 		addChatRecordData(data, toBottom = true, toBottomWithAnimate = true) {
@@ -1707,7 +1692,7 @@ export default {
 		//当使用页面滚动并且自定义下拉刷新时，请在页面的onPageScroll中调用此方法，告知z-paging当前的pageScrollTop，否则会导致在任意位置都可以下拉刷新
 		updatePageScrollTop(value) {
 			if (value == undefined) {
-				//zUtils.consoleErr('updatePageScrollTop方法缺少参数，请将页面onPageScroll事件中的scrollTop传递给此方法');
+				zUtils.consoleErr('updatePageScrollTop方法缺少参数，请将页面onPageScroll事件中的scrollTop传递给此方法');
 				return;
 			}
 			this.pageScrollTop = value;
@@ -2240,7 +2225,7 @@ export default {
 				return false;
 			}
 			if (((!this.showLoadingMoreWhenReload || this.isUserPullDown || this.loadingStatus !== Enum.More.Loading) && !this.showLoadingMore) || (!this.loadingMoreEnabled && (!this.showLoadingMoreWhenReload || this
-					.isUserPullDown || this.loadingStatus !== Enum.More.Loading)) || this.refresherOnly) {
+				.isUserPullDown || this.loadingStatus !== Enum.More.Loading)) || this.refresherOnly) {
 				return false;
 			}
 			
@@ -3045,10 +3030,7 @@ export default {
 					}
 				}
 			}
-			return {
-				data,
-				success
-			};
+			return {data,success};
 		},
 		// ------------nvue独有的方法----------------
 		// #ifdef APP-NVUE
