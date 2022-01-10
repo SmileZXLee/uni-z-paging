@@ -2293,8 +2293,7 @@ export default {
 				this.pageNo++;
 				this._startLoading(false);
 				if (this.isLocalPaging) {
-					this._localPagingQueryList(this.pageNo, this.defaultPageSize, this.localPagingLoadingTime, (
-						res) => {
+					this._localPagingQueryList(this.pageNo, this.defaultPageSize, this.localPagingLoadingTime, (res) => {
 						this.addData(res);
 					})
 				} else {
@@ -2455,7 +2454,7 @@ export default {
 			this.refresherReachMaxAngle = true;
 			if (moveDistance < 0 && this.usePageScroll && this.loadingMoreEnabled && this.useCustomRefresher && this.pageScrollTop === -1) {
 				if (this.showConsoleError) {
-					zUtils.consoleErr('usePageScroll为true并且自定义下拉刷新时必须引入mixin或在page滚动时通过调用z-paging组件的updatePageScrollTop方法设置当前的scrollTop')
+					zUtils.consoleErr('usePageScroll为true并且自定义下拉刷新时必须引入mixin或在page滚动时通过调用z-paging组件的updatePageScrollTop方法设置当前的scrollTop');
 				}
 			}
 			this.isTouchEnded = true;
