@@ -67,7 +67,7 @@ by ZXLee
 								<view class="zp-custom-refresher-slot-view">
 									<slot v-if="!($slots.refresherComplete&&refresherStatus===3)" :refresherStatus="refresherStatus" name="refresher" />
 								</view>
-                                <slot v-if="$slots.refresherComplete&&refresherStatus===3" name="refresherComplete" />
+								<slot v-if="$slots.refresherComplete&&refresherStatus===3" name="refresherComplete" />
 								<z-paging-refresh ref="refresh" v-else-if="!showCustomRefresher" :style="[{'height': `${finalRefresherThreshold}px`}]" :status="refresherStatus"
 									:defaultThemeStyle="finalRefresherThemeStyle" :defaultText="finalRefresherDefaultText"
 									:pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText"
@@ -158,7 +158,7 @@ by ZXLee
 				@pullingdown="_nOnPullingdown">
 				<view ref="zp-n-refresh-container" class="zp-n-refresh-container" :style="[{background:refresherBackground}]" id="zp-n-refresh-container">
 					<!-- 下拉刷新view -->
-                    <slot v-if="zScopedSlots.refresherComplete&&refresherStatus===3" name="refresherComplete" />
+					<slot v-if="zScopedSlots.refresherComplete&&refresherStatus===3" name="refresherComplete" />
 					<slot v-else-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
 					<z-paging-refresh ref="refresh" v-else :status="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
 						:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText"
@@ -168,9 +168,9 @@ by ZXLee
 			</refresh>
 			<view ref="zp-n-list-top-tag" class="zp-n-list-top-tag" style="margin-top: -1rpx;" :style="[{height:finalNvueRefresherEnabled?'0px':'1px'}]" :is="nViewIs"></view>
 			<view v-if="nShowRefresherReveal" ref="zp-n-list-refresher-reveal" :style="[{transform:`translateY(-${nShowRefresherRevealHeight}px)`,height:'0px'},{background:refresherBackground}]" :is="nViewIs">
-                <!-- 下拉刷新view -->
-                <slot v-if="zScopedSlots.refresherComplete&&refresherStatus===3" name="refresherComplete" />
-                <slot v-else-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
+				<!-- 下拉刷新view -->
+				<slot v-if="zScopedSlots.refresherComplete&&refresherStatus===3" name="refresherComplete" />
+				<slot v-else-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
 				<z-paging-refresh ref="refresh" v-else :status="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
 					:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText" 
 					:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey"
@@ -270,7 +270,7 @@ by ZXLee
 	 * @property {Boolean} refresher-only 是否只使用下拉刷新，设置为true后将关闭mounted自动请求数据、关闭滚动到底部加载更多，强制隐藏空数据图。默认为否
 	 * @property {Number|String} refresher-complete-delay 自定义下拉刷新结束以后延迟回弹的时间，单位为毫秒，默认为0
 	 * @property {Number|String} refresher-complete-duration 自定义下拉刷新结束回弹动画时间，单位为毫秒，默认为300毫秒(refresherEndBounceEnabled为false时，refresherCompleteDuration为设定值的1/3)，nvue无效
-     * @property {Boolean} refresher-complete-scrollable 自定义下拉刷新结束时是否允许列表滚动，默认为否
+	 * @property {Boolean} refresher-complete-scrollable 自定义下拉刷新结束时是否允许列表滚动，默认为否
 	 * @property {Boolean} use-page-scroll 使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
 	 * @property {Boolean} use-virtual-list 是否使用虚拟列表，默认为否
 	 * @property {Boolean} fixed z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为否(当使用内置scroll-view滚动时有效)
@@ -413,7 +413,7 @@ by ZXLee
 			refresherOnly: {type: Boolean},
 			refresherCompleteDelay: {type: [Number, String]},
 			refresherCompleteDuration: {type: [Number, String]},
-            refresherCompleteScrollable: {type: Boolean},
+			refresherCompleteScrollable: {type: Boolean},
 			usePageScroll: {type: Boolean},
 			useVirtualList: {type: Boolean},
 			fixed: {type: Boolean},
