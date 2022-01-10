@@ -7,30 +7,25 @@
 			<view class="zp-r-left">
 				<image v-if="status!==2" :class="refresherLeftImageClass"
 					:style="[{width: showUpdateTime?'36rpx':'30rpx',height: showUpdateTime?'36rpx':'30rpx','margin-right': showUpdateTime?'20rpx':'9rpx'},imgStyle]"
-					:src="defaultThemeStyle==='white'?(status===3?base64SuccessWhite:base64ArrowWhite):(status===3?base64Success:base64Arrow)">
-				</image>
+					:src="defaultThemeStyle==='white'?(status===3?base64SuccessWhite:base64ArrowWhite):(status===3?base64Success:base64Arrow)" />
 				<!-- #ifndef APP-NVUE -->
 				<image v-else class="zp-line-loading-image zp-r-left-image"
 					:style="[{width: showUpdateTime?'36rpx':'30rpx',height: showUpdateTime?'36rpx':'30rpx','margin-right': showUpdateTime?'20rpx':'9rpx'},imgStyle]"
-					:src="defaultThemeStyle==='white'?base64FlowerWhite:base64Flower">
-				</image>
+					:src="defaultThemeStyle==='white'?base64FlowerWhite:base64Flower" />
 				<!-- #endif -->
 				<!-- #ifdef APP-NVUE -->
 				<view v-else :style="[{'margin-right':showUpdateTime?'18rpx':'12rpx'}]">
-					<loading-indicator
-						:class="systemInfo.platform==='ios'?'zp-loading-image-ios':'zp-loading-image-android'"
-						:style="[{color:defaultThemeStyle==='white'?'white':'#777777'},imgStyle]" :animating="true">
-					</loading-indicator>
+					<loading-indicator :class="systemInfo.platform==='ios'?'zp-loading-image-ios':'zp-loading-image-android'" 
+                    :style="[{color:defaultThemeStyle==='white'?'white':'#777777'},imgStyle]" animating />
 				</view>
 				<!-- #endif -->
 			</view>
 			<view class="zp-r-right">
 				<text class="zp-r-right-text"
-					:style="[refresherRightTextStyle,titleStyle]">{{refresherStatusTextMap[status]||defaultText}}
+					:style="[refresherRightTextStyle,titleStyle]">{{refresherStatusTextArr[status]||defaultText}}
 				</text>
-				<text class="zp-r-right-text zp-r-right-time-text"
-					:style="[refresherRightTextStyle,updateTimeStyle]"
-					v-if="showUpdateTime&&refresherTimeText.length">{{refresherTimeText}}
+				<text v-if="showUpdateTime&&refresherTimeText.length" class="zp-r-right-text zp-r-right-time-text" :style="[refresherRightTextStyle,updateTimeStyle]">
+                    {{refresherTimeText}}
 				</text>
 			</view>
 		</view>
@@ -79,14 +74,9 @@
 			},
 		},
 		computed: {
-			refresherStatusTextMap() {
+			refresherStatusTextArr() {
 				this.updateTime(this.updateTimeKey);
-				return {
-					0: this.defaultText,
-					1: this.pullingText,
-					2: this.refreshingText,
-					3: this.completeText
-				};
+                return [this.defaultText,this.pullingText,this.refreshingText,this.completeText];
 			},
 			refresherLeftImageClass() {
 				if(this.status === 3){
