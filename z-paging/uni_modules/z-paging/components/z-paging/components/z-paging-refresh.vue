@@ -5,11 +5,11 @@
 		<view :class="showUpdateTime?'zp-r-container zp-r-container-padding':'zp-r-container'">
 			<view class="zp-r-left">
 				<image v-if="status!==2" :class="leftImageClass"
-					:style="rightImgStyle"
+					:style="[{width: showUpdateTime?'36rpx':'30rpx',height: showUpdateTime?'36rpx':'30rpx','margin-right': showUpdateTime?'20rpx':'9rpx'},imgStyle]"
 					:src="defaultThemeStyle==='white'?(status===3?base64SuccessWhite:base64ArrowWhite):(status===3?base64Success:base64Arrow)" />
 				<!-- #ifndef APP-NVUE -->
 				<image v-else class="zp-line-loading-image zp-r-left-image"
-					:style="rightImgStyle"
+					:style="[{width: showUpdateTime?'36rpx':'30rpx',height: showUpdateTime?'36rpx':'30rpx','margin-right': showUpdateTime?'20rpx':'9rpx'},imgStyle]"
 					:src="defaultThemeStyle==='white'?base64FlowerWhite:base64Flower" />
 				<!-- #endif -->
 				<!-- #ifdef APP-NVUE -->
@@ -113,12 +113,6 @@
 				// #endif
 				stl['color'] = color;
 				return stl;
-			},
-			rightImgStyle(){
-				const showUpdateTime = this.showUpdateTime;
-				const size = showUpdateTime ?' 36rpx' : '30rpx';
-				const left = showUpdateTime?'20rpx':'9rpx';
-				return [{width: size,height: size,'margin-right': left},this.imgStyle];
 			}
 		},
 		methods: {
@@ -188,7 +182,7 @@
 	.zp-r-left-image-pre-size{
 		/* #ifndef APP-NVUE */
 		width: 30rpx;
-		width: 30rpx;
+		height: 30rpx;
 		overflow: hidden;
 		/* #endif */
 	}
