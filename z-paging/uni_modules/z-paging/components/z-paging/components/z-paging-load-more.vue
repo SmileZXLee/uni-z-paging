@@ -35,10 +35,9 @@
 		props: ['zConfig'],
 		computed: {
 			ownLoadingMoreText() {
-				const loadingMoreText = this.loadingStatusTextArr[this.zConfig.status];
-				return loadingMoreText;
+				return this.statusTextArr[this.zConfig.status];
 			},
-			loadingStatusTextArr() {
+			statusTextArr() {
 				return [this.zConfig.defaultText,this.zConfig.loadingText,this.zConfig.noMoreText,this.zConfig.failText];
 			}
 		}

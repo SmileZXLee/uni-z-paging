@@ -2,15 +2,14 @@
 
 <template>
 	<view style="height: 100%;">
-		<view
-			:class="['zp-r-container',{'zp-r-container-padding':showUpdateTime}]" style="height: 100%;">
+		<view :class="showUpdateTime?'zp-r-container zp-r-container-padding':'zp-r-container'">
 			<view class="zp-r-left">
-				<image v-if="status!==2" :class="refresherLeftImageClass"
-					:style="[{width: showUpdateTime?'36rpx':'30rpx',height: showUpdateTime?'36rpx':'30rpx','margin-right': showUpdateTime?'20rpx':'9rpx'},imgStyle]"
+				<image v-if="status!==2" :class="leftImageClass"
+					:style="rightImgStyle"
 					:src="defaultThemeStyle==='white'?(status===3?base64SuccessWhite:base64ArrowWhite):(status===3?base64Success:base64Arrow)" />
 				<!-- #ifndef APP-NVUE -->
 				<image v-else class="zp-line-loading-image zp-r-left-image"
-					:style="[{width: showUpdateTime?'36rpx':'30rpx',height: showUpdateTime?'36rpx':'30rpx','margin-right': showUpdateTime?'20rpx':'9rpx'},imgStyle]"
+					:style="rightImgStyle"
 					:src="defaultThemeStyle==='white'?base64FlowerWhite:base64Flower" />
 				<!-- #endif -->
 				<!-- #ifdef APP-NVUE -->
@@ -22,11 +21,9 @@
 			</view>
 			<view class="zp-r-right">
 				<text class="zp-r-right-text"
-					:style="[refresherRightTextStyle,titleStyle]">{{refresherStatusTextArr[status]||defaultText}}
+					:style="[rightTextStyle,titleStyle]">{{statusTextArr[status]||defaultText}}
 				</text>
-				<text v-if="showUpdateTime&&refresherTimeText.length" class="zp-r-right-text zp-r-right-time-text" :style="[refresherRightTextStyle,updateTimeStyle]">
-					{{refresherTimeText}}
-				</text>
+				<text v-if="showUpdateTime&&refresherTimeText.length" class="zp-r-right-text zp-r-right-time-text" :style="[rightTextStyle,updateTimeStyle]">{{refresherTimeText}}</text>
 			</view>
 		</view>
 	</view>
@@ -74,48 +71,54 @@
 			},
 		},
 		computed: {
-			refresherStatusTextArr() {
+			statusTextArr() {
 				this.updateTime(this.updateTimeKey);
 				return [this.defaultText,this.pullingText,this.refreshingText,this.completeText];
 			},
-			refresherLeftImageClass() {
+			leftImageClass() {
 				if(this.status === 3){
 					return 'zp-r-left-image-no-transform .zp-r-left-image-pre-size';
 				}
-				let refresherLeftImageClass = 'zp-r-left-image ';
+				let cls = 'zp-r-left-image ';
 				if (this.status === 0) {
 					if (this.leftImageLoaded) {
-						refresherLeftImageClass += 'zp-r-arrow-down';
+						cls += 'zp-r-arrow-down';
 					} else {
 						this.leftImageLoaded = true;
-						refresherLeftImageClass += 'zp-r-arrow-down-no-duration';
+						cls += 'zp-r-arrow-down-no-duration';
 					}
 				} else {
-					refresherLeftImageClass += 'zp-r-arrow-top';
+					cls += 'zp-r-arrow-top';
 				}
-				return refresherLeftImageClass + ' zp-r-left-image-pre-size';
+				return cls + ' zp-r-left-image-pre-size';
 			},
-			refresherRightTextStyle() {
-				let refresherRightTextStyle = {};
+			rightTextStyle() {
+				let stl = {};
 				let color = '#555555';
 				if (this.defaultThemeStyle === 'white') {
 					color = '#efefef';
 				}
 				// #ifdef APP-NVUE
 				if (this.showUpdateTime) {
-					refresherRightTextStyle = {
+					stl = {
 						'height': '40rpx',
 						'line-height': '40rpx'
 					};
 				} else {
-					refresherRightTextStyle = {
+					stl = {
 						'height': '80rpx',
 						'line-height': '80rpx'
 					};
 				}
 				// #endif
-				refresherRightTextStyle['color'] = color;
-				return refresherRightTextStyle;
+				stl['color'] = color;
+				return stl;
+			},
+			rightImgStyle(){
+				const showUpdateTime = this.showUpdateTime;
+				const size = showUpdateTime ?' 36rpx' : '30rpx';
+				const left = showUpdateTime?'20rpx':'9rpx';
+				return [{width: size,height: size,'margin-right': left},this.imgStyle];
 			}
 		},
 		methods: {
@@ -137,6 +140,7 @@
 	.zp-r-container {
 		/* #ifndef APP-NVUE */
 		display: flex;
+		height: 100%;
 		/* #endif */
 		flex-direction: row;
 		justify-content: center;
