@@ -1085,10 +1085,7 @@ export default {
 			return 'list';
 		},
 		finalNvueSuperListIs() {
-			if (this.usePageScroll) {
-				return 'view';
-			}
-			return 'scroller';
+			return this.usePageScroll ? 'view' : 'scroller';
 		},
 		finalNvueRefresherEnabled() {
 			return this.finalNvueListIs !== 'view' && this.finalRefresherEnabled && !this.nShowRefresherReveal && !this.useChatRecordMode;
@@ -1129,10 +1126,7 @@ export default {
 			return pagingStyle;
 		},
 		finalEnableBackToTop() {
-			if (this.usePageScroll) {
-				return false;
-			}
-			return this.enableBackToTop;
+			return this.usePageScroll ? false : this.enableBackToTop;
 		},
 		finalBackToTopThreshold() {
 			return zUtils.convertTextToPx(this.backToTopThreshold);
@@ -1171,10 +1165,7 @@ export default {
 			return tempBackToTopStyle;
 		},
 		finalTempLanguage() {
-			if (this.language.length) {
-				return this.language;
-			}
-			return this.tempLanguage;
+			return this.language.length ? this.language : this.tempLanguage;
 		},
 		finalLanguage() {
 			let language = this.finalTempLanguage.toLowerCase();
@@ -1205,11 +1196,7 @@ export default {
 			return this._getI18nText('loadingMoreFailText', this.loadingMoreFailText);
 		},
 		finalEmptyViewText() {
-			if (this.isLoadFailed) {
-				return this.finalEmptyViewErrorText;
-			} else {
-				return this._getI18nText('emptyViewText', this.emptyViewText);
-			}
+			return this.isLoadFailed ? this.finalEmptyViewErrorText : this._getI18nText('emptyViewText', this.emptyViewText);
 		},
 		finalEmptyViewReloadText() {
 			return this._getI18nText('emptyViewReloadText', this.emptyViewReloadText);
@@ -1218,30 +1205,16 @@ export default {
 			return this._getI18nText('emptyViewErrorText', this.emptyViewErrorText);
 		},
 		finalEmptyViewImg() {
-			if (this.isLoadFailed) {
-				return this.emptyViewErrorImg;
-			} else {
-				return this.emptyViewImg;
-			}
+			return this.isLoadFailed ? this.emptyViewErrorImg : this.emptyViewImg;
 		},
 		finalShowEmptyViewReload() {
-			if (this.isLoadFailed) {
-				return this.showEmptyViewReloadWhenError;
-			} else {
-				return this.showEmptyViewReload;
-			}
+			return this.isLoadFailed ? this.showEmptyViewReloadWhenError : this.showEmptyViewReload;
 		},
 		finalRefresherThemeStyle() {
-			if (this.refresherThemeStyle.length) {
-				return this.refresherThemeStyle;
-			}
-			return this.defaultThemeStyle;
+			return this.refresherThemeStyle.length ? this.refresherThemeStyle : this.defaultThemeStyle;
 		},
 		finalLoadingMoreThemeStyle() {
-			if (this.loadingMoreThemeStyle.length) {
-				return this.loadingMoreThemeStyle;
-			}
-			return this.defaultThemeStyle;
+			return this.loadingMoreThemeStyle.length ? this.loadingMoreThemeStyle : this.defaultThemeStyle;
 		},
 		finalPagingContentStyle() {
 			if (this.contentZIndex != 1) {
@@ -1376,19 +1349,19 @@ export default {
 			if (this.finalNvueListIs !== 'waterfall') {
 				return 0;
 			}
-			return this._getNvueWaterfallSingleConfig('column-count', 2);
+			return this._nGetWaterfallConfig('column-count', 2);
 		},
 		nWaterfallColumnWidth() {
-			return this._getNvueWaterfallSingleConfig('column-width', 'auto');
+			return this._nGetWaterfallConfig('column-width', 'auto');
 		},
 		nWaterfallColumnGap() {
-			return this._getNvueWaterfallSingleConfig('column-gap', 'normal');
+			return this._nGetWaterfallConfig('column-gap', 'normal');
 		},
 		nWaterfallLeftGap() {
-			return this._getNvueWaterfallSingleConfig('left-gap', 0);
+			return this._nGetWaterfallConfig('left-gap', 0);
 		},
 		nWaterfallRightGap() {
-			return this._getNvueWaterfallSingleConfig('right-gap', 0);
+			return this._nGetWaterfallConfig('right-gap', 0);
 		},
 		nViewIs() {
 			const is = this.finalNvueListIs;
@@ -1944,17 +1917,11 @@ export default {
 						delayTime = 0;
 						//#endif
 						this.$emit('update:chatIndex', idIndex);
-						if (this.usePageScroll) {
+						setTimeout(() => {
 							this._scrollIntoView(idIndexStr, 30, false, () => {
 								this.$emit('update:chatIndex', 0);
 							});
-						} else {
-							setTimeout(() => {
-								this._scrollIntoView(idIndexStr, 30, false, () => {
-									this.$emit('update:chatIndex', 0);
-								});
-							}, delayTime)
-						}
+						}, this.usePageScroll ? 0 : delayTime)
 					} else {
 						this.$nextTick(() => {
 							this._scrollToBottom(false);
@@ -1968,7 +1935,6 @@ export default {
 					} else {
 						this.totalData = [...newVal];
 					}
-					
 				}
 			}
 			this.privateConcat = true;
@@ -2385,8 +2351,7 @@ export default {
 			if (moveDistance < 0) {
 				return;
 			}
-			if (this.refresherMaxAngle >= 0 && this.refresherMaxAngle <= 90 && this.lastRefresherTouchmove && this
-				.lastRefresherTouchmove.touchY <= refresherTouchmoveY) {
+			if (this.refresherMaxAngle >= 0 && this.refresherMaxAngle <= 90 && this.lastRefresherTouchmove && this.lastRefresherTouchmove.touchY <= refresherTouchmoveY) {
 				if (!moveDistance && !this.refresherAngleEnableChangeContinued && this.moveDistance < 1 && !this.refresherReachMaxAngle) {
 					return;
 				}
@@ -3127,12 +3092,9 @@ export default {
 			}
 		},
 		//获取nvue waterfall单项配置
-		_getNvueWaterfallSingleConfig(key, defaultValue) {
+		_nGetWaterfallConfig(key, defaultValue) {
 			const value = this.nvueWaterfallConfig[key];
-			if (value) {
-				return value;
-			}
-			return defaultValue;
+			return value || defaultValue;
 		}
 		// #endif
 	},
