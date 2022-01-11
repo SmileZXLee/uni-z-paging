@@ -328,7 +328,7 @@ export default {
 			type: [Number, String],
 			default: _getConfig('refresherCompleteDuration', 300)
 		},
-		//自定义下拉刷新结束时是否允许列表滚动，默认为否
+		//自定义下拉刷新结束状态下是否允许列表滚动，默认为否
 		refresherCompleteScrollable: {
 			type: Boolean,
 			default: _getConfig('refresherCompleteScrollable', false)

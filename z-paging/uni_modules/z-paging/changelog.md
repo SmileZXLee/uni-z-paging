@@ -1,3 +1,9 @@
+## 2.1.1（2022-01-11）
+1.新增props `refresher-complete-scrollerable`，支持控制下拉刷新结束状态下是否允许页面滚动。  
+2.新增slots `refresherComplete`，支持自定义下拉刷新结束状态的view。  
+3.修复在非h5、App、小程序平台中，安全区域获取报错的问题。  
+4.修复在飞书小程序中，页面无法滚动的问题。  
+5.代码精简。
 ## 2.1.0（2022-01-05）
 1.新增methods `endRefresh`，支持直接终止下拉刷新状态而不进行额外操作。  
 2.新增props `reload-when-refresh`，支持设置用户下拉刷新时是否触发reload方法。  
