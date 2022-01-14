@@ -120,15 +120,12 @@
 	}
 
 	.zp-main{
-        /* #ifdef APP-NVUE */
-        margin-top: -100rpx;
-        /* #endif */
 		/* #ifndef APP-NVUE */
 		display: flex;
-        margin-top: -150rpx;
 		/* #endif */
 		flex-direction: column;
 		align-items: center;
+        padding: 50rpx 0rpx;
 	}
 
 	.zp-main-image {
