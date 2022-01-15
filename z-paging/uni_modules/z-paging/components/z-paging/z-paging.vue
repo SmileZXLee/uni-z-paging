@@ -15,7 +15,7 @@ by ZXLee
 <template name="z-paging">
 	<!-- #ifndef APP-NVUE -->
 	<view :class="!usePageScroll&&fixed?'z-paging-content z-paging-content-fixed':'z-paging-content'" :style="[finalPagingStyle]">
-		<!-- #ifndef APP-PLUS || H5 -->
+		<!-- #ifndef APP-PLUS -->
 		<view v-if="cssSafeAreaInsetBottom===-1" class="zp-safe-area-inset-bottom"></view>
 		<!-- #endif -->
 		<!-- 顶部固定的slot -->

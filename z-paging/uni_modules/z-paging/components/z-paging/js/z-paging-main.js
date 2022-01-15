@@ -887,8 +887,10 @@ export default {
 			this.nLoadingMoreFixedHeight = true;
 		}
 		// #endif
-		// #ifndef APP-PLUS || H5
-		this._getCssSafeAreaInsetBottom();
+		// #ifndef APP-PLUS
+		this.$nextTick(()=>{
+            this._getCssSafeAreaInsetBottom();
+        })
 		// #endif
 	},
 	destroyed() {
@@ -1299,10 +1301,10 @@ export default {
 				return 0;
 			}
 			let safeAreaBottom = 0;
-			// #ifdef APP-PLUS || H5
+			// #ifdef APP-PLUS
 			safeAreaBottom = this.systemInfo.safeAreaInsets.bottom || 0;
 			// #endif
-			// #ifndef APP-PLUS || H5
+			// #ifndef APP-PLUS
 			safeAreaBottom = this.cssSafeAreaInsetBottom === -1 ? 0 : this.cssSafeAreaInsetBottom;
 			// #endif
 			return safeAreaBottom;
@@ -1463,7 +1465,7 @@ export default {
 				let delay = this.delay > 0 ? this.delay : addDataDalay;
 				setTimeout(() => {
 					this._addData(data, success, false);
-				}, delay)
+				}, 0)
 			})
 		},
 		//终止下拉刷新状态
