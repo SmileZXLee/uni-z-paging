@@ -929,7 +929,7 @@ export default {
 			this.$emit('listChange', newVal);
 			this._callMyParentList(newVal);
 			// #ifdef MP-WEIXIN
-			if (!this.refresherOnly && !this.usePageScroll) {
+			if (!this.isIos && !this.refresherOnly && !this.usePageScroll) {
 				this.loadingMoreTimeStamp = zUtils.getTime();
 				this.scrollToY(this.scrollTop);
 			}
@@ -2007,7 +2007,7 @@ export default {
 			}
 			
 			// #ifdef MP-WEIXIN
-			if (!this.refresherOnly && !this.usePageScroll) {
+			if (!this.isIos && !this.refresherOnly && !this.usePageScroll) {
 				const currentTimestamp = zUtils.getTime();
 				if(this.loadingMoreTimeStamp > 0 && currentTimestamp - this.loadingMoreTimeStamp > 100){
 					this.loadingMoreTimeStamp = 0;
