@@ -60,7 +60,6 @@
 				}else if(isFirstPage){
 					height += uni.upx2px(80);
 				}
-				
 				this.swiperHeight = height;
 			},
 			scrolltolower(){
