@@ -48,7 +48,6 @@
 						//懒加载，当滑动到当前的item时，才去加载
 						setTimeout(() => {
 							this.$refs.paging.reload();
-							this.completeFunc = null;
 						}, 5);
 					}
 				},
@@ -92,7 +91,7 @@
 			},
 			contentHeightChanged(height){
 				const finalHeight = this.dataList.length ? height : 0;
-				this.$emit('heightChanged',finalHeight,this.$refs.paging.pageNo === 1 && !this.completeFunc);
+				this.$emit('heightChanged',finalHeight);
 			},
 			doLoadMore(){
 				this.$refs.paging.doLoadMore();

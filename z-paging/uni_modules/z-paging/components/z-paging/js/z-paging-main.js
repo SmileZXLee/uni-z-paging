@@ -861,8 +861,14 @@ export default {
 				this._preReload();
 			})
 		}
+		let delay = 0;
+		// #ifdef H5 || MP
+		delay = 100;
+		// #endif
 		this.$nextTick(() => {
-			this.systemInfo = uni.getSystemInfoSync();
+			setTimeout(()=>{
+				this.systemInfo = uni.getSystemInfoSync();
+			},delay)
 			if (!this.usePageScroll && this.autoHeight) {
 				this._setAutoHeight();
 			}
@@ -890,7 +896,9 @@ export default {
 		// #endif
 		// #ifndef APP-PLUS
 		this.$nextTick(()=>{
-			this._getCssSafeAreaInsetBottom();
+			setTimeout(()=>{
+				this._getCssSafeAreaInsetBottom();
+			},delay)
 		})
 		// #endif
 	},
@@ -937,11 +945,13 @@ export default {
 			this.firstPageLoaded = false;
 			this.isTotalChangeFromAddData = false;
 			this.$nextTick(() => {
-				this._getNodeClientRect('.zp-paging-container-content').then((res) => {
-					if (res) {
-						this.$emit('contentHeightChanged', res[0].height);
-					}
-				});
+				setTimeout(()=>{
+					this._getNodeClientRect('.zp-paging-container-content').then((res) => {
+						if (res) {
+							this.$emit('contentHeightChanged', res[0].height);
+						}
+					});
+				},1)
 				// #ifdef APP-NVUE
 				if (this.useChatRecordMode && this.nIsFirstPageAndNoMore && this.pageNo === this.defaultPageNo && !this.nFirstPageAndNoMoreChecked) {
 					this.nFirstPageAndNoMoreChecked = true;

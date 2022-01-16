@@ -38,7 +38,7 @@
 		methods: {
 			// tabs通知swiper切换
 			tabsChange(index) {
-				this.current = index;
+				this._setCurrent(index);
 			},
 			onRefresh(){
 				this.$refs.swiperList[this.current].reload(() => {
@@ -49,21 +49,22 @@
 			// swiper滑动结束，分别设置tabs和swiper的状态
 			animationfinish(e) {
 				let current = e.detail.current;
-				if (current !== this.current){
-					this.$refs.swiperList[this.current].clear();
-				}
-				this.current = current;
+				this._setCurrent(current);
 			},
-			heightChanged(height,isFirstPage){
+			heightChanged(height){
 				if(height === 0){
 					height = uni.getSystemInfoSync().windowHeight - uni.upx2px(80);
-				}else if(isFirstPage){
-					height += uni.upx2px(80);
 				}
 				this.swiperHeight = height;
 			},
 			scrolltolower(){
 				this.$refs.swiperList[this.current].doLoadMore();
+			},
+			_setCurrent(current){
+				if (current !== this.current){
+					this.$refs.swiperList[this.current].clear();
+				}
+				this.current = current;
 			}
 		}
 	}
