@@ -142,6 +142,10 @@ function convertTextToPx(text) {
 	return 0;
 }
 
+function getTime() {
+    return (new Date()).getTime();
+}
+
 //------------------ 私有方法 ------------------------
 function _timeFormat(time) {
 	const date = new Date(time);
@@ -194,6 +198,7 @@ module.exports = {
 	getTouchFromZPaging,
 	getParent,
 	convertTextToPx,
+	getTime,
 	consoleErr,
 	consoleWarn
 };

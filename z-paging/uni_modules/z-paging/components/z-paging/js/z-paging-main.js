@@ -101,6 +101,7 @@ export default {
 			scrollViewInStyle: {},
 			pullDownTimeStamp: 0,
 			requestTimeStamp: 0,
+			loadingMoreTimeStamp: 0,
 			pageScrollTop: -1,
 			chatRecordLoadingMoreText: '',
 			moveDistance: 0,
@@ -853,7 +854,7 @@ export default {
 		}
 	},
 	mounted() {
-		this.wxsPropType = (new Date()).getTime().toString();
+		this.wxsPropType = zUtils.getTime().toString();
 		this.renderJsIgnore;
 		if (!this.refresherOnly && (this.mountedAutoCallReload && this.auto)) {
 			this.$nextTick(() => {
@@ -875,7 +876,7 @@ export default {
 			})
 		}
 		uni.$on(i18nUpdateKey, () => {
-			this.tempLanguageUpdateKey = (new Date()).getTime();
+			this.tempLanguageUpdateKey = zUtils.getTime();
 		})
 		uni.$on(errorUpdateKey, () => {
 			if (this.loading) {
@@ -929,6 +930,7 @@ export default {
 			this._callMyParentList(newVal);
 			// #ifdef MP-WEIXIN
 			if (!this.usePageScroll) {
+				this.loadingMoreTimeStamp = zUtils.getTime();
 				this.scrollToY(this.scrollTop);
 			}
 			// #endif
@@ -1456,7 +1458,7 @@ export default {
 		},
 		//与上方complete方法功能一致，新版本中设置服务端回调数组请使用complete方法
 		addData(data, success = true) {
-			const currentTimeStamp = Number((new Date()).getTime());
+			const currentTimeStamp = zUtils.getTime();
 			let addDataDalay = 0;
 			const disTime = currentTimeStamp - this.requestTimeStamp;
 			let minDelay = this.minDelay;
@@ -1656,7 +1658,6 @@ export default {
 		},
 		//滚动到指定位置(vue中有效)。y为与顶部的距离，单位为px；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
 		scrollToY(y, offset, animate) {
-			console.log('scrollToY',y)
 			this.scrollTop = this.oldScrollTop;
 			this.$nextTick(() => {
 				this._scrollToY(y, offset, animate);
@@ -1814,8 +1815,8 @@ export default {
 			// #endif
 			const tempIsUserPullDown = this.isUserPullDown;
 			if (this.showRefresherUpdateTime && this.pageNo === this.defaultPageNo) {
-				zUtils.setRefesrherTime((new Date()).getTime(), this.refresherUpdateTimeKey);
-				this.tempLanguageUpdateKey = (new Date()).getTime();
+				zUtils.setRefesrherTime(zUtils.getTime(), this.refresherUpdateTimeKey);
+				this.tempLanguageUpdateKey = zUtils.getTime();
 				if (this.$refs.refresh) {
 					this.$refs.refresh.updateTime();
 				}
@@ -2004,6 +2005,14 @@ export default {
 			if (this.refresherOnly || !this.loadingMoreEnabled || !(this.loadingStatus === Enum.More.Default || this.loadingStatus === Enum.More.Fail) || this.loading){
 				return;
 			}
+			
+			// #ifdef MP-WEIXIN
+			const currentTimestamp = zUtils.getTime();
+			if(this.loadingMoreTimeStamp > 0 && currentTimestamp - this.loadingMoreTimeStamp > 100){
+				this.loadingMoreTimeStamp = 0;
+				return;
+			}
+			// #endif
 			this._doLoadingMore();
 		},
 		//当滚动到顶部时
@@ -2345,7 +2354,7 @@ export default {
 		// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
 		//拖拽中
 		_refresherTouchmove(e) {
-			const currentTimeStamp = (new Date()).getTime();
+			const currentTimeStamp = zUtils.getTime();
 			if (this.pullDownTimeStamp && currentTimeStamp - this.pullDownTimeStamp <= this.pullDownDisTimeStamp) {
 				return;
 			}
@@ -2540,7 +2549,7 @@ export default {
 				this.refresherTransform = 'translateY(0px)';
 				// #endif
 				// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
-				this.wxsPropType = 'end' + (new Date()).getTime();
+				this.wxsPropType = 'end' + zUtils.getTime();
 				// #endif
 				// #ifdef APP-NVUE
 				this._nRefresherEnd();
@@ -2578,7 +2587,7 @@ export default {
 			this.refresherRevealStackCount++;
 			this.refresherTransform = `translateY(${this.finalRefresherThreshold}px)`;
 			// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
-			this.wxsPropType = 'begin' + (new Date()).getTime();
+			this.wxsPropType = 'begin' + zUtils.getTime();
 			// #endif
 			this.moveDistance = this.finalRefresherThreshold;
 			this.refresherStatus = Enum.Refresher.Loading;
@@ -2971,7 +2980,7 @@ export default {
 		},
 		//发射query事件
 		_emitQuery(pageNo,pageSize){
-			this.requestTimeStamp = Number((new Date()).getTime());
+			this.requestTimeStamp = zUtils.getTime();
 			this.$emit('query',pageNo,pageSize);
 		},
 		//发射pullingDown事件
