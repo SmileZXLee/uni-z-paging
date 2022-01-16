@@ -90,7 +90,7 @@
 				//调用z-paging的reload方法
 				this.$refs.paging.reload();
 			},
-			pagingContentHeightChanged(height){
+			contentHeightChanged(height){
 				const finalHeight = this.dataList.length ? height : 0;
 				this.$emit('heightChanged',finalHeight,this.$refs.paging.pageNo === 1 && !this.completeFunc);
 			},
