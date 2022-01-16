@@ -939,7 +939,7 @@ export default {
 			this.$nextTick(() => {
 				this._getNodeClientRect('.zp-paging-container-content').then((res) => {
 					if (res) {
-						this.$emit('pagingContentHeightChanged', res[0].height);
+						this.$emit('contentHeightChanged', res[0].height);
 					}
 				});
 				// #ifdef APP-NVUE

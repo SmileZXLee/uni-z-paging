@@ -3,7 +3,7 @@
 	<view class="content">
 		<!-- 这里设置了z-paging加载时禁止自动调用reload方法，自行控制何时reload（懒加载）-->
 		<z-paging ref="paging" v-model="dataList" @query="queryList" use-page-scroll :hide-empty-view="hideEmptyView"
-			:refresher-enabled="false" @pagingContentHeightChanged="pagingContentHeightChanged" :auto="false" :auto-clean-list-when-reload="false">
+			:refresher-enabled="false" @contentHeightChanged="contentHeightChanged" :auto="false" :auto-clean-list-when-reload="false">
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<view class="item" v-for="(item,index) in dataList" :key="index">
 				<view class="item-title">{{item.title}}</view>
