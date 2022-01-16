@@ -1,7 +1,7 @@
-<!-- 滑动切换选项卡+吸顶演示 -->
+<!-- 滑动切换选项卡+吸顶演示(上一个tab数据不保留，滚动流畅) -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" refresher-only @onRefresh="onRefresh" :refresher-status.sync="refresherStatus" @scrolltolower="scrolltolower" :auto-scroll-to-top-when-reload="false">
+		<z-paging ref="paging" refresher-only @onRefresh="onRefresh" :refresher-status.sync="refresherStatus" @scrolltolower="scrolltolower">
 			<!-- 自定义下拉刷新view -->
 			<custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>
 			<view class="banner-view" style="height: 250rpx;">

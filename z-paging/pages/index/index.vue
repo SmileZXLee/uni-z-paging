@@ -8,7 +8,7 @@
 				<view class="demo-item" v-for="(item,index) in list" :key="index" @click="itemClick(item)">
 					<view class="demo-item-main">
 						<view class="demo-item-title">{{item.title}}</view>
-						<view class="demo-item-subtitle" v-if="item.subTitle.length">({{item.subTitle}})</view>
+						<view class="demo-item-subtitle" v-if="item.subTitle.length">{{item.subTitle}}</view>
 						<view class="demo-item-file">
 							<text v-if="item.title.indexOf('nvue')===-1">{{item.file + '.vue'}}</text>
 							<text v-else style="background-color: #01c301;">{{item.file + '.nvue'}}</text>
@@ -60,9 +60,13 @@
 						subTitle: ''
 					}
 					,{
-						title: '滑动切换选项卡+吸顶演示',
+						title: '滑动切换选项卡+吸顶演示①',
 						file: 'sticky-swiper-demo',
-						subTitle: ''
+						subTitle: '【不推荐】上一个tab数据保留，滚动卡顿，一些情况下可能出现无法滚动的问题'
+					},{
+						title: '滑动切换选项卡+吸顶演示②',
+						file: 'sticky-swiper-next-demo',
+						subTitle: '【推荐】上一个tab数据不保留，滚动流畅'
 					}
 					,
 					{

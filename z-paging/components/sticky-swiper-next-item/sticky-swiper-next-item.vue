@@ -22,8 +22,6 @@
 				dataList: [],
 				height: 0,
 				hideEmptyView: true,
-				scrollable: false,
-				stickyed: false,
 				completeFunc: null
 			}
 		},
@@ -55,12 +53,6 @@
 					}
 				},
 				immediate: true
-			},
-			scrollable(newVal){
-				// uni.showToast({
-				// 	title: '1111'+newVal,
-				// 	icon: 'none'
-				// })
 			}
 		},
 		methods: {
