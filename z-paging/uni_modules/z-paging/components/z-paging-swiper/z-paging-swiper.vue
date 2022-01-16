@@ -6,7 +6,7 @@
 <!-- 滑动切换选项卡swiper，此组件支持easycom规范，可以在项目中直接引用 -->
 <template>
 	<view :class="fixed?'zp-swiper-container zp-swiper-container-fixed':'zp-swiper-container'" :style="[swiperStyle]">
-		<!-- #ifndef APP-PLUS || H5 -->
+		<!-- #ifndef APP-PLUS -->
 		<view v-if="cssSafeAreaInsetBottom===-1" class="zp-safe-area-inset-bottom"></view>
 		<!-- #endif -->
 		<slot v-if="$slots.top" name="top" />
@@ -44,7 +44,7 @@
 			this.$nextTick(() => {
 				this.systemInfo = uni.getSystemInfoSync();
 			})
-			// #ifndef APP-PLUS || H5
+			// #ifndef APP-PLUS
 			this._getCssSafeAreaInsetBottom();
 			// #endif
 		},
@@ -78,10 +78,10 @@
 					return 0;
 				}
 				let safeAreaBottom = 0;
-				// #ifdef APP-PLUS || H5
+				// #ifdef APP-PLUS
 				safeAreaBottom = this.systemInfo.safeAreaInsets.bottom || 0;
 				// #endif
-				// #ifndef APP-PLUS || H5
+				// #ifndef APP-PLUS
 				safeAreaBottom = this.cssSafeAreaInsetBottom === -1 ? 0 : this.cssSafeAreaInsetBottom;
 				// #endif
 				return safeAreaBottom;
@@ -124,7 +124,7 @@
 	
 	.zp-safe-area-inset-bottom {
 		position: absolute;
-		/* #ifndef APP-PLUS || H5 */
+		/* #ifndef APP-PLUS */
 		height: env(safe-area-inset-bottom);
 		/* #endif */
 	}

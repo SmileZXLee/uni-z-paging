@@ -62,6 +62,13 @@
 			}
 
 		}, {
+			"path": "pages/sticky-swiper-next-demo/sticky-swiper-next-demo",
+			"style": {
+				"navigationBarTitleText": "滑动切换选项卡+吸顶演示2",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
 			"path": "pages/custom-nav-demo/custom-nav-demo",
 			"style": {
 				"navigationBarTitleText": "自定义导航栏演示",

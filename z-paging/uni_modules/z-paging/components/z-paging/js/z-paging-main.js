@@ -889,8 +889,8 @@ export default {
 		// #endif
 		// #ifndef APP-PLUS
 		this.$nextTick(()=>{
-            this._getCssSafeAreaInsetBottom();
-        })
+			this._getCssSafeAreaInsetBottom();
+		})
 		// #endif
 	},
 	destroyed() {
@@ -927,6 +927,11 @@ export default {
 			this.$emit('update:list', newVal);
 			this.$emit('listChange', newVal);
 			this._callMyParentList(newVal);
+			// #ifdef MP-WEIXIN
+			if (!this.usePageScroll) {
+				this.scrollToY(this.scrollTop);
+			}
+			// #endif
 			this.firstPageLoaded = false;
 			this.isTotalChangeFromAddData = false;
 			this.$nextTick(() => {
@@ -1651,6 +1656,7 @@ export default {
 		},
 		//滚动到指定位置(vue中有效)。y为与顶部的距离，单位为px；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
 		scrollToY(y, offset, animate) {
+			console.log('scrollToY',y)
 			this.scrollTop = this.oldScrollTop;
 			this.$nextTick(() => {
 				this._scrollToY(y, offset, animate);

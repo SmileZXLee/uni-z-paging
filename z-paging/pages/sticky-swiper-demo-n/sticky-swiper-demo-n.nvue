@@ -43,7 +43,6 @@
 				pageHeight: 0,
 				// header高度
 				headerHeight: 0,
-				// 因为内部的滑动机制限制，请将tabs组件和swiper组件的current用不同变量赋值
 				current: 0, // tabs组件的current值，表示当前活动的tab选项
 			}
 		},
