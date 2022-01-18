@@ -936,12 +936,6 @@ export default {
 			this.$emit('update:list', newVal);
 			this.$emit('listChange', newVal);
 			this._callMyParentList(newVal);
-			// #ifdef MP-WEIXIN
-			if (!this.isIos && !this.refresherOnly && !this.usePageScroll) {
-				this.loadingMoreTimeStamp = zUtils.getTime();
-				this.scrollToY(this.scrollTop);
-			}
-			// #endif
 			this.firstPageLoaded = false;
 			this.isTotalChangeFromAddData = false;
 			this.$nextTick(() => {
@@ -1951,6 +1945,15 @@ export default {
 				} else {
 					if (this.finalConcat) {
 						this.totalData = [...this.totalData, ...newVal];
+						// #ifdef MP-WEIXIN
+						if (!this.isIos && !this.refresherOnly && !this.usePageScroll && newVal.length) {
+							this.loadingMoreTimeStamp = zUtils.getTime();
+							const currentScrollTop = this.oldScrollTop;
+							this.$nextTick(()=>{
+								this.scrollToY(currentScrollTop);
+							})
+						}
+						// #endif
 					} else {
 						this.totalData = [...newVal];
 					}
@@ -2019,7 +2022,7 @@ export default {
 			// #ifdef MP-WEIXIN
 			if (!this.isIos && !this.refresherOnly && !this.usePageScroll) {
 				const currentTimestamp = zUtils.getTime();
-				if(this.loadingMoreTimeStamp > 0 && currentTimestamp - this.loadingMoreTimeStamp > 100){
+				if(this.loadingMoreTimeStamp > 0 && currentTimestamp - this.loadingMoreTimeStamp < 100){
 					this.loadingMoreTimeStamp = 0;
 					return;
 				}
