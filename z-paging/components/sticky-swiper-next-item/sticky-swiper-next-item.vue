@@ -82,20 +82,23 @@
 					}
 				})
 			},
-			
+			//页面通知当前子组件刷新列表
 			reload(completeFunc) {
 				//先把父组件下拉刷新的回调函数存起来
 				this.completeFunc = completeFunc;
 				//调用z-paging的reload方法
 				this.$refs.paging.reload();
 			},
+			//当列表高度改变时，通知页面的swiper同步更改高度
 			contentHeightChanged(height){
 				const finalHeight = this.dataList.length ? height : 0;
 				this.$emit('heightChanged',finalHeight);
 			},
+			//页面通知当前子组件加载更多数据
 			doLoadMore(){
 				this.$refs.paging.doLoadMore();
 			},
+			//页面通知当前子组件清除数据
 			clear(){
 				this.$refs.paging.clear();
 				this.hideEmptyView = true;

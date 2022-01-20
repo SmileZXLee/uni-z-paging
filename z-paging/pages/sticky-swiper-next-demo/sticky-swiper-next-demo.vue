@@ -31,37 +31,41 @@
 				refresherStatus: 0,
 				swiperHeight: 0,
 				tabList: ['测试1', '测试2', '测试3', '测试4'],
-				// 因为内部的滑动机制限制，请将tabs组件和swiper组件的current用不同变量赋值
 				current: 0, // tabs组件的current值，表示当前活动的tab选项
 			}
 		},
 		methods: {
-			// tabs通知swiper切换
+			//tabs通知swiper切换
 			tabsChange(index) {
 				this._setCurrent(index);
 			},
+			//下拉刷新时，通知当前显示的列表进行reload操作
 			onRefresh(){
 				this.$refs.swiperList[this.current].reload(() => {
 					this.$refs.paging.complete([]);
 				});
 			},
-			// 由于swiper的内部机制问题，快速切换swiper不会触发dx的连续变化，需要在结束时重置状态
-			// swiper滑动结束，分别设置tabs和swiper的状态
+			//当滚动到底部时，通知当前显示的列表加载更多
+			scrolltolower(){
+				this.$refs.swiperList[this.current].doLoadMore();
+			},
+			// swiper滑动结束
 			animationfinish(e) {
 				let current = e.detail.current;
 				this._setCurrent(current);
 			},
+			//设置swiper的高度
 			heightChanged(height){
 				if(height === 0){
+					//默认swiper高度为屏幕可用高度-tabbar高度
 					height = uni.getSystemInfoSync().windowHeight - uni.upx2px(80);
 				}
+                console.log('heightChanged',height)
 				this.swiperHeight = height;
-			},
-			scrolltolower(){
-				this.$refs.swiperList[this.current].doLoadMore();
 			},
 			_setCurrent(current){
 				if (current !== this.current){
+					//切换tab时，将上一个tab的数据清空
 					this.$refs.swiperList[this.current].clear();
 				}
 				this.current = current;

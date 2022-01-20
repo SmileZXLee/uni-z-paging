@@ -11,7 +11,7 @@ import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
 import Enum from './z-paging-enum'
 
-const currentVersion = '2.1.2';
+const currentVersion = '2.1.3';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -1949,9 +1949,7 @@ export default {
 						if (!this.isIos && !this.refresherOnly && !this.usePageScroll && newVal.length) {
 							this.loadingMoreTimeStamp = zUtils.getTime();
 							const currentScrollTop = this.oldScrollTop;
-							this.$nextTick(()=>{
-								this.scrollToY(currentScrollTop);
-							})
+							this.scrollToY(currentScrollTop);
 						}
 						// #endif
 					} else {
