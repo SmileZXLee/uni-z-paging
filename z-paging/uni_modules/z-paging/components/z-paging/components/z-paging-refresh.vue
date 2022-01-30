@@ -31,7 +31,7 @@
 <script>
 	const systemInfo = uni.getSystemInfoSync();
 	import zStatic from '../js/z-paging-static'
-	import {getRefesrherFormatTimeByKey} from '../js/z-paging-utils'
+	import zUtils from '../js/z-paging-utils'
 	export default {
 		name: 'z-paging-refresh',
 		data() {
@@ -121,7 +121,7 @@
 					updateTimeKey = this.updateTimeKey;
 				}
 				if (this.showUpdateTime) {
-					this.refresherTimeText = getRefesrherFormatTimeByKey(updateTimeKey);
+					this.refresherTimeText = zUtils.getRefesrherFormatTimeByKey(updateTimeKey);
 				}
 			}
 		}

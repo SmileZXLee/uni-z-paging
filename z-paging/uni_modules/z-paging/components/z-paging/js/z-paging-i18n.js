@@ -130,7 +130,7 @@ function _getPrivateLanguage(myLanguage, followSystemLanguage = true) {
 	return 'zh-cn';
 }
 
-module.exports = {
+export default {
 	refresherDefaultText,
 	refresherPullingText,
 	refresherRefreshingText,

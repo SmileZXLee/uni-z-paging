@@ -846,12 +846,22 @@ export default {
 			default: _getConfig('showConsoleError', true)
 		},
 		//父组件v-model所绑定的list的值
+		// #ifdef VUE2
 		value: {
 			type: Array,
 			default: function() {
 				return [];
 			}
 		}
+		// #endif
+		// #ifdef VUE3
+		modelValue: {
+			type: Array,
+			default: function() {
+				return [];
+			}
+		}
+		// #endif
 	},
 	mounted() {
 		this.wxsPropType = zUtils.getTime().toString();
@@ -866,9 +876,7 @@ export default {
 		delay = 100;
 		// #endif
 		this.$nextTick(() => {
-			setTimeout(()=>{
-				this.systemInfo = uni.getSystemInfoSync();
-			},delay)
+			this.systemInfo = uni.getSystemInfoSync();
 			if (!this.usePageScroll && this.autoHeight) {
 				this._setAutoHeight();
 			}
@@ -932,7 +940,12 @@ export default {
 			}
 			this._doCheckScrollViewShouldFullHeight(newVal);
 			this.realTotalData = newVal;
+			// #ifdef VUE2
 			this.$emit('input', newVal);
+			// #endif
+			// #ifdef VUE3
+			this.$emit('update:modelValue', newVal);
+			// #endif
 			this.$emit('update:list', newVal);
 			this.$emit('listChange', newVal);
 			this._callMyParentList(newVal);

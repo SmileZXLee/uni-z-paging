@@ -190,7 +190,7 @@ function _fullZeroToTwo(str) {
 	return str;
 }
 
-module.exports = {
+export default {
 	setRefesrherTime,
 	getRefesrherFormatTimeByKey,
 	arrayIsEqual,

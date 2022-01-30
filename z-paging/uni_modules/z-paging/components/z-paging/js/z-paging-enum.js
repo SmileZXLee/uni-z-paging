@@ -22,4 +22,4 @@ const Enum = {
 	}
 }
 
-module.exports = Enum;
+export default Enum;

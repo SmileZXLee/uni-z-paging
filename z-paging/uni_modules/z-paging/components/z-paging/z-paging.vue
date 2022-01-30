@@ -219,7 +219,7 @@ by ZXLee
 	<!-- #endif -->
 </template>
 <!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
-<script src="./wxs/z-paging-wxs.wxs" module="pagingWxs" lang="wxs" />
+<script src="./wxs/z-paging-wxs.wxs" module="pagingWxs" lang="wxs"></script>
 <!-- #endif -->
 <script module="pagingRenderjs" lang="renderjs">
 	import pagingRenderjs from './wxs/z-paging-renderjs.js';

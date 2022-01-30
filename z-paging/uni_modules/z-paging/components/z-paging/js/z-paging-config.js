@@ -22,7 +22,7 @@ function getConfig() {
 	}
 }
 
-module.exports = {
+export default {
 	setConfig,
 	getConfig
 };
