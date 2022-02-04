@@ -2757,6 +2757,9 @@ export default {
 			this._getNodeClientRect('.zp-safe-area-inset-bottom').then((res) => {
 				if (res) {
 					this.cssSafeAreaInsetBottom = res[0].height;
+					if (this.safeAreaInsetBottom) {
+						this.updatePageScrollBottomHeight();
+					}
 				}
 			});
 		},
@@ -3136,8 +3139,7 @@ export default {
 		},
 		//获取nvue waterfall单项配置
 		_nGetWaterfallConfig(key, defaultValue) {
-			const value = this.nvueWaterfallConfig[key];
-			return value || defaultValue;
+			return this.nvueWaterfallConfig[key] || defaultValue;
 		}
 		// #endif
 	},
