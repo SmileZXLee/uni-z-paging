@@ -29,3 +29,7 @@
 | ------------------------------------------------------------ |
 | ![](http://www.zxlee.cn/github/uni-z-paging/z-paging-demo.png) |
 
+## 谢谢支持
+
+[![Stargazers repo roster for @weilanwl/coloruiBeta](https://reporoster.com/stars/SmileZXLee/uni-z-paging)](https://github.com/SmileZXLee/uni-z-paging/stargazers)
+
