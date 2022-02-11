@@ -11,7 +11,7 @@ import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
 import Enum from './z-paging-enum'
 
-const currentVersion = '2.1.3';
+const currentVersion = '2.1.4';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -91,11 +91,11 @@ export default {
 			refresherTransform: 'translateY(0px)',
 			refresherTransition: '',
 			finalRefresherDefaultStyle: 'black',
-			//当前加载类型 0-下拉刷新 1-上拉加载更多
+			//当前加载类型
 			loadingType: Enum.LoadingType.Refresher,
-			//底部加载更多状态 0-默认状态 1.加载中 2.没有更多数据 3.加载失败
+			//底部加载更多状态
 			loadingStatus: Enum.More.Default,
-			//下拉刷新状态 0-默认状态 1.松手立即刷新 2.刷新中
+			//下拉刷新状态
 			refresherStatus: Enum.Refresher.Default,
 			scrollViewStyle: {},
 			scrollViewInStyle: {},
@@ -1597,7 +1597,7 @@ export default {
 				this.loading = true;
 				this.privateConcat = false;
 				const totalPageSize = disPageNo * this.pageSize;
-				this._emitQuery(this.defaultPageNo, totalPageSize);
+				this._emitQuery(this.defaultPageNo, totalPageSize, Enum.QueryFrom.Refresh);
 				this._callMyParentQuery(this.defaultPageNo, totalPageSize);
 			}
 		},
@@ -1772,7 +1772,7 @@ export default {
 			this._reload(false, isFromMounted);
 		},
 		//重新加载分页数据
-		_reload(isClean = false, isFromMounted = false) {
+		_reload(isClean = false, isFromMounted = false, isUserPullDown = false) {
 			this.isAddedData = false;
 			this.cacheScrollNodeHeight = -1;
 			this.insideOfPaging = -1;
@@ -1784,7 +1784,7 @@ export default {
 			this.isTotalChangeFromAddData = false;
 			this.totalData = [];
 			if (!isClean) {
-				this._emitQuery(this.pageNo, this.defaultPageSize);
+				this._emitQuery(this.pageNo, this.defaultPageSize, isUserPullDown ? Enum.QueryFrom.UserPullDown : Enum.QueryFrom.Reload);
 				let delay = 0;
 				// #ifdef MP-TOUTIAO
 				delay = 5;
@@ -2306,7 +2306,7 @@ export default {
 						this.addData(res);
 					})
 				} else {
-					this._emitQuery(this.pageNo, this.defaultPageSize);
+					this._emitQuery(this.pageNo, this.defaultPageSize, Enum.QueryFrom.LoadingMore);
 					this._callMyParentQuery();
 				}
 				this.loadingType = Enum.LoadingType.LoadingMore;
@@ -2340,7 +2340,7 @@ export default {
 				if (this.useChatRecordMode) {
 					this._onLoadingMore('click')
 				} else {
-					this._reload();
+					this._reload(false, false, true);
 				}
 			}
 			this.loadingType = Enum.LoadingType.Refresher;
@@ -3008,9 +3008,9 @@ export default {
 			}
 		},
 		//发射query事件
-		_emitQuery(pageNo,pageSize){
+		_emitQuery(pageNo,pageSize,from){
 			this.requestTimeStamp = zUtils.getTime();
-			this.$emit('query',pageNo,pageSize);
+			this.$emit('query',pageNo,pageSize,from);
 		},
 		//发射pullingDown事件
 		_emitTouchmove(e){
