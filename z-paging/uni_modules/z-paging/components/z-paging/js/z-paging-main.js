@@ -846,14 +846,12 @@ export default {
 			default: _getConfig('showConsoleError', true)
 		},
 		//父组件v-model所绑定的list的值
-		// #ifdef VUE2
 		value: {
 			type: Array,
 			default: function() {
 				return [];
 			}
 		}
-		// #endif
 		// #ifdef VUE3
 		modelValue: {
 			type: Array,
@@ -940,9 +938,7 @@ export default {
 			}
 			this._doCheckScrollViewShouldFullHeight(newVal);
 			this.realTotalData = newVal;
-			// #ifdef VUE2
 			this.$emit('input', newVal);
-			// #endif
 			// #ifdef VUE3
 			this.$emit('update:modelValue', newVal);
 			// #endif
