@@ -27,7 +27,7 @@ function getTouch(e) {
 		touch = e.touches[0];
 	} else if (e.changedTouches && e.changedTouches.length) {
 		touch = e.changedTouches[0];
-	} else if (e.datail && e.datail !== {}) {
+	} else if (e.datail && e.datail != {}) {
 		touch = e.datail;
 	} else {
 		return {

@@ -2958,7 +2958,7 @@ export default {
 			} else if (dataType === '[object String]') {
 				return value;
 			}
-			return zI18n[key][this.finalLanguage];
+			return zI18n.t[key][this.finalLanguage];
 		},
 		//修改父view的list
 		_callMyParentList(newVal) {
