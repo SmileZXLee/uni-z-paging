@@ -2426,7 +2426,7 @@ export default {
 			//this.refresherTransition = '';
 			this.isTouchEnded = false;
 			if (moveDis >= this.finalRefresherThreshold) {
-				this.refresherStatus = Enum.Refresher.PullToRefresh;
+				this.refresherStatus = Enum.Refresher.ReleaseToRefresh;
 			} else {
 				this.refresherStatus = Enum.Refresher.Default;
 			}
@@ -2466,7 +2466,7 @@ export default {
 				}
 			}
 			this.isTouchEnded = true;
-			if (moveDis >= this.finalRefresherThreshold && this.refresherStatus === Enum.Refresher.PullToRefresh) {
+			if (moveDis >= this.finalRefresherThreshold && this.refresherStatus === Enum.Refresher.ReleaseToRefresh) {
 				// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 				this.refresherTransform = `translateY(${this.finalRefresherThreshold}px)`;
 				// #endif
@@ -3067,8 +3067,8 @@ export default {
 			}
 			this._emitTouchmove(e);
 			const viewHeight = e.viewHeight;
-			const pullingDis = e.pullingDis;
-			this.refresherStatus = pullingDis >= viewHeight ? Enum.Refresher.PullToRefresh : Enum.Refresher.Default;
+			const pullingDis = e.pullingDistance;
+			this.refresherStatus = pullingDis >= viewHeight ? Enum.Refresher.ReleaseToRefresh : Enum.Refresher.Default;
 		},
 		//下拉刷新结束
 		_nRefresherEnd() {

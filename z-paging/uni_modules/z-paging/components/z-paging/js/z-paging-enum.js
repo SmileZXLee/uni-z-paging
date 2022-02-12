@@ -9,7 +9,7 @@ const Enum = {
 	//下拉刷新状态 0.默认状态 1.松手立即刷新 2.刷新中 3.刷新结束
 	Refresher: {
 		Default: 0,
-		PullToRefresh: 1,
+		ReleaseToRefresh: 1,
 		Loading: 2,
 		Complete: 3
 	},
