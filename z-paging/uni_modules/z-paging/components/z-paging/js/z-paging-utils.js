@@ -21,7 +21,7 @@ function arrayIsEqual(arr1, arr2) {
 }
 
 //获取最终的touch位置
-function getCommonTouch(e) {
+function getTouch(e) {
 	let touch = null;
 	if (e.touches && e.touches.length) {
 		touch = e.touches[0];
@@ -194,7 +194,7 @@ export default {
 	setRefesrherTime,
 	getRefesrherFormatTimeByKey,
 	arrayIsEqual,
-	getCommonTouch,
+	getTouch,
 	getTouchFromZPaging,
 	getParent,
 	convertTextToPx,

@@ -4,7 +4,7 @@ import zUtils from '../js/z-paging-utils'
 var data = {
 	renderScrollTop: 0,
 	renderUsePageScroll: false,
-	renderIsIos: uni.getSystemInfoSync().platform === 'ios',
+	// renderIsIos: uni.getSystemInfoSync().platform === 'ios',
 	startY: 0,
 	isTouchFromZPaging: false
 }
@@ -36,19 +36,19 @@ export default {
 			}
 		},
 		_handleTouchstart(e) {
-			const touch = zUtils.getCommonTouch(e);
+			const touch = zUtils.getTouch(e);
 			data.startY = touch.touchY;
 			data.isTouchFromZPaging = zUtils.getTouchFromZPaging(e.target);
 		},
 		_handleTouchmove(e) {
-			const touch = zUtils.getCommonTouch(e);
+			const touch = zUtils.getTouch(e);
 			var moveY = touch.touchY - data.startY;
-			if ((data.isTouchFromZPaging && data.renderScrollTop < 1 && moveY > 0) || (data.isTouchFromZPaging && data.renderIsIos && !data.renderUsePageScroll && moveY < 0)) {
+            //v2.1.4起删除条件：(data.isTouchFromZPaging && data.renderIsIos && !data.renderUsePageScroll && moveY < 0)
+			if (data.isTouchFromZPaging && data.renderScrollTop < 1 && moveY > 0) {
 				if (e.cancelable && !e.defaultPrevented) {
 					e.preventDefault();
 				}
 			}
 		},
-
 	}
 };

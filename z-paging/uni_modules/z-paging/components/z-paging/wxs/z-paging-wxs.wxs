@@ -1,34 +1,34 @@
 // [z-paging]微信小程序、QQ小程序、app-vue、h5上使用wxs实现自定义下拉刷新，降低逻辑层与视图层的通信折损，提升性能
 
-var currentMoveDistance = 0;
+var currentDis = 0;
 var isPCFlag = -1;
 
-function propObserver(newValue, oldValue, ownerInstance, instance) {
-	var state = ownerInstance.getState();
-	state.currentInstance = instance;
-	var dataset = instance.getDataset();
+function propObserver(newValue, oldValue, ownerIns, ins) {
+	var state = ownerIns.getState();
+	state.currentIns = ins;
+	var dataset = ins.getDataset();
 	var loading = dataset.loading == true;
 	if (newValue.indexOf('end') != -1) {
-		_setTransform('translateY(0px)', instance, false)
-		state.moveDistance = 0;
-		state.oldMoveDistance = 0;
-		currentMoveDistance = 0;
+		_setTransform('translateY(0px)', ins, false)
+		state.moveDis = 0;
+		state.oldMoveDis = 0;
+		currentDis = 0;
 	} else if (newValue.indexOf('begin') != -1) {
-		var refresherThreshold = instance.getDataset().refresherthreshold
-		_setTransformValue(refresherThreshold, instance, state, false);
+		var refresherThreshold = ins.getDataset().refresherthreshold
+		_setTransformValue(refresherThreshold, ins, state, false);
 	}
 }
 
-function touchstart(e, ownerInstance) {
-	var instance = ownerInstance.getState().currentInstance;
-	var state = instance.getState();
-	var dataset = instance.getDataset();
+function touchstart(e, ownerIns) {
+	var ins = ownerIns.getState().currentIns;
+	var state = ins.getState();
+	var dataset = ins.getDataset();
 	var isTouchEnded = state.isTouchEnded;
-	if (_getRefresherTouchDisabled(e, instance, 0)) {
+	if (_touchDisabled(e, ins, 0)) {
 		return;
 	}
-	state.oldMoveDistance = 0;
-	var touch = _getCommonTouch(e);
+	state.oldMoveDis = 0;
+	var touch = _getTouch(e);
 	var loading = _getIsTrue(dataset.loading);
 	state.startY = touch.touchY;
 	state.lastTouch = touch;
@@ -36,51 +36,47 @@ function touchstart(e, ownerInstance) {
 		state.isTouchmoving = false;
 	}
 	state.isTouchEnded = false;
-	ownerInstance.callMethod('_handleRefresherTouchstart', touch);
+	ownerIns.callMethod('_handleRefresherTouchstart', touch);
 }
 
-function touchmove(e, ownerInstance) {
-	var touch = _getCommonTouch(e);
-	var instance = ownerInstance.getState().currentInstance;
-	var dataset = instance.getDataset();
+function touchmove(e, ownerIns) {
+	var touch = _getTouch(e);
+	var ins = ownerIns.getState().currentIns;
+	var dataset = ins.getDataset();
 	var refresherThreshold = dataset.refresherthreshold;
 	var isIos = _getIsTrue(dataset.isios);
-	var state = instance.getState();
-	if (_getRefresherTouchDisabled(e, instance, 1)) {
-		_handleTouchMovePullingDown(state, ownerInstance, false);
+	var state = ins.getState();
+	if (_touchDisabled(e, ins, 1)) {
+		_handlePullingDown(state, ownerIns, false);
 		return true;
 	}
 	if (!_getAngleIsInRange(e, touch, state, dataset)) {
-		_handleTouchMovePullingDown(state, ownerInstance, false);
+		_handlePullingDown(state, ownerIns, false);
 		return true;
 	}
-	var moveDistanceObj = _getMoveDistance(e, instance);
-	var moveDistance = moveDistanceObj.currentMoveDistance;
-	var prevent = moveDistanceObj.isDown;
-	if (moveDistance < 0) {
-		_setTransformValue(0, instance, state, false);
-		_handleTouchMovePullingDown(state, ownerInstance, false);
+	var moveDisObj = _getMoveDis(e, ins);
+	var moveDis = moveDisObj.currentDis;
+	var prevent = moveDisObj.isDown;
+	if (moveDis < 0) {
+		_setTransformValue(0, ins, state, false);
+		_handlePullingDown(state, ownerIns, false);
 		return true;
 	}
 	if (prevent && !state.disabledBounce) {
 		if(isIos){
-		   ownerInstance.callMethod('_handleScrollViewDisableBounce', {bounce: false}); 
+		   ownerIns.callMethod('_handleScrollViewDisableBounce', {bounce: false}); 
 		}
 		state.disabledBounce = true;
-		_handleTouchMovePullingDown(state, ownerInstance, prevent);
+		_handlePullingDown(state, ownerIns, prevent);
 		return !prevent;
 	}
-	_setTransformValue(moveDistance, instance, state, false);
+	_setTransformValue(moveDis, ins, state, false);
 	var oldRefresherStatus = state.refresherStatus;
-	var dataset = instance.getDataset();
+	var dataset = ins.getDataset();
 	var oldIsTouchmoving = _getIsTrue(dataset.oldistouchmoving);
 	var hasTouchmove = _getIsTrue(dataset.hastouchmove);
 	var isTouchmoving = state.isTouchmoving;
-	if (moveDistance >= refresherThreshold) {
-		state.refresherStatus = 1;
-	} else {
-		state.refresherStatus = 0;
-	}
+	state.refresherStatus = moveDis >= refresherThreshold ? 1 : 0;
 	if (!isTouchmoving) {
 		state.isTouchmoving = true;
 		isTouchmoving = true;
@@ -89,53 +85,53 @@ function touchmove(e, ownerInstance) {
 		state.isTouchEnded = false;
 	}
 	if (hasTouchmove) {
-		ownerInstance.callMethod('_handleWxsPullingDown', {moveDistance:moveDistance, diffDis:moveDistanceObj.diffDis});
+		ownerIns.callMethod('_handleWxsPullingDown', {moveDis:moveDis, diffDis:moveDisObj.diffDis});
 	}
 	if (oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus || oldIsTouchmoving != isTouchmoving) {
-		ownerInstance.callMethod('_handleRefresherTouchmove', moveDistance, touch);
+		ownerIns.callMethod('_handleRefresherTouchmove', moveDis, touch);
 	}
-	_handleTouchMovePullingDown(state, ownerInstance, prevent);
+	_handlePullingDown(state, ownerIns, prevent);
 	return !prevent;
 }
 
-function touchend(e, ownerInstance) {
-	var touch = _getCommonTouch(e);
-	var instance = ownerInstance.getState().currentInstance;
-	var dataset = instance.getDataset();
-	var state = instance.getState();
-	if (_getRefresherTouchDisabled(e, instance, 2)) {
+function touchend(e, ownerIns) {
+	var touch = _getTouch(e);
+	var ins = ownerIns.getState().currentIns;
+	var dataset = ins.getDataset();
+	var state = ins.getState();
+	if (_touchDisabled(e, ins, 2)) {
 		return;
 	}
-	state.refresherReachMaxAngle = true;
+	state.reachMaxAngle = true;
 	state.hitReachMaxAngleCount = 0;
 	state.disabledBounce = false;
 	state.fixedIsTopHitCount = 0;
-	//ownerInstance.callMethod('_handleScrollViewDisableBounce', {bounce:true});
+	//ownerIns.callMethod('_handleScrollViewDisableBounce', {bounce:true});
 	var isTouchmoving = state.isTouchmoving;
 	if (!isTouchmoving) {
 		return;
 	}
 	var oldRefresherStatus = state.refresherStatus;
-	var oldMoveDistance = state.moveDistance;
-	var refresherThreshold = instance.getDataset().refresherthreshold
-	var moveDistance = _getMoveDistance(e, instance).currentMoveDistance;
-	if (!(moveDistance >= refresherThreshold && oldRefresherStatus === 1)) {
+	var oldMoveDis = state.moveDis;
+	var refresherThreshold = ins.getDataset().refresherthreshold
+	var moveDis = _getMoveDis(e, ins).currentDis;
+	if (!(moveDis >= refresherThreshold && oldRefresherStatus === 1)) {
 		state.isTouchmoving = false;
 	}
-	ownerInstance.callMethod('_handleRefresherTouchend', moveDistance);
+	ownerIns.callMethod('_handleRefresherTouchend', moveDis);
 	state.isTouchEnded = true;
-	if (oldMoveDistance < refresherThreshold) {
+	if (oldMoveDis < refresherThreshold) {
 		return;
 	}
 	var animate = false;
-	if (moveDistance >= refresherThreshold) {
-		moveDistance = refresherThreshold;
+	if (moveDis >= refresherThreshold) {
+		moveDis = refresherThreshold;
 		var isIos13 = _getIsTrue(dataset.isios13);
 		if (isIos13) {
 			animate = true;
 		}
 	}
-	_setTransformValue(moveDistance, instance, state, animate);
+	_setTransformValue(moveDis, ins, state, animate);
 }
 
 // #ifdef H5
@@ -183,62 +179,62 @@ function mouseleave(e, ins) {
 // #endif
 
 
-function _setTransformValue(value, instance, state, animate) {
+function _setTransformValue(value, ins, state, animate) {
 	value = value || 0;
-	if (state.moveDistance == value) {
+	if (state.moveDis == value) {
 		return;
 	}
-	state.moveDistance = value;
-	_setTransform('translateY(' + value + 'px)', instance, animate);
+	state.moveDis = value;
+	_setTransform('translateY(' + value + 'px)', ins, animate);
 }
 
-function _setTransform(transform, instance, animate) {
+function _setTransform(transform, ins, animate) {
 	if (transform == 'translateY(0px)') {
 		transform = 'none';
 	}
-	instance.requestAnimationFrame(function() {
+	ins.requestAnimationFrame(function() {
 		if (animate) {
-			instance.setStyle({
+			ins.setStyle({
 				'transform': transform,
 				'transition': 'transform .1s linear',
 			})
 		} else {
-			instance.setStyle({
+			ins.setStyle({
 				'transform': transform
 			})
 		}
 	})
 }
 
-function _getMoveDistance(e, instance) {
-	var state = instance.getState();
-	var refresherThreshold = instance.getDataset().refresherthreshold;
-	var refresherOutRate = instance.getDataset().refresheroutrate;
+function _getMoveDis(e, ins) {
+	var state = ins.getState();
+	var refresherThreshold = ins.getDataset().refresherthreshold;
+	var refresherOutRate = ins.getDataset().refresheroutrate;
 	refresherThreshold = parseFloat(refresherThreshold);
 	refresherOutRate = parseFloat(refresherOutRate);
-	var touch = _getCommonTouch(e);
-	var moveDistance = touch.touchY - state.startY;
-	var oldMoveDistance = state.oldMoveDistance || 0;
-	state.oldMoveDistance = moveDistance;
-	var diffDis = moveDistance - oldMoveDistance;
+	var touch = _getTouch(e);
+	var moveDis = touch.touchY - state.startY;
+	var oldMoveDis = state.oldMoveDis || 0;
+	state.oldMoveDis = moveDis;
+	var diffDis = moveDis - oldMoveDis;
 	if (diffDis > 0) {
 		diffDis = diffDis * 0.85;
-		if (currentMoveDistance > refresherThreshold) {
+		if (currentDis > refresherThreshold) {
 			diffDis = diffDis * (1 - refresherOutRate);
 		}
 	}
-	currentMoveDistance += diffDis;
-	if (currentMoveDistance < 0) {
-		currentMoveDistance = 0;
+	currentDis += diffDis;
+	if (currentDis < 0) {
+		currentDis = 0;
 	}
 	return {
-		currentMoveDistance: currentMoveDistance,
+		currentDis: currentDis,
 		diffDis: diffDis,
 		isDown: diffDis > 0
 	};
 }
 
-function _getCommonTouch(e) {
+function _getTouch(e) {
 	var touch = null;
 	if (e.touches && e.touches.length) {
 		touch = e.touches[0];
@@ -255,9 +251,9 @@ function _getCommonTouch(e) {
 	};
 }
 
-function _getRefresherTouchDisabled(e, instance, processTag) {
-	var dataset = instance.getDataset();
-	var state = instance.getState();
+function _touchDisabled(e, ins, processTag) {
+	var dataset = ins.getDataset();
+	var state = ins.getState();
 	var loading = _getIsTrue(dataset.loading);
 	var useChatRecordMode = _getIsTrue(dataset.usechatrecordmode);
 	var refresherEnabled = _getIsTrue(dataset.refresherenabled);
@@ -292,16 +288,16 @@ function _getRefresherTouchDisabled(e, instance, processTag) {
 }
 
 function _getAngleIsInRange(e, touch, state, dataset) {
-	var refresherMaxAngle = dataset.refreshermaxangle;
+	var maxAngle = dataset.refreshermaxangle;
 	var refresherAecc = _getIsTrue(dataset.refresheraecc);
 	var lastTouch = state.lastTouch;
-	var refresherReachMaxAngle = state.refresherReachMaxAngle;
-	var moveDistance = state.oldMoveDistance;
+	var reachMaxAngle = state.reachMaxAngle;
+	var moveDis = state.oldMoveDis;
 	if (!lastTouch) {
 		return true;
 	}
-	if (refresherMaxAngle >= 0 && refresherMaxAngle <= 90 && lastTouch) {
-		if ((!moveDistance || moveDistance < 1) && !refresherAecc && refresherReachMaxAngle != null && !refresherReachMaxAngle) {
+	if (maxAngle >= 0 && maxAngle <= 90 && lastTouch) {
+		if ((!moveDis || moveDis < 1) && !refresherAecc && reachMaxAngle != null && !reachMaxAngle) {
 			return false;
 		}
 		var x = Math.abs(touch.touchX - lastTouch.touchX);
@@ -309,12 +305,12 @@ function _getAngleIsInRange(e, touch, state, dataset) {
 		var z = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 		if ((x || y) && x > 1) {
 			var angle = Math.asin(y / z) / Math.PI * 180;
-			if (angle < refresherMaxAngle) {
+			if (angle < maxAngle) {
 				var hitReachMaxAngleCount = state.hitReachMaxAngleCount || 0;
 				state.hitReachMaxAngleCount = ++hitReachMaxAngleCount;
 				if (state.hitReachMaxAngleCount > 2) {
 					state.lastTouch = touch;
-					state.refresherReachMaxAngle = false;
+					state.reachMaxAngle = false;
 				}
 				return false;
 			}
@@ -324,10 +320,10 @@ function _getAngleIsInRange(e, touch, state, dataset) {
 	return true;
 }
 
-function _handleTouchMovePullingDown(state, instance, onPullingDown) {
+function _handlePullingDown(state, ins, onPullingDown) {
 	var oldOnPullingDown = state.onPullingDown || false;
 	if (oldOnPullingDown != onPullingDown) {
-		instance.callMethod('_handleWxsPullingDownStatusChange', onPullingDown);
+		ins.callMethod('_handleWxsPullingDownStatusChange', onPullingDown);
 	}
 	state.onPullingDown = onPullingDown;
 }
