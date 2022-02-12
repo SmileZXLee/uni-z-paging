@@ -1296,17 +1296,18 @@ export default {
 			return !this.firstPageLoaded && (this.autoHideLoadingAfterFirstLoaded ? (this.fromEmptyViewReload ? true : !this.pagingLoaded) : true) && this.loading;
 		},
 		hasTouchmove(){
+			// #ifdef VUE2
 			// #ifdef APP-VUE || H5
 			if(this.$listeners && !this.$listeners.refresherTouchmove){
 				return false;
 			}
 			// #endif
-			
 			// #ifdef MP-WEIXIN || MP-QQ
 			return this.watchRefresherTouchmove;
 			// #endif
-			
-			return true;
+            return true;
+			// #endif
+			return this.watchRefresherTouchmove;
 		},
 		tempLanguage() {
 			let systemLanguage = false;
