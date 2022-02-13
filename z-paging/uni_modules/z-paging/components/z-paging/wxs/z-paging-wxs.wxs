@@ -20,7 +20,7 @@ function propObserver(newValue, oldValue, ownerIns, ins) {
 }
 
 function touchstart(e, ownerIns) {
-	var ins = ownerIns.getState().currentIns;
+	var ins = _getIns(ownerIns);
 	var state = ins.getState();
 	var dataset = ins.getDataset();
 	var isTouchEnded = state.isTouchEnded;
@@ -41,7 +41,7 @@ function touchstart(e, ownerIns) {
 
 function touchmove(e, ownerIns) {
 	var touch = _getTouch(e);
-	var ins = ownerIns.getState().currentIns;
+	var ins = _getIns(ownerIns);
 	var dataset = ins.getDataset();
 	var refresherThreshold = dataset.refresherthreshold;
 	var isIos = _getIsTrue(dataset.isios);
@@ -64,7 +64,7 @@ function touchmove(e, ownerIns) {
 	}
 	if (prevent && !state.disabledBounce) {
 		if(isIos){
-		   ownerIns.callMethod('_handleScrollViewDisableBounce', {bounce: false}); 
+			 ownerIns.callMethod('_handleScrollViewDisableBounce', {bounce: false}); 
 		}
 		state.disabledBounce = true;
 		_handlePullingDown(state, ownerIns, prevent);
@@ -96,7 +96,7 @@ function touchmove(e, ownerIns) {
 
 function touchend(e, ownerIns) {
 	var touch = _getTouch(e);
-	var ins = ownerIns.getState().currentIns;
+	var ins = _getIns(ownerIns);
 	var dataset = ins.getDataset();
 	var state = ins.getState();
 	if (_touchDisabled(e, ins, 2)) {
@@ -249,6 +249,10 @@ function _getTouch(e) {
 		touchX: touch.clientX,
 		touchY: touch.clientY
 	};
+}
+
+function _getIns(ownerIns) {
+	return ownerIns.getState().currentIns
 }
 
 function _touchDisabled(e, ins, processTag) {
