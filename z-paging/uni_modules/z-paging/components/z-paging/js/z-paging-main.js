@@ -1305,7 +1305,7 @@ export default {
 			// #ifdef MP-WEIXIN || MP-QQ
 			return this.watchRefresherTouchmove;
 			// #endif
-            return true;
+			return true;
 			// #endif
 			return this.watchRefresherTouchmove;
 		},
