@@ -113,11 +113,11 @@ function getRefesrherTimeByKey(key) {
 //通过下拉刷新标识key获取下拉刷新时间(格式化之后)
 function getRefesrherFormatTimeByKey(key) {
 	const time = getRefesrherTimeByKey(key);
-	let timeText = zI18n['refresherUpdateTimeNoneText'][zI18n.getLanguage()];
+	let timeText = zI18n.t['refresherUpdateTimeNoneText'][zI18n.getLanguage()];
 	if (time) {
 		timeText = _timeFormat(time);
 	}
-	return `${zI18n['refresherUpdateTimeText'][zI18n.getLanguage()]}${timeText}`;
+	return `${zI18n.t['refresherUpdateTimeText'][zI18n.getLanguage()]}${timeText}`;
 }
 
 //将文本的px或者rpx转为px的值
@@ -156,9 +156,9 @@ function _timeFormat(time) {
 	let dayStr = '';
 	const timeStr = _dateTimeFormat(date);
 	if (disTime === 0) {
-		dayStr = zI18n['refresherUpdateTimeTodayText'][zI18n.getLanguage()];
+		dayStr = zI18n.t['refresherUpdateTimeTodayText'][zI18n.getLanguage()];
 	} else if (disTime === -86400000) {
-		dayStr = zI18n['refresherUpdateTimeYesterdayText'][zI18n.getLanguage()];
+		dayStr = zI18n.t['refresherUpdateTimeYesterdayText'][zI18n.getLanguage()];
 	} else {
 		dayStr = _dateDayFormat(date, date.getFullYear() !== currentDate.getFullYear());
 	}
