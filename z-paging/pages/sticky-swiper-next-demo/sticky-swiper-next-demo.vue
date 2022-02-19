@@ -60,7 +60,6 @@
 					//默认swiper高度为屏幕可用高度-tabbar高度
 					height = uni.getSystemInfoSync().windowHeight - uni.upx2px(80);
 				}
-                console.log('heightChanged',height)
 				this.swiperHeight = height;
 			},
 			_setCurrent(current){
