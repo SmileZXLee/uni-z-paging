@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-v2.1.5 (2022-02-16)
+v2.1.6 (2022-02-16)
 by ZXLee
 -->
 <!-- API文档地址：https://z-paging.zxlee.cn -->
@@ -89,11 +89,11 @@ by ZXLee
 								<slot />
 								<!-- 上拉加载更多view -->
 								<!-- #ifndef MP-ALIPAY -->
-								<slot v-if="_shouldShowLoadingMore('loadingMoreDefault')" name="loadingMoreDefault" />
-								<slot v-else-if="_shouldShowLoadingMore('loadingMoreLoading')" name="loadingMoreLoading" />
-								<slot v-else-if="_shouldShowLoadingMore('loadingMoreNoMore')" name="loadingMoreNoMore" />
-								<slot v-else-if="_shouldShowLoadingMore('loadingMoreFail')" name="loadingMoreFail" />
-								<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="_shouldShowLoadingMore('loadingMoreCustom')" :zConfig="zPagingLoadMoreConfig" />
+								<slot v-if="_shouldShowLoadingMore('default')" name="loadingMoreDefault" />
+								<slot v-else-if="_shouldShowLoadingMore('loading')" name="loadingMoreLoading" />
+								<slot v-else-if="_shouldShowLoadingMore('noMore')" name="loadingMoreNoMore" />
+								<slot v-else-if="_shouldShowLoadingMore('fail')" name="loadingMoreFail" />
+								<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="_shouldShowLoadingMore('custom')" :zConfig="zPagingLoadMoreConfig" />
 								<!-- #endif -->
 								<!-- #ifdef MP-ALIPAY -->
 								<slot v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreDefault" />
@@ -196,11 +196,11 @@ by ZXLee
 					</view>
 				</view>
 				<view :style="nLoadingMoreFixedHeight?{height:loadingMoreCustomStyle&&loadingMoreCustomStyle.height?loadingMoreCustomStyle.height:'80rpx'}:{}">
-					<slot v-if="_shouldShowLoadingMore('loadingMoreDefault')" name="loadingMoreDefault" />
-					<slot v-else-if="_shouldShowLoadingMore('loadingMoreLoading')" name="loadingMoreLoading" />
-					<slot v-else-if="_shouldShowLoadingMore('loadingMoreNoMore')" name="loadingMoreNoMore" />
-					<slot v-else-if="_shouldShowLoadingMore('loadingMoreFail')" name="loadingMoreFail" />
-					<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="_shouldShowLoadingMore('loadingMoreCustom')" :zConfig="zPagingLoadMoreConfig" />
+					<slot v-if="_shouldShowLoadingMore('default')" name="loadingMoreDefault" />
+					<slot v-else-if="_shouldShowLoadingMore('loading')" name="loadingMoreLoading" />
+					<slot v-else-if="_shouldShowLoadingMore('noMore')" name="loadingMoreNoMore" />
+					<slot v-else-if="_shouldShowLoadingMore('fail')" name="loadingMoreFail" />
+					<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="_shouldShowLoadingMore('custom')" :zConfig="zPagingLoadMoreConfig" />
 				</view>
 			</view>
 		</view>

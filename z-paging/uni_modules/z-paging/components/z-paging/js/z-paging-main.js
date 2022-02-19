@@ -11,7 +11,7 @@ import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
 import Enum from './z-paging-enum'
 
-const currentVersion = '2.1.4';
+const currentVersion = '2.1.6';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -979,14 +979,10 @@ export default {
 			//  #endif
 		},
 		oldScrollTop(newVal, oldVal) {
-			if (!this.usePageScroll) {
-				this._scrollTopChange(newVal,oldVal,false);
-			}
+			!this.usePageScroll && this._scrollTopChange(newVal,oldVal,false);
 		},
 		pageScrollTop(newVal, oldVal) {
-			if (this.usePageScroll) {
-				this._scrollTopChange(newVal,oldVal,true);
-			}
+			this.usePageScroll && this._scrollTopChange(newVal,oldVal,true);
 		},
 		defaultThemeStyle: {
 			handler(newVal) {
@@ -1755,10 +1751,8 @@ export default {
 									this._nDoRefresherEndAnimation(nodeHeight, 0);
 								}, 10)
 							}, 10)
-							this._reload(false, isFromMounted);
-						} else {
-							this._reload(false, isFromMounted);
 						}
+						this._reload(false, isFromMounted);
 					});
 				}, 10)
 				return;
@@ -1838,7 +1832,7 @@ export default {
 			if (tempIsUserPullDown && this.pageNo === this.defaultPageNo) {
 				this.isUserPullDown = false;
 			}
-			let dataTypeRes = this._checkDataType(data, success, true);
+			let dataTypeRes = this._checkDataType(data, success, isLocal);
 			data = dataTypeRes.data;
 			success = dataTypeRes.success;
 			if (this.refresherTriggered) {
@@ -1936,9 +1930,6 @@ export default {
 					if (this.pageNo !== this.defaultPageNo) {
 						this.privateScrollWithAnimation = 0;
 						let delayTime = 200;
-						//#ifdef H5
-						delayTime = 0;
-						//#endif
 						this.$emit('update:chatIndex', idIndex);
 						setTimeout(() => {
 							this._scrollIntoView(idIndexStr, 30, false, () => {
@@ -2235,13 +2226,13 @@ export default {
 				return false;
 			}
 			
-			if (this.useChatRecordMode && type !== 'loadingMoreLoading') {
+			if (this.useChatRecordMode && type !== 'loading') {
 				return false;
 			}
 			if (!this.$slots) {
 				return false;
 			}
-			if (type === 'loadingMoreDefault') {
+			if (type === 'default') {
 				const res = this.loadingStatus === Enum.More.Default && this.$slots.loadingMoreDefault;
 				if (res) {
 					// #ifdef APP-NVUE
@@ -2251,7 +2242,7 @@ export default {
 					//  #endif
 				}
 				return res;
-			} else if (type === 'loadingMoreLoading') {
+			} else if (type === 'loading') {
 				const res = this.loadingStatus === Enum.More.Loading && this.$slots.loadingMoreLoading;
 				if (res) {
 					// #ifdef APP-NVUE
@@ -2261,7 +2252,7 @@ export default {
 					//  #endif
 				}
 				return res;
-			} else if (type === 'loadingMoreNoMore') {
+			} else if (type === 'noMore') {
 				const res = this.loadingStatus === Enum.More.NoMore && this.$slots.loadingMoreNoMore && this.showLoadingMoreNoMoreView;
 				if (res) {
 					// #ifdef APP-NVUE
@@ -2271,7 +2262,7 @@ export default {
 					//  #endif
 				}
 				return res;
-			} else if (type === 'loadingMoreFail') {
+			} else if (type === 'fail') {
 				const res = this.loadingStatus === Enum.More.Fail && this.$slots.loadingMoreFail;
 				if (res) {
 					// #ifdef APP-NVUE
@@ -2281,7 +2272,7 @@ export default {
 					//  #endif
 				}
 				return res;
-			} else if (type === 'loadingMoreCustom') {
+			} else if (type === 'custom') {
 				return this.showDefaultLoadingMoreText && !(this.loadingStatus === Enum.More.NoMore && !this.showLoadingMoreNoMoreView);
 			}
 			return false;
@@ -2593,8 +2584,7 @@ export default {
 				}
 				// #endif
 			}, refresherCompleteDelay);
-			this.$emit('onRestore');
-			this.$emit('Restore');
+			isUserPullDown && this._onRestore();
 		},
 		//模拟用户手动触发下拉刷新
 		_doRefresherRefreshAnimate() {

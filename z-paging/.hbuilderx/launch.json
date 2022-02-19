@@ -26,6 +26,10 @@
      	{
      		"launchtype" : "remote"
      	},
+     	"mp-kuaishou" : 
+     	{
+     		"launchtype" : "remote"
+     	},
      	"mp-qq" : 
      	{
      		"launchtype" : "remote"
