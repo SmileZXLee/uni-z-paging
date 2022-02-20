@@ -1,14 +1,13 @@
 <!-- 自定义下拉刷新与上拉加载演示(nvue) -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" v-model="dataList" @query="queryList" :loading-more-enabled="false">
+		<z-paging ref="paging" v-model="dataList" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
 			<custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus">
 			</custom-refresher>
-			<!-- 自定义没有更多数据view -->
-			<custom-nomore slot="loadingMoreNoMore"></custom-nomore>
+			
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内，并用header(吸顶)或cell包住 -->
 			<!-- 在nvue中，z-paging中插入的列表item必须是cell，必须使用cell包住，因为在nvue中，z-paging使用的是nvue的list组件。 -->
 			<!-- 不能使用index作为key的唯一标识，:key必须添加并且必须是唯一的 -->

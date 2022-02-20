@@ -181,9 +181,7 @@ function mouseleave(e, ins) {
 
 function _setTransformValue(value, ins, state, animate) {
 	value = value || 0;
-	if (state.moveDis == value) {
-		return;
-	}
+	if (state.moveDis == value) return;
 	state.moveDis = value;
 	_setTransform('translateY(' + value + 'px)', ins, animate);
 }
@@ -208,10 +206,8 @@ function _setTransform(transform, ins, animate) {
 
 function _getMoveDis(e, ins) {
 	var state = ins.getState();
-	var refresherThreshold = ins.getDataset().refresherthreshold;
-	var refresherOutRate = ins.getDataset().refresheroutrate;
-	refresherThreshold = parseFloat(refresherThreshold);
-	refresherOutRate = parseFloat(refresherOutRate);
+	var refresherThreshold = parseFloat(ins.getDataset().refresherthreshold);
+	var refresherOutRate = parseFloat(ins.getDataset().refresheroutrate);
 	var touch = _getTouch(e);
 	var moveDis = touch.touchY - state.startY;
 	var oldMoveDis = state.oldMoveDis || 0;
