@@ -1126,10 +1126,7 @@ export default {
 					pagingStyle.top = windowTop + 'px';
 				}
 				if (!pagingStyle.bottom) {
-					let bottom = 0;
-					if (windowBottom && windowBottom !== undefined) {
-						bottom = windowBottom;
-					}
+					let bottom = windowBottom ? windowBottom : 0;
 					if (this.safeAreaInsetBottom) {
 						bottom += this.safeAreaBottom;
 					}
@@ -1287,7 +1284,6 @@ export default {
 					return true;
 				}
 			}else{
-				
 				return true;
 			}
 			if(!this.autoHideEmptyViewWhenPull && !this.isUserReload){
