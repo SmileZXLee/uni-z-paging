@@ -386,12 +386,12 @@ export default {
 			type: Boolean,
 			default: _getConfig('autoCleanListWhenReload', true)
 		},
-		//调用reload方法时自动显示下拉刷新view，默认为否
+		//列表刷新时自动显示下拉刷新view，默认为否
 		showRefresherWhenReload: {
 			type: Boolean,
 			default: _getConfig('showRefresherWhenReload', false)
 		},
-		//调用reload方法时自动显示加载更多view，且为加载中状态，默认为否
+		//列表刷新时自动显示加载更多view，且为加载中状态，默认为否
 		showLoadingMoreWhenReload: {
 			type: Boolean,
 			default: _getConfig('showLoadingMoreWhenReload', false)

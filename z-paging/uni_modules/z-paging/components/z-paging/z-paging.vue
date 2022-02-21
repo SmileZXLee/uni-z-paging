@@ -261,8 +261,8 @@ by ZXLee
 	 * @property {Boolean} reload-when-refresh 用户下拉刷新时是否触发reload方法，默认为是
 	 * @property {Boolean} auto-scroll-to-top-when-reload reload时是否自动滚动到顶部，默认为是
 	 * @property {Boolean} auto-clean-list-when-reload reload时是否立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
-	 * @property {Boolean} show-refresher-when-reload 调用reload方法时是否自动显示下拉刷新view，默认为否
-	 * @property {Boolean} show-loading-more-when-reload 调用reload方法时自动显示加载更多view，且为加载中状态(仅初始设置有效，不可动态修改)
+	 * @property {Boolean} show-refresher-when-reload 列表刷新时是否自动显示下拉刷新view，默认为否
+	 * @property {Boolean} show-loading-more-when-reload 列表刷新时自动显示加载更多view，且为加载中状态(仅初始设置有效，不可动态修改)
 	 * @property {Boolean} refresher-update-time-key 如果需要区别不同页面的最后更新时间，请为不同页面的z-paging的`refresher-update-time-key`设置不同的字符串
 	 * @property {Boolean} use-custom-refresher 是否使用自定义的下拉刷新，默认为是，即使用z-paging的下拉刷新。设置为false即代表使用uni scroll-view自带的下拉刷新，h5、App、微信小程序以外的平台不支持uni scroll-view自带的下拉刷新
 	 * @property {Number|String} refresher-fps 自定义下拉刷新下拉帧率，默认为40，过高可能会出现抖动问题
