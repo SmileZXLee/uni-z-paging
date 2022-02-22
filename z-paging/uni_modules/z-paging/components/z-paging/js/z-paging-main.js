@@ -3005,9 +3005,7 @@ export default {
 		},
 		//滚动到底部加载更多
 		_nOnLoadmore() {
-			if (this.nShowRefresherReveal || !this.totalData.length) {
-				return;
-			}
+			if (this.nShowRefresherReveal || !this.totalData.length) return;
 			if (this.useChatRecordMode) {
 				this.doChatRecordLoadMore();
 			} else {
