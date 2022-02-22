@@ -1495,11 +1495,7 @@ export default {
 			this.totalData = [...this.totalData, ...data];
 			//#endif
 			//#ifdef APP-NVUE
-			if (this.nIsFirstPageAndNoMore) {
-				this.totalData = [...this.totalData, ...data];
-			} else {
-				this.totalData = [...data, ...this.totalData];
-			}
+            this.totalData = this.nIsFirstPageAndNoMore ? [...this.totalData, ...data] : [...data, ...this.totalData];
 			//#endif
 			if (toBottom) {
 				setTimeout(() => {
