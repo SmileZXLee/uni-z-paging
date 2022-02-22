@@ -2913,9 +2913,7 @@ export default {
 					})
 				}, 1000);
 			}
-			if (!this.usePageScroll) {
-				this.$refs["n-list"].resetLoadmore();
-			}
+			!this.usePageScroll && this.$refs["n-list"].resetLoadmore();
 			this.nRefresherLoading = false;
 		},
 		//执行主动触发下拉刷新动画
