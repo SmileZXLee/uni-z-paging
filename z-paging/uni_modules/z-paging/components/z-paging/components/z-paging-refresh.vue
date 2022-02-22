@@ -154,6 +154,9 @@
 		flex-direction: row;
 		align-items: center;
 		overflow: hidden;
+		/* #ifdef MP-ALIPAY */
+		margin-top: -4rpx;
+		/* #endif */
 	}
 
 	.zp-r-left-image {
