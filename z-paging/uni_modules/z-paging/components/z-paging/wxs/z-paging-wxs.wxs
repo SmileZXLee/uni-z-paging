@@ -24,9 +24,7 @@ function touchstart(e, ownerIns) {
 	var state = ins.getState();
 	var dataset = ins.getDataset();
 	var isTouchEnded = state.isTouchEnded;
-	if (_touchDisabled(e, ins, 0)) {
-		return;
-	}
+	if (_touchDisabled(e, ins, 0)) return;
 	state.oldMoveDis = 0;
 	var touch = _getTouch(e);
 	var loading = _getIsTrue(dataset.loading);
@@ -63,7 +61,7 @@ function touchmove(e, ownerIns) {
 		return true;
 	}
 	if (prevent && !state.disabledBounce) {
-		if(isIos){
+		if (isIos) {
 			 ownerIns.callMethod('_handleScrollViewDisableBounce', {bounce: false}); 
 		}
 		state.disabledBounce = true;
@@ -99,18 +97,14 @@ function touchend(e, ownerIns) {
 	var ins = _getIns(ownerIns);
 	var dataset = ins.getDataset();
 	var state = ins.getState();
-	if (_touchDisabled(e, ins, 2)) {
-		return;
-	}
+	if (_touchDisabled(e, ins, 2)) return;
 	state.reachMaxAngle = true;
 	state.hitReachMaxAngleCount = 0;
 	state.disabledBounce = false;
 	state.fixedIsTopHitCount = 0;
 	//ownerIns.callMethod('_handleScrollViewDisableBounce', {bounce:true});
 	var isTouchmoving = state.isTouchmoving;
-	if (!isTouchmoving) {
-		return;
-	}
+	if (!isTouchmoving) return;
 	var oldRefresherStatus = state.refresherStatus;
 	var oldMoveDis = state.moveDis;
 	var refresherThreshold = ins.getDataset().refresherthreshold
@@ -120,9 +114,7 @@ function touchend(e, ownerIns) {
 	}
 	ownerIns.callMethod('_handleRefresherTouchend', moveDis);
 	state.isTouchEnded = true;
-	if (oldMoveDis < refresherThreshold) {
-		return;
-	}
+	if (oldMoveDis < refresherThreshold) return;
 	var animate = false;
 	if (moveDis >= refresherThreshold) {
 		moveDis = refresherThreshold;
@@ -136,9 +128,7 @@ function touchend(e, ownerIns) {
 
 // #ifdef H5
 function isPC() {
-	if (isPCFlag != -1){
-		return isPCFlag;
-	}
+	if (isPCFlag != -1) return isPCFlag;
 	var userAgentInfo = navigator.userAgent;
 	var Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
 	var flag = true;
@@ -191,16 +181,11 @@ function _setTransform(transform, ins, animate) {
 		transform = 'none';
 	}
 	ins.requestAnimationFrame(function() {
+		var stl = { 'transform': transform };
 		if (animate) {
-			ins.setStyle({
-				'transform': transform,
-				'transition': 'transform .1s linear',
-			})
-		} else {
-			ins.setStyle({
-				'transform': transform
-			})
+			stl['transition'] = 'transform .1s linear';
 		}
+		ins.setStyle(stl);
 	})
 }
 
@@ -289,13 +274,9 @@ function _getAngleIsInRange(e, touch, state, dataset) {
 	var lastTouch = state.lastTouch;
 	var reachMaxAngle = state.reachMaxAngle;
 	var moveDis = state.oldMoveDis;
-	if (!lastTouch) {
-		return true;
-	}
+	if (!lastTouch) return true;
 	if (maxAngle >= 0 && maxAngle <= 90 && lastTouch) {
-		if ((!moveDis || moveDis < 1) && !refresherAecc && reachMaxAngle != null && !reachMaxAngle) {
-			return false;
-		}
+		if ((!moveDis || moveDis < 1) && !refresherAecc && reachMaxAngle != null && !reachMaxAngle) return false;
 		var x = Math.abs(touch.touchX - lastTouch.touchX);
 		var y = Math.abs(touch.touchY - lastTouch.touchY);
 		var z = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));

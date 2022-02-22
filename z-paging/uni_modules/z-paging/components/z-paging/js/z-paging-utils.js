@@ -6,16 +6,10 @@ const storageKey = 'Z-PAGING-REFRESHER-TIME-STORAGE-KEY'
 
 //判断两个数组是否相等
 function arrayIsEqual(arr1, arr2) {
-	if (arr1 === arr2) {
-		return true;
-	}
-	if (arr1.length !== arr2.length) {
-		return false;
-	}
+	if (arr1 === arr2) return true;
+	if (arr1.length !== arr2.length) return false;
 	for (let i = 0; i < arr1.length; i++) {
-		if (arr1[i] !== arr2[i]) {
-			return false;
-		}
+		if (arr1[i] !== arr2[i]) return false;
 	}
 	return true;
 }
@@ -57,12 +51,8 @@ function getTouchFromZPaging(target) {
 
 //获取z-paging所在的parent
 function getParent(parent) {
-	if (!parent) {
-		return null;
-	}
-	if (parent.$refs.paging) {
-		return parent;
-	}
+	if (!parent) return null;
+	if (parent.$refs.paging) return parent;
 	return getParent(parent.$parent);
 }
 
@@ -103,9 +93,7 @@ function getRefesrherTimeByKey(key) {
 	const datas = getRefesrherTime();
 	if (datas) {
 		const data = datas[key];
-		if (data) {
-			return data;
-		}
+		if (data) return data;
 	}
 	return null;
 }
@@ -134,9 +122,7 @@ function convertTextToPx(text) {
 		text = text.replace('px', '');
 	}
 	if (!isNaN(text)) {
-		if (isRpx) {
-			return Number(uni.upx2px(text));
-		}
+		if (isRpx) return Number(uni.upx2px(text));
 		return Number(text);
 	}
 	return 0;
@@ -184,9 +170,7 @@ function _dateTimeFormat(date) {
 
 function _fullZeroToTwo(str) {
 	str = str.toString();
-	if (str.length === 1) {
-		return '0' + str;
-	}
+	if (str.length === 1) return '0' + str;
 	return str;
 }
 
