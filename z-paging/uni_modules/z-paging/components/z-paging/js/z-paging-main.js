@@ -1067,12 +1067,8 @@ export default {
 			return 1000 / this.refresherFps;
 		},
 		finalRefresherEnabled() {
-			if (this.useChatRecordMode) {
-				return false;
-			}
-			if (this.privateRefresherEnabled === -1) {
-				return this.refresherEnabled;
-			}
+			if (this.useChatRecordMode) return false;
+			if (this.privateRefresherEnabled === -1) return this.refresherEnabled;
 			return this.privateRefresherEnabled === 1;
 		},
 		finalScrollWithAnimation() {
@@ -1493,9 +1489,7 @@ export default {
 			if (dataType !== '[object Array]') {
 				data = [data];
 			}
-			if (!this.useChatRecordMode) {
-				return;
-			}
+			if (!this.useChatRecordMode) return;
 			this.isTotalChangeFromAddData = true;
 			//#ifndef APP-NVUE
 			this.totalData = [...this.totalData, ...data];
@@ -1591,9 +1585,7 @@ export default {
 		},
 		//手动触发滚动到顶部加载更多，聊天记录模式时有效
 		doChatRecordLoadMore() {
-			if (this.useChatRecordMode) {
-				this._onLoadingMore('click');
-			}
+            this.useChatRecordMode && this._onLoadingMore('click');
 		},
 		//手动触发上拉加载更多(非必须，可依据具体需求使用)
 		doLoadMore() {
@@ -1756,9 +1748,7 @@ export default {
 			this.insideOfPaging = -1;
 			this.pageNo = this.defaultPageNo;
 			this._cleanRefresherEndTimeout();
-			if (!isClean) {
-				this._startLoading(true);
-			}
+            !isClean && this._startLoading(true);
 			this.firstPageLoaded = true;
 			this.isTotalChangeFromAddData = false;
 			this.totalData = [];
@@ -1801,13 +1791,9 @@ export default {
 			this.isAddedData = true;
 			this.fromEmptyViewReload = false;
 			this.isTotalChangeFromAddData = true;
-			if (!this.useCustomRefresher) {
-				uni.stopPullDownRefresh();
-			}
+            !this.useCustomRefresher && uni.stopPullDownRefresh();
 			// #ifdef APP-NVUE
-			if (this.usePageScroll) {
-				uni.stopPullDownRefresh();
-			}
+            this.usePageScroll && uni.stopPullDownRefresh();
 			// #endif
 			const tempIsUserPullDown = this.isUserPullDown;
 			if (this.showRefresherUpdateTime && this.pageNo === this.defaultPageNo) {
@@ -1871,9 +1857,7 @@ export default {
 		_currentDataChange(newVal, oldVal) {
 			newVal = [...newVal];
 			// #ifndef APP-NVUE
-			if (this.useChatRecordMode) {
-				newVal.reverse();
-			}
+            this.useChatRecordMode && newVal.reverse();
 			// #endif
 			if (this.pageNo === this.defaultPageNo && this.finalConcat) {
 				this.totalData = [];
@@ -1883,8 +1867,7 @@ export default {
 					this.loadingStatus = Enum.More.NoMore;
 				}
 			} else {
-				if (!newVal.length ||
-					(newVal.length && newVal.length < this.defaultPageSize)) {
+				if (!newVal.length || (newVal.length && newVal.length < this.defaultPageSize)) {
 					this.loadingStatus = Enum.More.NoMore;
 				}
 			}
@@ -1997,13 +1980,8 @@ export default {
 				//#endif
 			}
 			this.$emit('scrolltolower', from);
-			if (from === 'toBottom' && (!this.toBottomLoadingMoreEnabled || this.useChatRecordMode)) {
-				return;
-			}
-			if (this.refresherOnly || !this.loadingMoreEnabled || !(this.loadingStatus === Enum.More.Default || this.loadingStatus === Enum.More.Fail) || this.loading){
-				return;
-			}
-			
+			if (from === 'toBottom' && (!this.toBottomLoadingMoreEnabled || this.useChatRecordMode)) return;
+			if (this.refresherOnly || !this.loadingMoreEnabled || !(this.loadingStatus === Enum.More.Default || this.loadingStatus === Enum.More.Fail) || this.loading) return;
 			// #ifdef MP-WEIXIN
 			if (!this.isIos && !this.refresherOnly && !this.usePageScroll) {
 				const currentTimestamp = zUtils.getTime();
@@ -2028,9 +2006,7 @@ export default {
 		},
 		//点击返回顶部
 		_backToTopClick() {
-			if (!this.backToTopWithAnimate) {
-				this._checkShouldShowBackToTop(1, 0);
-			}
+            !this.backToTopWithAnimate && this._checkShouldShowBackToTop(1, 0);
 			this.scrollToTop(this.backToTopWithAnimate);
 		},
 		//滚动到顶部
@@ -2244,15 +2220,11 @@ export default {
 			this.$emit('scroll', e);
 			this.oldScrollTop = e.detail.scrollTop;
 			const scrollDiff = e.detail.scrollHeight - this.oldScrollTop;
-			if (!this.isIos) {
-				this._checkScrolledToBottom(scrollDiff);
-			}
+			!this.isIos && this._checkScrolledToBottom(scrollDiff);
 		},
 		//自定义下拉刷新被触发
 		_onRefresh(fromScrollView=false,isUserPullDown=true) {
-			if (fromScrollView){
-				if (!(this.finalRefresherEnabled && !this.useCustomRefresher)) return;
-			}
+			if (fromScrollView && !(this.finalRefresherEnabled && !this.useCustomRefresher)) return;
 			this.$emit('onRefresh');
 			this.$emit('Refresh');
 			if (this.loading || this.isRefresherInComplete || this.nShowRefresherReveal) return;
@@ -2278,9 +2250,7 @@ export default {
 		// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
 		//拖拽开始
 		_refresherTouchstart(e) {
-			if (this._touchDisabled()) {
-				return;
-			}
+			if (this._touchDisabled()) return;
 			const touch = zUtils.getTouch(e);
 			this._handleRefresherTouchstart(touch);
 		},
@@ -2291,11 +2261,7 @@ export default {
 				this.isTouchmoving = false;
 			}
 			this.isTouchEnded = false;
-			if (this.isIos13) {
-				this.refresherTransition = '';
-			} else {
-				this.refresherTransition = 'transform .1s linear';
-			}
+            this.refresherTransition = this.isIos13 ? '' : 'transform .1s linear';
 			this.refresherTouchstartY = touch.touchY;
 			this.$emit('refresherTouchstart', this.refresherTouchstartY);
 			this.lastRefresherTouchmove = touch;
@@ -2402,13 +2368,7 @@ export default {
 				if (this.isIos13) {
 					this.refresherTransition = '';
 				}
-				if (!e.bounce) {
-					if (this.scrollEnable) {
-						this.scrollEnable = false;
-					}
-				} else {
-					this.scrollEnable = true;
-				}
+                this.scrollEnable = e.bounce;
 			}
 		},
 		//wxs正在下拉状态改变处理
@@ -2427,10 +2387,7 @@ export default {
 			if (this.loadingType === Enum.LoadingType.Refresher) {
 				let refresherCompleteDelay = 0;
 				if(fromAddData && (isUserPullDown || this.showRefresherWhenReload)){
-					refresherCompleteDelay = this.refresherCompleteDelay;
-					if(this.refresherCompleteDuration > 700){
-						refresherCompleteDelay = 1;
-					}
+                    refresherCompleteDelay = this.refresherCompleteDuration > 700 ? 1 : this.refresherCompleteDelay;
 				}
 				const refresherStatus = refresherCompleteDelay > 0 ? Enum.Refresher.Complete : Enum.Refresher.Default;
 				if (this.finalShowRefresherWhenReload) {
@@ -2708,9 +2665,7 @@ export default {
 				callQueryResult(callback, []);
 				return;
 			}
-			if (pageNo == 0) {
-				pageNo = 1;
-			}
+            pageNo = Math.Max(1,pageNo);
 			let totalPagingList = [...this.totalLocalPagingList];
 			let pageNoIndex = (pageNo - 1) * pageSize;
 			if (pageNoIndex + pageSize <= totalPagingList.length) {
@@ -2976,9 +2931,7 @@ export default {
 			const stackCount = this.refresherRevealStackCount;
 			if (height === 0 && checkStack) {
 				this.refresherRevealStackCount--;
-				if (stackCount > 1) {
-					return;
-				}
+				if (stackCount > 1) return;
 				this.refresherEndTimeout = setTimeout(() => {
 					this.refresherStatus = Enum.Refresher.Default;
 				}, this.refresherCompleteDuration);
@@ -3006,11 +2959,7 @@ export default {
 		//滚动到底部加载更多
 		_nOnLoadmore() {
 			if (this.nShowRefresherReveal || !this.totalData.length) return;
-			if (this.useChatRecordMode) {
-				this.doChatRecordLoadMore();
-			} else {
-				this._onLoadingMore('toBottom');
-			}
+            this.useChatRecordMode ? this.doChatRecordLoadMore() : this._onLoadingMore('toBottom');
 		},
 		//获取nvue waterfall单项配置
 		_nGetWaterfallConfig(key, defaultValue) {
