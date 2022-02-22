@@ -1585,7 +1585,7 @@ export default {
 		},
 		//手动触发滚动到顶部加载更多，聊天记录模式时有效
 		doChatRecordLoadMore() {
-            this.useChatRecordMode && this._onLoadingMore('click');
+			this.useChatRecordMode && this._onLoadingMore('click');
 		},
 		//手动触发上拉加载更多(非必须，可依据具体需求使用)
 		doLoadMore() {
@@ -1748,7 +1748,7 @@ export default {
 			this.insideOfPaging = -1;
 			this.pageNo = this.defaultPageNo;
 			this._cleanRefresherEndTimeout();
-            !isClean && this._startLoading(true);
+			!isClean && this._startLoading(true);
 			this.firstPageLoaded = true;
 			this.isTotalChangeFromAddData = false;
 			this.totalData = [];
@@ -1791,9 +1791,9 @@ export default {
 			this.isAddedData = true;
 			this.fromEmptyViewReload = false;
 			this.isTotalChangeFromAddData = true;
-            !this.useCustomRefresher && uni.stopPullDownRefresh();
+			!this.useCustomRefresher && uni.stopPullDownRefresh();
 			// #ifdef APP-NVUE
-            this.usePageScroll && uni.stopPullDownRefresh();
+			this.usePageScroll && uni.stopPullDownRefresh();
 			// #endif
 			const tempIsUserPullDown = this.isUserPullDown;
 			if (this.showRefresherUpdateTime && this.pageNo === this.defaultPageNo) {
@@ -1857,7 +1857,7 @@ export default {
 		_currentDataChange(newVal, oldVal) {
 			newVal = [...newVal];
 			// #ifndef APP-NVUE
-            this.useChatRecordMode && newVal.reverse();
+			this.useChatRecordMode && newVal.reverse();
 			// #endif
 			if (this.pageNo === this.defaultPageNo && this.finalConcat) {
 				this.totalData = [];
@@ -2006,7 +2006,7 @@ export default {
 		},
 		//点击返回顶部
 		_backToTopClick() {
-            !this.backToTopWithAnimate && this._checkShouldShowBackToTop(1, 0);
+			!this.backToTopWithAnimate && this._checkShouldShowBackToTop(1, 0);
 			this.scrollToTop(this.backToTopWithAnimate);
 		},
 		//滚动到顶部
@@ -2261,7 +2261,7 @@ export default {
 				this.isTouchmoving = false;
 			}
 			this.isTouchEnded = false;
-            this.refresherTransition = this.isIos13 ? '' : 'transform .1s linear';
+			this.refresherTransition = this.isIos13 ? '' : 'transform .1s linear';
 			this.refresherTouchstartY = touch.touchY;
 			this.$emit('refresherTouchstart', this.refresherTouchstartY);
 			this.lastRefresherTouchmove = touch;
@@ -2368,7 +2368,7 @@ export default {
 				if (this.isIos13) {
 					this.refresherTransition = '';
 				}
-                this.scrollEnable = e.bounce;
+				this.scrollEnable = e.bounce;
 			}
 		},
 		//wxs正在下拉状态改变处理
@@ -2387,7 +2387,7 @@ export default {
 			if (this.loadingType === Enum.LoadingType.Refresher) {
 				let refresherCompleteDelay = 0;
 				if(fromAddData && (isUserPullDown || this.showRefresherWhenReload)){
-                    refresherCompleteDelay = this.refresherCompleteDuration > 700 ? 1 : this.refresherCompleteDelay;
+					refresherCompleteDelay = this.refresherCompleteDuration > 700 ? 1 : this.refresherCompleteDelay;
 				}
 				const refresherStatus = refresherCompleteDelay > 0 ? Enum.Refresher.Complete : Enum.Refresher.Default;
 				if (this.finalShowRefresherWhenReload) {
@@ -2665,7 +2665,7 @@ export default {
 				callQueryResult(callback, []);
 				return;
 			}
-            pageNo = Math.Max(1,pageNo);
+			pageNo = Math.Max(1,pageNo);
 			let totalPagingList = [...this.totalLocalPagingList];
 			let pageNoIndex = (pageNo - 1) * pageSize;
 			if (pageNoIndex + pageSize <= totalPagingList.length) {
@@ -2957,7 +2957,7 @@ export default {
 		//滚动到底部加载更多
 		_nOnLoadmore() {
 			if (this.nShowRefresherReveal || !this.totalData.length) return;
-            this.useChatRecordMode ? this.doChatRecordLoadMore() : this._onLoadingMore('toBottom');
+			this.useChatRecordMode ? this.doChatRecordLoadMore() : this._onLoadingMore('toBottom');
 		},
 		//获取nvue waterfall单项配置
 		_nGetWaterfallConfig(key, defaultValue) {
