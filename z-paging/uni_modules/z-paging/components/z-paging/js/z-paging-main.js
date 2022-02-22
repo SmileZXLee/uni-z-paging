@@ -2177,7 +2177,6 @@ export default {
 			if (!(this.loadingStatus === Enum.More.Default ? this.nShowBottom : true)) return false;
 			if (((!this.showLoadingMoreWhenReload || this.isUserPullDown || this.loadingStatus !== Enum.More.Loading) && !this.showLoadingMore) || (!this.loadingMoreEnabled && (!this.showLoadingMoreWhenReload || this
 				.isUserPullDown || this.loadingStatus !== Enum.More.Loading)) || this.refresherOnly) return false;
-			
 			if (this.useChatRecordMode && type !== 'Loading') return false;
 			if (!this.$slots) return false;
 			if (type === 'Custom') {
