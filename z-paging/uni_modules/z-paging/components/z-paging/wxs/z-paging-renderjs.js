@@ -43,7 +43,7 @@ export default {
 		_handleTouchmove(e) {
 			const touch = zUtils.getTouch(e);
 			var moveY = touch.touchY - data.startY;
-            //v2.1.4起删除条件：(data.isTouchFromZPaging && data.renderIsIos && !data.renderUsePageScroll && moveY < 0)
+			//v2.1.4起删除条件：(data.isTouchFromZPaging && data.renderIsIos && !data.renderUsePageScroll && moveY < 0)
 			if (data.isTouchFromZPaging && data.renderScrollTop < 1 && moveY > 0) {
 				if (e.cancelable && !e.defaultPrevented) {
 					e.preventDefault();
