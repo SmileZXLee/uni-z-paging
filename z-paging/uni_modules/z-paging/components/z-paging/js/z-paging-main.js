@@ -1787,6 +1787,7 @@ export default {
 			this.isAddedData = true;
 			this.fromEmptyViewReload = false;
 			this.isTotalChangeFromAddData = true;
+			this.refresherTriggered = false;
 			!this.useCustomRefresher && uni.stopPullDownRefresh();
 			// #ifdef APP-NVUE
 			this.usePageScroll && uni.stopPullDownRefresh();
@@ -1803,9 +1804,6 @@ export default {
 			let dataTypeRes = this._checkDataType(data, success, isLocal);
 			data = dataTypeRes.data;
 			success = dataTypeRes.success;
-			if (this.refresherTriggered) {
-				this.refresherTriggered = false;
-			}
 			let delayTime = commonDelayTime;
 			let shouldEndLoadingDelay = true;
 			// #ifdef APP-NVUE
