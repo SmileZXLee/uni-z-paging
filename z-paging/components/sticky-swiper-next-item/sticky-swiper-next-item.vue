@@ -48,7 +48,7 @@
 						//懒加载，当滑动到当前的item时，才去加载
 						setTimeout(() => {
 							this.$refs.paging.reload();
-						}, 5);
+						}, 100);
 					}
 				},
 				immediate: true

@@ -11,7 +11,7 @@ import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
 import Enum from './z-paging-enum'
 
-const currentVersion = '2.1.6';
+const currentVersion = '2.1.7';
 const systemInfo = uni.getSystemInfoSync();
 const commonDelayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
@@ -130,7 +130,6 @@ export default {
 			pagingLoaded: false,
 			loaded: false,
 			isUserReload: true,
-			valueLocked: false,
 			scrollEnable: true,
 			isTouchmoving: false,
 			isLocalPaging: false,
@@ -921,54 +920,15 @@ export default {
 	// #endif
 	watch: {
 		value(newVal, oldVal) {
-			if(this.valueLocked){
-				this.valueLocked = false;
-				return;
-			}
-			let dataType = Object.prototype.toString.call(newVal);
-			if (dataType === '[object Undefined]') {
-				zUtils.consoleErr('v-model所绑定的值不存在！');
-				return;
-			}
-			if (dataType !== '[object Array]') {
-				zUtils.consoleErr('v-model所绑定的值必须为Array类型！');
-				return;
-			}
-			if (!zUtils.arrayIsEqual(newVal, this.totalData)) {
-				this.isTotalChangeFromAddData = true;
-				this.totalData = newVal;
-			}
+			this._valueChange(newVal, oldVal);
 		},
+		// #ifdef VUE3
+		modelValue(newVal, oldVal) {
+			this._valueChange(newVal, oldVal);
+		},
+		// #endif
 		totalData(newVal, oldVal) {
-			if ((!this.isUserReload || !this.autoCleanListWhenReload) && this.firstPageLoaded && !newVal.length && oldVal.length) {
-				return;
-			}
-			this._doCheckScrollViewShouldFullHeight(newVal);
-			this.realTotalData = newVal;
-			this.$emit('input', newVal);
-			// #ifdef VUE3
-			this.$emit('update:modelValue', newVal);
-			// #endif
-			this.$emit('update:list', newVal);
-			this.$emit('listChange', newVal);
-			this._callMyParentList(newVal);
-			this.firstPageLoaded = false;
-			this.isTotalChangeFromAddData = false;
-			this.$nextTick(() => {
-				setTimeout(()=>{
-					this._getNodeClientRect('.zp-paging-container-content').then((res) => {
-						if (res) {
-							this.$emit('contentHeightChanged', res[0].height);
-						}
-					});
-				},1)
-				// #ifdef APP-NVUE
-				if (this.useChatRecordMode && this.nIsFirstPageAndNoMore && this.pageNo === this.defaultPageNo && !this.nFirstPageAndNoMoreChecked) {
-					this.nFirstPageAndNoMoreChecked = true;
-					this._scrollToBottom(false);
-				}
-				// #endif
-			})
+			this._totalDataChange(newVal, oldVal);
 		},
 		currentData(newVal, oldVal) {
 			this._currentDataChange(newVal, oldVal);
@@ -1846,6 +1806,44 @@ export default {
 					this.pageNo--;
 				}
 			}
+		},
+		//v-model传进来的value改变时调用
+		_valueChange(newVal, oldVal) {
+			
+		},
+		//所有数据改变时调用
+		_totalDataChange(newVal, oldVal, eventThrow=true) {
+			if ((!this.isUserReload || !this.autoCleanListWhenReload) && this.firstPageLoaded && !newVal.length && oldVal.length) {
+				return;
+			}
+			this._doCheckScrollViewShouldFullHeight(newVal);
+			this.realTotalData = newVal;
+			if (eventThrow) {
+				this.$emit('input', newVal);
+				// #ifdef VUE3
+				this.$emit('update:modelValue', newVal);
+				// #endif
+				this.$emit('update:list', newVal);
+				this.$emit('listChange', newVal);
+				this._callMyParentList(newVal);
+			}
+			this.firstPageLoaded = false;
+			this.isTotalChangeFromAddData = false;
+			this.$nextTick(() => {
+				setTimeout(()=>{
+					this._getNodeClientRect('.zp-paging-container-content').then((res) => {
+						if (res) {
+							this.$emit('contentHeightChanged', res[0].height);
+						}
+					});
+				},1)
+				// #ifdef APP-NVUE
+				if (this.useChatRecordMode && this.nIsFirstPageAndNoMore && this.pageNo === this.defaultPageNo && !this.nFirstPageAndNoMoreChecked) {
+					this.nFirstPageAndNoMoreChecked = true;
+					this._scrollToBottom(false);
+				}
+				// #endif
+			})
 		},
 		//当前数据改变时调用
 		_currentDataChange(newVal, oldVal) {

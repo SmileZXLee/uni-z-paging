@@ -47,9 +47,13 @@
 						//懒加载，当滑动到当前的item时，才去加载
 						if (!this.firstLoaded) {
 							this.$nextTick(()=>{
+								let delay = 5;
+								// #ifdef MP-TOUTIAO
+								delay = 100;
+								// #endif
 								setTimeout(() => {
 									this.$refs.paging.reload();
-								}, 5);
+								}, delay);
 							})
 						}
 					}

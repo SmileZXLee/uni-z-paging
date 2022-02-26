@@ -47,7 +47,7 @@
 						if(!this.firstLoaded){
 							setTimeout(() => {
 								this.$refs.paging.reload();
-							}, 5);
+							}, 100);
 						}
 					}
 				},
