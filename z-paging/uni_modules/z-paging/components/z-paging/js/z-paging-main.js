@@ -970,6 +970,15 @@ export default {
 				if (this.loaded && this.autoHeight) {
 					this._setAutoHeight(!newVal);
 				}
+				// #ifdef H5
+				if (newVal) {
+					try {
+						this.$nextTick(()=>{
+							this.$refs['zp-scroll-view'].$refs.main.style = {};
+						})
+					} catch {}
+				}
+				// #endif
 			},
 			immediate: true
 		},
