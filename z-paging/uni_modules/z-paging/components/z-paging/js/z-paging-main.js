@@ -120,6 +120,7 @@ export default {
 			lastBackToTopShowTime: 0,
 			systemInfo: null,
 			cssSafeAreaInsetBottom: -1,
+			cacheTopHeight: 0,
 
 			//--------------状态&判断---------------
 			showLoadingMore: false,
@@ -1902,7 +1903,7 @@ export default {
 						let delayTime = 200;
 						this.$emit('update:chatIndex', idIndex);
 						setTimeout(() => {
-							this._scrollIntoView(idIndexStr, 30, false, () => {
+							this._scrollIntoView(idIndexStr, 30 + this.cacheTopHeight, false, () => {
 								this.$emit('update:chatIndex', 0);
 							});
 						}, this.usePageScroll ? 0 : delayTime)
@@ -2738,6 +2739,8 @@ export default {
 								if (safeAreaInsetBottomAdd) {
 									pageScrollNodeHeight += this.safeAreaBottom;
 								}
+							} else {
+								this.cacheTopHeight = pageScrollNodeHeight;
 							}
 							this.$set(this.scrollViewStyle, marginText,
 								`${pageScrollNodeHeight}px`);
