@@ -469,11 +469,11 @@ const ZPRefresher = {
 				this._cleanRefresherCompleteTimeout();
 				this.refresherCompleteTimeout = setTimeout(() => {
 					let animateDuration = 1;
+					const animateType = this.refresherEndBounceEnabled && fromAddData ? 'cubic-bezier(0.19,1.64,0.42,0.72)' : 'linear';
 					if (fromAddData) {
-						const animateType = this.refresherEndBounceEnabled ? 'cubic-bezier(0.19,1.64,0.42,0.72)' : 'linear';
 						animateDuration = this.refresherEndBounceEnabled ? this.refresherCompleteDuration / 1000 : this.refresherCompleteDuration / 3000;
-						this.refresherTransition = `transform ${animateDuration}s ${animateType}`;
 					}
+					this.refresherTransition = `transform ${fromAddData?animateDuration:0.1}s ${animateType}`;
 					// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 					this.refresherTransform = 'translateY(0px)';
 					// #endif

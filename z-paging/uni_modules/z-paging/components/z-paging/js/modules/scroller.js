@@ -1,5 +1,6 @@
 // [z-paging]scroll相关模块
 import u from '.././z-paging-utils'
+import Enum from '.././z-paging-enum'
 
 // #ifdef APP-NVUE
 const weexDom = weex.requireModule('dom');
