@@ -70,7 +70,6 @@ export default {
 			isLoadFailed: false,
 			isIos: systemInfo.platform === 'ios',
 			disabledBounce: false,
-			isIos13: systemInfo.system && systemInfo.system.length && systemInfo.system.indexOf('iOS 13') != -1,
 			
 			//---------------wxs相关---------------
 			wxsIsScrollTopInTopRange: true,

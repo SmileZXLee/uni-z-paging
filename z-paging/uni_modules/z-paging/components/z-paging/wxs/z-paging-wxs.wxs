@@ -118,10 +118,7 @@ function touchend(e, ownerIns) {
 	var animate = false;
 	if (moveDis >= refresherThreshold) {
 		moveDis = refresherThreshold;
-		var isIos13 = _getIsTrue(dataset.isios13);
-		if (isIos13) {
-			animate = true;
-		}
+		animate = true;
 	}
 	_setTransformValue(moveDis, ins, state, animate);
 }

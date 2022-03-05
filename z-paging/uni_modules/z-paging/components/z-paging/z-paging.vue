@@ -47,7 +47,7 @@ by ZXLee
 					<view class="zp-paging-main" :style="[scrollViewInStyle,{'transform': finalRefresherTransform,'transition': refresherTransition}]"
 					<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 					:change:prop="pagingWxs.propObserver" :prop="wxsPropType"
-					:data-refresherThreshold="finalRefresherThreshold" :data-isIos="isIos" :data-isIos13="isIos13"
+					:data-refresherThreshold="finalRefresherThreshold" :data-isIos="isIos"
 					:data-loading="loading||isRefresherInComplete" :data-useChatRecordMode="useChatRecordMode" 
 					:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="wxsPageScrollTop"
 					:data-scrollTop="wxsScrollTop" :data-refresherMaxAngle="refresherMaxAngle" 

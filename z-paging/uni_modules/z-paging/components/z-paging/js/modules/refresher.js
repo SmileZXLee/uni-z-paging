@@ -324,7 +324,7 @@ const ZPRefresher = {
 				this.isTouchmoving = false;
 			}
 			this.isTouchEnded = false;
-			this.refresherTransition = this.isIos13 ? '' : 'transform .1s linear';
+			this.refresherTransition = '';
 			this.refresherTouchstartY = touch.touchY;
 			this.$emit('refresherTouchstart', this.refresherTouchstartY);
 			this.lastRefresherTouchmove = touch;
@@ -416,21 +416,19 @@ const ZPRefresher = {
 				this.refresherStatus = Enum.Refresher.Loading;
 				this._doRefresherLoad();
 			} else {
-				this._refresherEnd(true, false);
+				this._refresherEnd();
 				setTimeout(() => {
 					this.isTouchmoving = false;
 				}, c.delayTime);
 			}
 			this.scrollEnable = true;
-			this.refresherTransition = 'transform .1s linear';
+			// this.refresherTransition = 'transform .1s linear';
 			this.$emit('refresherTouchend', moveDis);
 		},
 		//处理scroll-view bounce是否生效
 		_handleScrollViewDisableBounce(e) {
 			if (!this.usePageScroll && !this.scrollToTopBounceEnabled) {
-				if (this.isIos13) {
-					this.refresherTransition = '';
-				}
+				this.refresherTransition = '';
 				this.scrollEnable = e.bounce;
 			}
 		},
