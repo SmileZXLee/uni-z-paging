@@ -4,7 +4,6 @@ import u from '../js/z-paging-utils'
 var data = {
 	renderScrollTop: 0,
 	renderUsePageScroll: false,
-	// renderIsIos: uni.getSystemInfoSync().platform === 'ios',
 	startY: 0,
 	isTouchFromZPaging: false
 }

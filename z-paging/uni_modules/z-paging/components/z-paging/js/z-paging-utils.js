@@ -169,7 +169,7 @@ function convertTextToPx(text) {
 
 //获取当前时间
 function getTime() {
-    return (new Date()).getTime();
+	return (new Date()).getTime();
 }
 
 //------------------ 私有方法 ------------------------
