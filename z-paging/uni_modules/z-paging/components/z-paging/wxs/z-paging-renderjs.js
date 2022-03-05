@@ -1,6 +1,6 @@
 // [z-paging]使用renderjs在app-vue和h5中对touchmove事件冒泡进行处理
 
-import zUtils from '../js/z-paging-utils'
+import u from '../js/z-paging-utils'
 var data = {
 	renderScrollTop: 0,
 	renderUsePageScroll: false,
@@ -36,12 +36,12 @@ export default {
 			}
 		},
 		_handleTouchstart(e) {
-			const touch = zUtils.getTouch(e);
+			const touch = u.getTouch(e);
 			data.startY = touch.touchY;
-			data.isTouchFromZPaging = zUtils.getTouchFromZPaging(e.target);
+			data.isTouchFromZPaging = u.getTouchFromZPaging(e.target);
 		},
 		_handleTouchmove(e) {
-			const touch = zUtils.getTouch(e);
+			const touch = u.getTouch(e);
 			var moveY = touch.touchY - data.startY;
 			//v2.1.4起删除条件：(data.isTouchFromZPaging && data.renderIsIos && !data.renderUsePageScroll && moveY < 0)
 			if (data.isTouchFromZPaging && data.renderScrollTop < 1 && moveY > 0) {

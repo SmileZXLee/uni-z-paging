@@ -17,7 +17,7 @@
 		<!-- #endif -->
 		<text v-if="zConfig.status===1&&zConfig.loadingIconType==='circle'&&!zConfig.loadingIconCustomImage.length"
 			:class="zConfig.defaultThemeStyle==='white'?'zp-l-line-loading-view zp-l-line-loading-view-white':'zp-l-line-loading-view zp-l-line-loading-view-black'" :style="[zConfig.iconCustomStyle]" />
-		<text :class="zConfig.defaultThemeStyle==='white'?'zp-l-text zp-l-text-white':'zp-l-text zp-l-text-black'">{{ownLoadingMoreText}}</text>
+		<text :class="zConfig.defaultThemeStyle==='white'?'zp-l-text zp-l-text-white':'zp-l-text zp-l-text-black'" :style="[zConfig.titleCustomStyle]">{{ownLoadingMoreText}}</text>
 		<text v-if="zConfig.showNoMoreLine&&zConfig.status===2" :class="zConfig.defaultThemeStyle==='white'?'zp-l-line zp-l-line-white':'zp-l-line zp-l-line-black'" :style="[zConfig.noMoreLineCustomStyle]" />
 	</view>
 </template>

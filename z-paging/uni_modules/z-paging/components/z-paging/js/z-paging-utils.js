@@ -1,8 +1,47 @@
 // [z-paging]工具类
 
 import zI18n from './z-paging-i18n'
+import zConfig from './z-paging-config'
+import zLocalConfig from '../config/index'
 
 const storageKey = 'Z-PAGING-REFRESHER-TIME-STORAGE-KEY'
+let config = null;
+
+/*
+当z-paging未使用uni_modules管理时，控制台会有警告：WARNING: Module not found: Error: Can't resolve '@/uni_modules/z-paging'...
+此时注释下方try中的代码即可
+*/
+try {
+	const contextKeys = require.context('@/uni_modules/z-paging', false, /\z-paging-config$/).keys();
+	if (contextKeys.length) {
+		const suffix = '.js';
+		config = require('@/uni_modules/z-paging/z-paging-config' + suffix);
+	}
+} catch {}
+
+//获取默认配置信息
+function gc(key, defaultValue) {
+	if (!config) {
+		if (zLocalConfig && Object.keys(zLocalConfig).length) {
+			config = zLocalConfig;
+		} else {
+			const temConfig = zConfig.getConfig();
+			if (zConfig && temConfig) {
+				config = temConfig;
+			}
+		}
+	}
+	if (!config) {
+		return defaultValue;
+	}
+	let value = config[_toKebab(key)];
+	if (value === undefined) {
+		value = config[key];
+	} else {
+		return value;
+	}
+	return defaultValue;
+}
 
 //判断两个数组是否相等
 function arrayIsEqual(arr1, arr2) {
@@ -128,6 +167,7 @@ function convertTextToPx(text) {
 	return 0;
 }
 
+//获取当前时间
 function getTime() {
     return (new Date()).getTime();
 }
@@ -174,7 +214,13 @@ function _fullZeroToTwo(str) {
 	return str;
 }
 
+//驼峰转短横线
+function _toKebab(value) {
+	return value.replace(/([A-Z])/g, "-$1").toLowerCase();
+}
+
 export default {
+	gc,
 	setRefesrherTime,
 	getRefesrherFormatTimeByKey,
 	arrayIsEqual,

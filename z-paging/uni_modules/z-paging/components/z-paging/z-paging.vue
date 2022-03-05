@@ -88,11 +88,11 @@ by ZXLee
 								<slot />
 								<!-- 上拉加载更多view -->
 								<!-- #ifndef MP-ALIPAY -->
-								<slot v-if="_shouldShowLoadingMore('Default')" name="loadingMoreDefault" />
-								<slot v-else-if="_shouldShowLoadingMore('Loading')" name="loadingMoreLoading" />
-								<slot v-else-if="_shouldShowLoadingMore('NoMore')" name="loadingMoreNoMore" />
-								<slot v-else-if="_shouldShowLoadingMore('Fail')" name="loadingMoreFail" />
-								<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="_shouldShowLoadingMore('Custom')" :zConfig="zPagingLoadMoreConfig" />
+								<slot v-if="_showLoadingMore('Default')" name="loadingMoreDefault" />
+								<slot v-else-if="_showLoadingMore('Loading')" name="loadingMoreLoading" />
+								<slot v-else-if="_showLoadingMore('NoMore')" name="loadingMoreNoMore" />
+								<slot v-else-if="_showLoadingMore('Fail')" name="loadingMoreFail" />
+								<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="_showLoadingMore('Custom')" :zConfig="zPagingLoadMoreConfig" />
 								<!-- #endif -->
 								<!-- #ifdef MP-ALIPAY -->
 								<slot v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreDefault" />
@@ -194,11 +194,11 @@ by ZXLee
 					</view>
 				</view>
 				<view :style="nLoadingMoreFixedHeight?{height:loadingMoreCustomStyle&&loadingMoreCustomStyle.height?loadingMoreCustomStyle.height:'80rpx'}:{}">
-					<slot v-if="_shouldShowLoadingMore('Default')" name="loadingMoreDefault" />
-					<slot v-else-if="_shouldShowLoadingMore('Loading')" name="loadingMoreLoading" />
-					<slot v-else-if="_shouldShowLoadingMore('NoMore')" name="loadingMoreNoMore" />
-					<slot v-else-if="_shouldShowLoadingMore('Fail')" name="loadingMoreFail" />
-					<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="_shouldShowLoadingMore('Custom')" :zConfig="zPagingLoadMoreConfig" />
+					<slot v-if="_showLoadingMore('Default')" name="loadingMoreDefault" />
+					<slot v-else-if="_showLoadingMore('Loading')" name="loadingMoreLoading" />
+					<slot v-else-if="_showLoadingMore('NoMore')" name="loadingMoreNoMore" />
+					<slot v-else-if="_showLoadingMore('Fail')" name="loadingMoreFail" />
+					<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="_showLoadingMore('Custom')" :zConfig="zPagingLoadMoreConfig" />
 				</view>
 			</view>
 		</view>
@@ -364,136 +364,6 @@ by ZXLee
 		name:"z-paging",
 		// #ifdef APP-VUE || H5
 		mixins: [pagingRenderjs],
-		// #endif
-		// 以下代码是为了欺骗编译器使props的代码提示功能生效，不会被编译到项目中
-		// #ifdef QUICKAPP-WEBVIEW-UNION
-		props: {
-			defaultPageNo: {type: [Number, String]},
-			defaultPageSize: {type: [Number, String]},
-			dataKey: {type: [Number, Object]},
-			autowireListName: {type: String},
-			autowireQueryName: {type: String},
-			delay: {type: [Number, String]},
-			minDelay: {type: [Number, String]},
-			language: {type: String},
-			followSystemLanguage: {type: Boolean},
-			pagingStyle: {type: Object},
-			height: {type: String},
-			width: {type: String},
-			bgColor: {type: String},
-			pagingContentStyle: {type: Object},
-			autoHeight: {type: Boolean},
-			autoHeightAddition: {type: [Number, String]},
-			defaultThemeStyle: {type: String},
-			refresherThemeStyle: {type: String},
-			refresherImgStyle: {type: Object},
-			refresherTitleStyle: {type: Object},
-			refresherUpdateTimeStyle: {type: Object},
-			watchRefresherTouchmove: {type: Object},
-			loadingMoreThemeStyle: {type: String},
-			refresherOnly: {type: Boolean},
-			refresherCompleteDelay: {type: [Number, String]},
-			refresherCompleteDuration: {type: [Number, String]},
-			refresherCompleteScrollable: {type: Boolean},
-			usePageScroll: {type: Boolean},
-			useVirtualList: {type: Boolean},
-			fixed: {type: Boolean},
-			safeAreaInsetBottom: {type: Boolean},
-			scrollable: {type: Boolean},
-			mountedAutoCallReload: {type: Boolean},
-			auto: {type: Boolean},
-			reloadWhenRefresh: {type: Boolean},
-			autoScrollToTopWhenReload: {type: Boolean},
-			autoCleanListWhenReload: {type: Boolean},
-			showRefresherWhenReload: {type: Boolean},
-			showLoadingMoreWhenReload: {type: Boolean},
-			useCustomRefresher: {type: Boolean},
-			refresherFps: {type: [Number, String]},
-			refresherMaxAngle: {type: [Number, String]},
-			refresherAngleEnableChangeContinued: {type: Boolean},
-			refresherDefaultText: {type: [String, Object]},
-			refresherPullingText: {type: [String, Object]},
-			refresherRefreshingText: {type: [String, Object]},
-			refresherCompleteText: {type: [String, Object]},
-			refresherEndBounceEnabled: {type: Boolean},
-			loadingMoreCustomStyle: {type: Object},
-			loadingMoreLoadingIconCustomStyle: {type: Object},
-			loadingMoreLoadingIconType: {type: String},
-			loadingMoreLoadingIconCustomImage: {type: String},
-			loadingMoreLoadingAnimated: {type: Boolean},
-			loadingMoreEnabled: {type: Boolean},
-			toBottomLoadingMoreEnabled: {type: Boolean},
-			loadingMoreDefaultText: {type: [String, Object]},
-			loadingMoreLoadingText: {type: [String, Object]},
-			loadingMoreNoMoreText: {type: [String, Object]},
-			loadingMoreFailText: {type: [String, Object]},
-			hideLoadingMoreWhenNoMoreAndInsideOfPaging: {type: Boolean},
-			hideLoadingMoreWhenNoMoreByLimit: {type: Number},
-			insideMore: {type: Boolean},
-			showDefaultLoadingMoreText: {type: Boolean},
-			showLoadingMoreNoMoreView: {type: Boolean},
-			showLoadingMoreNoMoreLine: {type: Boolean},
-			loadingMoreNoMoreLineCustomStyle: {type: Object},
-			hideEmptyView: {type: Boolean},
-			emptyViewText: {type: [String, Object]},
-			showEmptyViewReload: {type: Boolean},
-			showEmptyViewReloadWhenError: {type: Boolean},
-			emptyViewReloadText: {type: [String, Object]},
-			emptyViewImg: {type: String},
-			emptyViewErrorText: {type: [String, Object]},
-			emptyViewErrorImg: {type: String},
-			emptyViewStyle: {type: Object},
-			emptyViewSuperStyle: {type: Object},
-			emptyViewImgStyle: {type: Object},
-			emptyViewTitleStyle: {type: Object},
-			emptyViewReloadStyle: {type: Object},
-			emptyViewFixed: {type: Boolean},
-			emptyViewCenter: {type: Boolean},
-			autoHideEmptyViewWhenLoading: {type: Boolean},
-			autoHideEmptyViewWhenPull: {type: Boolean},
-			autoHideLoadingAfterFirstLoaded: {type: Boolean},
-			loadingFullFixed: {type: Boolean},
-			autoShowBackToTop: {type: Boolean},
-			backToTopThreshold: {type: [Number, String]},
-			backToTopImg: {type: String},
-			backToTopWithAnimate: {type: Boolean},
-			backToTopBottom: {type: [Number, String]},
-			backToTopStyle: {type: Object},
-			showScrollbar: {type: Boolean},
-			scrollX: {type: Boolean},
-			scrollToTopBounceEnabled: {type: Boolean},
-			scrollToBottomBounceEnabled: {type: Boolean},
-			scrollWithAnimation: {type: Boolean},
-			scrollIntoView: {type: String},
-			lowerThreshold: {type: [Number, String]},
-			enableBackToTop: {type: Boolean},
-			refresherEnabled: {type: Boolean},
-			refresherThreshold: {type: [Number, String]},
-			refresherDefaultStyle: {type: String},
-			refresherBackground: {type: String},
-			refresherFixedBackground: {type: String},
-			refresherFixedBacHeight: {type: [Number, String]},
-			refresherOutRate: {type: Number},
-			showRefresherUpdateTime: {type: Boolean},
-			refresherUpdateTimeKey: {type: String},
-			localPagingLoadingTime: {type: [Number, String]},
-			useChatRecordMode: {type: Boolean},
-			topZIndex: {type: Number},
-			superContentZIndex: {type: Number},
-			contentZIndex: {type: Number},
-			emptyViewZIndex: {type: Number},
-			autoFullHeight: {type: Boolean},
-			concat: {type: Boolean},
-			nvueListIs: {type: String},
-			nvueWaterfallConfig: {type: Object},
-			nvueBounce: {type: Boolean},
-			nvueFastScroll: {type: Boolean},
-			nvueListId: {type: String},
-			nvueRefresherStyle: {type: Object},
-			hideNvueBottomTag: {type: Boolean},
-			showConsoleError: {type: Boolean},
-			value: {type: Array}
-		}
 		// #endif
 	}
 </script>
