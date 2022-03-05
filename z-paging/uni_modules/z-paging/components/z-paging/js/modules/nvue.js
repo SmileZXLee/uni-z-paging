@@ -2,6 +2,9 @@
 import u from '.././z-paging-utils'
 import Enum from '.././z-paging-enum'
 
+// #ifdef APP-NVUE
+const weexAnimation = weex.requireModule('animation');
+// #endif
 const ZPNvue = {
 	props: {
 		//nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list

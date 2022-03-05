@@ -24,7 +24,6 @@ const systemInfo = uni.getSystemInfoSync();
 
 // #ifdef APP-NVUE
 const weexDom = weex.requireModule('dom');
-const weexAnimation = weex.requireModule('animation');
 // #endif
 
 export default {
