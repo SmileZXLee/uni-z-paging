@@ -53,22 +53,30 @@
 			//空数据图样式
 			emptyViewStyle: {
 				type: Object,
-				default: {}
+				default: function() {
+                    return {}
+                }
 			},
 			//空数据图img样式
 			emptyViewImgStyle: {
 				type: Object,
-				default: {}
+				default: function() {
+				    return {}
+				}
 			},
 			//空数据图描述文字样式
 			emptyViewTitleStyle: {
 				type: Object,
-				default: {}
+				default: function() {
+				    return {}
+				}
 			},
 			//空数据图重新加载按钮样式
 			emptyViewReloadStyle: {
 				type: Object,
-				default: {}
+				default: function() {
+				    return {}
+				}
 			},
 			//空数据图z-index
 			emptyViewZIndex: {

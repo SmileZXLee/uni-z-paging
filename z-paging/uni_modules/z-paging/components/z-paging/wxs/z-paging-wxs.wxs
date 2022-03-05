@@ -9,7 +9,8 @@ function propObserver(newValue, oldValue, ownerIns, ins) {
 	var dataset = ins.getDataset();
 	var loading = dataset.loading == true;
 	if (newValue.indexOf('end') != -1) {
-		_setTransform('translateY(0px)', ins, false)
+		var transition = newValue.split('end')[0];
+		_setTransform('translateY(0px)', ins, false, transition)
 		state.moveDis = 0;
 		state.oldMoveDis = 0;
 		currentDis = 0;
@@ -170,10 +171,10 @@ function _setTransformValue(value, ins, state, animate) {
 	value = value || 0;
 	if (state.moveDis == value) return;
 	state.moveDis = value;
-	_setTransform('translateY(' + value + 'px)', ins, animate);
+	_setTransform('translateY(' + value + 'px)', ins, animate, '');
 }
 
-function _setTransform(transform, ins, animate) {
+function _setTransform(transform, ins, animate, transition) {
 	if (transform == 'translateY(0px)') {
 		transform = 'none';
 	}
@@ -181,6 +182,9 @@ function _setTransform(transform, ins, animate) {
 		var stl = { 'transform': transform };
 		if (animate) {
 			stl['transition'] = 'transform .1s linear';
+		}
+		if (transition.length){
+			stl['transition'] = transition;
 		}
 		ins.setStyle(stl);
 	})

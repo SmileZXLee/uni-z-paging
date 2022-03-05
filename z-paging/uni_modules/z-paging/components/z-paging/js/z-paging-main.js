@@ -9,7 +9,7 @@ import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
 // modules
-import dataModule from './modules/data'
+import dataHandleModule from './modules/data-handle'
 import i18nModule from './modules/i18n'
 import nvueModule from './modules/nvue'
 import emptyModule from './modules/empty'
@@ -34,7 +34,7 @@ export default {
 		zPagingEmptyView
 	},
 	mixins: [
-		dataModule,
+		dataHandleModule,
 		i18nModule,
 		nvueModule,
 		emptyModule,
@@ -457,9 +457,7 @@ export default {
 					this.$delete(this.scrollViewStyle, heightKey);
 					this.$delete(this.scrollViewInStyle, heightKey);
 				}
-			} catch (e) {
-
-			}
+			} catch (e) {}
 		},
 		//通过获取css设置的底部安全区域占位view高度设置bottom距离
 		_getCssSafeAreaInsetBottom(){

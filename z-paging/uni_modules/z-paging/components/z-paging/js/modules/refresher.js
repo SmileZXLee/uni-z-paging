@@ -478,7 +478,7 @@ const ZPRefresher = {
 					this.refresherTransform = 'translateY(0px)';
 					// #endif
 					// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
-					this.wxsPropType = 'end' + u.getTime();
+					this.wxsPropType = this.refresherTransition + 'end' + u.getTime();
 					// #endif
 					// #ifdef APP-NVUE
 					this._nRefresherEnd();
