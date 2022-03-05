@@ -1,8 +1,8 @@
 // [z-paging]下拉刷新view模块
 import u from '.././z-paging-utils'
+import c from '.././z-paging-constant'
 import Enum from '.././z-paging-enum'
 
-const commonDelayTime = 100;
 const ZPRefresher = {
 	props: {
 		//下拉刷新的主题样式，支持black，white，默认black
@@ -419,7 +419,7 @@ const ZPRefresher = {
 				this._refresherEnd(true, false);
 				setTimeout(() => {
 					this.isTouchmoving = false;
-				}, commonDelayTime);
+				}, c.delayTime);
 			}
 			this.scrollEnable = true;
 			this.refresherTransition = 'transform .1s linear';
@@ -505,7 +505,7 @@ const ZPRefresher = {
 			if (setLoading) {
 				setTimeout(() => {
 					this.loading = false;
-				}, shouldEndLoadingDelay ? commonDelayTime : 0);
+				}, shouldEndLoadingDelay ? c.delayTime : 0);
 				isUserPullDown && this._onRestore();
 			}
 		},

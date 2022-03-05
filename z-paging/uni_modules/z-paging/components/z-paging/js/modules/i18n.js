@@ -1,8 +1,8 @@
 // [z-paging]i18n模块
-import zI18n from '.././z-paging-i18n'
 import u from '.././z-paging-utils'
+import c from '.././z-paging-constant'
+import zI18n from '.././z-paging-i18n'
 
-const i18nUpdateKey = 'z-paging-i18n-update';
 const systemInfo = uni.getSystemInfoSync();
 const ZPI18n = {
 	props: {
@@ -29,7 +29,7 @@ const ZPI18n = {
 			if (this.followSystemLanguage) {
 				systemLanguage = systemInfo.language;
 			}
-			return uni.getStorageSync(i18nUpdateKey) || systemLanguage || 'zh-cn';
+			return uni.getStorageSync(c.i18nUpdateKey) || systemLanguage || 'zh-cn';
 		},
 		finalTempLanguage() {
 			return this.language.length ? this.language : this.tempLanguage;

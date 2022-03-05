@@ -12,9 +12,7 @@ function setConfig(value) {
 
 function getConfig() {
 	try {
-		if (getedStorage) {
-			return config;
-		}
+		if (getedStorage) return config;
 		config = uni.getStorageSync(storageKey);
 		getedStorage = true;
 	} catch {

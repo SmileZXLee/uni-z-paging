@@ -1,12 +1,14 @@
 // [z-paging]核心js
 
 import zStatic from './z-paging-static'
+import c from './z-paging-constant'
 import u from './z-paging-utils'
 
 import zPagingRefresh from '../components/z-paging-refresh'
 import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
+// modules
 import dataModule from './modules/data'
 import i18nModule from './modules/i18n'
 import nvueModule from './modules/nvue'
@@ -18,11 +20,7 @@ import backToTopModule from './modules/back-to-top'
 
 import Enum from './z-paging-enum'
 
-const currentVersion = '2.1.7';
 const systemInfo = uni.getSystemInfoSync();
-const commonDelayTime = 100;
-const i18nUpdateKey = 'z-paging-i18n-update';
-const errorUpdateKey = 'z-paging-error-emit';
 
 // #ifdef APP-NVUE
 const weexDom = weex.requireModule('dom');
@@ -216,10 +214,10 @@ export default {
 				this.isTouchmoving = true;
 			})
 		}
-		uni.$on(i18nUpdateKey, () => {
+		uni.$on(c.i18nUpdateKey, () => {
 			this.tempLanguageUpdateKey = u.getTime();
 		})
-		uni.$on(errorUpdateKey, () => {
+		uni.$on(c.errorUpdateKey, () => {
 			if (this.loading) {
 				this.complete(false);
 			}
@@ -238,13 +236,13 @@ export default {
 		// #endif
 	},
 	destroyed() {
-		uni.$off(i18nUpdateKey);
-		uni.$off(errorUpdateKey);
+		uni.$off(c.i18nUpdateKey);
+		uni.$off(c.errorUpdateKey);
 	},
 	// #ifdef VUE3
 	unmounted() {
-		uni.$off(i18nUpdateKey);
-		uni.$off(errorUpdateKey);
+		uni.$off(c.i18nUpdateKey);
+		uni.$off(c.errorUpdateKey);
 	},
 	// #endif
 	watch: {
@@ -376,7 +374,7 @@ export default {
 	methods: {
 		//当前版本号
 		getVersion() {
-			return `z-paging v${currentVersion}`;
+			return `z-paging v${zConstant.version}`;
 		},
 		//设置nvue List的specialEffects
 		setSpecialEffects(args) {

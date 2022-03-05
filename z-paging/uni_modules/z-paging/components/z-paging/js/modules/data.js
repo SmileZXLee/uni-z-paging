@@ -1,8 +1,8 @@
 // [z-paging]数据处理模块
 import u from '.././z-paging-utils'
+import c from '.././z-paging-constant'
 import Enum from '.././z-paging-enum'
 
-const commonDelayTime = 100;
 const ZPData = {
 	props: {
 		//自定义pageNo，默认为1
@@ -254,7 +254,7 @@ const ZPData = {
 			if (toTop) {
 				setTimeout(() => {
 					this._scrollToTop(toTopWithAnimate);
-				}, commonDelayTime)
+				}, c.delayTime)
 			}
 		},
 		//重新设置列表数据，调用此方法不会影响pageNo和pageSize，也不会触发请求。适用场景：当需要删除列表中某一项时，将删除对应项后的数组通过此方法传递给z-paging。(当出现类似的需要修改列表数组的场景时，请使用此方法，请勿直接修改page中:list.sync绑定的数组)
@@ -298,7 +298,7 @@ const ZPData = {
 						this._scrollToTop(toBottomWithAnimate);
 					}
 					//#endif
-				}, commonDelayTime)
+				}, c.delayTime)
 			}
 		},
 		//设置本地分页数据，请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging作分页处理（若调用了此方法，则上拉加载更多时内部会自动分页，不会触发@query所绑定的事件）
@@ -450,7 +450,7 @@ const ZPData = {
 			let dataTypeRes = this._checkDataType(data, success, isLocal);
 			data = dataTypeRes.data;
 			success = dataTypeRes.success;
-			let delayTime = commonDelayTime;
+			let delayTime = c.delayTime;
 			let shouldEndLoadingDelay = true;
 			// #ifdef APP-NVUE
 			if (this.useChatRecordMode) {
