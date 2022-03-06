@@ -59,8 +59,7 @@ by ZXLee
 					:change:renderPropUsePageScroll="pagingRenderjs.renderPropUsePageScrollChange" :renderPropUsePageScroll="renderPropUsePageScroll"
 					<!-- #endif -->
 					>	
-						<view v-if="showRefresher" class="zp-custom-refresher-view"
-							:style="[{'margin-top': `-${finalRefresherThreshold}px`,'background': refresherBackground}]">
+						<view v-if="showRefresher" class="zp-custom-refresher-view" :style="[{'margin-top': `-${finalRefresherThreshold}px`,'background': refresherBackground}]">
 							<view class="zp-custom-refresher-container" :style="[{'height': `${finalRefresherThreshold}px`,'background': refresherBackground}]">
 								<!-- 下拉刷新view -->
 								<view class="zp-custom-refresher-slot-view">

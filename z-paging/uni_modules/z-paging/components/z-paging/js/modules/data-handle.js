@@ -500,6 +500,9 @@ const ZPData = {
 				return;
 			}
 			this._doCheckScrollViewShouldFullHeight(newVal);
+			if(!this.realTotalData.length && !newVal.length){
+				eventThrow = false;
+			}
 			this.realTotalData = newVal;
 			if (eventThrow) {
 				this.$emit('input', newVal);
