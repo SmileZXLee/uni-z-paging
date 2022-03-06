@@ -522,7 +522,7 @@ const ZPData = {
 							this.$emit('contentHeightChanged', res[0].height);
 						}
 					});
-				},1)
+				},100)
 				// #ifdef APP-NVUE
 				if (this.useChatRecordMode && this.nIsFirstPageAndNoMore && this.pageNo === this.defaultPageNo && !this.nFirstPageAndNoMoreChecked) {
 					this.nFirstPageAndNoMoreChecked = true;

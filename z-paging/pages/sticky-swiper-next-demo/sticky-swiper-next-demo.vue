@@ -57,7 +57,7 @@
 			//设置swiper的高度
 			heightChanged(height){
 				if(height === 0){
-					//默认swiper高度为屏幕可用高度-tabbar高度
+					//默认swiper高度为屏幕可用高度-tabsView高度
 					height = uni.getSystemInfoSync().windowHeight - uni.upx2px(80);
 				}
 				this.swiperHeight = height;
