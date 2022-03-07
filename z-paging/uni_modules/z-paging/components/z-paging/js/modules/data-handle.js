@@ -136,6 +136,9 @@ const ZPData = {
 		finalConcat() {
 			return this.concat && this.privateConcat;
 		},
+		isFirstPage() {
+			return this.pageNo === this.defaultPageNo;
+		}
 	},
 	watch: {
 		totalData(newVal, oldVal) {
@@ -163,6 +166,9 @@ const ZPData = {
 		//【保证数据一致】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为dataKey，需与:data-key绑定的一致，第三个参数为是否成功(默认为是）
 		completeByKey(data, dataKey = null, success = true) {
 			if (dataKey !== null && this.dataKey !== null && dataKey !== this.dataKey) {
+				if (this.isFirstPage) {
+					this.endRefresh();
+				}
 				return;
 			}
 			this.customNoMore = -1;
@@ -235,7 +241,7 @@ const ZPData = {
 			let addDataDalay = 0;
 			const disTime = currentTimeStamp - this.requestTimeStamp;
 			let minDelay = this.minDelay;
-			if(this.pageNo === this.defaultPageNo && this.finalShowRefresherWhenReload){
+			if(this.isFirstPage && this.finalShowRefresherWhenReload){
 				minDelay = Math.max(400,minDelay);
 			}
 			if(this.requestTimeStamp > 0 && disTime < minDelay){
@@ -443,12 +449,12 @@ const ZPData = {
 			this.usePageScroll && uni.stopPullDownRefresh();
 			// #endif
 			const tempIsUserPullDown = this.isUserPullDown;
-			if (this.showRefresherUpdateTime && this.pageNo === this.defaultPageNo) {
+			if (this.showRefresherUpdateTime && this.isFirstPage) {
 				u.setRefesrherTime(u.getTime(), this.refresherUpdateTimeKey);
 				this.tempLanguageUpdateKey = u.getTime();
 				this.$refs.refresh && this.$refs.refresh.updateTime();
 			}
-			if (tempIsUserPullDown && this.pageNo === this.defaultPageNo) {
+			if (tempIsUserPullDown && this.isFirstPage) {
 				this.isUserPullDown = false;
 			}
 			let dataTypeRes = this._checkDataType(data, success, isLocal);
@@ -467,7 +473,7 @@ const ZPData = {
 				this.pagingLoaded = true;
 				this._refresherEnd(shouldEndLoadingDelay, true, tempIsUserPullDown);
 			}, delayTime)
-			if (this.pageNo === this.defaultPageNo) {
+			if (this.isFirstPage) {
 				this.isLoadFailed = !success;
 			}
 			if (success) {
@@ -526,9 +532,9 @@ const ZPData = {
 							this.$emit('contentHeightChanged', res[0].height);
 						}
 					});
-				},100)
+				},this.isIos?100:300)
 				// #ifdef APP-NVUE
-				if (this.useChatRecordMode && this.nIsFirstPageAndNoMore && this.pageNo === this.defaultPageNo && !this.nFirstPageAndNoMoreChecked) {
+				if (this.useChatRecordMode && this.nIsFirstPageAndNoMore && this.isFirstPage && !this.nFirstPageAndNoMoreChecked) {
 					this.nFirstPageAndNoMoreChecked = true;
 					this._scrollToBottom(false);
 				}
@@ -541,7 +547,7 @@ const ZPData = {
 			// #ifndef APP-NVUE
 			this.useChatRecordMode && newVal.reverse();
 			// #endif
-			if (this.pageNo === this.defaultPageNo && this.finalConcat) {
+			if (this.isFirstPage && this.finalConcat) {
 				this.totalData = [];
 			}
 			if (this.customNoMore !== -1) {
@@ -556,7 +562,7 @@ const ZPData = {
 			if (!this.totalData.length) {
 				if (this.finalConcat) {
 					// #ifdef APP-NVUE
-					if(this.useChatRecordMode && this.pageNo === this.defaultPageNo && this.loadingStatus === Enum.More.NoMore){
+					if(this.useChatRecordMode && this.isFirstPage && this.loadingStatus === Enum.More.NoMore){
 						newVal.reverse();
 					}
 					// #endif
