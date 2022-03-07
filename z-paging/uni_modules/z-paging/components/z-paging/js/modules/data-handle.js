@@ -227,6 +227,10 @@ const ZPData = {
 		},
 		//与上方complete方法功能一致，新版本中设置服务端回调数组请使用complete方法
 		addData(data, success = true) {
+			if (!this.fromCompleteEmit) {
+				this.disabledCompleteEmit = true;
+				this.fromCompleteEmit = false;
+			}
 			const currentTimeStamp = u.getTime();
 			let addDataDalay = 0;
 			const disTime = currentTimeStamp - this.requestTimeStamp;

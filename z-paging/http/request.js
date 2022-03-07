@@ -44,6 +44,7 @@ function queryList(data) {
 function callQueryResult(arg) {
 	return new Promise((resolve, reject) => {
 		setTimeout(() => {
+			uni.$emit('z-paging-complete-emit',{list:arg,type:'total',rule:10});
 			uni.hideLoading();
 			if (showLog) {
 				console.log('%c\n----------响应开始--------', 'color:#0113fa;');

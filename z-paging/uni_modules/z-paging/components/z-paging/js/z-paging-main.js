@@ -70,6 +70,8 @@ export default {
 			isLoadFailed: false,
 			isIos: systemInfo.platform === 'ios',
 			disabledBounce: false,
+			fromCompleteEmit: false,
+			disabledCompleteEmit: false,
 			
 			//---------------wxs相关---------------
 			wxsIsScrollTopInTopRange: true,
@@ -212,14 +214,7 @@ export default {
 				this.isTouchmoving = true;
 			})
 		}
-		uni.$on(c.i18nUpdateKey, () => {
-			this.tempLanguageUpdateKey = u.getTime();
-		})
-		uni.$on(c.errorUpdateKey, () => {
-			if (this.loading) {
-				this.complete(false);
-			}
-		})
+		this._onEmit();
 		// #ifdef APP-NVUE
 		if (!this.isIos && !this.useChatRecordMode) {
 			this.nLoadingMoreFixedHeight = true;
@@ -234,13 +229,11 @@ export default {
 		// #endif
 	},
 	destroyed() {
-		uni.$off(c.i18nUpdateKey);
-		uni.$off(c.errorUpdateKey);
+		this._offEmit();
 	},
 	// #ifdef VUE3
 	unmounted() {
-		uni.$off(c.i18nUpdateKey);
-		uni.$off(c.errorUpdateKey);
+		this._offEmit();
 	},
 	// #endif
 	watch: {
@@ -560,5 +553,52 @@ export default {
 			}
 			return timeout;
 		},
+		//添加全局emit监听
+		_onEmit() {
+			uni.$on(c.i18nUpdateKey, () => {
+				this.tempLanguageUpdateKey = u.getTime();
+			})
+			uni.$on(c.errorUpdateKey, () => {
+				if (this.loading) {
+					this.complete(false);
+				}
+			})
+			uni.$on(c.completeUpdateKey, (data) => {
+				setTimeout(() => {
+					if (this.loading) {
+						if (!this.disabledCompleteEmit) {
+							const type = data.type || 'normal';
+							const list = data.list || data;
+							const rule = data.rule;
+							this.fromCompleteEmit = true;
+							switch (type){
+								case 'normal':
+									this.complete(list);
+									break;
+								case 'total':
+									this.completeByTotal(list, rule);
+									break;
+								case 'nomore':
+									this.completeByNoMore(list, rule);
+									break;
+								case 'key':
+									this.completeByKey(list, rule);
+									break;
+								default:
+									break;
+							}
+						} else {
+							this.disabledCompleteEmit = false;
+						}
+					}
+				}, 1);
+			})
+		},
+		//销毁全局emit监听
+		_offEmit(){
+			uni.$off(c.i18nUpdateKey);
+			uni.$off(c.errorUpdateKey);
+			uni.$off(c.completeUpdateKey);
+		}
 	},
 };
