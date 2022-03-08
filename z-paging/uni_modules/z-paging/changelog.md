@@ -1,3 +1,8 @@
+## 2.1.9（2022-03-08）
+1.支持了全局complete，可全局设置complete，无需在每个页面写`this.$refs.paging.complete(xxx)`。  
+2.修复了使用`completeByKey`的同时设置`:show-refresher-when-reload="true"`后，快速切换tab下拉刷新view有概率不收回的问题。  
+3.修复`sticky-swiper-next-demo`在安卓中，首次加载滚动到底部view被遮挡的问题。  
+4.修复使用`v-slot`的情况下，若列表为空，`v-slot`不生效的问题。  
 ## 2.1.8（2022-03-05）
 细节优化
 ## 2.1.7（2022-03-05）
