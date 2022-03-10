@@ -4,7 +4,7 @@ var currentDis = 0;
 var isPCFlag = -1;
 
 function propObserver(newValue, oldValue, ownerIns, ins) {
-	var state = ownerIns.getState();
+	var state = ownerIns.getState() || {};
 	state.currentIns = ins;
 	var dataset = ins.getDataset();
 	var loading = dataset.loading == true;

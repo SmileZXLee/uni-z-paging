@@ -366,7 +366,7 @@ const ZPRefresher = {
 				}
 				this.disabledBounce = true;
 			}
-			this._emitTouchmove({pullingDis:moveDis,dy:this.moveDis - this.oldMoveDis});
+			this._emitTouchmove({pullingDistance:moveDis,dy:this.moveDis - this.oldMoveDis});
 		},
 		// #endif
 		//进一步处理拖拽中结果
@@ -441,7 +441,7 @@ const ZPRefresher = {
 		},
 		//wxs正在下拉处理
 		_handleWxsPullingDown(e){
-			this._emitTouchmove({pullingDis:e.moveDis,dy:e.diffDis});
+			this._emitTouchmove({pullingDistance:e.moveDis,dy:e.diffDis});
 		},
 		//下拉刷新结束
 		_refresherEnd(shouldEndLoadingDelay = true, fromAddData = false, isUserPullDown = false, setLoading = true) {
@@ -570,7 +570,7 @@ const ZPRefresher = {
 			// #ifndef APP-NVUE
 			e.viewHeight = this.finalRefresherThreshold;
 			// #endif
-			e.rate = e.pullingDis / e.viewHeight;
+			e.rate = e.pullingDistance / e.viewHeight;
 			if(this.hasTouchmove){
 				this.$emit('refresherTouchmove',e);
 			}
