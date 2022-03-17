@@ -400,7 +400,7 @@ const ZPData = {
 			this.insideOfPaging = -1;
 			this.pageNo = this.defaultPageNo;
 			this._cleanRefresherEndTimeout();
-			!isClean && this._startLoading(true);
+			!this.privateShowRefresherWhenReload && !isClean && this._startLoading(true);
 			this.firstPageLoaded = true;
 			this.isTotalChangeFromAddData = false;
 			this.totalData = [];

@@ -290,7 +290,7 @@ const ZPRefresher = {
 			if (fromScrollView && !(this.finalRefresherEnabled && !this.useCustomRefresher)) return;
 			this.$emit('onRefresh');
 			this.$emit('Refresh');
-			if (this.loading || this.isRefresherInComplete || this.nShowRefresherReveal) return;
+			if (this.loading || this.isRefresherInComplete) return;
 			this.isUserPullDown = isUserPullDown;
 			this.isUserReload = !isUserPullDown;
 			this._startLoading(true);
