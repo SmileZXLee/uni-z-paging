@@ -2,23 +2,23 @@
 
 <template>
 	<view class="zp-l-container" :style="[zConfig.customStyle]">
-		<text v-if="zConfig.showNoMoreLine&&zConfig.status===2" :class="zConfig.defaultThemeStyle==='white'?'zp-l-line zp-l-line-white':'zp-l-line zp-l-line-black'"
+		<text v-if="zConfig.showNoMoreLine&&finalStatus===2" :class="zConfig.defaultThemeStyle==='white'?'zp-l-line zp-l-line-white':'zp-l-line zp-l-line-black'"
 			:style="[zConfig.noMoreLineCustomStyle]" />
 		<!-- #ifndef APP-NVUE -->
-		<image v-if="zConfig.status===1&&zConfig.loadingIconCustomImage.length"
+		<image v-if="finalStatus===1&&zConfig.loadingIconCustomImage.length"
 			:src="zConfig.loadingIconCustomImage" :class="{'zp-l-line-loading-custom-image':true,'zp-l-line-loading-custom-image-animated':zConfig.loadingAnimated}" />
-		<image v-if="zConfig.status===1&&zConfig.loadingIconType==='flower'&&!zConfig.loadingIconCustomImage.length"
+		<image v-if="finalStatus===1&&zConfig.loadingIconType==='flower'&&!zConfig.loadingIconCustomImage.length"
 			class="zp-line-loading-image" :style="[zConfig.iconCustomStyle]" :src="zConfig.defaultThemeStyle==='white'?base64FlowerWhite:base64Flower" />
 		<!-- #endif -->
 		<!-- #ifdef APP-NVUE -->
 		<view>
-			<loading-indicator v-if="zConfig.status===1" class="zp-line-loading-image" :style="[{color:zConfig.defaultThemeStyle==='white'?'white':'#777777'}]" animating />
+			<loading-indicator v-if="finalStatus===1" class="zp-line-loading-image" :style="[{color:zConfig.defaultThemeStyle==='white'?'white':'#777777'}]" animating />
 		</view>
 		<!-- #endif -->
-		<text v-if="zConfig.status===1&&zConfig.loadingIconType==='circle'&&!zConfig.loadingIconCustomImage.length"
+		<text v-if="finalStatus===1&&zConfig.loadingIconType==='circle'&&!zConfig.loadingIconCustomImage.length"
 			:class="zConfig.defaultThemeStyle==='white'?'zp-l-line-loading-view zp-l-line-loading-view-white':'zp-l-line-loading-view zp-l-line-loading-view-black'" :style="[zConfig.iconCustomStyle]" />
 		<text :class="zConfig.defaultThemeStyle==='white'?'zp-l-text zp-l-text-white':'zp-l-text zp-l-text-black'" :style="[zConfig.titleCustomStyle]">{{ownLoadingMoreText}}</text>
-		<text v-if="zConfig.showNoMoreLine&&zConfig.status===2" :class="zConfig.defaultThemeStyle==='white'?'zp-l-line zp-l-line-white':'zp-l-line zp-l-line-black'" :style="[zConfig.noMoreLineCustomStyle]" />
+		<text v-if="zConfig.showNoMoreLine&&finalStatus===2" :class="zConfig.defaultThemeStyle==='white'?'zp-l-line zp-l-line-white':'zp-l-line zp-l-line-black'" :style="[zConfig.noMoreLineCustomStyle]" />
 	</view>
 </template>
 <script>
@@ -35,10 +35,14 @@
 		props: ['zConfig'],
 		computed: {
 			ownLoadingMoreText() {
-				return this.statusTextArr[this.zConfig.status];
+				return this.statusTextArr[this.finalStatus];
 			},
 			statusTextArr() {
 				return [this.zConfig.defaultText,this.zConfig.loadingText,this.zConfig.noMoreText,this.zConfig.failText];
+			},
+			finalStatus() {
+				if (this.zConfig.defaultAsLoading && this.zConfig.status === 0) return 1;
+				return this.zConfig.status;
 			}
 		}
 	}

@@ -50,6 +50,11 @@ const ZPLoadMore = {
 			type: Boolean,
 			default: u.gc('toBottomLoadingMoreEnabled', true)
 		},
+		//滑动到底部状态为默认状态时，以加载中的状态展示，默认为否。若设置为是，可避免滚动到底部看到默认状态然后立刻变为加载中状态的问题，但分页数量未超过一屏时，不会显示【点击加载更多】
+		loadingMoreDefaultAsLoading: {
+			type: [Boolean],
+			default: u.gc('loadingMoreDefaultAsLoading', false)
+		},
 		//滑动到底部"默认"文字，默认为【点击加载更多】
 		loadingMoreDefaultText: {
 			type: [String, Object],
@@ -123,6 +128,7 @@ const ZPLoadMore = {
 		zPagingLoadMoreConfig() {
 			return {
 				status: this.loadingStatusAfterRender,
+				defaultAsLoading: this.loadingMoreDefaultAsLoading,
 				defaultThemeStyle: this.finalLoadingMoreThemeStyle,
 				customStyle: this.loadingMoreCustomStyle,
 				titleCustomStyle: this.loadingMoreTitleCustomStyle,
