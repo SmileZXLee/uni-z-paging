@@ -162,6 +162,11 @@ by ZXLee
 					:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey"
 					:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle" />
 			</view>
+			<!-- 全屏Loading -->
+			<view :class="{'z-paging-content-fixed':usePageScroll}" style="flex: 1;" :style="[useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="$slots.loading&&showLoading&&!loadingFullFixed" :is="nViewIs">
+				<slot name="loading" />
+			</view>
+			<slot />
 			<!-- 空数据图 -->
 			<view class="z-paging-empty-view" :class="{'z-paging-content-fixed':usePageScroll}" style="flex: 1;" :style="[emptyViewSuperStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="showEmpty" :is="nViewIs">
 				<view :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}">
@@ -172,11 +177,6 @@ by ZXLee
 					@reload="_emptyViewReload" />
 				</view>
 			</view>
-			<!-- 全屏Loading -->
-			<view :class="{'z-paging-content-fixed':usePageScroll}" style="flex: 1;" :style="[useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="$slots.loading&&showLoading&&!loadingFullFixed" :is="nViewIs">
-				<slot name="loading" />
-			</view>
-			<slot />
 			<view v-if="!hideNvueBottomTag" ref="zp-n-list-bottom-tag" class="zp-n-list-bottom-tag" is="header"></view>
 			<!-- 上拉加载更多view -->
 			<view :is="nViewIs" v-if="!refresherOnly&&loadingMoreEnabled">

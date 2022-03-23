@@ -135,8 +135,12 @@ const ZPNvue = {
 			this.refresherStatus = pullingDis >= viewHeight ? Enum.Refresher.ReleaseToRefresh : Enum.Refresher.Default;
 		},
 		//下拉刷新结束
-		_nRefresherEnd() {
-			this._nDoRefresherEndAnimation(0, -this.nShowRefresherRevealHeight);
+		_nRefresherEnd(doEnd=true) {
+			if (doEnd) {
+			   this._nDoRefresherEndAnimation(0, -this.nShowRefresherRevealHeight); 
+			   !this.usePageScroll && this.$refs["n-list"].resetLoadmore();
+			   this.nRefresherLoading = false;
+			}
 			if (!this.nShowBottom) {
 				setTimeout(() => {
 					this.$nextTick(() => {
@@ -144,8 +148,6 @@ const ZPNvue = {
 					})
 				}, 1000);
 			}
-			!this.usePageScroll && this.$refs["n-list"].resetLoadmore();
-			this.nRefresherLoading = false;
 		},
 		//执行主动触发下拉刷新动画
 		_nDoRefresherEndAnimation(height, translateY, animate = true, checkStack = true) {

@@ -81,7 +81,7 @@ const ZPScroller = {
 						this.$nextTick(()=>{
 							this.$refs['zp-scroll-view'].$refs.main.style = {};
 						})
-					} catch {}
+					} catch (e) {}
 				}
 				// #endif
 			},
@@ -313,9 +313,7 @@ const ZPScroller = {
 						this.oldScrollTop = this.scrollTop;
 					});
 				}
-			} catch (e) {
-		
-			}
+			} catch (e) {}
 		},
 		//滚动到指定view
 		_scrollIntoView(sel, offset = 0, animate = false, finishCallback) {
@@ -358,9 +356,7 @@ const ZPScroller = {
 						}
 					});
 				});
-			} catch (e) {
-		
-			}
+			} catch (e) {}
 		},
 		//通过nodeTop滚动到指定view
 		_scrollIntoViewByNodeTop(nodeTop, offset = 0, animate = false) {

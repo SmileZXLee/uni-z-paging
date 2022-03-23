@@ -17,7 +17,7 @@ try {
 		const suffix = '.js';
 		config = require('@/uni_modules/z-paging/z-paging-config' + suffix);
 	}
-} catch {}
+} catch (e) {}
 
 //获取默认配置信息
 function gc(key, defaultValue) {
@@ -114,7 +114,7 @@ function setRefesrherTime(time, key) {
 		}
 		datas[key] = time;
 		uni.setStorageSync(storageKey, datas);
-	} catch {}
+	} catch (e) {}
 }
 
 //获取下拉刷新时间
@@ -122,7 +122,7 @@ function getRefesrherTime() {
 	try {
 		const datas = uni.getStorageSync(storageKey);
 		return datas;
-	} catch {
+	} catch (e) {
 		return null;
 	}
 }

@@ -5,7 +5,7 @@
 
 <!-- 滑动切换选项卡swiper，此组件支持easycom规范，可以在项目中直接引用 -->
 <template>
-	<view :class="fixed?'zp-swiper-container zp-swiper-container-fixed':'zp-swiper-container'" :style="[swiperStyle]">
+	<view :class="fixed?'zp-swiper-container zp-swiper-container-fixed':'zp-swiper-container'" :style="[finalSwiperStyle]">
 		<!-- #ifndef APP-PLUS -->
 		<view v-if="cssSafeAreaInsetBottom===-1" class="zp-safe-area-inset-bottom"></view>
 		<!-- #endif -->
@@ -38,6 +38,11 @@
 			safeAreaInsetBottom: {
 				type: Boolean,
 				default: false
+			},
+			//z-paging-swiper样式
+			swiperStyle: {
+				type: Object,
+				default: {}
 			}
 		},
 		mounted() {
@@ -49,26 +54,23 @@
 			// #endif
 		},
 		computed: {
-			swiperStyle() {
-				if (!this.systemInfo) {
-					return {};
-				}
-				let swiperStyle = {};
+			finalSwiperStyle() {
+				let swiperStyle = this.swiperStyle;
+				if (!this.systemInfo) return swiperStyle;
 				const windowTop = this.systemInfo.windowTop;
 				const windowBottom = this.systemInfo.windowBottom;
 				if (this.fixed) {
-					if (windowTop && windowTop !== undefined) {
+					if (windowTop && !swiperStyle.top) {
 						swiperStyle.top = windowTop + 'px';
 					}
-					let bottom = 0;
-					if (windowBottom && windowBottom !== undefined) {
-						bottom = windowBottom;
-					}
-					if (this.safeAreaInsetBottom) {
-						bottom += this.safeAreaBottom;
-					}
-					if(bottom > 0){
-						swiperStyle.bottom = bottom + 'px';
+					if (!swiperStyle.bottom) {
+						let bottom = windowBottom ? windowBottom : 0;
+						if (this.safeAreaInsetBottom) {
+							bottom += this.safeAreaBottom;
+						}
+						if(bottom > 0){
+							swiperStyle.bottom = bottom + 'px';
+						}
 					}
 				}
 				return swiperStyle;

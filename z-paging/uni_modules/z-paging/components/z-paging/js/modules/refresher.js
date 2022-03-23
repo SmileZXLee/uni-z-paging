@@ -291,6 +291,8 @@ const ZPRefresher = {
 			this.$emit('onRefresh');
 			this.$emit('Refresh');
 			if (this.loading || this.isRefresherInComplete) return;
+			this.loadingType = Enum.LoadingType.Refresher;
+			if (this.nShowRefresherReveal) return;
 			this.isUserPullDown = isUserPullDown;
 			this.isUserReload = !isUserPullDown;
 			this._startLoading(true);
@@ -302,7 +304,6 @@ const ZPRefresher = {
 					this._reload(false, false, isUserPullDown);
 				}
 			}
-			this.loadingType = Enum.LoadingType.Refresher;
 		},
 		//自定义下拉刷新被复位
 		_onRestore() {
@@ -578,6 +579,9 @@ const ZPRefresher = {
 		//清除refresherCompleteTimeout
 		_cleanRefresherCompleteTimeout() {
 			this.refresherCompleteTimeout = this._cleanTimeout(this.refresherCompleteTimeout);
+			// #ifdef APP-NVUE
+			this._nRefresherEnd(false);
+			// #endif
 		},
 		//清除refresherEndTimeout
 		_cleanRefresherEndTimeout() {

@@ -357,6 +357,7 @@ const ZPData = {
 		//reload之前的一些处理
 		_preReload(animate = this.showRefresherWhenReload, isFromMounted = true) {
 			this.isUserReload = true;
+			this.loadingType = Enum.LoadingType.Refresher
 			if (animate) {
 				this.privateShowRefresherWhenReload = animate;
 				// #ifndef APP-NVUE
@@ -431,11 +432,9 @@ const ZPData = {
 				// #endif
 			}
 			this.$nextTick(() => {
-				if (!this.realTotalData.length) {
-					// #ifdef APP-NVUE
-					this.nShowBottom = false;
-					// #endif
-				}
+				// #ifdef APP-NVUE
+				this.nShowBottom = this.realTotalData.length > 0;
+				// #endif
 			})
 		},
 		//处理服务端返回的数组
