@@ -42,7 +42,9 @@
 			//z-paging-swiper样式
 			swiperStyle: {
 				type: Object,
-				default: {}
+				default: function() {
+					return {};
+				},
 			}
 		},
 		mounted() {

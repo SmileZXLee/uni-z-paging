@@ -1,7 +1,7 @@
 <!-- 滑动切换选项卡+吸顶演示（待完善） -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" @scroll="scroll" :scrollable="scrollable" :hide-empty-view="true"
+		<z-paging ref="paging" @scroll="scroll" :auto="false" :scrollable="scrollable" :hide-empty-view="true"
 			:refresher-status.sync="refresherStatus" @query="queryList">
 			<!-- 自定义下拉刷新view -->
 			<custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>

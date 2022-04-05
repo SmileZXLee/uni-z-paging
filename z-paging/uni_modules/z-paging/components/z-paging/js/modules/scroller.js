@@ -220,7 +220,7 @@ const ZPScroller = {
 			this._onLoadingMore('click');
 		},
 		//滚动到顶部
-		_scrollToTop(animate, isPrivate = true) {
+		_scrollToTop(animate = true, isPrivate = true) {
 			// #ifdef APP-NVUE
 			const el = this.$refs['zp-n-list-top-tag'];
 			if (this.usePageScroll) {
@@ -396,6 +396,45 @@ const ZPScroller = {
 			} else {
 				this.wxsScrollTop = scrollTop;
 			}
+		},
+		//更新使用页面滚动时slot="top"或"bottom"插入view的高度
+		_updatePageScrollTopOrBottomHeight(type) {
+			// #ifndef APP-NVUE
+			if (!this.usePageScroll) return;
+			// #endif
+			this._doCheckScrollViewShouldFullHeight(this.realTotalData);
+			const node = `.zp-page-scroll-${type}`;
+			const marginText = `margin${type.slice(0,1).toUpperCase() + type.slice(1)}`;
+			let safeAreaInsetBottomAdd = this.safeAreaInsetBottom;
+			// #ifdef APP-NVUE
+			if (!this.usePageScroll) {
+				safeAreaInsetBottomAdd = false;
+			}
+			// #endif
+			this.$nextTick(() => {
+				let delayTime = 0;
+				// #ifdef MP-BAIDU
+				delayTime = 10;
+				// #endif
+				setTimeout(() => {
+					this._getNodeClientRect(node).then((res) => {
+						if (res) {
+							let pageScrollNodeHeight = res[0].height;
+							if (type === 'bottom') {
+								if (safeAreaInsetBottomAdd) {
+									pageScrollNodeHeight += this.safeAreaBottom;
+								}
+							} else {
+								this.cacheTopHeight = pageScrollNodeHeight;
+							}
+							this.$set(this.scrollViewStyle, marginText,
+								`${pageScrollNodeHeight}px`);
+						} else if (safeAreaInsetBottomAdd) {
+							this.$set(this.scrollViewStyle, marginText, `${this.safeAreaBottom}px`);
+						}
+					});
+				}, delayTime)
+			})
 		},
 	}
 }

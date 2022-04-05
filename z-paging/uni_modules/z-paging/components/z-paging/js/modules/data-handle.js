@@ -470,7 +470,9 @@ const ZPData = {
 			this.loadingForNow = false;
 			setTimeout(() => {
 				this.pagingLoaded = true;
-				this._refresherEnd(shouldEndLoadingDelay, true, tempIsUserPullDown);
+				this.$nextTick(()=>{
+					this._refresherEnd(shouldEndLoadingDelay, true, tempIsUserPullDown);
+				})
 			}, delayTime)
 			if (this.isFirstPage) {
 				this.isLoadFailed = !success;

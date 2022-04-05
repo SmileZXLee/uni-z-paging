@@ -175,6 +175,7 @@ function _setTransformValue(value, ins, state, animate) {
 }
 
 function _setTransform(transform, ins, animate, transition) {
+	console.log('transform',transform)
 	if (transform == 'translateY(0px)') {
 		transform = 'none';
 	}

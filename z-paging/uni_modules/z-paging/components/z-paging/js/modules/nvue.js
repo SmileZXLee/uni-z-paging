@@ -141,13 +141,9 @@ const ZPNvue = {
 			   !this.usePageScroll && this.$refs["n-list"].resetLoadmore();
 			   this.nRefresherLoading = false;
 			}
-			if (!this.nShowBottom) {
-				setTimeout(() => {
-					this.$nextTick(() => {
-						this.nShowBottom = true;
-					})
-				}, 1000);
-			}
+			this.$nextTick(() => {
+				this.nShowBottom = true;
+			})
 		},
 		//执行主动触发下拉刷新动画
 		_nDoRefresherEndAnimation(height, translateY, animate = true, checkStack = true) {
