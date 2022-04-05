@@ -77,11 +77,12 @@ const ZPScroller = {
 				}
 				// #ifdef H5
 				if (newVal) {
-					try {
-						this.$nextTick(()=>{
-							this.$refs['zp-scroll-view'].$refs.main.style = {};
-						})
-					} catch (e) {}
+					this.$nextTick(()=>{
+						const mainScrollRef = this.$refs['zp-scroll-view'].$refs.main;
+						if (mainScrollRef) {
+							mainScrollRef.style = {};
+						}
+					})
 				}
 				// #endif
 			},
