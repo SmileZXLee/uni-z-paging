@@ -2,6 +2,7 @@
 
 var currentDis = 0;
 var isPCFlag = -1;
+var startY = -1;
 
 function propObserver(newValue, oldValue, ownerIns, ins) {
 	var state = ownerIns.getState() || {};
@@ -10,26 +11,31 @@ function propObserver(newValue, oldValue, ownerIns, ins) {
 	var loading = dataset.loading == true;
 	if (newValue.indexOf('end') != -1) {
 		var transition = newValue.split('end')[0];
-		_setTransform('translateY(0px)', ins, false, transition)
+		_setTransform('translateY(0px)', ins, false, transition);
 		state.moveDis = 0;
 		state.oldMoveDis = 0;
 		currentDis = 0;
 	} else if (newValue.indexOf('begin') != -1) {
-		var refresherThreshold = ins.getDataset().refresherthreshold
+		var refresherThreshold = ins.getDataset().refresherthreshold;
 		_setTransformValue(refresherThreshold, ins, state, false);
 	}
 }
 
 function touchstart(e, ownerIns) {
 	var ins = _getIns(ownerIns);
-	var state = ins.getState();
-	var dataset = ins.getDataset();
+	var state = {};
+	var dataset = {};
+	if (ins) {
+		state = ins.getState();
+		dataset = ins.getDataset();
+		if (_touchDisabled(e, ins, 0)) return;
+	}
 	var isTouchEnded = state.isTouchEnded;
-	if (_touchDisabled(e, ins, 0)) return;
 	state.oldMoveDis = 0;
 	var touch = _getTouch(e);
 	var loading = _getIsTrue(dataset.loading);
 	state.startY = touch.touchY;
+	startY = state.startY;
 	state.lastTouch = touch;
 	if (!loading && isTouchEnded) {
 		state.isTouchmoving = false;
@@ -63,7 +69,7 @@ function touchmove(e, ownerIns) {
 	}
 	if (prevent && !state.disabledBounce) {
 		if (isIos) {
-			 ownerIns.callMethod('_handleScrollViewDisableBounce', {bounce: false}); 
+			ownerIns.callMethod('_handleScrollViewDisableBounce', {bounce: false}); 
 		}
 		state.disabledBounce = true;
 		_handlePullingDown(state, ownerIns, prevent);
@@ -104,8 +110,7 @@ function touchend(e, ownerIns) {
 	state.disabledBounce = false;
 	state.fixedIsTopHitCount = 0;
 	//ownerIns.callMethod('_handleScrollViewDisableBounce', {bounce:true});
-	var isTouchmoving = state.isTouchmoving;
-	if (!isTouchmoving) return;
+	if (!state.isTouchmoving) return;
 	var oldRefresherStatus = state.refresherStatus;
 	var oldMoveDis = state.moveDis;
 	var refresherThreshold = ins.getDataset().refresherthreshold
@@ -183,7 +188,7 @@ function _setTransform(transform, ins, animate, transition) {
 		if (animate) {
 			stl['transition'] = 'transform .1s linear';
 		}
-		if (transition.length){
+		if (transition.length) {
 			stl['transition'] = transition;
 		}
 		ins.setStyle(stl);
@@ -195,7 +200,8 @@ function _getMoveDis(e, ins) {
 	var refresherThreshold = parseFloat(ins.getDataset().refresherthreshold);
 	var refresherOutRate = parseFloat(ins.getDataset().refresheroutrate);
 	var touch = _getTouch(e);
-	var moveDis = touch.touchY - state.startY;
+	var currentStartY = !state.startY || state.startY == 'NaN' ? startY : state.startY;
+	var moveDis = touch.touchY - currentStartY;
 	var oldMoveDis = state.oldMoveDis || 0;
 	state.oldMoveDis = moveDis;
 	var diffDis = moveDis - oldMoveDis;
@@ -230,7 +236,11 @@ function _getTouch(e) {
 }
 
 function _getIns(ownerIns) {
-	return ownerIns.getState().currentIns
+	var ins = ownerIns.getState().currentIns;
+	if (!ins) {
+		ownerIns.callMethod('_handlePropUpdate');
+	}
+	return ins;
 }
 
 function _touchDisabled(e, ins, processTag) {
@@ -265,8 +275,9 @@ function _touchDisabled(e, ins, processTag) {
 	if (!isIos && processTag === 2) {
 		fixedIsTop = true;
 	}
-	return loading || useChatRecordMode || !refresherEnabled || !useCustomRefresher || ((usePageScroll && useCustomRefresher && pageScrollTop > 5) && !fixedIsTop) || 
+	var res = loading || useChatRecordMode || !refresherEnabled || !useCustomRefresher || ((usePageScroll && useCustomRefresher && pageScrollTop > 5) && !fixedIsTop) || 
 	((!usePageScroll && useCustomRefresher && scrollTop > 5) && !fixedIsTop);
+	return res;
 }
 
 function _getAngleIsInRange(e, touch, state, dataset) {

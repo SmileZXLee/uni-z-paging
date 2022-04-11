@@ -660,8 +660,7 @@ const ZPData = {
 					if (myParent && myParent[this.autowireQueryName]) {
 						this.myParentQuery = myParent[this.autowireQueryName];
 					}
-				}
-				if (this.myParentQuery !== -1) {
+				} else {
 					if (customPageSize > 0) {
 						this.myParentQuery(customPageNo, customPageSize);
 					} else {

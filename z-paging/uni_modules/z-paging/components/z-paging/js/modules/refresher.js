@@ -444,6 +444,10 @@ const ZPRefresher = {
 		_handleWxsPullingDown(e){
 			this._emitTouchmove({pullingDistance:e.moveDis,dy:e.diffDis});
 		},
+		//wxs通知更新其props
+		_handlePropUpdate(e){
+			this.wxsPropType = u.getTime().toString();
+		},
 		//下拉刷新结束
 		_refresherEnd(shouldEndLoadingDelay = true, fromAddData = false, isUserPullDown = false, setLoading = true) {
 			if (this.loadingType === Enum.LoadingType.Refresher) {
