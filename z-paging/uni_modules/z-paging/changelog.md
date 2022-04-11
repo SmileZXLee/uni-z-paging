@@ -1,8 +1,7 @@
-## 2.2.0（2022-03-23）
-1.修复在HbuilderX Alpha版本中下拉刷新报错：`TypeError: Cannot set properties of undefined (setting 'currentIns')`的问题。  
-2.修复在nvue中，空数据图始终展示在静态cell上方的问题。  
-3.修复在nvue中可能出现的快速切换tab或加载更多后触发reload导致的滚动到底部view消失的bug。  
-4.修复在vue3+支付宝小程序中报错的bug。  
-5.`z-paging-swiper`新增`swiper-style`属性，支持设置此组件样式。  
-6.新增`loading-more-default-as-loading`属性，支持设置滑动到底部状态为默认状态时，以加载中的状态展示。
-
+## 2.2.1（2022-04-12）
+1.修复在微信小程序中，在一些情况下可能出现的下拉刷新view盖住`slot=top`view的问题。  
+2.修复在微信小程序中，使用reload自动显示下拉刷新view时，当首次请求至complete触发的间隔过短时，下拉刷新view无法收回的问题。  
+3.在nvue中，去除底部加载更多view延时展示。  
+4.修复调用`scrollToTop`时，默认的animate不为true的问题。  
+5.修复在vue3中`this.$refs['zp-scroll-view'].$refs.main.style`报错的问题。  
+6.修复在App中，长时间进入后台后重新打开后有概率出现的无法下拉刷新的问题。  

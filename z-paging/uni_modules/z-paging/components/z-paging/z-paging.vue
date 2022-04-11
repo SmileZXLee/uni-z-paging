@@ -224,7 +224,7 @@ by ZXLee
 	 * z-paging 分页组件
 	 * @description 【uni-app自动分页器】超简单，低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view等。
 	 * @tutorial https://z-paging.zxlee.cn
-	 * @property {Number|String} default-page-no 自定义pageNo，默认为1
+	 * @property {Number|String} default-page-no 自定义初始的pageNo，默认为1
 	 * @property {Number|String} default-page-size 自定义pageSize，默认为10
 	 * @property {Number|Object} data-key 为保证数据一致，设置当前tab切换时的标识key，并在complete中传递相同key，若二者不一致，则complete将不会生效
 	 * @property {String} autowire-list-name 【极简写法】自动注入的list名，可自动修改父view(包含ref="paging")中对应name的list值(z-paging标签必须设置`ref="paging"`)

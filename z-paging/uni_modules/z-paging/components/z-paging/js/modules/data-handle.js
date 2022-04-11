@@ -5,7 +5,7 @@ import Enum from '.././z-paging-enum'
 
 const ZPData = {
 	props: {
-		//自定义pageNo，默认为1
+		//自定义初始的pageNo，默认为1
 		defaultPageNo: {
 			type: [Number, String],
 			default: u.gc('defaultPageNo', 1),
