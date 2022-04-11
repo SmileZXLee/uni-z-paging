@@ -524,7 +524,9 @@ const ZPRefresher = {
 			}
 			// #endif
 			this.refresherRevealStackCount++;
+			// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 			this.refresherTransform = `translateY(${this.finalRefresherThreshold}px)`;
+			// #endif
 			// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
 			this.wxsPropType = 'begin' + u.getTime();
 			// #endif
