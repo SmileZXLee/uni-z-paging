@@ -251,7 +251,7 @@ const ZPData = {
 				let delay = this.delay > 0 ? this.delay : addDataDalay;
 				setTimeout(() => {
 					this._addData(data, success, false);
-				}, 0)
+				}, delay)
 			})
 		},
 		//从顶部添加数据，不会影响分页的pageNo和pageSize
@@ -660,7 +660,8 @@ const ZPData = {
 					if (myParent && myParent[this.autowireQueryName]) {
 						this.myParentQuery = myParent[this.autowireQueryName];
 					}
-				} else {
+				} 
+				if (this.myParentQuery !== -1) {
 					if (customPageSize > 0) {
 						this.myParentQuery(customPageNo, customPageSize);
 					} else {

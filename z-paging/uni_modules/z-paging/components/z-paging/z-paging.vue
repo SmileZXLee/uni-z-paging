@@ -253,7 +253,7 @@ by ZXLee
 	 * @property {Boolean} refresher-complete-scrollable 自定义下拉刷新结束状态下是否允许列表滚动，默认为否
 	 * @property {Boolean} use-page-scroll 使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
 	 * @property {Boolean} use-virtual-list 是否使用虚拟列表，默认为否
-	 * @property {Boolean} fixed z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为否(当使用内置scroll-view滚动时有效)
+	 * @property {Boolean} fixed z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为是(当使用内置scroll-view滚动时有效)
 	 * @property {Boolean} safe-area-inset-bottom 是否开启底部安全区域适配，默认为否
 	 * @property {Boolean} scrollable 是否可以滚动，使用内置scroll-view和nvue时有效，默认为是
 	 * @property {Boolean} auto [z-paging]mounted后是否自动调用reload方法(mounted后自动调用接口)，默认为是

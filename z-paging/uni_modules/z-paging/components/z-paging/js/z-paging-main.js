@@ -142,7 +142,7 @@ export default {
 			type: Boolean,
 			default: u.gc('useVirtualList', false)
 		},
-		//z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为否(当使用内置scroll-view滚动时有效)
+		//z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为是(当使用内置scroll-view滚动时有效)
 		fixed: {
 			type: Boolean,
 			default: u.gc('fixed', true)
