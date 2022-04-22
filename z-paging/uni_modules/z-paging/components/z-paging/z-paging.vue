@@ -20,103 +20,111 @@ by ZXLee
 		<!-- #endif -->
 		<!-- 顶部固定的slot -->
 		<slot v-if="!usePageScroll&&$slots.top" name="top" />
-		<view class="zp-page-scroll-top" v-else-if="usePageScroll&&$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
+		<view class="zp-page-top" v-else-if="usePageScroll&&$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
 			<slot name="top" />
 		</view>
-		<view :class="{'zp-scroll-view-super':!usePageScroll}" :style="[finalScrollViewStyle]">
-			<scroll-view
-				ref="zp-scroll-view" :class="{'zp-scroll-view':true,'zp-scroll-view-absolute':!usePageScroll,'zp-scroll-view-hide-scrollbar':!showScrollbar}"
-				:scroll-top="scrollTop" :scroll-x="scrollX"
-				:scroll-y="scrollable&&!usePageScroll&&scrollEnable&&(refresherCompleteScrollable?true:refresherStatus!==3)" :enable-back-to-top="finalEnableBackToTop"
-				:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
-				:scroll-into-view="scrollIntoView" :lower-threshold="finalLowerThreshold" :upper-threshold="5"
-				:refresher-enabled="finalRefresherEnabled&&!useCustomRefresher" :refresher-threshold="finalRefresherThreshold"
-				:refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
-				:refresher-triggered="finalRefresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
-				@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh(true)">	
-				<view class="zp-paging-touch-view"
-				<!-- #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5 -->
-				@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend" @touchcancel="_refresherTouchend"
-				<!-- #endif -->
-				<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
-				@touchstart="pagingWxs.touchstart" @touchmove="pagingWxs.touchmove" @touchend="pagingWxs.touchend" @touchcancel="pagingWxs.touchend"
-				@mousedown="pagingWxs.mousedown" @mousemove="pagingWxs.mousemove" @mouseup="pagingWxs.mouseup" @mouseleave="pagingWxs.mouseleave"
-				<!-- #endif -->
-				>	
-					<view v-if="finalRefresherFixedBacHeight>0" class="zp-fixed-bac-view" :style="[{'background': refresherFixedBackground,'height': `${finalRefresherFixedBacHeight}px`}]"></view>
-					<view class="zp-paging-main" :style="[scrollViewInStyle,{'transform': finalRefresherTransform,'transition': refresherTransition}]"
-					<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
-					:change:prop="pagingWxs.propObserver" :prop="wxsPropType"
-					:data-refresherThreshold="finalRefresherThreshold" :data-isIos="isIos"
-					:data-loading="loading||isRefresherInComplete" :data-useChatRecordMode="useChatRecordMode" 
-					:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="wxsPageScrollTop"
-					:data-scrollTop="wxsScrollTop" :data-refresherMaxAngle="refresherMaxAngle" 
-					:data-refresherAecc="refresherAngleEnableChangeContinued" :data-usePageScroll="usePageScroll"
-					:data-oldIsTouchmoving="isTouchmoving" :data-refresherOutRate="finalRefresherOutRate" :data-hasTouchmove="hasTouchmove"
+		<view :class="{'zp-view-super':true,'zp-scroll-view-super':!usePageScroll}" :style="[finalScrollViewStyle]">
+			<view v-if="$slots.left" class="zp-page-left">
+				<slot name="left" />
+			</view>
+			<view class="zp-scroll-view-container">
+				<scroll-view
+					ref="zp-scroll-view" :class="{'zp-scroll-view':true,'zp-scroll-view-absolute':!usePageScroll,'zp-scroll-view-hide-scrollbar':!showScrollbar}"
+					:scroll-top="scrollTop" :scroll-x="scrollX"
+					:scroll-y="scrollable&&!usePageScroll&&scrollEnable&&(refresherCompleteScrollable?true:refresherStatus!==3)" :enable-back-to-top="finalEnableBackToTop"
+					:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
+					:scroll-into-view="scrollIntoView" :lower-threshold="finalLowerThreshold" :upper-threshold="5"
+					:refresher-enabled="finalRefresherEnabled&&!useCustomRefresher" :refresher-threshold="finalRefresherThreshold"
+					:refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
+					:refresher-triggered="finalRefresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
+					@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh(true)">	
+					<view class="zp-paging-touch-view"
+					<!-- #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5 -->
+					@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend" @touchcancel="_refresherTouchend"
 					<!-- #endif -->
-					<!-- #ifdef APP-VUE || H5 -->
-					:change:renderPropScrollTop="pagingRenderjs.renderPropScrollTopChange" :renderPropScrollTop="renderPropScrollTop"
-					:change:renderPropUsePageScroll="pagingRenderjs.renderPropUsePageScrollChange" :renderPropUsePageScroll="renderPropUsePageScroll"
+					<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
+					@touchstart="pagingWxs.touchstart" @touchmove="pagingWxs.touchmove" @touchend="pagingWxs.touchend" @touchcancel="pagingWxs.touchend"
+					@mousedown="pagingWxs.mousedown" @mousemove="pagingWxs.mousemove" @mouseup="pagingWxs.mouseup" @mouseleave="pagingWxs.mouseleave"
 					<!-- #endif -->
 					>	
-						<view v-if="showRefresher" class="zp-custom-refresher-view" :style="[{'margin-top': `-${finalRefresherThreshold}px`,'background': refresherBackground}]">
-							<view class="zp-custom-refresher-container" :style="[{'height': `${finalRefresherThreshold}px`,'background': refresherBackground}]">
-								<!-- 下拉刷新view -->
-								<view class="zp-custom-refresher-slot-view">
-									<slot v-if="!($slots.refresherComplete&&refresherStatus===3)" :refresherStatus="refresherStatus" name="refresher" />
+						<view v-if="finalRefresherFixedBacHeight>0" class="zp-fixed-bac-view" :style="[{'background': refresherFixedBackground,'height': `${finalRefresherFixedBacHeight}px`}]"></view>
+						<view class="zp-paging-main" :style="[scrollViewInStyle,{'transform': finalRefresherTransform,'transition': refresherTransition}]"
+						<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
+						:change:prop="pagingWxs.propObserver" :prop="wxsPropType"
+						:data-refresherThreshold="finalRefresherThreshold" :data-isIos="isIos"
+						:data-loading="loading||isRefresherInComplete" :data-useChatRecordMode="useChatRecordMode" 
+						:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="wxsPageScrollTop"
+						:data-scrollTop="wxsScrollTop" :data-refresherMaxAngle="refresherMaxAngle" 
+						:data-refresherAecc="refresherAngleEnableChangeContinued" :data-usePageScroll="usePageScroll"
+						:data-oldIsTouchmoving="isTouchmoving" :data-refresherOutRate="finalRefresherOutRate" :data-hasTouchmove="hasTouchmove"
+						<!-- #endif -->
+						<!-- #ifdef APP-VUE || H5 -->
+						:change:renderPropScrollTop="pagingRenderjs.renderPropScrollTopChange" :renderPropScrollTop="renderPropScrollTop"
+						:change:renderPropUsePageScroll="pagingRenderjs.renderPropUsePageScrollChange" :renderPropUsePageScroll="renderPropUsePageScroll"
+						<!-- #endif -->
+						>	
+							<view v-if="showRefresher" class="zp-custom-refresher-view" :style="[{'margin-top': `-${finalRefresherThreshold}px`,'background': refresherBackground}]">
+								<view class="zp-custom-refresher-container" :style="[{'height': `${finalRefresherThreshold}px`,'background': refresherBackground}]">
+									<!-- 下拉刷新view -->
+									<view class="zp-custom-refresher-slot-view">
+										<slot v-if="!($slots.refresherComplete&&refresherStatus===3)" :refresherStatus="refresherStatus" name="refresher" />
+									</view>
+									<slot v-if="$slots.refresherComplete&&refresherStatus===3" name="refresherComplete" />
+									<z-paging-refresh ref="refresh" v-else-if="!showCustomRefresher" :style="[{'height': `${finalRefresherThreshold}px`}]" :status="refresherStatus"
+										:defaultThemeStyle="finalRefresherThemeStyle" :defaultText="finalRefresherDefaultText"
+										:pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText"
+										:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey"
+										:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle" />
 								</view>
-								<slot v-if="$slots.refresherComplete&&refresherStatus===3" name="refresherComplete" />
-								<z-paging-refresh ref="refresh" v-else-if="!showCustomRefresher" :style="[{'height': `${finalRefresherThreshold}px`}]" :status="refresherStatus"
-									:defaultThemeStyle="finalRefresherThemeStyle" :defaultText="finalRefresherDefaultText"
-									:pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText"
-									:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey"
-									:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle" />
 							</view>
-						</view>
-						<view class="zp-paging-container">
-							<slot v-if="useChatRecordMode&&$slots.chatLoading&&loadingStatus!==2&&realTotalData.length" name="chatLoading" />
-							<view v-else-if="useChatRecordMode&&loadingStatus!==2&&realTotalData.length" class="zp-chat-record-loading-container">
-								<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
-									:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
-								<image v-else :src="base64Flower" class="zp-chat-record-loading-custom-image" />
-							</view>
-							<!-- 全屏Loading -->
-							<slot v-if="$slots.loading&&showLoading&&!loadingFullFixed" name="loading" />
-							<!-- 主体内容 -->
-							<view class="zp-paging-container-content" :style="[finalPagingContentStyle]">
-								<slot />
-								<!-- 上拉加载更多view -->
-								<!-- #ifndef MP-ALIPAY -->
-								<slot v-if="_showLoadingMore('Default')" name="loadingMoreDefault" />
-								<slot v-else-if="_showLoadingMore('Loading')" name="loadingMoreLoading" />
-								<slot v-else-if="_showLoadingMore('NoMore')" name="loadingMoreNoMore" />
-								<slot v-else-if="_showLoadingMore('Fail')" name="loadingMoreFail" />
-								<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="_showLoadingMore('Custom')" :zConfig="zPagingLoadMoreConfig" />
-								<!-- #endif -->
-								<!-- #ifdef MP-ALIPAY -->
-								<slot v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreDefault" />
-								<slot v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled" name="loadingMoreLoading" />
-								<slot v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreNoMore" />
-								<slot v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreFail" />
-								<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode" :zConfig="zPagingLoadMoreConfig" />
-								<!-- #endif -->
-							</view>
-							<!-- 空数据图 -->
-							<view :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}" :style="[{emptyViewSuperStyle}]" v-if="showEmpty">
-								<slot v-if="$slots.empty" name="empty" />
-								<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
-								:emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" 
-								:emptyViewImgStyle="emptyViewImgStyle" :emptyViewReloadStyle="emptyViewReloadStyle" :emptyViewZIndex="emptyViewZIndex" :emptyViewFixed="emptyViewFixed" 
-								@reload="_emptyViewReload" />
+							<view class="zp-paging-container">
+								<slot v-if="useChatRecordMode&&$slots.chatLoading&&loadingStatus!==2&&realTotalData.length" name="chatLoading" />
+								<view v-else-if="useChatRecordMode&&loadingStatus!==2&&realTotalData.length" class="zp-chat-record-loading-container">
+									<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
+										:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
+									<image v-else :src="base64Flower" class="zp-chat-record-loading-custom-image" />
+								</view>
+								<!-- 全屏Loading -->
+								<slot v-if="$slots.loading&&showLoading&&!loadingFullFixed" name="loading" />
+								<!-- 主体内容 -->
+								<view class="zp-paging-container-content" :style="[finalPagingContentStyle]">
+									<slot />
+									<!-- 上拉加载更多view -->
+									<!-- #ifndef MP-ALIPAY -->
+									<slot v-if="_showLoadingMore('Default')" name="loadingMoreDefault" />
+									<slot v-else-if="_showLoadingMore('Loading')" name="loadingMoreLoading" />
+									<slot v-else-if="_showLoadingMore('NoMore')" name="loadingMoreNoMore" />
+									<slot v-else-if="_showLoadingMore('Fail')" name="loadingMoreFail" />
+									<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="_showLoadingMore('Custom')" :zConfig="zPagingLoadMoreConfig" />
+									<!-- #endif -->
+									<!-- #ifdef MP-ALIPAY -->
+									<slot v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreDefault" />
+									<slot v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled" name="loadingMoreLoading" />
+									<slot v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreNoMore" />
+									<slot v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreFail" />
+									<z-paging-load-more @click.native="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode" :zConfig="zPagingLoadMoreConfig" />
+									<!-- #endif -->
+								</view>
+								<!-- 空数据图 -->
+								<view :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}" :style="[{emptyViewSuperStyle}]" v-if="showEmpty">
+									<slot v-if="$slots.empty" name="empty" />
+									<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
+									:emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" 
+									:emptyViewImgStyle="emptyViewImgStyle" :emptyViewReloadStyle="emptyViewReloadStyle" :emptyViewZIndex="emptyViewZIndex" :emptyViewFixed="emptyViewFixed" 
+									@reload="_emptyViewReload" />
+								</view>
 							</view>
 						</view>
 					</view>
-				</view>
-			</scroll-view>
+				</scroll-view>
+			</view>
+			<view v-if="$slots.right" class="zp-page-right">
+				<slot name="right" />
+			</view>
 		</view>
 		<!-- 底部固定的slot -->
 		<slot v-if="!usePageScroll&&$slots.bottom" name="bottom" />
-		<view class="zp-page-scroll-bottom" v-else-if="usePageScroll&&$slots.bottom" :style="[{'bottom': `${windowBottom}px`}]">
+		<view class="zp-page-bottom" v-else-if="usePageScroll&&$slots.bottom" :style="[{'bottom': `${windowBottom}px`}]">
 			<slot name="bottom" />
 		</view>
 		<!-- 点击返回顶部view -->
@@ -133,7 +141,7 @@ by ZXLee
 	<!-- #ifdef APP-NVUE -->
 	<view :is="finalNvueSuperListIs" :style="[finalPagingStyle]" :class="{'z-paging-content-fixed':fixed&&!usePageScroll}" :scrollable="false">
 		<!-- 顶部固定的slot -->
-		<view ref="zp-page-scroll-top" :is="nViewIs" class="zp-page-scroll-top" v-if="$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
+		<view ref="zp-page-top" :is="nViewIs" class="zp-page-top" v-if="$slots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
 			<slot name="top" />
 		</view>
 		<view ref="n-list" :id="nvueListId" :style="[{'flex': 1,'top':isIos?'0px':'-1px'},scrollViewStyle,useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" :is="finalNvueListIs" alwaysScrollableVertical="true"

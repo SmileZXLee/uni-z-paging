@@ -111,7 +111,7 @@ function _getPrivateLanguage(myLanguage, followSystemLanguage = true) {
 	}
 	let language = myLanguage || uni.getStorageSync(i18nUpdateKey) || systemLanguage;
 	language = language.toLowerCase();
-	var reg = new RegExp('_', '');
+	const reg = new RegExp('_', '');
 	language = language.replace(reg, '-');
 	if (language.indexOf('zh') !== -1) {
 		if (language === 'zh' || language === 'zh-cn' || language.indexOf('zh-hans') !== -1) {

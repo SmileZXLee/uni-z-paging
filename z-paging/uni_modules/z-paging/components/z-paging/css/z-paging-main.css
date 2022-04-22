@@ -23,8 +23,7 @@
 	right: 0;
 }
 
-.zp-page-scroll-top,
-.zp-page-scroll-bottom {
+.zp-page-top,.zp-page-bottom {
 	/* #ifndef APP-NVUE */
 	width: auto;
 	/* #endif */
@@ -34,16 +33,31 @@
 	z-index: 999;
 }
 
+.zp-page-left,.zp-page-right{
+	/* #ifndef APP-NVUE */
+	height: 100%;
+	/* #endif */
+	flex: 1;
+}
+
 .zp-scroll-view-super {
 	flex: 1;
 	position: relative;
+}
+
+.zp-view-super{
+	/* #ifndef APP-NVUE */
+	display: flex;
+	/* #endif */
+	flex-direction: row;
 }
 
 .zp-custom-refresher-container {
 	overflow: hidden;
 }
 
-.zp-scroll-view {
+.zp-scroll-view-container,.zp-scroll-view {
+	position: relative;
 	height: 100%;
 	width: 100%;
 }

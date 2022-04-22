@@ -17,6 +17,7 @@ import refresherModule from './modules/refresher'
 import loadMoreModule from './modules/load-more'
 import scrollerModule from './modules/scroller'
 import backToTopModule from './modules/back-to-top'
+import virtualListModule from './modules/virtual-list'
 
 import Enum from './z-paging-enum'
 
@@ -41,7 +42,8 @@ export default {
 		refresherModule,
 		loadMoreModule,
 		scrollerModule,
-		backToTopModule
+		backToTopModule,
+		virtualListModule
 	],
 	data() {
 		return {
@@ -290,7 +292,7 @@ export default {
 					pagingStyle.top = windowTop + 'px';
 				}
 				if (!pagingStyle.bottom) {
-					let bottom = windowBottom ? windowBottom : 0;
+					let bottom = windowBottom || 0;
 					if (this.safeAreaInsetBottom) {
 						bottom += this.safeAreaBottom;
 					}
@@ -435,7 +437,7 @@ export default {
 			try {
 				if (shouldFullHeight) {
 					let finalScrollViewNode = scrollViewNode ? scrollViewNode : await this._getNodeClientRect('.scroll-view');
-					let finalScrollBottomNode = await this._getNodeClientRect('.zp-page-scroll-bottom');
+					let finalScrollBottomNode = await this._getNodeClientRect('.zp-page-bottom');
 					if (finalScrollViewNode) {
 						const scrollViewTop = finalScrollViewNode[0].top;
 						let scrollViewHeight = this.windowHeight - scrollViewTop;

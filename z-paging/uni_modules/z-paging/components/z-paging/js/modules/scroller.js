@@ -404,7 +404,7 @@ const ZPScroller = {
 			if (!this.usePageScroll) return;
 			// #endif
 			this._doCheckScrollViewShouldFullHeight(this.realTotalData);
-			const node = `.zp-page-scroll-${type}`;
+			const node = `.zp-page-${type}`;
 			const marginText = `margin${type.slice(0,1).toUpperCase() + type.slice(1)}`;
 			let safeAreaInsetBottomAdd = this.safeAreaInsetBottom;
 			// #ifdef APP-NVUE
