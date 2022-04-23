@@ -58,6 +58,7 @@ const ZPNvue = {
 			nFirstPageAndNoMoreChecked: false,
 			nLoadingMoreFixedHeight: false,
 			nShowRefresherRevealHeight: 0,
+			nRefresherWidth: uni.upx2px(750),
 		}
 	},
 	watch: {
@@ -138,11 +139,13 @@ const ZPNvue = {
 		_nRefresherEnd(doEnd=true) {
 			if (doEnd) {
 			   this._nDoRefresherEndAnimation(0, -this.nShowRefresherRevealHeight); 
-			   !this.usePageScroll && this.$refs["n-list"].resetLoadmore();
+			   !this.usePageScroll && this.$refs['zp-n-list'].resetLoadmore();
 			   this.nRefresherLoading = false;
 			}
 			this.$nextTick(() => {
-				this.nShowBottom = true;
+				setTimeout(()=> {
+					this.nShowBottom = true;
+				}, 10);
 			})
 		},
 		//执行主动触发下拉刷新动画
@@ -191,6 +194,18 @@ const ZPNvue = {
 		//获取nvue waterfall单项配置
 		_nGetWaterfallConfig(key, defaultValue) {
 			return this.nvueWaterfallConfig[key] || defaultValue;
+		},
+		//更新nvue 下拉刷新view容器的宽度
+		_nUpdateRefresherWidth() {
+			this.$nextTick(()=>{
+				this._getNodeClientRect('.zp-n-list').then(node => {
+					if (node) {
+						const nodeWidth = node[0].width;
+						this.nRefresherWidth = nodeWidth;
+					}
+				})
+			})
+			
 		}
 		// #endif
 	}

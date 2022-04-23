@@ -74,6 +74,11 @@ const ZPData = {
 			type: Boolean,
 			default: u.gc('showLoadingMoreWhenReload', false)
 		},
+		//组件created时立即触发reload(可解决一些情况下先看到页面再看到loading的问题)，auto为true时有效。为否时将在mounted+nextTick后触发reload，默认为否
+		createdReload: {
+			type: Boolean,
+			default: u.gc('createdReload', false)
+		},
 		//本地分页时上拉加载更多延迟时间，单位为毫秒，默认200毫秒
 		localPagingLoadingTime: {
 			type: [Number, String],

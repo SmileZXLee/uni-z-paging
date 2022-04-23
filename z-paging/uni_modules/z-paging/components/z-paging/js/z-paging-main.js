@@ -190,10 +190,16 @@ export default {
 			default: u.gc('showConsoleError', true)
 		},
 	},
+	created(){
+		if (this.createdReload && !this.refresherOnly && (this.mountedAutoCallReload && this.auto)) {
+			this._startLoading();
+			this._preReload();
+		}
+	},
 	mounted() {
 		this.wxsPropType = u.getTime().toString();
 		this.renderJsIgnore;
-		if (!this.refresherOnly && (this.mountedAutoCallReload && this.auto)) {
+		if (!this.createdReload && !this.refresherOnly && (this.mountedAutoCallReload && this.auto)) {
 			this.$nextTick(() => {
 				this._preReload();
 			})
@@ -221,6 +227,7 @@ export default {
 		if (!this.isIos && !this.useChatRecordMode) {
 			this.nLoadingMoreFixedHeight = true;
 		}
+		this._nUpdateRefresherWidth();
 		// #endif
 		// #ifndef APP-PLUS
 		this.$nextTick(()=>{
@@ -380,7 +387,7 @@ export default {
 				this.privateRefresherEnabled = 0;
 			}
 			if (!this.usePageScroll) {
-				this.$refs['n-list'].setSpecialEffects(args);
+				this.$refs['zp-n-list'].setSpecialEffects(args);
 			}
 		},
 		//处理开始加载更多状态
