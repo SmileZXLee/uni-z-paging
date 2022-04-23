@@ -464,7 +464,7 @@ const ZPRefresher = {
 				this._cleanRefresherEndTimeout();
 				this.refresherEndTimeout = setTimeout(() => {
 					this.refresherStatus = refresherStatus;
-				}, refresherStatus === Enum.Refresher.Default ? this.refresherCompleteDuration : 0);
+				}, this.refresherStatus !== Enum.Refresher.Default && refresherStatus === Enum.Refresher.Default ? this.refresherCompleteDuration : 0);
 				
 				// #ifndef APP-NVUE
 				if (refresherCompleteDelay > 0) {
