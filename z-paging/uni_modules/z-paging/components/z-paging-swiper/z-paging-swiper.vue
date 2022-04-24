@@ -11,8 +11,14 @@
 		<!-- #endif -->
 		<slot v-if="$slots.top" name="top" />
 		<view class="zp-swiper-super">
+			<view v-if="$slots.left" class="zp-swiper-left">
+				<slot name="left" />
+			</view>
 			<view class="zp-swiper">
 				<slot />
+			</view>
+			<view v-if="$slots.right" class="zp-swiper-right">
+				<slot name="right" />
 			</view>
 		</view>
 		<slot v-if="$slots.bottom" name="bottom" />
@@ -136,18 +142,22 @@
 	.zp-swiper-super {
 		flex: 1;
 		position: relative;
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		flex-direction: row;
+	}
+	
+	.zp-swiper-left,.zp-swiper-right{
+		/* #ifndef APP-NVUE */
+		height: 100%;
+		/* #endif */
 	}
 
 	.zp-swiper {
+		flex: 1;
 		/* #ifndef APP-NVUE */
 		height: 100%;
-		width: 100%;
-		position: absolute;
-		top: 0;
-		left: 0;
-		/* #endif */
-		/* #ifdef APP-NVUE */
-		flex: 1;
 		/* #endif */
 	}
 	

@@ -37,7 +37,6 @@
 	/* #ifndef APP-NVUE */
 	height: 100%;
 	/* #endif */
-	flex: 1;
 }
 
 .zp-scroll-view-super {
@@ -203,4 +202,12 @@
 	/* #endif */
 	justify-content: center;
 	width: 750rpx;
+}
+
+.zp-n-list-container{
+	/* #ifndef APP-NVUE */
+	display: flex;
+	/* #endif */
+	flex-direction: row;
+	flex: 1;
 }
