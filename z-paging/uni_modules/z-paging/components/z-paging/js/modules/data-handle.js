@@ -157,6 +157,20 @@ const ZPData = {
 				this.nLoadingMoreFixedHeight = false;
 			}
 		},
+		value: {
+			handler(newVal) {
+				this.realTotalData = newVal;
+			},
+			immediate: true
+		},
+		// #ifdef VUE3
+		modelValue: {
+			handler(newVal) {
+				this.realTotalData = newVal;
+			},
+			immediate: true
+		}
+		// #endif
 	},
 	methods: {
 		//请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认是是）

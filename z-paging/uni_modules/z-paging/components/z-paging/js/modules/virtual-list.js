@@ -7,7 +7,8 @@ const ZPVirtualList = {
 	},
 	data() {
 		return {
-			
+			virtualPlaceholderTopHeight: 0,
+			virtualPlaceholderBottomHeight: 0,
 		}
 	},
 	watch: {
@@ -17,7 +18,9 @@ const ZPVirtualList = {
 		
 	},
 	methods: {
-		
+		_updateScroll(scrollTop,scrollDiff){
+			console.log(scrollTop,scrollDiff);
+		}
 	}
 }
 

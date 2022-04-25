@@ -88,7 +88,9 @@ by ZXLee
 								<slot v-if="$slots.loading&&showLoading&&!loadingFullFixed" name="loading" />
 								<!-- 主体内容 -->
 								<view class="zp-paging-container-content" :style="[finalPagingContentStyle]">
+									<view class="zp-virtual-placeholder" :style="[{height:virtualPlaceholderTopHeight+'px'}]"/>
 									<slot />
+									<view class="zp-virtual-placeholder" :style="[{height:virtualPlaceholderBottomHeight+'px'}]"/>
 									<!-- 上拉加载更多view -->
 									<!-- #ifndef MP-ALIPAY -->
 									<slot v-if="_showLoadingMore('Default')" name="loadingMoreDefault" />
