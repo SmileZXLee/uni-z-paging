@@ -55,6 +55,11 @@
 						subTitle: ''
 					},
 					{
+						title: '虚拟列表演示',
+						file: 'virtual-list-demo',
+						subTitle: ''
+					},
+					{
 						title: '滚动吸附效果演示',
 						file: 'sticky-demo',
 						subTitle: ''

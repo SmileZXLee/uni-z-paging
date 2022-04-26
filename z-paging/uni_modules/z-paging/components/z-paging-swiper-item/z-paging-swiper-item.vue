@@ -69,8 +69,8 @@
 				this.firstLoaded = true;
 				this.$refs.paging.complete(data);
 			},
-			_queryList(pageNo, pageSize) {
-				this.$emit('query', pageNo, pageSize);
+			_queryList(pageNo, pageSize, from) {
+				this.$emit('query', pageNo, pageSize, from);
 			},
 			_updateList(list) {
 				this.$emit('updateList', list);

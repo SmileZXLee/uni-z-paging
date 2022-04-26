@@ -88,8 +88,14 @@ by ZXLee
 								<slot v-if="$slots.loading&&showLoading&&!loadingFullFixed" name="loading" />
 								<!-- 主体内容 -->
 								<view class="zp-paging-container-content" :style="[finalPagingContentStyle]">
-									<view class="zp-virtual-placeholder" :style="[{height:virtualPlaceholderTopHeight+'px'}]"/>
 									<slot />
+									<!-- 虚拟列表 -->
+									<view class="zp-virtual-placeholder" :style="[{height:virtualPlaceholderTopHeight+'px'}]"/>
+									<template v-if="finalUseVirtualList">
+										<view class="zp-list-cell" :id="`z-paging-cell-id-${index}`" v-if="index>=virtualTopRangeIndex&&index<=virtualBottomRangeIndex" v-for="(item,index) in realTotalData" :key="item.title">
+											<slot name="cell" :item="item" :index="index"/>
+										</view>
+									</template>
 									<view class="zp-virtual-placeholder" :style="[{height:virtualPlaceholderBottomHeight+'px'}]"/>
 									<!-- 上拉加载更多view -->
 									<!-- #ifndef MP-ALIPAY -->

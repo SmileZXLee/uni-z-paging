@@ -186,6 +186,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/virtual-list-demo/virtual-list-demo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

@@ -17,6 +17,10 @@ const ZPData = {
 		defaultPageSize: {
 			type: [Number, String],
 			default: u.gc('defaultPageSize', 10),
+			validator: (value) => {
+				if(value <= 0) u.consoleErr('default-page-size必须大于0！');
+				return value > 0;
+			}
 		},
 		//为保证数据一致，设置当前tab切换时的标识key，并在complete中传递相同key，若二者不一致，则complete将不会生效
 		dataKey: {
@@ -376,7 +380,7 @@ const ZPData = {
 		//reload之前的一些处理
 		_preReload(animate = this.showRefresherWhenReload, isFromMounted = true) {
 			this.isUserReload = true;
-			this.loadingType = Enum.LoadingType.Refresher
+			this.loadingType = Enum.LoadingType.Refresher;
 			if (animate) {
 				this.privateShowRefresherWhenReload = animate;
 				// #ifndef APP-NVUE
@@ -523,6 +527,9 @@ const ZPData = {
 					this.pageNo--;
 				}
 			}
+			// #ifndef APP-NVUE
+			this.finalUseVirtualList && this.isFirstPage && this._updateCellHeight();
+			// #endif
 		},
 		//所有数据改变时调用
 		_totalDataChange(newVal, oldVal, eventThrow=true) {

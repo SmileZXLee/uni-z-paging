@@ -139,11 +139,6 @@ export default {
 				return u.gc('defaultThemeStyle', 'black');
 			}
 		},
-		//是否使用虚拟列表，默认为否
-		useVirtualList: {
-			type: Boolean,
-			default: u.gc('useVirtualList', false)
-		},
 		//z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为是(当使用内置scroll-view滚动时有效)
 		fixed: {
 			type: Boolean,
@@ -228,6 +223,9 @@ export default {
 			this.nLoadingMoreFixedHeight = true;
 		}
 		this._nUpdateRefresherWidth();
+		// #endif
+		// #ifndef APP-NVUE
+		this.finalUseVirtualList && this._virtualListInit();
 		// #endif
 		// #ifndef APP-PLUS
 		this.$nextTick(()=>{

@@ -382,11 +382,13 @@ const ZPScroller = {
 		//scroll-view滚动中
 		_scroll(e) {
 			this.$emit('scroll', e);
-			this.oldScrollTop = e.detail.scrollTop;
+			const scrollTop = e.detail.scrollTop;
+			// #ifndef APP-NVUE
+			this.finalUseVirtualList && this._updateScroll(scrollTop,this.oldScrollTop - scrollTop);
+			// #endif
+			this.oldScrollTop = scrollTop;
 			const scrollDiff = e.detail.scrollHeight - this.oldScrollTop;
 			!this.isIos && this._checkScrolledToBottom(scrollDiff);
-			
-			this._updateScroll(e.detail.scrollTop,scrollDiff);
 		},
 		//scrollTop改变时触发
 		_scrollTopChange(newVal,oldVal,isPageScrollTop){

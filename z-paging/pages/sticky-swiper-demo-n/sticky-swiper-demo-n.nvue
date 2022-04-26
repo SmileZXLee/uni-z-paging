@@ -60,8 +60,11 @@
 		},
 		watch: {
 			//当current或者headerHeight改变的时候，调用子组件的设置嵌套list父容器支持swiper-list吸顶滚动效果的方法
-			current() {
-				this.setListSpecialEffects();
+			current: {
+                handler() {
+                    this.setListSpecialEffects();
+                },
+				immediate: true
 			},
 			//当current或者headerHeight改变的时候，调用子组件的设置嵌套list父容器支持swiper-list吸顶滚动效果的方法
 			headerHeight() {
