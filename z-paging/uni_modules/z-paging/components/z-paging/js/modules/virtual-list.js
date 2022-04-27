@@ -33,7 +33,7 @@ const ZPVirtualList = {
 			virtualPlaceholderTopHeight: 0,
 			virtualPlaceholderBottomHeight: 0,
 			virtualPageHeight: 0,
-			virtualCellHeight: 1,
+			virtualCellHeight: 0,
 
 			virtualTopRangeIndex: 0,
 			virtualBottomRangeIndex: 0,
@@ -43,14 +43,15 @@ const ZPVirtualList = {
 	},
 	watch: {
 		realTotalData(newVal) {
-			this._updateBottomRangeIndex(this.oldScrollTop);
-			this.virtualList = this.realTotalData.slice(this.virtualTopRangeIndex,this.virtualBottomRangeIndex + 1);
+			// #ifndef APP-NVUE
+			this.$nextTick(()=>{
+				this.finalUseVirtualList && this._updateScroll(this.oldScrollTop);
+			})
+			// #endif
 		},
 		virtualBottomRangeIndex(newVal){
-			
 		},
 		virtualList(newVal){
-			console.log(newVal.length)
 		}
 	},
 	computed: {
@@ -72,7 +73,8 @@ const ZPVirtualList = {
 			this.$nextTick(() => {
 				setTimeout(() => {
 					this._getNodeClientRect(`#z-paging-cell-id-${0}`).then(node => {
-						this.virtualCellHeight = node && node.length ? node[0].height : 1;
+						this.virtualCellHeight = node && node.length ? node[0].height : 0;
+						this._updateScroll(this.oldScrollTop);
 					});
 				}, 1);
 			})
@@ -83,13 +85,13 @@ const ZPVirtualList = {
 			this._updateBottomRangeIndex(scrollIndex);
 		},
 		_updateTopRangeIndex(scrollIndex) {
-			let virtualTopRangeIndex = scrollIndex - parseInt(this.virtualPageHeight / this.virtualCellHeight) * this.preloadPage;
+			let virtualTopRangeIndex = this.virtualCellHeight === 0 ? 0 : scrollIndex - parseInt(this.virtualPageHeight / this.virtualCellHeight) * this.preloadPage;
 			virtualTopRangeIndex = Math.max(0, virtualTopRangeIndex);
 			this.virtualTopRangeIndex = virtualTopRangeIndex;
 			this.virtualPlaceholderTopHeight = (virtualTopRangeIndex) * this.virtualCellHeight;
 		},
 		_updateBottomRangeIndex(scrollIndex) {
-			let virtualBottomRangeIndex = scrollIndex + parseInt(this.virtualPageHeight / this.virtualCellHeight) * (this.preloadPage + 1);
+			let virtualBottomRangeIndex = this.virtualCellHeight === 0 ? 40 : scrollIndex + parseInt(this.virtualPageHeight / this.virtualCellHeight) * (this.preloadPage + 1);
 			virtualBottomRangeIndex = Math.min(this.realTotalData.length, virtualBottomRangeIndex);
 			this.virtualBottomRangeIndex = virtualBottomRangeIndex;
 			this.virtualPlaceholderBottomHeight = (this.realTotalData.length - virtualBottomRangeIndex) * this.virtualCellHeight;
