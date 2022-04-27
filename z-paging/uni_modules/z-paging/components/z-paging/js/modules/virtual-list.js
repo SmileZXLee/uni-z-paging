@@ -13,15 +13,10 @@ const ZPVirtualList = {
 			type: String,
 			default: u.gc('listKey', null)
 		},
-		//列表for循环的key，若不定义默认使用for循环的index
-		listKey: {
-			type: String,
-			default: u.gc('listKey', null)
-		},
-		//预加载的列表可视范围(列表高度)页数，默认为1，即预加载当前页及上下各1页的cell。此数值越大，则虚拟列表中加载的dom越多，但增加预加载页面可缓解快速滚动短暂白屏问题
+		//预加载的列表可视范围(列表高度)页数，默认为7，即预加载当前页及上下各7页的cell。此数值越大，则虚拟列表中加载的dom越多(维持在一个稳定的数量)，但增加预加载页面可缓解快速滚动短暂白屏问题
 		preloadPage: {
 			type: [Number, String],
-			default: u.gc('preloadPage', 1),
+			default: u.gc('preloadPage', 7),
 			validator: (value) => {
 				if (value <= 0) u.consoleErr('preload-page必须大于0！');
 				return value > 0;
@@ -42,11 +37,20 @@ const ZPVirtualList = {
 
 			virtualTopRangeIndex: 0,
 			virtualBottomRangeIndex: 0,
+			virtualListKey: u.getInstanceId(),
+			virtualList: []
 		}
 	},
 	watch: {
 		realTotalData(newVal) {
 			this._updateBottomRangeIndex(this.oldScrollTop);
+			this.virtualList = this.realTotalData.slice(this.virtualTopRangeIndex,this.virtualBottomRangeIndex + 1);
+		},
+		virtualBottomRangeIndex(newVal){
+			
+		},
+		virtualList(newVal){
+			console.log(newVal.length)
 		}
 	},
 	computed: {
@@ -89,6 +93,7 @@ const ZPVirtualList = {
 			virtualBottomRangeIndex = Math.min(this.realTotalData.length, virtualBottomRangeIndex);
 			this.virtualBottomRangeIndex = virtualBottomRangeIndex;
 			this.virtualPlaceholderBottomHeight = (this.realTotalData.length - virtualBottomRangeIndex) * this.virtualCellHeight;
+			this.virtualList = this.realTotalData.slice(this.virtualTopRangeIndex,this.virtualBottomRangeIndex + 1);
 		},
 
 	}

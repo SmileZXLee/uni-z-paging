@@ -172,6 +172,16 @@ function getTime() {
 	return (new Date()).getTime();
 }
 
+//获取z-paging实例id
+function getInstanceId() {
+    let s = [];
+    const hexDigits = "0123456789abcdef";
+    for (let i = 0; i < 10; i++) {
+        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+    }
+    return s.join('') + getTime();
+}
+
 //------------------ 私有方法 ------------------------
 function _timeFormat(time) {
 	const date = new Date(time);
@@ -229,6 +239,7 @@ export default {
 	getParent,
 	convertTextToPx,
 	getTime,
+	getInstanceId,
 	consoleErr,
 	consoleWarn
 };

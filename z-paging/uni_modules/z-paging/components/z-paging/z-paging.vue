@@ -92,7 +92,7 @@ by ZXLee
 									<!-- 虚拟列表 -->
 									<view class="zp-virtual-placeholder" :style="[{height:virtualPlaceholderTopHeight+'px'}]"/>
 									<template v-if="finalUseVirtualList">
-										<view class="zp-list-cell" :id="`z-paging-cell-id-${index}`" v-if="index>=virtualTopRangeIndex&&index<=virtualBottomRangeIndex" v-for="(item,index) in realTotalData" :key="item.title">
+										<view class="zp-list-cell" :id="`z-paging-cell-id-${index}`" v-for="(item,index) in virtualList" :key="item.title">
 											<slot name="cell" :item="item" :index="index"/>
 										</view>
 									</template>

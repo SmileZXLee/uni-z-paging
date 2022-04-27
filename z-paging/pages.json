@@ -190,7 +190,7 @@
             "path" : "pages/virtual-list-demo/virtual-list-demo",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "虚拟列表演示",
                 "enablePullDownRefresh": false
             }
             

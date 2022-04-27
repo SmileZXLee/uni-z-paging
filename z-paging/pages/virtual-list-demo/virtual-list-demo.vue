@@ -1,14 +1,35 @@
 <!-- 虚拟列表演示(vue) -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" v-model="dataList" use-virtual-list :default-page-size="100" @query="queryList">
+		<z-paging ref="paging" use-virtual-list :default-page-size="500" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<template v-slot:cell="{item,index}">
 				<view class="item" @click="itemClick(item,index)">
-					<view class="item-title">{{item.title}}</view>
-					<view class="item-detail">{{item.detail}}</view>
+					<view class="item-image-container">
+						<image class="item-image" mode="aspectFit" src="@/static/refresher_loading.gif"></image>
+					</view>
+					<view class="item-content">
+						<text class="item-title">第{{item.title}}行</text>
+						<text style="color: red;">虚拟列表展示</text>
+						<view class="item-components">
+							<view class="item-switch-container">
+								<switch></switch>
+							</view>
+							<view class="item-group-container">
+								<checkbox-group>
+									<label>
+										<checkbox checked="true" />选中
+									</label>
+									<label>
+										<checkbox/>未选中
+									</label>
+								</checkbox-group>
+							</view>
+						</view>
+						<view class="item-detail">{{item.detail+'dskahdjksahdjksahjkdfhafhdsgfhdsgfdhgshjgfdshjgfdshjfgsdfhjsd'}}</view>
+					</view>
 					<view class="item-line"></view>
 				</view>
 			</template>
@@ -60,19 +81,41 @@
 <style>
 	.item {
 		position: relative;
-		height: 150rpx;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 0rpx 30rpx;
+		padding: 20rpx 30rpx;
 	}
-
+	
+	.item-content{
+		flex: 1;
+	}
+	
+	.item-components{
+		display: flex;
+		margin-top: 10rpx;
+	}
+	
+	.item-image{
+		height: 100rpx;
+		width: 100rpx;
+		background-color: #eeeeee;
+		border-radius: 50%;
+	}
+	
+	.item-title{
+		background-color: red;
+		color: white;
+		font-size: 24rpx;
+		border-radius: 5rpx;
+		padding: 5rpx 10rpx;
+	}
 	.item-detail {
 		padding: 5rpx 15rpx;
 		border-radius: 10rpx;
 		font-size: 28rpx;
-		color: white;
-		background-color: #007AFF;
+		color: #aaaaaa;
+		word-break: break-all;
 	}
 
 	.item-line {
