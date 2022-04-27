@@ -1,18 +1,18 @@
 <!-- 虚拟列表演示(vue) -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" use-virtual-list :default-page-size="5000" @query="queryList">
+		<z-paging ref="paging" use-virtual-list :default-page-size="100" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<template v-slot:cell="{item,index}">
 				<view class="item" @click="itemClick(item,index)">
 					<view class="item-image-container">
-						<image class="item-image" mode="aspectFit" src="@/static/refresher_loading.gif"></image>
+						<image class="item-image" mode="aspectFit" src="@/static/boji1.png"></image>
 					</view>
 					<view class="item-content">
 						<text class="item-title">第{{item.title}}行</text>
-						<text style="color: red;">虚拟列表展示</text>
+						<text style="color: red;margin-left: 10rpx;">虚拟列表展示</text>
 						<view class="item-components">
 							<view class="item-switch-container">
 								<switch></switch>
@@ -28,7 +28,7 @@
 								</checkbox-group>
 							</view>
 						</view>
-						<view class="item-detail">{{item.detail+'dskahdjksahdjksahjkdfhafhdsgfhdsgfdhgshjgfdshjgfdshjfgsdfhjsd'}}</view>
+						<view class="item-detail">{{'详情信息详情信息详情信息详情信息详情信息详情信息详情信息详情信息详情信息：'+item.detail}}</view>
 					</view>
 					<view class="item-line"></view>
 				</view>
@@ -89,6 +89,7 @@
 	
 	.item-content{
 		flex: 1;
+		margin-left: 20rpx;
 	}
 	
 	.item-components{
@@ -97,19 +98,20 @@
 	}
 	
 	.item-image{
-		height: 100rpx;
-		width: 100rpx;
+		height: 240rpx;
+		width: 240rpx;
 		background-color: #eeeeee;
-		border-radius: 50%;
+		border-radius: 10rpx;
 	}
 	
 	.item-title{
 		background-color: red;
 		color: white;
-		font-size: 24rpx;
+		font-size: 26rpx;
 		border-radius: 5rpx;
 		padding: 5rpx 10rpx;
 	}
+	
 	.item-detail {
 		padding: 5rpx 15rpx;
 		border-radius: 10rpx;

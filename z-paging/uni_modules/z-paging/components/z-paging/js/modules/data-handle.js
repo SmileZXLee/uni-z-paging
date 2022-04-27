@@ -527,9 +527,6 @@ const ZPData = {
 					this.pageNo--;
 				}
 			}
-			// #ifndef APP-NVUE
-			this.finalUseVirtualList && this.isFirstPage && this._updateCellHeight();
-			// #endif
 		},
 		//所有数据改变时调用
 		_totalDataChange(newVal, oldVal, eventThrow=true) {

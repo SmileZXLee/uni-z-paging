@@ -87,19 +87,18 @@ by ZXLee
 								<!-- 全屏Loading -->
 								<slot v-if="$slots.loading&&showLoading&&!loadingFullFixed" name="loading" />
 								<!-- 主体内容 -->
-								<view class="zp-paging-container-content" :style="[finalPagingContentStyle]">
+								<view class="zp-paging-container-content" :style="[{transform:virtualPlaceholderTopHeight>0?`translateY(${virtualPlaceholderTopHeight}px)`:'none'},finalPagingContentStyle]">
 									<slot />
 									<!-- 虚拟列表 -->
 									<!-- <view class="zp-virtual-placeholder" :style="[{height:virtualPlaceholderTopHeight+'px'}]"/> -->
-									<template v-if="finalUseVirtualList">
-										<view :style="[{transform:`translateY(${virtualPlaceholderTopHeight}px)`,marginBottom:`${virtualPlaceholderBottomHeight}px`}]">
+									<template v-if="finalUseVirtualList||useInnerList">
+										<view class="zp-list">
 											<view class="zp-list-cell" :id="`z-paging-cell-id-${index}`" v-for="(item,index) in virtualList" :key="item.title">
 												<slot name="cell" :item="item" :index="index"/>
 											</view>
 										</view>
-										
+										<view class="zp-virtual-placeholder" :style="[{height:virtualPlaceholderBottomHeight+'px'}]"/>
 									</template>
-									<!-- <view class="zp-virtual-placeholder" :style="[{height:virtualPlaceholderBottomHeight+'px'}]"/> -->
 									<!-- 上拉加载更多view -->
 									<!-- #ifndef MP-ALIPAY -->
 									<slot v-if="_showLoadingMore('Default')" name="loadingMoreDefault" />

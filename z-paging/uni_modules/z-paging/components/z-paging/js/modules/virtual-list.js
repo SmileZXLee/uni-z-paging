@@ -8,6 +8,11 @@ const ZPVirtualList = {
 			type: Boolean,
 			default: u.gc('useVirtualList', false)
 		},
+		//是否在z-paging内部循环渲染列表，默认为否
+		useInnerList: {
+			type: Boolean,
+			default: u.gc('useInnerList', false)
+		},
 		//列表for循环的key，若不定义默认使用for循环的index
 		listKey: {
 			type: String,
@@ -45,6 +50,7 @@ const ZPVirtualList = {
 		realTotalData(newVal) {
 			// #ifndef APP-NVUE
 			this.$nextTick(()=>{
+				this.finalUseVirtualList && this.isFirstPage && this._updateCellHeight();
 				this.finalUseVirtualList && this._updateScroll(this.oldScrollTop);
 			})
 			// #endif
@@ -52,6 +58,7 @@ const ZPVirtualList = {
 		virtualBottomRangeIndex(newVal){
 		},
 		virtualList(newVal){
+			
 		}
 	},
 	computed: {
@@ -76,7 +83,7 @@ const ZPVirtualList = {
 						this.virtualCellHeight = node && node.length ? node[0].height : 0;
 						this._updateScroll(this.oldScrollTop);
 					});
-				}, 1);
+				}, 100);
 			})
 		},
 		_updateScroll(scrollTop, scrollDiff) {
