@@ -13,6 +13,13 @@ const ZPVirtualList = {
 			type: Boolean,
 			default: u.gc('useInnerList', false)
 		},
+		//innerList样式
+		innerListStyle: {
+			type: Object,
+			default: function() {
+				return u.gc('innerListStyle', {});
+			}
+		},
 		//列表for循环的key，若不定义默认使用for循环的index
 		listKey: {
 			type: String,
@@ -28,7 +35,7 @@ const ZPVirtualList = {
 			}
 		},
 		//虚拟列表cell高度模式，默认为fixed，也就是每个cell高度完全相同，将以第一个cell高度为准进行计算
-		cellHeightModel: {
+		cellHeightMode: {
 			type: String,
 			default: u.gc('cellHeight', 'fixed')
 		}
