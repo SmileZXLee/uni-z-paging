@@ -569,6 +569,9 @@ const ZPData = {
 		_currentDataChange(newVal, oldVal) {
 			newVal = [...newVal];
 			// #ifndef APP-NVUE
+			if (this.finalUseVirtualList) {
+				this._setCellIndex(newVal);
+			}
 			this.useChatRecordMode && newVal.reverse();
 			// #endif
 			if (this.isFirstPage && this.finalConcat) {

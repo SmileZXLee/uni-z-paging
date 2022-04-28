@@ -67,7 +67,7 @@ function callQueryResult(arg) {
 }
 
 function queryListLong(data, callback) {
-	listCount = 10000;
+	listCount = 100000;
 	return this.queryList(data, callback);
 }
 

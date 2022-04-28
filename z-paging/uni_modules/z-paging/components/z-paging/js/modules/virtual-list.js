@@ -1,5 +1,6 @@
 // [z-paging]虚拟列表实现模块（todo）
 import u from '.././z-paging-utils'
+import c from '.././z-paging-constant'
 
 const ZPVirtualList = {
 	props: {
@@ -62,11 +63,6 @@ const ZPVirtualList = {
 			})
 			// #endif
 		},
-		virtualBottomRangeIndex(newVal){
-		},
-		virtualList(newVal){
-			
-		}
 	},
 	computed: {
 		finalUseVirtualList() {
@@ -74,6 +70,7 @@ const ZPVirtualList = {
 		}
 	},
 	methods: {
+		//初始化虚拟列表
 		_virtualListInit() {
 			this.$nextTick(() => {
 				this._getNodeClientRect('.zp-scroll-view').then(node => {
@@ -83,6 +80,7 @@ const ZPVirtualList = {
 				});
 			})
 		},
+		//获取第一个cell高度
 		_updateCellHeight() {
 			this.$nextTick(() => {
 				setTimeout(() => {
@@ -93,6 +91,26 @@ const ZPVirtualList = {
 				}, 100);
 			})
 		},
+		//设置cellItem的index
+		_setCellIndex(list){
+			let lastItem = null;
+			let lastItemIndex = this.realTotalData.length;
+			if (this.realTotalData.length) {
+				lastItem = this.realTotalData.slice(-1)[0];
+			}
+			if(lastItem && lastItem[c.virtualListCellIndexKey] !== undefined){
+				lastItemIndex = lastItem[c.virtualListCellIndexKey] + 1;
+			}
+			for (let i = 0; i < list.length; i++) {
+				let item = list[i];
+				if (!item || Object.prototype.toString.call(item) !== '[object Object]') {
+					item = {item};
+				}
+				item[c.virtualListCellIndexKey] = lastItemIndex  + i;
+				list[i] = item;
+			}
+		},
+		
 		_updateScroll(scrollTop, scrollDiff) {
 			const scrollIndex = parseInt(scrollTop / this.virtualCellHeight);
 			this._updateTopRangeIndex(scrollIndex);
