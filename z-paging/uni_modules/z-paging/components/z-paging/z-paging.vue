@@ -94,7 +94,7 @@ by ZXLee
 										<slot name="header"/>
 										<view class="zp-list-container" :style="[{innerListStyle}]">
 											<template v-if="finalUseVirtualList">
-												<view class="zp-list-cell" :id="`z-paging-cell-id-${index}`" v-for="(item,index) in virtualList" :key="item['z-paging-cell-index']">
+												<view class="zp-list-cell" :id="`z-paging-cell-id-${index}`" v-for="(item,index) in virtualList" :key="item['z_paging_cell_index']">
 													<slot name="cell" :item="item" :index="item['z-paging-cell-index']"/>
 												</view>
 											</template>

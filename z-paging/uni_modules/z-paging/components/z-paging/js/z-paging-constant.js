@@ -5,7 +5,7 @@ const delayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
 const errorUpdateKey = 'z-paging-error-emit';
 const completeUpdateKey = 'z-paging-complete-emit';
-const virtualListCellIndexKey = 'z-paging-cell-index';
+const virtualListCellIndexKey = 'z_paging_cell_index';
 
 export default {
 	version,

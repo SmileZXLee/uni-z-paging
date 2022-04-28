@@ -62,7 +62,7 @@ const ZPVirtualList = {
 				this.finalUseVirtualList && this._updateScroll(this.oldScrollTop);
 			})
 			// #endif
-		},
+		}
 	},
 	computed: {
 		finalUseVirtualList() {
