@@ -1,11 +1,13 @@
 <!-- 虚拟列表演示(vue) -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" use-virtual-list :default-page-size="100" @query="queryList">
+		<z-paging ref="paging" use-virtual-list :default-page-size="1000" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
+			
 			<!-- 通过slot="cell"插入列表for循环的cell，slot-scope中提供当前for循环的item和index -->
+			<!-- 因字节跳动小程序不支持slot-scope，因此不支持字节跳动小程序 -->
 			<view slot="cell" slot-scope="{item,index}" class="item" @click="itemClick(item,index)">
 				<view class="item-image-container">
 					<image class="item-image" mode="aspectFit" src="@/static/boji1.png"></image>
@@ -113,7 +115,7 @@
 	}
 	
 	.item-detail {
-		padding: 5rpx 15rpx;
+		padding: 5rpx 0rpx;
 		border-radius: 10rpx;
 		font-size: 28rpx;
 		color: #aaaaaa;

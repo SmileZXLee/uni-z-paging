@@ -9,13 +9,13 @@ function propObserver(newValue, oldValue, ownerIns, ins) {
 	state.currentIns = ins;
 	var dataset = ins.getDataset();
 	var loading = dataset.loading == true;
-	if (newValue.indexOf('end') != -1) {
+	if (newValue && newValue.indexOf('end') != -1) {
 		var transition = newValue.split('end')[0];
 		_setTransform('translateY(0px)', ins, false, transition);
 		state.moveDis = 0;
 		state.oldMoveDis = 0;
 		currentDis = 0;
-	} else if (newValue.indexOf('begin') != -1) {
+	} else if (newValue && newValue.indexOf('begin') != -1) {
 		var refresherThreshold = ins.getDataset().refresherthreshold;
 		_setTransformValue(refresherThreshold, ins, state, false);
 	}
