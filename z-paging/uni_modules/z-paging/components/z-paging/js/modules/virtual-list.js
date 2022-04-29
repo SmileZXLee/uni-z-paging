@@ -98,15 +98,16 @@ const ZPVirtualList = {
 			if (this.realTotalData.length) {
 				lastItem = this.realTotalData.slice(-1)[0];
 			}
-			if(lastItem && lastItem[c.virtualListCellIndexKey] !== undefined){
-				lastItemIndex = lastItem[c.virtualListCellIndexKey] + 1;
+			if(lastItem && lastItem[c.listCellIndexKey] !== undefined){
+				lastItemIndex = lastItem[c.listCellIndexKey] + 1;
 			}
 			for (let i = 0; i < list.length; i++) {
 				let item = list[i];
 				if (!item || Object.prototype.toString.call(item) !== '[object Object]') {
 					item = {item};
 				}
-				item[c.virtualListCellIndexKey] = lastItemIndex  + i;
+				item[c.listCellIndexKey] = lastItemIndex  + i;
+				item[c.listCellIndexUniqueKey] = `${this.virtualListKey}-${item[c.listCellIndexKey]}`;
 				list[i] = item;
 			}
 		},

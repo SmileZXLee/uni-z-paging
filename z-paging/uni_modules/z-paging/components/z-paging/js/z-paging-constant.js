@@ -5,7 +5,8 @@ const delayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
 const errorUpdateKey = 'z-paging-error-emit';
 const completeUpdateKey = 'z-paging-complete-emit';
-const virtualListCellIndexKey = 'z_paging_cell_index';
+const listCellIndexKey = 'z_paging_cell_index';
+const listCellIndexUniqueKey = 'z_paging_cell_unique_index';
 
 export default {
 	version,
@@ -13,5 +14,6 @@ export default {
 	i18nUpdateKey,
 	errorUpdateKey,
 	completeUpdateKey,
-	virtualListCellIndexKey
+	listCellIndexKey,
+	listCellIndexUniqueKey
 }
