@@ -147,6 +147,21 @@ const ZPLoadMore = {
 		finalLoadingMoreThemeStyle() {
 			return this.loadingMoreThemeStyle.length ? this.loadingMoreThemeStyle : this.defaultThemeStyle;
 		},
+		showLoadingMoreDefault() {
+			return this._showLoadingMore('Default');
+		},
+		showLoadingMoreLoading() {
+			return this._showLoadingMore('Loading');
+		},
+		showLoadingMoreNoMore() {
+			return this._showLoadingMore('NoMore');
+		},
+		showLoadingMoreFail() {
+			return this._showLoadingMore('Fail');
+		},
+		showLoadingMoreCustom() {
+			return this._showLoadingMore('Custom');
+		}
 	},
 	methods: {
 		//手动触发上拉加载更多(非必须，可依据具体需求使用)
@@ -209,7 +224,7 @@ const ZPLoadMore = {
 			// #ifdef MP-WEIXIN
 			if (!this.isIos && !this.refresherOnly && !this.usePageScroll) {
 				const currentTimestamp = u.getTime();
-				if(this.loadingMoreTimeStamp > 0 && currentTimestamp - this.loadingMoreTimeStamp < 100){
+				if (this.loadingMoreTimeStamp > 0 && currentTimestamp - this.loadingMoreTimeStamp < 100) {
 					this.loadingMoreTimeStamp = 0;
 					return;
 				}
@@ -287,9 +302,11 @@ const ZPLoadMore = {
 		},
 		//是否要展示上拉加载更多view
 		_showLoadingMore(type) {
+			// console.log(((!this.showLoadingMoreWhenReload || this.isUserPullDown || this.loadingStatus !== Enum.More.Loading) && !this.showLoadingMore))
 			if (!(this.loadingStatus === Enum.More.Default ? this.nShowBottom : true)) return false;
-			if (((!this.showLoadingMoreWhenReload || this.isUserPullDown || this.loadingStatus !== Enum.More.Loading) && !this.showLoadingMore) || (!this.loadingMoreEnabled && (!this.showLoadingMoreWhenReload || this
-				.isUserPullDown || this.loadingStatus !== Enum.More.Loading)) || this.refresherOnly) return false;
+			if (((!this.showLoadingMoreWhenReload || this.isUserPullDown || this.loadingStatus !== Enum.More.Loading) && !this.showLoadingMore) || 
+			(!this.loadingMoreEnabled && (!this.showLoadingMoreWhenReload || this.isUserPullDown || this.loadingStatus !== Enum.More.Loading)) || 
+			this.refresherOnly) return false;
 			if (this.useChatRecordMode && type !== 'Loading') return false;
 			if (!this.$slots) return false;
 			if (type === 'Custom') {

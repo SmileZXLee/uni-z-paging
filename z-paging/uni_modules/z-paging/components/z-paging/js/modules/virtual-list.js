@@ -98,7 +98,7 @@ const ZPVirtualList = {
 			if (this.realTotalData.length) {
 				lastItem = this.realTotalData.slice(-1)[0];
 			}
-			if(lastItem && lastItem[c.listCellIndexKey] !== undefined){
+			if (lastItem && lastItem[c.listCellIndexKey] !== undefined) {
 				lastItemIndex = lastItem[c.listCellIndexKey] + 1;
 			}
 			for (let i = 0; i < list.length; i++) {

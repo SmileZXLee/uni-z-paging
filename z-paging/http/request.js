@@ -1,8 +1,19 @@
-let listCount = 24;
 const loadingTime = 500;
 const showLog = false;
 /* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件 */
+
 function queryList(data) {
+	const listCount = 24;
+	return _queryList(data, listCount);
+}
+
+function queryListLong(data) {
+	const listCount = 100000;
+	return _queryList(data, listCount);
+}
+
+function _queryList(data,listCount) {
+	
 	if (!data.pageNo || !data.pageSize) {
 		return callQueryResult([]);
 	}
@@ -33,15 +44,15 @@ function queryList(data) {
 	}
 	let pageNoIndex = (pageNo - 1) * pageSize;
 	if (pageNoIndex + pageSize <= totalPagingList.length) {
-		return callQueryResult(totalPagingList.splice(pageNoIndex, pageSize));
+		return _callQueryResult(totalPagingList.splice(pageNoIndex, pageSize));
 	} else if (pageNoIndex < totalPagingList.length) {
-		return callQueryResult(totalPagingList.splice(pageNoIndex, totalPagingList.length - pageNoIndex));
+		return _callQueryResult(totalPagingList.splice(pageNoIndex, totalPagingList.length - pageNoIndex));
 	} else {
-		return callQueryResult([]);
+		return _callQueryResult([]);
 	}
 }
 
-function callQueryResult(arg) {
+function _callQueryResult(arg) {
 	return new Promise((resolve, reject) => {
 		setTimeout(() => {
 			uni.hideLoading();
@@ -66,10 +77,6 @@ function callQueryResult(arg) {
 
 }
 
-function queryListLong(data, callback) {
-	listCount = 100000;
-	return this.queryList(data, callback);
-}
 
 module.exports = {
 	queryList,
