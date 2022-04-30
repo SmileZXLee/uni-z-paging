@@ -100,6 +100,7 @@ const ZPVirtualList = {
 			})
 		},
 		_updateDynamicCellHeight(list) {
+			console.log('_updateDynamicCellHeight');
 			this.$nextTick(() => {
 				setTimeout(async () => {
 					for (let i = 0; i < list.length; i++) {
@@ -117,13 +118,14 @@ const ZPVirtualList = {
 							totalHeight: lastHeight + currentHeight
 						});
 					}
-					console.log(this.virtualHeightCacheList)
-					this._updateScroll(0);
+					// console.log(this.virtualHeightCacheList)
+					this._updateScroll(this.oldScrollTop);
 				}, 50)
 			})
 		},
 		//设置cellItem的index
 		_setCellIndex(list) {
+			console.log('_setCellIndex');
 			let lastItem = null;
 			let lastItemIndex = this.realTotalData.length;
 			if (this.realTotalData.length) {
@@ -145,6 +147,7 @@ const ZPVirtualList = {
 		},
 
 		_updateScroll(scrollTop, scrollDiff) {
+			console.log('_updateScroll')
 			let scrollIndex = 0;
 			const cellHeightMode = this.cellHeightMode;
 			if(cellHeightMode === Enum.CellHeightMode.Fixed){
