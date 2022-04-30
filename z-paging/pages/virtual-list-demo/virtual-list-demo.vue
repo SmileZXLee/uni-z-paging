@@ -1,14 +1,14 @@
 <!-- 虚拟列表演示(vue) -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" use-virtual-list @query="queryList">
+		<z-paging ref="paging" use-virtual-list :cell-height-mode="tabIndex===0?'fixed':'dynamic'" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
-			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
-			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
+			<template slot="top">
+				<view class="header">列表总数据量：10万条</view>
+				<tabs-view @change="tabChange" :items="['cell高度固定','cell高度动态']"></tabs-view>
+			</template>
 			
-			<view class="header" slot="header">
-				列表总数据量：10万条
-			</view>
+			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			
 			<!-- 通过slot="cell"插入列表for循环的cell，slot-scope中提供当前for循环的item和index -->
 			<!-- 因字节跳动小程序不支持slot-scope，因此不支持字节跳动小程序 -->
@@ -48,7 +48,7 @@
 				const params = {
 					pageNo: pageNo,
 					pageSize: pageSize,
-					type: this.tabIndex + 1
+					random: this.tabIndex === 1
 				}
 				this.$request.queryListLong(params).then(res => {
 					//将请求的结果数组传递给z-paging

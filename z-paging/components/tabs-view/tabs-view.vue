@@ -103,7 +103,7 @@
 
 	.line {
 		height: 2px;
-		width: 70%;
+		width: 60%;
 		background-color: #007AFF;
 	}
 </style>

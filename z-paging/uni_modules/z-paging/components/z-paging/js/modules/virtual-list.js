@@ -44,18 +44,19 @@ const ZPVirtualList = {
 	},
 	data() {
 		return {
-			virtualPlaceholderTopHeight: 0,
-			virtualPlaceholderBottomHeight: 0,
+			virtualListKey: u.getInstanceId(),
 			virtualPageHeight: 0,
 			virtualCellHeight: 0,
-
+			virtualScrollTimeStamp: 0,
+			
+			virtualPlaceholderTopHeight: 0,
+			virtualPlaceholderBottomHeight: 0,
 			virtualTopRangeIndex: 0,
 			virtualBottomRangeIndex: 0,
-			virtualListKey: u.getInstanceId(),
+			
+			
 			virtualList: [],
 			virtualHeightCacheList: [],
-			
-			virtualScrollTimeStamp: 0,
 		}
 	},
 	watch: {
@@ -159,19 +160,17 @@ const ZPVirtualList = {
 			
 			let scrollIndex = 0;
 			const cellHeightMode = this.cellHeightMode;
-			if(cellHeightMode === Enum.CellHeightMode.Fixed){
+			if (cellHeightMode === Enum.CellHeightMode.Fixed) {
 				scrollIndex = parseInt(scrollTop / this.virtualCellHeight);
-				this._updateTopRangeIndex(scrollIndex);
-				this._updateBottomRangeIndex(scrollIndex);
-			}else if(cellHeightMode === Enum.CellHeightMode.Dynamic){
+				this._updateFixedTopRangeIndex(scrollIndex);
+				this._updateFixedBottomRangeIndex(scrollIndex);
+			} else if(cellHeightMode === Enum.CellHeightMode.Dynamic) {
 				const scrollDirection = scrollDiff > 0 ? 'top' : 'bottom';
 				const rangePageHeight = this.virtualRangePageHeight;
 				const topRangePageOffset = scrollTop - rangePageHeight;
 				const bottomRangePageOffset = scrollTop + this.virtualPageHeight + rangePageHeight;
 				
-				let virtualTopRangeIndex = 0;
 				let virtualBottomRangeIndex = 0;
-				let virtualPlaceholderTopHeight = 0;
 				let virtualPlaceholderBottomHeight = 0;
 				let reachedLimitBottom = false;
 				let lastHeightCache = null;
@@ -184,18 +183,16 @@ const ZPVirtualList = {
 					for (let i = startTopRangeIndex; i < this.virtualHeightCacheList.length;i++){
 						const heightCacheItem = this.virtualHeightCacheList[i];
 						if(heightCacheItem.totalHeight > topRangePageOffset){
-							virtualTopRangeIndex = i;
 							this.virtualTopRangeIndex = i;
 							this.virtualPlaceholderTopHeight = heightCacheItem.lastHeight;
 							break;
 						}
 					}
-				}else{
+				} else {
 					startTopRangeIndex = Math.max(0,this.virtualTopRangeIndex - 2);
 					for (let i = startTopRangeIndex; i >= 0;i--){
 						const heightCacheItem = this.virtualHeightCacheList[i];
 						if(heightCacheItem.totalHeight < topRangePageOffset){
-							virtualTopRangeIndex = i;
 							this.virtualTopRangeIndex = i;
 							this.virtualPlaceholderTopHeight = heightCacheItem.lastHeight;
 							break;
@@ -207,16 +204,15 @@ const ZPVirtualList = {
 					const heightCacheItem = this.virtualHeightCacheList[i];
 					if(heightCacheItem.totalHeight > bottomRangePageOffset){
 						virtualBottomRangeIndex = i;
-						virtualBottomRangeIndex = i;
 						virtualPlaceholderBottomHeight = lastHeightCache.totalHeight - heightCacheItem.totalHeight;
 						reachedLimitBottom = true;
 						break;
 					}
 				}
-				if(!reachedLimitBottom || this.virtualBottomRangeIndex === 0){
+				if (!reachedLimitBottom || this.virtualBottomRangeIndex === 0) {
 					this.virtualBottomRangeIndex = this.realTotalData.length ? this.realTotalData.length - 1 : this.pageSize;
 					this.virtualPlaceholderBottomHeight = 0;
-				} else{
+				} else {
 					this.virtualBottomRangeIndex = virtualBottomRangeIndex;
 					this.virtualPlaceholderBottomHeight = virtualPlaceholderBottomHeight;
 				}
@@ -225,16 +221,14 @@ const ZPVirtualList = {
 			}
 			
 		},
-		_updateTopRangeIndex(scrollIndex) {
-			let virtualTopRangeIndex = this.virtualCellHeight === 0 ? 0 : scrollIndex - parseInt(this
-				.virtualPageHeight / this.virtualCellHeight) * this.preloadPage;
+		_updateFixedTopRangeIndex(scrollIndex) {
+			let virtualTopRangeIndex = this.virtualCellHeight === 0 ? 0 : scrollIndex - parseInt(this.virtualPageHeight / this.virtualCellHeight) * this.preloadPage;
 			virtualTopRangeIndex = Math.max(0, virtualTopRangeIndex);
 			this.virtualTopRangeIndex = virtualTopRangeIndex;
 			this.virtualPlaceholderTopHeight = (virtualTopRangeIndex) * this.virtualCellHeight;
 		},
-		_updateBottomRangeIndex(scrollIndex) {
-			let virtualBottomRangeIndex = this.virtualCellHeight === 0 ? this.pageSize : scrollIndex + parseInt(this
-				.virtualPageHeight / this.virtualCellHeight) * (this.preloadPage + 1);
+		_updateFixedBottomRangeIndex(scrollIndex) {
+			let virtualBottomRangeIndex = this.virtualCellHeight === 0 ? this.pageSize : scrollIndex + parseInt(this.virtualPageHeight / this.virtualCellHeight) * (this.preloadPage + 1);
 			virtualBottomRangeIndex = Math.min(this.realTotalData.length, virtualBottomRangeIndex);
 			this.virtualBottomRangeIndex = virtualBottomRangeIndex;
 			this.virtualPlaceholderBottomHeight = (this.realTotalData.length - virtualBottomRangeIndex) * this.virtualCellHeight;
