@@ -1,5 +1,4 @@
 // z-paging国际化(支持中文、中文繁体和英文)
-
 const i18nUpdateKey = 'z-paging-i18n-update';
 
 const t = {

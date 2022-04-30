@@ -575,7 +575,7 @@ const ZPData = {
 			})
 			// #ifndef APP-NVUE
 			if (this.finalUseVirtualList) {
-				this._setCellIndex(newVal);
+				this._setCellIndex(newVal,this.totalData.length === 0);
 			}
 			this.useChatRecordMode && newVal.reverse();
 			// #endif
@@ -643,7 +643,7 @@ const ZPData = {
 						}
 						// #endif
 					} else {
-						this.totalData = [...newVal];
+						this.totalData = newVal;
 					}
 				}
 			}

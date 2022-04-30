@@ -384,7 +384,7 @@ const ZPScroller = {
 			this.$emit('scroll', e);
 			const scrollTop = e.detail.scrollTop;
 			// #ifndef APP-NVUE
-			this.finalUseVirtualList && this._updateScroll(scrollTop,this.oldScrollTop - scrollTop);
+			this.finalUseVirtualList && this._updateVirtualScroll(scrollTop,this.oldScrollTop - scrollTop);
 			// #endif
 			this.oldScrollTop = scrollTop;
 			const scrollDiff = e.detail.scrollHeight - this.oldScrollTop;

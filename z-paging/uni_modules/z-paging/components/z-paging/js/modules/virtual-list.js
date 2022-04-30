@@ -54,6 +54,8 @@ const ZPVirtualList = {
 			virtualPlaceholderBottomHeight: 0,
 			virtualTopRangeIndex: 0,
 			virtualBottomRangeIndex: 0,
+			lastVirtualTopRangeIndex: 0,
+			lastVirtualBottomRangeIndex: 0,
 			
 			virtualHeightCacheList: [],
 		}
@@ -63,18 +65,19 @@ const ZPVirtualList = {
 			// #ifndef APP-NVUE
 			this.$nextTick(() => {
 				if(!newVal.length){
-					this.virtualHeightCacheList = [];
-					this.virtualTopRangeIndex = 0;
-					this.virtualPlaceholderTopHeight = 0;
+					this._resetDynamicListState();
 				}
 				this.finalUseVirtualList && this.cellHeightMode === Enum.CellHeightMode.Fixed && this.isFirstPage && this._updateFixedCellHeight();
-				this.finalUseVirtualList && this._updateScroll(this.oldScrollTop);
+				this.finalUseVirtualList && this._updateVirtualScroll(this.oldScrollTop);
 			})
 			// #endif
 		}
 	},
 	computed: {
 		finalUseVirtualList() {
+			if (this.useVirtualList && this.usePageScroll){
+				u.consoleErr('使用页面滚动时，开启虚拟列表无效！');
+			}
 			return this.useVirtualList && !this.usePageScroll;
 		},
 		virtualRangePageHeight(){
@@ -88,11 +91,15 @@ const ZPVirtualList = {
 		//初始化虚拟列表
 		_virtualListInit() {
 			this.$nextTick(() => {
-				this._getNodeClientRect('.zp-scroll-view').then(node => {
-					if (node && node.length) {
-						this.virtualPageHeight = node[0].height;
-					}
-				});
+				if (!this.usePageScroll) {
+					this._getNodeClientRect('.zp-scroll-view').then(node => {
+						if (node && node.length) {
+							this.virtualPageHeight = node[0].height;
+						}
+					});
+				} else {
+					this.virtualPageHeight = this.windowHeight;
+				}
 			})
 		},
 		//cellHeightMode为fixed时获取第一个cell高度
@@ -101,11 +108,12 @@ const ZPVirtualList = {
 				setTimeout(() => {
 					this._getNodeClientRect(`#z-paging-cell-id-${0}`).then(node => {
 						this.virtualCellHeight = node && node.length ? node[0].height : 0;
-						this._updateScroll(this.oldScrollTop);
+						this._updateVirtualScroll(this.oldScrollTop);
 					});
-				}, 50);
+				}, 500);
 			})
 		},
+		//cellHeightMode为dynamic时获取每个cell高度
 		_updateDynamicCellHeight(list) {
 			this.$nextTick(() => {
 				setTimeout(async () => {
@@ -124,19 +132,24 @@ const ZPVirtualList = {
 							totalHeight: lastHeight + currentHeight
 						});
 					}
-					this._updateScroll(this.oldScrollTop);
+					this._updateVirtualScroll(this.oldScrollTop);
 				}, 50)
 			})
 		},
 		//设置cellItem的index
-		_setCellIndex(list) {
+		_setCellIndex(list, isFirstPage) {
 			let lastItem = null;
-			let lastItemIndex = this.realTotalData.length;
-			if (this.realTotalData.length) {
-				lastItem = this.realTotalData.slice(-1)[0];
-			}
-			if (lastItem && lastItem[c.listCellIndexKey] !== undefined) {
-				lastItemIndex = lastItem[c.listCellIndexKey] + 1;
+			let lastItemIndex = 0;
+			if (!isFirstPage) {
+				lastItemIndex = this.realTotalData.length;
+				if (this.realTotalData.length) {
+					lastItem = this.realTotalData.slice(-1)[0];
+				}
+				if (lastItem && lastItem[c.listCellIndexKey] !== undefined) {
+					lastItemIndex = lastItem[c.listCellIndexKey] + 1;
+				}
+			} else {
+				this._resetDynamicListState();
 			}
 			for (let i = 0; i < list.length; i++) {
 				let item = list[i];
@@ -149,9 +162,12 @@ const ZPVirtualList = {
 			}
 			this.cellHeightMode === Enum.CellHeightMode.Dynamic && this._updateDynamicCellHeight(list);
 		},
-
-		_updateScroll(scrollTop, scrollDiff) {
+		//更新scroll滚动
+		_updateVirtualScroll(scrollTop, scrollDiff = 0) {
 			const currentTimeStamp = u.getTime();
+			if (scrollTop === 0) {
+				this._resetTopRange();
+			}
 			if (scrollTop !== 0 && this.virtualScrollTimeStamp && currentTimeStamp - this.virtualScrollTimeStamp <= this.virtualScrollDisTimeStamp) {
 				return;
 			}
@@ -173,14 +189,15 @@ const ZPVirtualList = {
 				let virtualPlaceholderBottomHeight = 0;
 				let reachedLimitBottom = false;
 				let lastHeightCache = null;
-				if (this.virtualHeightCacheList.length) {
-					lastHeightCache = this.virtualHeightCacheList.slice(-1)[0];
+				const heightCacheList = this.virtualHeightCacheList;
+				if (heightCacheList.length) {
+					lastHeightCache = heightCacheList.slice(-1)[0];
 				}
 				let startTopRangeIndex = 0;
 				if(scrollDirection === 'bottom'){
 					startTopRangeIndex = this.virtualTopRangeIndex;
-					for (let i = startTopRangeIndex; i < this.virtualHeightCacheList.length;i++){
-						const heightCacheItem = this.virtualHeightCacheList[i];
+					for (let i = startTopRangeIndex; i < heightCacheList.length;i++){
+						const heightCacheItem = heightCacheList[i];
 						if(heightCacheItem.totalHeight > topRangePageOffset){
 							this.virtualTopRangeIndex = i;
 							this.virtualPlaceholderTopHeight = heightCacheItem.lastHeight;
@@ -188,19 +205,23 @@ const ZPVirtualList = {
 						}
 					}
 				} else {
+					let topRangeMatched = false;
 					startTopRangeIndex = Math.max(0,this.virtualTopRangeIndex - 2);
 					for (let i = startTopRangeIndex; i >= 0;i--){
-						const heightCacheItem = this.virtualHeightCacheList[i];
+						const heightCacheItem = heightCacheList[i];
 						if(heightCacheItem.totalHeight < topRangePageOffset){
 							this.virtualTopRangeIndex = i;
 							this.virtualPlaceholderTopHeight = heightCacheItem.lastHeight;
+							topRangeMatched = true;
 							break;
 						}
 					}
+					if (!topRangeMatched) {
+						this._resetTopRange();
+					}
 				}
-				
-				for (let i = this.virtualTopRangeIndex; i < this.virtualHeightCacheList.length;i++){
-					const heightCacheItem = this.virtualHeightCacheList[i];
+				for (let i = this.virtualTopRangeIndex; i < heightCacheList.length;i++){
+					const heightCacheItem = heightCacheList[i];
 					if(heightCacheItem.totalHeight > bottomRangePageOffset){
 						virtualBottomRangeIndex = i;
 						virtualPlaceholderBottomHeight = lastHeightCache.totalHeight - heightCacheItem.totalHeight;
@@ -215,25 +236,47 @@ const ZPVirtualList = {
 					this.virtualBottomRangeIndex = virtualBottomRangeIndex;
 					this.virtualPlaceholderBottomHeight = virtualPlaceholderBottomHeight;
 				}
-				this.virtualList = this.realTotalData.slice(this.virtualTopRangeIndex, this.virtualBottomRangeIndex + 1);
-				
+				this._updateVirtualList();
 			}
 			
 		},
+		//更新fixedCell模式下topRangeIndex&placeholderTopHeight
 		_updateFixedTopRangeIndex(scrollIndex) {
 			let virtualTopRangeIndex = this.virtualCellHeight === 0 ? 0 : scrollIndex - parseInt(this.virtualPageHeight / this.virtualCellHeight) * this.preloadPage;
 			virtualTopRangeIndex = Math.max(0, virtualTopRangeIndex);
 			this.virtualTopRangeIndex = virtualTopRangeIndex;
 			this.virtualPlaceholderTopHeight = (virtualTopRangeIndex) * this.virtualCellHeight;
 		},
+		//更新fixedCell模式下bottomRangeIndex&placeholderBottomHeight
 		_updateFixedBottomRangeIndex(scrollIndex) {
 			let virtualBottomRangeIndex = this.virtualCellHeight === 0 ? this.pageSize : scrollIndex + parseInt(this.virtualPageHeight / this.virtualCellHeight) * (this.preloadPage + 1);
 			virtualBottomRangeIndex = Math.min(this.realTotalData.length, virtualBottomRangeIndex);
 			this.virtualBottomRangeIndex = virtualBottomRangeIndex;
 			this.virtualPlaceholderBottomHeight = (this.realTotalData.length - virtualBottomRangeIndex) * this.virtualCellHeight;
-			this.virtualList = this.realTotalData.slice(this.virtualTopRangeIndex, this.virtualBottomRangeIndex + 1);
+			this._updateVirtualList();
 		},
-
+		//更新virtualList
+		_updateVirtualList() {
+			if (this.lastVirtualTopRangeIndex !== this.virtualTopRangeIndex || this.lastVirtualBottomRangeIndex !== this.virtualBottomRangeIndex) {
+				this.lastVirtualTopRangeIndex =  this.virtualTopRangeIndex;
+				this.lastVirtualBottomRangeIndex =  this.virtualBottomRangeIndex;
+				this.virtualList = this.realTotalData.slice(this.virtualTopRangeIndex, this.virtualBottomRangeIndex + 1);
+			}
+		},
+		//重置动态cell模式下的高度缓存数据、虚拟列表和滚动状态
+		_resetDynamicListState(){
+			this.virtualHeightCacheList = [];
+			this.virtualList = [];
+			this.virtualTopRangeIndex = 0;
+			this.virtualPlaceholderTopHeight = 0;
+		},
+		//重置topRangeIndex和placeholderTopHeight
+		_resetTopRange(){
+			console.log('_resetTopRange')
+			this.virtualTopRangeIndex = 0;
+			this.virtualPlaceholderTopHeight = 0;
+			this._updateVirtualList();
+		}
 	}
 }
 
