@@ -50,6 +50,7 @@
 			},
 			itemClick(item, index) {
 				console.log('点击了', item.title);
+				window.location.href = 'http://www.baidu.com'
 				this.dataList.splice(index,1)
 			}
 		}

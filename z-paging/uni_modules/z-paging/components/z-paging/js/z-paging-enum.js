@@ -26,6 +26,11 @@ const Enum = {
 		Reload: 1,
 		Refresh: 2,
 		LoadingMore: 3
+	},
+	//虚拟列表cell高度模式
+	CellHeightMode: {
+		Fixed: 'fixed',
+		Dynamic: 'dynamic'
 	}
 }
 

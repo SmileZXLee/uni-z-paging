@@ -17,7 +17,7 @@
 				<view class="item-content">
 					<text class="item-title">第{{item.title}}行</text>
 					<text style="color: red;margin-left: 10rpx;">虚拟列表展示</text>
-					<view class="item-detail">{{'详情信息详情信息详情信息详情信息详情信息详情信息详情信息：'+item.detail}}</view>
+					<view class="item-detail">{{item.detail}}</view>
 				</view>
 				<view class="item-line"></view>
 			</view>
@@ -62,7 +62,7 @@
 			},
 			itemClick(item, index) {
 				console.log('点击了', item.title);
-			}
+			},
 		}
 	}
 </script>

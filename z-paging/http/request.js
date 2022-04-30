@@ -9,11 +9,11 @@ function queryList(data) {
 
 function queryListLong(data) {
 	const listCount = 100000;
-	return _queryList(data, listCount);
+	return _queryList(data, listCount, true);
 }
 
-function _queryList(data,listCount) {
-	
+function _queryList(data, listCount, randomDetail = false) {
+
 	if (!data.pageNo || !data.pageSize) {
 		return callQueryResult([]);
 	}
@@ -36,10 +36,13 @@ function _queryList(data,listCount) {
 	}
 	var totalPagingList = [];
 	for (let i = 0; i < listCount; i++) {
-		var item = {
+		const item = {
 			'title': (i + 1).toString(),
 			'detail': '测试信息' + type
 		};
+		if (randomDetail) {
+			item.detail = getRandomNews();
+		}
 		totalPagingList.push(item);
 	}
 	let pageNoIndex = (pageNo - 1) * pageSize;
@@ -75,6 +78,19 @@ function _callQueryResult(arg) {
 		}, loadingTime)
 	})
 
+}
+
+function getRandomNews() {
+	const newses = [
+		'差不多3个小时的等待后，终于等来了警察。一辆警车，闪着警灯，在前头开道。高音喇叭响着，“大车司机不许下车，跟我走。”4月19日，烟台港。43岁的卡车司机张广忠和他的卡车，都要在这坐轮渡去大连。见到穿防护服的工作人员，他立马戴上口罩，抓起购票时给的封条，跳下驾驶室。',
+		'根据世卫组织最新实时统计数据，截至欧洲中部夏令时间4月29日17时47分（北京时间4月29日23时47分），全球累计新冠肺炎确诊病例510270667例，累计死亡病例6233526例。29日全球新冠肺炎确诊病例新增607159例，死亡病例新增2504例。（总台记者 朱赫）',
+		'神舟十三凯旋归来，神舟十四号正在进行紧锣密鼓地组装和测试。',
+		'话剧《简·爱》经典再启 朱杰濮存昕携手演绎',
+		'年初北京冬奥会，中国男冰首次参赛，虽没能拿到一场胜利，但小伙子们打出了可贵的精神。两周前，以征战冬奥会为班底的中国男冰在意大利集结，备战世锦赛乙级A组比赛。今年的乙级A组比赛在克罗地亚萨格勒布进行，与中国男冰同组的有以色列、荷兰、克罗地亚和西班牙队。从乙级A组这几支队伍水平来看，世界排名第27位的中国队实力占优。前两轮比赛，中国队先是14比1大胜以色列队，随后5比1战胜同组实力最强的荷兰队。连胜两场后，叶劲光、郑恩来、福帅等中国队员均表示，要再接再厉提前完成升组任务。',
+		'国物流与采购联合会、国家统计局服务业调查中心今天（4月30日）发布，4月份中国制造业采购经理指数（PMI）为47.4%，较上月下降2.1个百分点。',
+		'德国化工巨头巴斯夫官网4月29日消息，2022年一季度，公司实现销售额230.83亿欧元（折合人民币1602.58亿元，下同），同比增长19%；不计特殊项目的息税前收益达28.18亿欧元（195.65亿元），同比增长21.4%；净收益12.21亿欧元（84.77亿元），同比下滑28.9%。'
+	]
+	return newses[Math.floor(Math.random() * newses.length)];
 }
 
 
