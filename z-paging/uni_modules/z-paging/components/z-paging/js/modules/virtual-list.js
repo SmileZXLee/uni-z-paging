@@ -49,13 +49,12 @@ const ZPVirtualList = {
 			virtualCellHeight: 0,
 			virtualScrollTimeStamp: 0,
 			
+			virtualList: [],
 			virtualPlaceholderTopHeight: 0,
 			virtualPlaceholderBottomHeight: 0,
 			virtualTopRangeIndex: 0,
 			virtualBottomRangeIndex: 0,
 			
-			
-			virtualList: [],
 			virtualHeightCacheList: [],
 		}
 	},

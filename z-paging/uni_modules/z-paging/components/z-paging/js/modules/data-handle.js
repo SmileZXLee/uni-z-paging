@@ -136,6 +136,7 @@ const ZPData = {
 			loaded: false,
 			isUserReload: true,
 			fromEmptyViewReload: false,
+			listRendering: false
 		}
 	},
 	computed: {
@@ -568,6 +569,10 @@ const ZPData = {
 		//当前数据改变时调用
 		_currentDataChange(newVal, oldVal) {
 			newVal = [...newVal];
+			this.listRendering = true;
+			this.$nextTick(() => {
+				this.listRendering = false;
+			})
 			// #ifndef APP-NVUE
 			if (this.finalUseVirtualList) {
 				this._setCellIndex(newVal);
