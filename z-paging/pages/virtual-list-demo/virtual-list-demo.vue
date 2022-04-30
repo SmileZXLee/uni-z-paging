@@ -16,12 +16,25 @@
 			<view slot="cell" slot-scope="{item,index}" class="item" @click="itemClick(item,index)">
 				<image class="item-image" mode="aspectFit" src="@/static/boji1.png"></image>
 				<view class="item-content">
-					<text class="item-title">第{{item.title}}行</text>
+					<text class="item-title">第{{index}}行</text>
 					<text style="color: red;margin-left: 10rpx;">虚拟列表展示</text>
 					<view class="item-detail">{{item.detail}}</view>
 				</view>
 				<view class="item-line"></view>
 			</view>
+			
+			<!-- vue3中写法如下 -->
+			<!-- <template v-slot:cell="{item,index}">
+				<view class="item" @click="itemClick(item,index)">
+					<image class="item-image" mode="aspectFit" src="@/static/boji1.png"></image>
+					<view class="item-content">
+						<text class="item-title">第{{item.title}}行</text>
+						<text style="color: red;margin-left: 10rpx;">虚拟列表展示</text>
+						<view class="item-detail">{{item.detail}}</view>
+					</view>
+					<view class="item-line"></view>
+				</view>
+			</template> -->
 			
 		</z-paging>
 	</view>
