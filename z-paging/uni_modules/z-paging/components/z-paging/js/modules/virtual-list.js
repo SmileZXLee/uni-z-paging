@@ -91,15 +91,11 @@ const ZPVirtualList = {
 		//初始化虚拟列表
 		_virtualListInit() {
 			this.$nextTick(() => {
-				if (!this.usePageScroll) {
-					this._getNodeClientRect('.zp-scroll-view').then(node => {
-						if (node && node.length) {
-							this.virtualPageHeight = node[0].height;
-						}
-					});
-				} else {
-					this.virtualPageHeight = this.windowHeight;
-				}
+				this._getNodeClientRect('.zp-scroll-view').then(node => {
+					if (node && node.length) {
+						this.virtualPageHeight = node[0].height;
+					}
+				});
 			})
 		},
 		//cellHeightMode为fixed时获取第一个cell高度
@@ -110,7 +106,7 @@ const ZPVirtualList = {
 						this.virtualCellHeight = node && node.length ? node[0].height : 0;
 						this._updateVirtualScroll(this.oldScrollTop);
 					});
-				}, 500);
+				}, 50);
 			})
 		},
 		//cellHeightMode为dynamic时获取每个cell高度
@@ -272,7 +268,6 @@ const ZPVirtualList = {
 		},
 		//重置topRangeIndex和placeholderTopHeight
 		_resetTopRange(){
-			console.log('_resetTopRange')
 			this.virtualTopRangeIndex = 0;
 			this.virtualPlaceholderTopHeight = 0;
 			this._updateVirtualList();
