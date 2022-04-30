@@ -34,12 +34,12 @@ const ZPVirtualList = {
 		//虚拟列表cell高度模式，默认为fixed，也就是每个cell高度完全相同，将以第一个cell高度为准进行计算。可选值【dynamic】，即代表高度是动态非固定的，【dynamic】性能低于【fixed】。
 		cellHeightMode: {
 			type: String,
-			default: u.gc('cellHeight', 'dynamic')
+			default: u.gc('cellHeightMode', 'fixed')
 		},
 		//虚拟列表scroll取样帧率，默认为60，过高可能出现卡顿等问题
 		virtualScrollFps: {
 			type: [Number, String],
-			default: u.gc('refresherFps', 60)
+			default: u.gc('virtualScrollFps', 60)
 		},
 	},
 	data() {
