@@ -1,7 +1,7 @@
 <!-- 虚拟列表演示(vue) -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" use-virtual-list @query="queryList" :default-page-size="100">
+		<z-paging ref="paging" use-virtual-list @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
