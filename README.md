@@ -31,7 +31,7 @@
 ### 更新日志
 * [点击查看更新日志](https://ext.dcloud.net.cn/plugin?id=3935&update_log)
 
-## 谢谢支持
+## 感谢支持
 
 [![Stargazers repo roster for @weilanwl/coloruiBeta](https://reporoster.com/stars/SmileZXLee/uni-z-paging)](https://github.com/SmileZXLee/uni-z-paging/stargazers)
 
