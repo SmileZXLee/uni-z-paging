@@ -234,7 +234,6 @@ const ZPVirtualList = {
 				}
 				this._updateVirtualList();
 			}
-			
 		},
 		//更新fixedCell模式下topRangeIndex&placeholderTopHeight
 		_updateFixedTopRangeIndex(scrollIndex) {

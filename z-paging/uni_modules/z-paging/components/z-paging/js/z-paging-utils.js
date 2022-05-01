@@ -183,6 +183,7 @@ function getInstanceId() {
 }
 
 //------------------ 私有方法 ------------------------
+//时间格式化
 function _timeFormat(time) {
 	const date = new Date(time);
 	const currentDate = new Date();
@@ -201,6 +202,7 @@ function _timeFormat(time) {
 	return `${dayStr} ${timeStr}`;
 }
 
+//date格式化为年月日
 function _dateDayFormat(date, showYear = true) {
 	const year = date.getFullYear();
 	const month = date.getMonth() + 1;
@@ -212,12 +214,14 @@ function _dateDayFormat(date, showYear = true) {
 	}
 }
 
+//data格式化为时分
 function _dateTimeFormat(date) {
 	const hour = date.getHours();
 	const minute = date.getMinutes();
 	return `${_fullZeroToTwo(hour)}:${_fullZeroToTwo(minute)}`;
 }
 
+//不满2位在前面填充0
 function _fullZeroToTwo(str) {
 	str = str.toString();
 	if (str.length === 1) return '0' + str;
