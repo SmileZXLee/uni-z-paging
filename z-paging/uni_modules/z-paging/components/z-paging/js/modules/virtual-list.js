@@ -1,4 +1,4 @@
-// [z-paging]虚拟列表实现模块（todo）
+// [z-paging]虚拟列表实现模块
 import u from '.././z-paging-utils'
 import c from '.././z-paging-constant'
 import Enum from '.././z-paging-enum'
@@ -106,7 +106,7 @@ const ZPVirtualList = {
 						this.virtualCellHeight = node && node.length ? node[0].height : 0;
 						this._updateVirtualScroll(this.oldScrollTop);
 					});
-				}, 50);
+				}, 100);
 			})
 		},
 		//cellHeightMode为dynamic时获取每个cell高度
@@ -129,7 +129,7 @@ const ZPVirtualList = {
 						});
 					}
 					this._updateVirtualScroll(this.oldScrollTop);
-				}, 50)
+				}, 100)
 			})
 		},
 		//设置cellItem的index
@@ -189,9 +189,8 @@ const ZPVirtualList = {
 				if (heightCacheList.length) {
 					lastHeightCache = heightCacheList.slice(-1)[0];
 				}
-				let startTopRangeIndex = 0;
+				let startTopRangeIndex = this.virtualTopRangeIndex;
 				if(scrollDirection === 'bottom'){
-					startTopRangeIndex = this.virtualTopRangeIndex;
 					for (let i = startTopRangeIndex; i < heightCacheList.length;i++){
 						const heightCacheItem = heightCacheList[i];
 						if(heightCacheItem && heightCacheItem.totalHeight > topRangePageOffset){
@@ -202,23 +201,20 @@ const ZPVirtualList = {
 					}
 				} else {
 					let topRangeMatched = false;
-					startTopRangeIndex = Math.max(0,this.virtualTopRangeIndex - 2);
 					for (let i = startTopRangeIndex; i >= 0;i--){
 						const heightCacheItem = heightCacheList[i];
-						if(heightCacheItem.totalHeight < topRangePageOffset){
+						if(heightCacheItem && heightCacheItem.totalHeight < topRangePageOffset){
 							this.virtualTopRangeIndex = i;
 							this.virtualPlaceholderTopHeight = heightCacheItem.lastHeight;
 							topRangeMatched = true;
 							break;
 						}
 					}
-					if (!topRangeMatched) {
-						this._resetTopRange();
-					}
+					!topRangeMatched && this._resetTopRange();
 				}
 				for (let i = this.virtualTopRangeIndex; i < heightCacheList.length;i++){
 					const heightCacheItem = heightCacheList[i];
-					if(heightCacheItem.totalHeight > bottomRangePageOffset){
+					if(heightCacheItem && heightCacheItem.totalHeight > bottomRangePageOffset){
 						virtualBottomRangeIndex = i;
 						virtualPlaceholderBottomHeight = lastHeightCache.totalHeight - heightCacheItem.totalHeight;
 						reachedLimitBottom = true;
