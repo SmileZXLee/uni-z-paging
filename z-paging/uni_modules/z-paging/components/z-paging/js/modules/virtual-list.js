@@ -64,8 +64,8 @@ const ZPVirtualList = {
 		realTotalData(newVal) {
 			// #ifndef APP-NVUE
 			this.$nextTick(() => {
-				if(!newVal.length){
-					this._resetDynamicListState();
+				if (!newVal.length) {
+					this._resetDynamicListState(!this.isUserPullDown);
 				}
 				this.finalUseVirtualList && this.cellHeightMode === Enum.CellHeightMode.Fixed && this.isFirstPage && this._updateFixedCellHeight();
 				this.finalUseVirtualList && this._updateVirtualScroll(this.oldScrollTop);
@@ -144,7 +144,7 @@ const ZPVirtualList = {
 				if (lastItem && lastItem[c.listCellIndexKey] !== undefined) {
 					lastItemIndex = lastItem[c.listCellIndexKey] + 1;
 				}
-			} else {
+			} else {			
 				this._resetDynamicListState();
 			}
 			for (let i = 0; i < list.length; i++) {
@@ -194,7 +194,7 @@ const ZPVirtualList = {
 					startTopRangeIndex = this.virtualTopRangeIndex;
 					for (let i = startTopRangeIndex; i < heightCacheList.length;i++){
 						const heightCacheItem = heightCacheList[i];
-						if(heightCacheItem.totalHeight > topRangePageOffset){
+						if(heightCacheItem && heightCacheItem.totalHeight > topRangePageOffset){
 							this.virtualTopRangeIndex = i;
 							this.virtualPlaceholderTopHeight = heightCacheItem.lastHeight;
 							break;
@@ -260,9 +260,11 @@ const ZPVirtualList = {
 			}
 		},
 		//重置动态cell模式下的高度缓存数据、虚拟列表和滚动状态
-		_resetDynamicListState(){
+		_resetDynamicListState(resetVirtualList = false){
 			this.virtualHeightCacheList = [];
-			this.virtualList = [];
+			if (resetVirtualList) {
+				this.virtualList = [];
+			}
 			this.virtualTopRangeIndex = 0;
 			this.virtualPlaceholderTopHeight = 0;
 		},
