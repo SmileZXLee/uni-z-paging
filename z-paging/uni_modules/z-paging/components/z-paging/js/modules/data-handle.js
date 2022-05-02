@@ -571,7 +571,9 @@ const ZPData = {
 			newVal = [...newVal];
 			this.listRendering = true;
 			this.$nextTick(() => {
-				this.listRendering = false;
+				setTimeout(() => {
+					this.listRendering = false;
+				},10)
 			})
 			// #ifndef APP-NVUE
 			if (this.finalUseVirtualList) {

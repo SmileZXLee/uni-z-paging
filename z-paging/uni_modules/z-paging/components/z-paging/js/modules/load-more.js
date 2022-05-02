@@ -141,7 +141,8 @@ const ZPLoadMore = {
 				defaultText: this.finalLoadingMoreDefaultText,
 				loadingText: this.finalLoadingMoreLoadingText,
 				noMoreText: this.finalLoadingMoreNoMoreText,
-				failText: this.finalLoadingMoreFailText
+				failText: this.finalLoadingMoreFailText,
+				hideContent: this.listRendering
 			};
 		},
 		finalLoadingMoreThemeStyle() {
@@ -302,7 +303,6 @@ const ZPLoadMore = {
 		},
 		//是否要展示上拉加载更多view
 		_showLoadingMore(type) {
-			if (this.isFirstPage && this.listRendering) return false;
 			if (!(this.loadingStatus === Enum.More.Default ? this.nShowBottom : true)) return false;
 			if (((!this.showLoadingMoreWhenReload || this.isUserPullDown || this.loadingStatus !== Enum.More.Loading) && !this.showLoadingMore) || 
 			(!this.loadingMoreEnabled && (!this.showLoadingMoreWhenReload || this.isUserPullDown || this.loadingStatus !== Enum.More.Loading)) || 

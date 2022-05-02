@@ -2,23 +2,25 @@
 
 <template>
 	<view class="zp-l-container" :style="[zConfig.customStyle]">
-		<text v-if="zConfig.showNoMoreLine&&finalStatus===2" :class="zConfig.defaultThemeStyle==='white'?'zp-l-line zp-l-line-white':'zp-l-line zp-l-line-black'"
-			:style="[zConfig.noMoreLineCustomStyle]" />
-		<!-- #ifndef APP-NVUE -->
-		<image v-if="finalStatus===1&&zConfig.loadingIconCustomImage.length"
-			:src="zConfig.loadingIconCustomImage" :class="{'zp-l-line-loading-custom-image':true,'zp-l-line-loading-custom-image-animated':zConfig.loadingAnimated}" />
-		<image v-if="finalStatus===1&&zConfig.loadingIconType==='flower'&&!zConfig.loadingIconCustomImage.length"
-			class="zp-line-loading-image" :style="[zConfig.iconCustomStyle]" :src="zConfig.defaultThemeStyle==='white'?base64FlowerWhite:base64Flower" />
-		<!-- #endif -->
-		<!-- #ifdef APP-NVUE -->
-		<view>
-			<loading-indicator v-if="finalStatus===1" class="zp-line-loading-image" :style="[{color:zConfig.defaultThemeStyle==='white'?'white':'#777777'}]" animating />
-		</view>
-		<!-- #endif -->
-		<text v-if="finalStatus===1&&zConfig.loadingIconType==='circle'&&!zConfig.loadingIconCustomImage.length"
-			:class="zConfig.defaultThemeStyle==='white'?'zp-l-line-loading-view zp-l-line-loading-view-white':'zp-l-line-loading-view zp-l-line-loading-view-black'" :style="[zConfig.iconCustomStyle]" />
-		<text :class="zConfig.defaultThemeStyle==='white'?'zp-l-text zp-l-text-white':'zp-l-text zp-l-text-black'" :style="[zConfig.titleCustomStyle]">{{ownLoadingMoreText}}</text>
-		<text v-if="zConfig.showNoMoreLine&&finalStatus===2" :class="zConfig.defaultThemeStyle==='white'?'zp-l-line zp-l-line-white':'zp-l-line zp-l-line-black'" :style="[zConfig.noMoreLineCustomStyle]" />
+		<template v-if="!zConfig.hideContent">
+			<text v-if="zConfig.showNoMoreLine&&finalStatus===2" :class="zConfig.defaultThemeStyle==='white'?'zp-l-line zp-l-line-white':'zp-l-line zp-l-line-black'"
+				:style="[zConfig.noMoreLineCustomStyle]" />
+			<!-- #ifndef APP-NVUE -->
+			<image v-if="finalStatus===1&&zConfig.loadingIconCustomImage.length"
+				:src="zConfig.loadingIconCustomImage" :class="{'zp-l-line-loading-custom-image':true,'zp-l-line-loading-custom-image-animated':zConfig.loadingAnimated}" />
+			<image v-if="finalStatus===1&&zConfig.loadingIconType==='flower'&&!zConfig.loadingIconCustomImage.length"
+				class="zp-line-loading-image" :style="[zConfig.iconCustomStyle]" :src="zConfig.defaultThemeStyle==='white'?base64FlowerWhite:base64Flower" />
+			<!-- #endif -->
+			<!-- #ifdef APP-NVUE -->
+			<view>
+				<loading-indicator v-if="finalStatus===1" class="zp-line-loading-image" :style="[{color:zConfig.defaultThemeStyle==='white'?'white':'#777777'}]" animating />
+			</view>
+			<!-- #endif -->
+			<text v-if="finalStatus===1&&zConfig.loadingIconType==='circle'&&!zConfig.loadingIconCustomImage.length"
+				:class="zConfig.defaultThemeStyle==='white'?'zp-l-line-loading-view zp-l-line-loading-view-white':'zp-l-line-loading-view zp-l-line-loading-view-black'" :style="[zConfig.iconCustomStyle]" />
+			<text :class="zConfig.defaultThemeStyle==='white'?'zp-l-text zp-l-text-white':'zp-l-text zp-l-text-black'" :style="[zConfig.titleCustomStyle]">{{ownLoadingMoreText}}</text>
+			<text v-if="zConfig.showNoMoreLine&&finalStatus===2" :class="zConfig.defaultThemeStyle==='white'?'zp-l-line zp-l-line-white':'zp-l-line zp-l-line-black'" :style="[zConfig.noMoreLineCustomStyle]" />
+		</template>
 	</view>
 </template>
 <script>
