@@ -142,7 +142,7 @@ const ZPLoadMore = {
 				loadingText: this.finalLoadingMoreLoadingText,
 				noMoreText: this.finalLoadingMoreNoMoreText,
 				failText: this.finalLoadingMoreFailText,
-				hideContent: this.listRendering
+				hideContent: !this.loadingMoreDefaultAsLoading && this.listRendering
 			};
 		},
 		finalLoadingMoreThemeStyle() {
