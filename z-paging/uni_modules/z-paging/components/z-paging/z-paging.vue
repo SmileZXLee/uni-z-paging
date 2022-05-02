@@ -89,24 +89,24 @@ by ZXLee
 								<!-- 主体内容 -->
 								<view class="zp-paging-container-content" :style="[{transform:virtualPlaceholderTopHeight>0?`translateY(${virtualPlaceholderTopHeight}px)`:'none'},finalPagingContentStyle]">
 									<slot />
-									<!-- 内置列表&虚拟列表 -->
-									<template v-if="finalUseVirtualList||useInnerList">
+									<!-- 内置列表 -->
+									<template v-if="useInnerList">
 										<slot name="header"/>
 										<view class="zp-list-container" :style="[{innerListStyle}]">
 											<template v-if="finalUseVirtualList">
-												<view class="zp-list-cell" :id="`z-paging-cell-id-${item['z_paging_cell_index']}`" v-for="(item,index) in virtualList" :key="item['z_paging_cell_unique_index']">
+												<view class="zp-list-cell" :id="`zp-${item['zp_index']}`" v-for="(item,index) in virtualList" :key="item['zp_unique_index']">
 													<slot name="cell" :item="item" :index="virtualTopRangeIndex+index"/>
 												</view>
 											</template>
-											<template v-if="useInnerList">
+											<template v-else>
 												<view class="zp-list-cell" v-for="(item,index) in realTotalData" :key="index">
 													<slot name="cell" :item="item" :index="index"/>
 												</view>
 											</template>
 										</view>
 										<slot name="footer"/>
-										<view class="zp-virtual-placeholder" :style="[{height:virtualPlaceholderBottomHeight+'px'}]"/>
 									</template>
+									<view v-if="useVirtualList" class="zp-virtual-placeholder" :style="[{height:virtualPlaceholderBottomHeight+'px'}]"/>
 									<!-- 上拉加载更多view -->
 									<!-- #ifndef MP-ALIPAY -->
 									<slot v-if="showLoadingMoreDefault" name="loadingMoreDefault" />

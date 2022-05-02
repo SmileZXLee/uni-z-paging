@@ -58,6 +58,11 @@ const ZPVirtualList = {
 			lastVirtualBottomRangeIndex: 0,
 			
 			virtualHeightCacheList: [],
+			
+			getCellHeightRetryCount: {
+				fixed: 0,
+				dynamic: 0
+			}
 		}
 	},
 	watch: {
@@ -71,6 +76,10 @@ const ZPVirtualList = {
 				this.finalUseVirtualList && this._updateVirtualScroll(this.oldScrollTop);
 			})
 			// #endif
+		},
+		virtualList(newVal){
+			this.$emit('update:virtualList', newVal);
+			this.$emit('virtualListChange', newVal);
 		}
 	},
 	computed: {
@@ -102,10 +111,15 @@ const ZPVirtualList = {
 		_updateFixedCellHeight() {
 			this.$nextTick(() => {
 				const updateFixedCellHeightTimeout = setTimeout(() => {
-					this._getNodeClientRect(`#z-paging-cell-id-${0}`).then(cellNode => {
+					this._getNodeClientRect(`#zp-${0}`,this.useInnerList).then(cellNode => {
 						const hasCellNode = cellNode && cellNode.length;
 						if (!hasCellNode) {
 							clearTimeout(updateFixedCellHeightTimeout);
+							if (this.getCellHeightRetryCount.fixed > 10) {
+								u.consoleErr('获取虚拟列表cell高度失败，可能是for循环cell处没有写:id="`zp-${item.zp_index}`"，请检查您的代码！')
+								return;
+							}
+							this.getCellHeightRetryCount.fixed++;
 							this._updateFixedCellHeight();
 						} else {
 							this.virtualCellHeight = cellNode[0].height;
@@ -121,12 +135,17 @@ const ZPVirtualList = {
 				const updateDynamicCellHeightTimeout =  setTimeout(async () => {
 					for (let i = 0; i < list.length; i++) {
 						let item = list[i];
-						const cellNode = await this._getNodeClientRect(`#z-paging-cell-id-${item[c.listCellIndexKey]}`);
+						const cellNode = await this._getNodeClientRect(`#zp-${item[c.listCellIndexKey]}`,this.useInnerList);
 						const hasCellNode = cellNode && cellNode.length;
 						const currentHeight = hasCellNode ? cellNode[0].height : 0;
 						if (!hasCellNode) {
 							clearTimeout(updateDynamicCellHeightTimeout);
 							this.virtualHeightCacheList = this.virtualHeightCacheList.slice(-i);
+							if (this.getCellHeightRetryCount.dynamic > 10) {
+								u.consoleErr('获取虚拟列表cell高度失败，可能是for循环cell处没有写:id="`zp-${item.zp_index}`"，请检查您的代码！')
+								return;
+							}
+							this.getCellHeightRetryCount.dynamic++;
 							this._updateDynamicCellHeight(list);
 							break;
 						}

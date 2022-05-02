@@ -8,7 +8,7 @@ function queryList(data) {
 }
 
 function queryListLong(data) {
-	const listCount = 100000;
+	const listCount = 100;
 	return _queryList(data, listCount, true, data.random);
 }
 

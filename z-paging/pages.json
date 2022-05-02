@@ -190,11 +190,20 @@
             "path" : "pages/virtual-list-demo/virtual-list-demo",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "虚拟列表演示",
+                "navigationBarTitleText": "虚拟列表演示(标准写法)",
                 "enablePullDownRefresh": false
             }
             
-        }
+        },
+		{
+		    "path" : "pages/virtual-list-simplify-demo/virtual-list-simplify-demo",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "虚拟列表演示(简化写法)",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

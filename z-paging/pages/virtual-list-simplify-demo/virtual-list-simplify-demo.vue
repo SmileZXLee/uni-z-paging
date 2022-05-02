@@ -1,26 +1,41 @@
-<!-- 虚拟列表演示(标准写法)(vue) -->
+<!-- 虚拟列表演示(简化写法)(vue) -->
+<!-- 请注意1：因字节跳动小程序不支持slot-scope，因此不支持字节跳动不支持use-inner-list使用简化写法 -->
+<!-- 请注意2：use-inner-list在微信小程序中部分较高版本调试库会报More than one slot named "cell" are found...的警告，请谨慎使用 -->
 <template>
 	<view class="content">
 		<!-- 如果页面中的cell高度是固定不变的，则不需要设置cell-height-mode，如果页面中高度是动态改变的，则设置cell-height-mode="dynamic" -->
-		<!-- 原先的v-model修改为:virtualList.sync以绑定处理后的虚拟列表 -->
-		<z-paging ref="paging" use-virtual-list :virtualList.sync="virtualList" :cell-height-mode="tabIndex===0?'fixed':'dynamic'" @query="queryList">
+		<z-paging ref="paging" use-virtual-list use-inner-list :cell-height-mode="tabIndex===0?'fixed':'dynamic'" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
-			<view slot="top">
+			<template slot="top">
 				<view class="header">列表总数据量：10万条</view>
 				<tabs-view @change="tabChange" :items="['cell高度固定','cell高度动态']"></tabs-view>
-			</view>
+			</template>
+			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内，放在所有cell上方的用slot="header"插入，放在所有cell下方的用slot="footer"插入 -->
 			
-			<!-- :id="`zp-${item.zp_index}`" 必须写，必须写！！！！ -->
-			<!-- 这里for循环的index不是数组中真实的index了，请使用item.zp_index获取真实的index -->
-			<view class="item" :id="`zp-${item.zp_index}`" :key="item.zp_index" v-for="(item,index) in virtualList" @click="itemClick(item,item.zp_index)">
+			<!-- 通过slot="cell"插入列表for循环的cell，slot-scope中提供当前for循环的item和index -->
+			<view slot="cell" slot-scope="{item,index}" class="item" @click="itemClick(item,index)">
 				<image class="item-image" mode="aspectFit" src="@/static/boji1.png"></image>
 				<view class="item-content">
-					<text class="item-title">第{{item.zp_index + 1}}行</text>
+					<text class="item-title">第{{index + 1}}行</text>
 					<text style="color: red;margin-left: 10rpx;">虚拟列表展示</text>
 					<view class="item-detail">{{item.detail}}</view>
 				</view>
 				<view class="item-line"></view>
 			</view>
+			
+			<!-- vue3中写法如下 -->
+			<!-- <template v-slot:cell="{item,index}">
+				<view class="item" @click="itemClick(item,index)">
+					<image class="item-image" mode="aspectFit" src="@/static/boji1.png"></image>
+					<view class="item-content">
+						<text class="item-title">第{{item.title}}行</text>
+						<text style="color: red;margin-left: 10rpx;">虚拟列表展示</text>
+						<view class="item-detail">{{item.detail}}</view>
+					</view>
+					<view class="item-line"></view>
+				</view>
+			</template> -->
+			
 		</z-paging>
 	</view>
 </template>
@@ -29,8 +44,6 @@
 	export default {
 		data() {
 			return {
-				//虚拟列表数组，请使用:virtualList.sync绑定而非v-model绑定
-				virtualList: [],
 				tabIndex: 0
 			}
 		},
