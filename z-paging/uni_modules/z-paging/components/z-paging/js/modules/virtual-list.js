@@ -101,10 +101,16 @@ const ZPVirtualList = {
 		//cellHeightMode为fixed时获取第一个cell高度
 		_updateFixedCellHeight() {
 			this.$nextTick(() => {
-				setTimeout(() => {
-					this._getNodeClientRect(`#z-paging-cell-id-${0}`).then(node => {
-						this.virtualCellHeight = node && node.length ? node[0].height : 0;
-						this._updateVirtualScroll(this.oldScrollTop);
+				const updateFixedCellHeightTimeout = setTimeout(() => {
+					this._getNodeClientRect(`#z-paging-cell-id-${0}`).then(cellNode => {
+						const hasCellNode = cellNode && cellNode.length;
+						if (!hasCellNode) {
+							clearTimeout(updateFixedCellHeightTimeout);
+							this._updateFixedCellHeight();
+						} else {
+							this.virtualCellHeight = cellNode[0].height;
+							this._updateVirtualScroll(this.oldScrollTop);
+						}
 					});
 				}, 100);
 			})
@@ -112,15 +118,22 @@ const ZPVirtualList = {
 		//cellHeightMode为dynamic时获取每个cell高度
 		_updateDynamicCellHeight(list) {
 			this.$nextTick(() => {
-				setTimeout(async () => {
+				const updateDynamicCellHeightTimeout =  setTimeout(async () => {
 					for (let i = 0; i < list.length; i++) {
 						let item = list[i];
 						const cellNode = await this._getNodeClientRect(`#z-paging-cell-id-${item[c.listCellIndexKey]}`);
+						const hasCellNode = cellNode && cellNode.length;
+						const currentHeight = hasCellNode ? cellNode[0].height : 0;
+						if (!hasCellNode) {
+							clearTimeout(updateDynamicCellHeightTimeout);
+							this.virtualHeightCacheList = this.virtualHeightCacheList.slice(-i);
+							this._updateDynamicCellHeight(list);
+							break;
+						}
 						let lastHeightCache = null;
 						if (this.virtualHeightCacheList.length) {
 							lastHeightCache = this.virtualHeightCacheList.slice(-1)[0];
 						}
-						const currentHeight = cellNode && cellNode.length ? cellNode[0].height : 0;
 						const lastHeight = lastHeightCache ? lastHeightCache.totalHeight : 0;
 						this.virtualHeightCacheList.push({
 							height: currentHeight,
