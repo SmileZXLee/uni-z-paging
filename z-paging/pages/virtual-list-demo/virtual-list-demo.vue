@@ -1,6 +1,6 @@
 <!-- 虚拟列表演示(简化写法)(vue) -->
 <!-- 请注意1：因字节跳动小程序不支持slot-scope，因此不支持字节跳动不支持use-inner-list使用简化写法 -->
-<!-- 请注意2：use-inner-list在微信小程序中部分较高版本调试库会报More than one slot named "cell" are found...的警告并导致开发者工具卡顿，将基础库版本调到2.18.0以下即可 -->
+<!-- 请注意2：use-inner-list在微信小程序中部分较高版本调试库会报More than one slot named "cell" are found...的警告并导致开发者工具卡顿，将基础库版本调到2.18.0以下即可。因线上没有控制台打印，因此不会影响线上版本。 -->
 <template>
 	<view class="content">
 		<!-- 如果页面中的cell高度是固定不变的，则不需要设置cell-height-mode，如果页面中高度是动态改变的，则设置cell-height-mode="dynamic" -->

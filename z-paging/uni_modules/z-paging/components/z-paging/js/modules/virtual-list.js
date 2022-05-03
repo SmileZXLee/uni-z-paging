@@ -1,4 +1,4 @@
-// [z-paging]虚拟列表实现模块
+// [z-paging]虚拟列表模块
 import u from '.././z-paging-utils'
 import c from '.././z-paging-constant'
 import Enum from '.././z-paging-enum'
@@ -78,13 +78,15 @@ const ZPVirtualList = {
 	watch: {
 		realTotalData(newVal) {
 			// #ifndef APP-NVUE
-			this.$nextTick(() => {
-				if (!newVal.length) {
-					this._resetDynamicListState(!this.isUserPullDown);
-				}
-				this.finalUseVirtualList && this.cellHeightMode === Enum.CellHeightMode.Fixed && this.isFirstPage && this._updateFixedCellHeight();
-				this.finalUseVirtualList && this._updateVirtualScroll(this.oldScrollTop);
-			})
+			if (this.finalUseVirtualList) {
+				this.$nextTick(() => {
+					if (!newVal.length) {
+						this._resetDynamicListState(!this.isUserPullDown);
+					}
+					this.finalUseVirtualList && this.cellHeightMode === Enum.CellHeightMode.Fixed && this.isFirstPage && this._updateFixedCellHeight();
+					this.finalUseVirtualList && this._updateVirtualScroll(this.oldScrollTop);
+				})
+			}
 			// #endif
 		},
 		virtualList(newVal){
