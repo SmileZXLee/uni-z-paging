@@ -55,14 +55,9 @@
 						subTitle: ''
 					},
 					{
-						title: '虚拟列表演示(标准写法)',
+						title: '虚拟列表演示',
 						file: 'virtual-list-demo',
 						subTitle: ''
-					},
-					{
-						title: '虚拟列表演示(简化写法)',
-						file: 'virtual-list-simplify-demo',
-						subTitle: '通过配置use-inner-list启用内置列表简化虚拟列表配置流程，普通列表简化v-for书写也可参照此示例'
 					},
 					{
 						title: '滚动吸附效果演示',
