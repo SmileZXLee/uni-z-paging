@@ -3,7 +3,7 @@
 	<view class="content">
 		<!-- 如果页面中的cell高度是固定不变的，则不需要设置cell-height-mode，如果页面中高度是动态改变的，则设置cell-height-mode="dynamic" -->
 		<!-- 原先的v-model修改为:virtualList.sync以绑定处理后的虚拟列表 -->
-		<z-paging ref="paging" use-virtual-list :virtualList.sync="virtualList" :cell-height-mode="tabIndex===0?'fixed':'dynamic'" @query="queryList">
+		<z-paging ref="paging" use-virtual-list :use-inner-list="false" :virtualList.sync="virtualList" :cell-height-mode="tabIndex===0?'fixed':'dynamic'" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<view slot="top">
 				<view class="header">列表总数据量：10万条</view>
@@ -15,7 +15,7 @@
 			<view class="item" :id="`zp-${item.zp_index}`" :key="item.zp_index" v-for="(item,index) in virtualList" @click="itemClick(item,item.zp_index)">
 				<image class="item-image" mode="aspectFit" src="@/static/boji1.png"></image>
 				<view class="item-content">
-					<text class="item-title">第{{item.zp_index + 1}}行</text>
+					<text class="item-title">第{{item.title}}行</text>
 					<text style="color: red;margin-left: 10rpx;">虚拟列表展示</text>
 					<view class="item-detail">{{item.detail}}</view>
 				</view>

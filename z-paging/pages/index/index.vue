@@ -117,7 +117,12 @@
 					{
 						title: '极简写法演示',
 						file: 'minimalism-demo',
-						subTitle: ''
+						subTitle: '此写法可省略重复的v-model和@query'
+					},
+					{
+						title: '内置列表模式演示',
+						file: 'inner-list-demo',
+						subTitle: '使用内置for循环渲染list，无需书写v-for，也无需v-model绑定list(不支持字节跳动小程序)'
 					}
 				],
 				listNvue: [{
@@ -158,6 +163,10 @@
 						title: '滑动切换选项卡+吸顶演示(nvue)',
 						file: 'sticky-swiper-demo-n',
 						subTitle: ''
+					},{
+						title: '内置列表模式演示(nvue)',
+						file: 'inner-list-demo-n',
+						subTitle: '使用内置for循环渲染list，无需书写v-for，也无需v-model绑定list'
 					}
 				]
 			}

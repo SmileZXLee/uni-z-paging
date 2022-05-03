@@ -204,6 +204,24 @@
 		    }
 		    
 		}
+        ,{
+            "path" : "pages/inner-list-demo/inner-list-demo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "内置列表模式演示",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/inner-list-demo-n/inner-list-demo-n",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "内置列表模式演示(nvue)",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

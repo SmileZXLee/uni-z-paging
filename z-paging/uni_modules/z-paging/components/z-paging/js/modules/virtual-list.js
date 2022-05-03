@@ -10,10 +10,20 @@ const ZPVirtualList = {
 			type: Boolean,
 			default: u.gc('useVirtualList', false)
 		},
-		//是否在z-paging内部循环渲染列表，默认为否。若use-virtual-list为true，则此项恒为true
+		//是否在z-paging内部循环渲染列表(内置列表)，默认为否。若use-virtual-list为true，则此项恒为true
 		useInnerList: {
 			type: Boolean,
 			default: u.gc('useInnerList', false)
+		},
+		//强制关闭inner-list，默认为false，如果为true将强制关闭innerList，适用于开启了虚拟列表后需要强制关闭inner-list的情况
+		forceCloseInnerList: {
+			type: Boolean,
+			default: u.gc('forceCloseInnerList', false)
+		},
+		//内置列表cell的key名称，仅nvue有效，在nvue中开启use-virtual-list时必须填此项
+		cellKeyName: {
+			type: String,
+			default: u.gc('cellKeyName', '')
 		},
 		//innerList样式
 		innerListStyle: {
@@ -80,6 +90,9 @@ const ZPVirtualList = {
 		virtualList(newVal){
 			this.$emit('update:virtualList', newVal);
 			this.$emit('virtualListChange', newVal);
+		},
+		virtualTopRangeIndex(newVal){
+			console.log('virtualTopRangeIndex',newVal)
 		}
 	},
 	computed: {
@@ -88,6 +101,19 @@ const ZPVirtualList = {
 				u.consoleErr('使用页面滚动时，开启虚拟列表无效！');
 			}
 			return this.useVirtualList && !this.usePageScroll;
+		},
+		finalUseInnerList() {
+			return this.useInnerList || (this.finalUseVirtualList && !this.forceCloseInnerList)
+		},
+		finalCellKeyName() {
+			// #ifdef APP-NVUE
+			if (this.finalUseVirtualList){
+				if (!this.cellKeyName.length){
+					u.consoleErr('在nvue中开启use-virtual-list必须设置cell-key-name，否则将可能导致列表渲染错误！');
+				}
+			}
+			// #endif
+			return this.cellKeyName;
 		},
 		virtualRangePageHeight(){
 			return this.virtualPageHeight * this.preloadPage;
@@ -111,7 +137,7 @@ const ZPVirtualList = {
 		_updateFixedCellHeight() {
 			this.$nextTick(() => {
 				const updateFixedCellHeightTimeout = setTimeout(() => {
-					this._getNodeClientRect(`#zp-${0}`,this.useInnerList).then(cellNode => {
+					this._getNodeClientRect(`#zp-${0}`,this.finalUseInnerList).then(cellNode => {
 						const hasCellNode = cellNode && cellNode.length;
 						if (!hasCellNode) {
 							clearTimeout(updateFixedCellHeightTimeout);
@@ -135,7 +161,7 @@ const ZPVirtualList = {
 				const updateDynamicCellHeightTimeout =  setTimeout(async () => {
 					for (let i = 0; i < list.length; i++) {
 						let item = list[i];
-						const cellNode = await this._getNodeClientRect(`#zp-${item[c.listCellIndexKey]}`,this.useInnerList);
+						const cellNode = await this._getNodeClientRect(`#zp-${item[c.listCellIndexKey]}`,this.finalUseInnerList);
 						const hasCellNode = cellNode && cellNode.length;
 						const currentHeight = hasCellNode ? cellNode[0].height : 0;
 						if (!hasCellNode) {

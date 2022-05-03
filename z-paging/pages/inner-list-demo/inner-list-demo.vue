@@ -1,11 +1,12 @@
-<!-- 普通模式演示(vue) -->
+<!-- 内置列表模式演示(vue) -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" v-model="dataList" @query="queryList">
+		<z-paging ref="paging" use-inner-list @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
-			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
-			<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item,index)">
+			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内，放在所有cell上方的用slot="header"插入，放在所有cell下方的用slot="footer"插入 -->
+			<!-- 通过slot="cell"插入列表for循环的cell，slot-scope中提供当前for循环的item和index -->
+			<view class="item" slot="cell" slot-scope="{item,index}" @click="itemClick(item,index)">
 				<view class="item-title">{{item.title}}</view>
 				<view class="item-detail">{{item.detail}}</view>
 				<view class="item-line"></view>
@@ -18,8 +19,6 @@
 	export default {
 		data() {
 			return {
-				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
-				dataList: [],
 				tabIndex: 0
 			}
 		},

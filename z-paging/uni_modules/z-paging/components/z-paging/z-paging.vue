@@ -89,8 +89,8 @@ by ZXLee
 								<!-- 主体内容 -->
 								<view class="zp-paging-container-content" :style="[{transform:virtualPlaceholderTopHeight>0?`translateY(${virtualPlaceholderTopHeight}px)`:'none'},finalPagingContentStyle]">
 									<slot />
-									<!-- 内置列表 -->
-									<template v-if="useInnerList">
+									<!-- 内置列表&虚拟列表 -->
+									<template v-if="finalUseInnerList">
 										<slot name="header"/>
 										<view class="zp-list-container" :style="[{innerListStyle}]">
 											<template v-if="finalUseVirtualList">
@@ -192,7 +192,20 @@ by ZXLee
 						:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey"
 						:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle" />
 				</view>
-				<slot />
+				<template v-if="finalUseInnerList">
+					<view :is="nViewIs">
+						<slot name="header"/>
+					</view>	
+					<view class="zp-list-cell" :is="nViewIs" v-for="(item,index) in realTotalData" :key="finalCellKeyName.length?item[finalCellKeyName]:index">
+						<slot name="cell" :item="item" :index="index"/>
+					</view>
+					<view :is="nViewIs">
+						<slot name="footer"/>
+					</view>	
+				</template>
+				<template v-else>
+					<slot />
+				</template>
 				<!-- 全屏Loading -->
 				<view :class="{'z-paging-content-fixed':usePageScroll}" style="flex: 1;" :style="[useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="$slots.loading&&showLoading&&!loadingFullFixed" :is="nViewIs">
 					<slot name="loading" />
