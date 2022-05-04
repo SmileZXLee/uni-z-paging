@@ -20,7 +20,7 @@ const ZPVirtualList = {
 			type: Boolean,
 			default: u.gc('forceCloseInnerList', false)
 		},
-		//内置列表cell的key名称，仅nvue有效，在nvue中开启use-virtual-list时必须填此项
+		//内置列表cell的key名称，仅nvue有效，在nvue中开启use-inner-list时必须填此项
 		cellKeyName: {
 			type: String,
 			default: u.gc('cellKeyName', '')
