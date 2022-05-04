@@ -134,50 +134,6 @@ const ZPVirtualList = {
 					}
 				});
 			})
-			// #ifdef APP-PLUS
-			const _this = this;
-			plus.globalEvent.addEventListener('trimmemory', function(){
-				setTimeout(()=>{
-					uni.showToast({
-						title: '恢复了！！！！',
-						duration: 2000
-					});
-				},2000)
-				this.finalUseVirtualList && _this._updateVirtualScroll(0);
-			});
-			plus.globalEvent.addEventListener('recovery', function(){
-				setTimeout(()=>{
-					uni.showToast({
-						title: '恢复了22！！！！',
-						duration: 2000
-					});
-				},2000)
-				this.finalUseVirtualList && _this._updateVirtualScroll(0);
-			});
-			plus.globalEvent.addEventListener('resume', (e) => {  
-				if(plus.runtime.isRecovery){
-					setTimeout(()=>{
-						uni.showToast({
-							title: '恢复了222！！！！',
-							duration: 2000
-						});
-					},2000)
-				}
-				if (this.finalUseVirtualList) {
-					this._getNodeClientRect('.zp-paging-touch-view').then(node => {
-						const hasNode = node && node.length;
-						const currentTop = hasNode ? node[0].top : 0;
-						console.log('currentTop',currentTop)
-						if (!hasNode || (currentTop === this.pagingOrgTop && this.virtualPlaceholderTopHeight !== 0)){
-							console.log('重置！！！')
-							this.virtualTopRangeIndex = 0;
-							this.virtualPlaceholderTopHeight = 0;
-						}
-					});
-				}
-			});
-			
-			// #endif
 		},
 		//cellHeightMode为fixed时获取第一个cell高度
 		_updateFixedCellHeight() {
@@ -360,7 +316,7 @@ const ZPVirtualList = {
 			}
 		},
 		//重置动态cell模式下的高度缓存数据、虚拟列表和滚动状态
-		_resetDynamicListState(resetVirtualList = false){
+		_resetDynamicListState(resetVirtualList = false) {
 			this.virtualHeightCacheList = [];
 			if (resetVirtualList) {
 				this.virtualList = [];
@@ -369,10 +325,22 @@ const ZPVirtualList = {
 			this.virtualPlaceholderTopHeight = 0;
 		},
 		//重置topRangeIndex和placeholderTopHeight
-		_resetTopRange(){
+		_resetTopRange() {
 			this.virtualTopRangeIndex = 0;
 			this.virtualPlaceholderTopHeight = 0;
 			this._updateVirtualList();
+		},
+		//检测虚拟列表当前滚动位置，如发现滚动位置不正确则重新计算虚拟列表相关参数(为解决在App中可能出现的长时间进入后台后打开App白屏的问题)
+		_checkVirtualListScroll() {
+			this.$nextTick(() => {
+				this._getNodeClientRect('.zp-paging-touch-view').then(node => {
+					const hasNode = node && node.length;
+					const currentTop = hasNode ? node[0].top : 0;
+					if (!hasNode || (currentTop === this.pagingOrgTop && this.virtualPlaceholderTopHeight !== 0)){
+						_this._updateVirtualScroll(0);
+					}
+				});
+			})
 		}
 	}
 }

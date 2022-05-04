@@ -149,6 +149,11 @@ export default {
 			type: Boolean,
 			default: u.gc('safeAreaInsetBottom', false)
 		},
+		//开启底部安全区域适配后，是否使用placeholder形式实现，默认为否。为否时滚动区域会自动避开底部安全区域，也就是所有滚动内容都不会挡住底部安全区域，若设置为是，则滚动时滚动内容会挡住底部安全区域，但是当滚动到底部时才会避开底部安全区域
+		useSafeAreaPlaceholder: {
+			type: Boolean,
+			default: u.gc('useSafeAreaPlaceholder', false)
+		},
 		//第一次加载后自动隐藏loading slot，默认为是
 		autoHideLoadingAfterFirstLoaded: {
 			type: Boolean,
@@ -236,11 +241,11 @@ export default {
 		// #endif
 	},
 	destroyed() {
-		this._offEmitAndListener();
+		this._offEmit();
 	},
 	// #ifdef VUE3
 	unmounted() {
-		this._offEmitAndListener();
+		this._offEmit();
 	},
 	// #endif
 	watch: {
@@ -298,7 +303,7 @@ export default {
 				}
 				if (!pagingStyle.bottom) {
 					let bottom = windowBottom || 0;
-					if (this.safeAreaInsetBottom) {
+					if (this.safeAreaInsetBottom && !this.useSafeAreaPlaceholder) {
 						bottom += this.safeAreaBottom;
 					}
 					if(bottom > 0){
@@ -363,7 +368,7 @@ export default {
 		windowBottom() {
 			if (!this.systemInfo) return 0;
 			let windowBottom = this.systemInfo.windowBottom || 0;
-			if (this.safeAreaInsetBottom) {
+			if (this.safeAreaInsetBottom && !this.useSafeAreaPlaceholder) {
 				windowBottom += this.safeAreaBottom;
 			}
 			return windowBottom;
@@ -561,15 +566,20 @@ export default {
 					}
 				}, 1);
 			})
+			//#ifdef APP-PLUS
+			uni.$on(c.appShowKey, () => {
+				this.finalUseVirtualList && this._checkVirtualListScroll();
+			})
+			//#endif
 		},
 		//销毁全局emit和listener监听
-		_offEmitAndListener(){
+		_offEmit(){
 			uni.$off(c.i18nUpdateKey);
 			uni.$off(c.errorUpdateKey);
 			uni.$off(c.completeUpdateKey);
-			// #ifdef APP-PLUS
-			// plus.globalEvent.removeEventListener('recovery');
-			// #endif
+			//#ifdef APP-PLUS
+			uni.$off(c.appShowKey);
+			//#endif
 		}
 	},
 };
