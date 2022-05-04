@@ -72,7 +72,8 @@ const ZPVirtualList = {
 			getCellHeightRetryCount: {
 				fixed: 0,
 				dynamic: 0
-			}
+			},
+			pagingOrgTop: -1
 		}
 	},
 	watch: {
@@ -83,7 +84,8 @@ const ZPVirtualList = {
 					if (!newVal.length) {
 						this._resetDynamicListState(!this.isUserPullDown);
 					}
-					this.finalUseVirtualList && this.cellHeightMode === Enum.CellHeightMode.Fixed && this.isFirstPage && this._updateFixedCellHeight();
+					this.getCellHeightRetryCount.fixed = 0;
+					this.finalUseVirtualList && newVal.length && this.cellHeightMode === Enum.CellHeightMode.Fixed && this.isFirstPage && this._updateFixedCellHeight();
 					this.finalUseVirtualList && this._updateVirtualScroll(this.oldScrollTop);
 				})
 			}
@@ -92,9 +94,6 @@ const ZPVirtualList = {
 		virtualList(newVal){
 			this.$emit('update:virtualList', newVal);
 			this.$emit('virtualListChange', newVal);
-		},
-		virtualTopRangeIndex(newVal){
-			console.log('virtualTopRangeIndex',newVal)
 		}
 	},
 	computed: {
@@ -130,10 +129,55 @@ const ZPVirtualList = {
 			this.$nextTick(() => {
 				this._getNodeClientRect('.zp-scroll-view').then(node => {
 					if (node && node.length) {
+						this.pagingOrgTop = node[0].top;
 						this.virtualPageHeight = node[0].height;
 					}
 				});
 			})
+			// #ifdef APP-PLUS
+			const _this = this;
+			plus.globalEvent.addEventListener('trimmemory', function(){
+				setTimeout(()=>{
+					uni.showToast({
+						title: '恢复了！！！！',
+						duration: 2000
+					});
+				},2000)
+				this.finalUseVirtualList && _this._updateVirtualScroll(0);
+			});
+			plus.globalEvent.addEventListener('recovery', function(){
+				setTimeout(()=>{
+					uni.showToast({
+						title: '恢复了22！！！！',
+						duration: 2000
+					});
+				},2000)
+				this.finalUseVirtualList && _this._updateVirtualScroll(0);
+			});
+			plus.globalEvent.addEventListener('resume', (e) => {  
+				if(plus.runtime.isRecovery){
+					setTimeout(()=>{
+						uni.showToast({
+							title: '恢复了222！！！！',
+							duration: 2000
+						});
+					},2000)
+				}
+				if (this.finalUseVirtualList) {
+					this._getNodeClientRect('.zp-paging-touch-view').then(node => {
+						const hasNode = node && node.length;
+						const currentTop = hasNode ? node[0].top : 0;
+						console.log('currentTop',currentTop)
+						if (!hasNode || (currentTop === this.pagingOrgTop && this.virtualPlaceholderTopHeight !== 0)){
+							console.log('重置！！！')
+							this.virtualTopRangeIndex = 0;
+							this.virtualPlaceholderTopHeight = 0;
+						}
+					});
+				}
+			});
+			
+			// #endif
 		},
 		//cellHeightMode为fixed时获取第一个cell高度
 		_updateFixedCellHeight() {
@@ -216,6 +260,7 @@ const ZPVirtualList = {
 				item[c.listCellIndexUniqueKey] = `${this.virtualListKey}-${item[c.listCellIndexKey]}`;
 				list[i] = item;
 			}
+			this.getCellHeightRetryCount.dynamic = 0;
 			this.cellHeightMode === Enum.CellHeightMode.Dynamic && this._updateDynamicCellHeight(list);
 		},
 		//更新scroll滚动

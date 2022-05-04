@@ -236,11 +236,11 @@ export default {
 		// #endif
 	},
 	destroyed() {
-		this._offEmit();
+		this._offEmitAndListener();
 	},
 	// #ifdef VUE3
 	unmounted() {
-		this._offEmit();
+		this._offEmitAndListener();
 	},
 	// #endif
 	watch: {
@@ -562,11 +562,14 @@ export default {
 				}, 1);
 			})
 		},
-		//销毁全局emit监听
-		_offEmit(){
+		//销毁全局emit和listener监听
+		_offEmitAndListener(){
 			uni.$off(c.i18nUpdateKey);
 			uni.$off(c.errorUpdateKey);
 			uni.$off(c.completeUpdateKey);
+			// #ifdef APP-PLUS
+			// plus.globalEvent.removeEventListener('recovery');
+			// #endif
 		}
 	},
 };

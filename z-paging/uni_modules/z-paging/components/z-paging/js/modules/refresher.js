@@ -290,6 +290,14 @@ const ZPRefresher = {
 			if (fromScrollView && !(this.finalRefresherEnabled && !this.useCustomRefresher)) return;
 			this.$emit('onRefresh');
 			this.$emit('Refresh');
+			// #ifdef APP-NVUE
+			if (this.loading) {
+				setTimeout(()=>{
+					this._nRefresherEnd();
+				},500)
+				return;
+			}
+			// #endif
 			if (this.loading || this.isRefresherInComplete) return;
 			this.loadingType = Enum.LoadingType.Refresher;
 			if (this.nShowRefresherReveal) return;

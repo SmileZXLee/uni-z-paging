@@ -573,7 +573,7 @@ const ZPData = {
 			this.$nextTick(() => {
 				setTimeout(() => {
 					this.listRendering = false;
-				},10)
+				},50)
 			})
 			// #ifndef APP-NVUE
 			if (this.finalUseVirtualList) {
