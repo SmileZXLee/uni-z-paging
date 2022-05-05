@@ -3,7 +3,7 @@
 [![version](https://img.shields.io/badge/version-2.2.6-blue)](https://github.com/SmileZXLee/uni-z-paging)
 [![license](https://img.shields.io/github/license/SmileZXLee/uni-z-paging)](https://en.wikipedia.org/wiki/MIT_License)
 
-> 【uni-app自动分页器】超简单，低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view，支持吸顶效果，支持国际化等。
+> 【支持nvue、vue3，使用wxs+renderjs实现】高性能，全平台兼容。支持虚拟列表，支持自定义下拉刷新、上拉加载更多，支持自动管理空数据图、点击返回顶部，支持聊天分页、本地分页，支持国际化等100+项配置
 
 ## API文档地址：[https://z-paging.zxlee.cn](https://z-paging.zxlee.cn) 
 
