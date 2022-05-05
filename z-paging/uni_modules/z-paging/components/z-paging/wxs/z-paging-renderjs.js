@@ -13,15 +13,10 @@ var currentVm = null;
 export default {
 	mounted() {
 		this._handleTouch();
+		// #ifdef APP-VUE
+		this.$ownerInstance && this.$ownerInstance.callMethod('_checkVirtualListScroll');
+		// #endif
 	},
-	destroyed() {
-		this._removeAllEventListener();
-	},
-	// #ifdef VUE3
-	unmounted() {
-		this._removeAllEventListener();
-	},
-	// #endif
 	methods: {
 		//接收逻辑层发送的数据
 		renderPropScrollTopChange(newVal, oldVal, ownerVm, vm) {
@@ -43,9 +38,6 @@ export default {
 				window.addEventListener('touchmove', this._handleTouchmove, {
 					passive: false
 				})
-				window.addEventListener('resume', this._handleResume, {
-					passive: true
-				})
 			}
 		},
 		_handleTouchstart(e) {
@@ -63,15 +55,9 @@ export default {
 				}
 			}
 		},
-		_handleResume(e) {
-			// #ifdef APP-VUE
-			this.$ownerInstance && this.$ownerInstance.callMethod('_checkVirtualListScroll');
-			// #endif
-		},
 		_removeAllEventListener(){
 			window.removeEventListener('touchstart');
 			window.removeEventListener('touchmove');
-			window.removeEventListener('resume');
 		}
 	}
 };

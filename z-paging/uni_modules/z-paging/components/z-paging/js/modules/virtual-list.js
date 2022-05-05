@@ -332,15 +332,17 @@ const ZPVirtualList = {
 		},
 		//检测虚拟列表当前滚动位置，如发现滚动位置不正确则重新计算虚拟列表相关参数(为解决在App中可能出现的长时间进入后台后打开App白屏的问题)
 		_checkVirtualListScroll() {
-			this.$nextTick(() => {
-				this._getNodeClientRect('.zp-paging-touch-view').then(node => {
-					const hasNode = node && node.length;
-					const currentTop = hasNode ? node[0].top : 0;
-					if (!hasNode || (currentTop === this.pagingOrgTop && this.virtualPlaceholderTopHeight !== 0)){
-						_this._updateVirtualScroll(0);
-					}
-				});
-			})
+			if (this.finalUseVirtualList) {
+				this.$nextTick(() => {
+					this._getNodeClientRect('.zp-paging-touch-view').then(node => {
+						const hasNode = node && node.length;
+						const currentTop = hasNode ? node[0].top : 0;
+						if (!hasNode || (currentTop === this.pagingOrgTop && this.virtualPlaceholderTopHeight !== 0)){
+							this._updateVirtualScroll(0);
+						}
+					});
+				})
+			}
 		}
 	}
 }
