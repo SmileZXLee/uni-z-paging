@@ -566,20 +566,12 @@ export default {
 					}
 				}, 1);
 			})
-			//#ifdef APP-PLUS
-			uni.$on(c.appShowKey, () => {
-				this.finalUseVirtualList && this._checkVirtualListScroll();
-			})
-			//#endif
 		},
 		//销毁全局emit和listener监听
 		_offEmit(){
 			uni.$off(c.i18nUpdateKey);
 			uni.$off(c.errorUpdateKey);
 			uni.$off(c.completeUpdateKey);
-			//#ifdef APP-PLUS
-			uni.$off(c.appShowKey);
-			//#endif
 		}
 	},
 };
