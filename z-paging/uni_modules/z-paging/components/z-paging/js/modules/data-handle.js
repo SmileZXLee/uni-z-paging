@@ -707,7 +707,7 @@ const ZPData = {
 		//发射query事件
 		_emitQuery(pageNo, pageSize, from){
 			this.requestTimeStamp = u.getTime();
-			this.$emit('query',...interceptor._handleQuery(pageNo, pageSize, from));
+			this.$emit('query', ...interceptor._handleQuery(pageNo, pageSize, from));
 		},
 		//检查complete data的类型
 		_checkDataType(data, success, isLocal) {

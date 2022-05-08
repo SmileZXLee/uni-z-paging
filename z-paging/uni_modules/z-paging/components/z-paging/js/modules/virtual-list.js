@@ -315,21 +315,17 @@ const ZPVirtualList = {
 			let virtualTopRangeIndex = this.virtualCellHeight === 0 ? 0 : scrollIndex - parseInt(this.finalVirtualPageHeight / this.virtualCellHeight) * this.preloadPage;
 			virtualTopRangeIndex *= this.virtualListTimes;
 			virtualTopRangeIndex = Math.max(0, virtualTopRangeIndex);
-			if(virtualTopRangeIndex){
-				this.virtualTopRangeIndex = virtualTopRangeIndex;
-				this.virtualPlaceholderTopHeight = (virtualTopRangeIndex / this.virtualListTimes) * this.virtualCellHeight;
-			}
+			this.virtualTopRangeIndex = virtualTopRangeIndex;
+			this.virtualPlaceholderTopHeight = (virtualTopRangeIndex / this.virtualListTimes) * this.virtualCellHeight;
 		},
 		//更新fixedCell模式下bottomRangeIndex&placeholderBottomHeight
 		_updateFixedBottomRangeIndex(scrollIndex) {
 			let virtualBottomRangeIndex = this.virtualCellHeight === 0 ? this.pageSize : scrollIndex + parseInt(this.finalVirtualPageHeight / this.virtualCellHeight) * (this.preloadPage + 1);
 			virtualBottomRangeIndex *= this.virtualListTimes;
 			virtualBottomRangeIndex = Math.min(this.realTotalData.length, virtualBottomRangeIndex);
-			if(virtualBottomRangeIndex){
-				this.virtualBottomRangeIndex = virtualBottomRangeIndex;
-				this.virtualPlaceholderBottomHeight = (this.realTotalData.length - virtualBottomRangeIndex) * this.virtualCellHeight / this.virtualListTimes;
-				this._updateVirtualList();
-			}
+			this.virtualBottomRangeIndex = virtualBottomRangeIndex;
+			this.virtualPlaceholderBottomHeight = (this.realTotalData.length - virtualBottomRangeIndex) * this.virtualCellHeight / this.virtualListTimes;
+			this._updateVirtualList();
 		},
 		//更新virtualList
 		_updateVirtualList() {
