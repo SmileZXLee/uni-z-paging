@@ -13,7 +13,6 @@ function queryListLong(data) {
 }
 
 function _queryList(data, listCount, showNews = false ,random = false) {
-
 	if (!data.pageNo || !data.pageSize) {
 		return callQueryResult([]);
 	}

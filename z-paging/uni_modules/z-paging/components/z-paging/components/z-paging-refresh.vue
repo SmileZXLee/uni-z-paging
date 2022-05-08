@@ -52,14 +52,14 @@
 				default: 0
 			},
 			'defaultThemeStyle': {},
-			'defaultText': {},
-			'pullingText': {},
-			'refreshingText': {},
-			'completeText': {},
+			'defaultText': '',
+			'pullingText': '',
+			'refreshingText': '',
+			'completeText': '',
 			'showUpdateTime': {
 				default: false
 			},
-			'updateTimeKey': {},
+			'updateTimeKey': '',
 			'imgStyle': {
 				default: {}
 			},
