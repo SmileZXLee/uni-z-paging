@@ -32,6 +32,13 @@ const ZPVirtualList = {
 				return u.gc('innerListStyle', {});
 			}
 		},
+		//innerCell样式
+		innerCellStyle: {
+			type: Object,
+			default: function() {
+				return u.gc('innerCellStyle', {});
+			}
+		},
 		//预加载的列表可视范围(列表高度)页数，默认为7，即预加载当前页及上下各7页的cell。此数值越大，则虚拟列表中加载的dom越多，内存消耗越大(会维持在一个稳定值)，但增加预加载页面数量可缓解快速滚动短暂白屏问题
 		preloadPage: {
 			type: [Number, String],
@@ -45,6 +52,11 @@ const ZPVirtualList = {
 		cellHeightMode: {
 			type: String,
 			default: u.gc('cellHeightMode', 'fixed')
+		},
+		//虚拟列表可视区域数组的区间index的倍数，默认为1。常用于每行有多列的情况，例如每行有2列数据，需要将此值设置为2，则可视范围的数组index必然为2的倍数：0、2、4、6(总数组长度为奇数时，最后一组可视区间的结尾也为奇数)，由此可避免可视范围数组动态改变导致的用户可感知的数据跳动变化的问题。
+		virtualListTimes: {
+			type: [Number, String],
+			default: u.gc('virtualListTimes', 1)
 		},
 		//虚拟列表scroll取样帧率，默认为60，过高可能出现卡顿等问题
 		virtualScrollFps: {
@@ -166,7 +178,7 @@ const ZPVirtualList = {
 		//cellHeightMode为dynamic时获取每个cell高度
 		_updateDynamicCellHeight(list) {
 			this.$nextTick(() => {
-				const updateDynamicCellHeightTimeout =  setTimeout(async () => {
+				const updateDynamicCellHeightTimeout = setTimeout(async () => {
 					for (let i = 0; i < list.length; i++) {
 						let item = list[i];
 						const cellNode = await this._getNodeClientRect(`#zp-${item[c.listCellIndexKey]}`,this.finalUseInnerList);
@@ -239,7 +251,7 @@ const ZPVirtualList = {
 			let scrollIndex = 0;
 			const cellHeightMode = this.cellHeightMode;
 			if (cellHeightMode === Enum.CellHeightMode.Fixed) {
-				scrollIndex = parseInt(scrollTop / this.virtualCellHeight);
+				scrollIndex = parseInt(scrollTop / this.virtualCellHeight) || 0;
 				this._updateFixedTopRangeIndex(scrollIndex);
 				this._updateFixedBottomRangeIndex(scrollIndex);
 			} else if(cellHeightMode === Enum.CellHeightMode.Dynamic) {
@@ -301,17 +313,23 @@ const ZPVirtualList = {
 		//更新fixedCell模式下topRangeIndex&placeholderTopHeight
 		_updateFixedTopRangeIndex(scrollIndex) {
 			let virtualTopRangeIndex = this.virtualCellHeight === 0 ? 0 : scrollIndex - parseInt(this.finalVirtualPageHeight / this.virtualCellHeight) * this.preloadPage;
+			virtualTopRangeIndex *= this.virtualListTimes;
 			virtualTopRangeIndex = Math.max(0, virtualTopRangeIndex);
-			this.virtualTopRangeIndex = virtualTopRangeIndex;
-			this.virtualPlaceholderTopHeight = (virtualTopRangeIndex) * this.virtualCellHeight;
+			if(virtualTopRangeIndex){
+				this.virtualTopRangeIndex = virtualTopRangeIndex;
+				this.virtualPlaceholderTopHeight = (virtualTopRangeIndex / this.virtualListTimes) * this.virtualCellHeight;
+			}
 		},
 		//更新fixedCell模式下bottomRangeIndex&placeholderBottomHeight
 		_updateFixedBottomRangeIndex(scrollIndex) {
 			let virtualBottomRangeIndex = this.virtualCellHeight === 0 ? this.pageSize : scrollIndex + parseInt(this.finalVirtualPageHeight / this.virtualCellHeight) * (this.preloadPage + 1);
+			virtualBottomRangeIndex *= this.virtualListTimes;
 			virtualBottomRangeIndex = Math.min(this.realTotalData.length, virtualBottomRangeIndex);
-			this.virtualBottomRangeIndex = virtualBottomRangeIndex;
-			this.virtualPlaceholderBottomHeight = (this.realTotalData.length - virtualBottomRangeIndex) * this.virtualCellHeight;
-			this._updateVirtualList();
+			if(virtualBottomRangeIndex){
+				this.virtualBottomRangeIndex = virtualBottomRangeIndex;
+				this.virtualPlaceholderBottomHeight = (this.realTotalData.length - virtualBottomRangeIndex) * this.virtualCellHeight / this.virtualListTimes;
+				this._updateVirtualList();
+			}
 		},
 		//更新virtualList
 		_updateVirtualList() {
