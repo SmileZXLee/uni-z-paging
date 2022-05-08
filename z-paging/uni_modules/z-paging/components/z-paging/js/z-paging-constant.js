@@ -1,6 +1,6 @@
 // [z-paging]常量
 
-const version = '2.2.7';
+const version = '2.2.8';
 const delayTime = 100;
 const i18nUpdateKey = 'z-paging-i18n-update';
 
