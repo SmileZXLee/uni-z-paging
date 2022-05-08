@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-v2.2.7 (2022-05-06)
+v2.2.8 (2022-05-08)
 by ZXLee
 -->
 <!-- API文档地址：https://z-paging.zxlee.cn -->
@@ -276,8 +276,6 @@ by ZXLee
 	 * @property {Number|String} default-page-no 自定义初始的pageNo，默认为1
 	 * @property {Number|String} default-page-size 自定义pageSize，默认为10
 	 * @property {Number|Object} data-key 为保证数据一致，设置当前tab切换时的标识key，并在complete中传递相同key，若二者不一致，则complete将不会生效
-	 * @property {String} autowire-list-name 【极简写法】自动注入的list名，可自动修改父view(包含ref="paging")中对应name的list值(z-paging标签必须设置`ref="paging"`)
-	 * @property {String} autowire-query-name 【极简写法】自动注入的query名，可自动调用父view(包含ref="paging")中的query方法(z-paging标签必须设置`ref="paging"`)
 	 * @property {Number|String} delay 调用complete后延迟处理的时间，单位为毫秒
 	 * @property {Number|String} min-delay 触发@query后最小延迟处理的时间，单位为毫秒，默认0毫秒，优先级低于delay（假设设置为300毫秒，若分页请求时间小于300毫秒，则在调用complete后延迟[300毫秒-请求时长]；若请求时长大于300毫秒，则不延迟），当show-refresher-when-reload为true或reload(true)时，其最小值为400
 	 * @property {String} language i18n国际化设置语言，支持简体中文(zh-cn)、繁体中文(zh-hant-cn)和英文(en)
@@ -286,9 +284,6 @@ by ZXLee
 	 * @property {String} height z-paging的高度，优先级低于pagingStyle中设置的height，传字符串，如100px、100rpx、100%
 	 * @property {String} width z-paging的宽度，优先级低于pagingStyle中设置的width，传字符串，如100px、100rpx、100%
 	 * @property {String} bg-color z-paging的背景色，优先级低于pagingStyle中设置的background。传字符串，如"#ffffff"
-	 * @property {Object} paging-content-style 设置z-paging的容器(插槽的父view)的style
-	 * @property {Boolean} auto-height z-paging是否自动高度，若自动高度则会自动铺满屏幕，默认为否
-	 * @property {Number|String} auto-height-addition z-paging是否自动高度时，附加的高度，注意添加单位px或rpx，默认为px，若需要减少高度，请传负数
 	 * @property {String} default-theme-style loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
 	 * @property {String} refresher-theme-style 下拉刷新的主题样式，支持black，white，默认black
 	 * @property {Object} refresher-img-style 自定义下拉刷新中左侧图标的样式
@@ -304,7 +299,6 @@ by ZXLee
 	 * @property {Boolean} use-virtual-list 是否使用虚拟列表，默认为否
 	 * @property {Boolean} fixed z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为是(当使用内置scroll-view滚动时有效)
 	 * @property {Boolean} safe-area-inset-bottom 是否开启底部安全区域适配，默认为否
-	 * @property {Boolean} scrollable 是否可以滚动，使用内置scroll-view和nvue时有效，默认为是
 	 * @property {Boolean} auto [z-paging]mounted后是否自动调用reload方法(mounted后自动调用接口)，默认为是
 	 * @property {Boolean} reload-when-refresh 用户下拉刷新时是否触发reload方法，默认为是
 	 * @property {Boolean} auto-scroll-to-top-when-reload reload时是否自动滚动到顶部，默认为是
@@ -313,9 +307,6 @@ by ZXLee
 	 * @property {Boolean} show-loading-more-when-reload 列表刷新时自动显示加载更多view，且为加载中状态(仅初始设置有效，不可动态修改)
 	 * @property {Boolean} refresher-update-time-key 如果需要区别不同页面的最后更新时间，请为不同页面的z-paging的`refresher-update-time-key`设置不同的字符串
 	 * @property {Boolean} use-custom-refresher 是否使用自定义的下拉刷新，默认为是，即使用z-paging的下拉刷新。设置为false即代表使用uni scroll-view自带的下拉刷新，h5、App、微信小程序以外的平台不支持uni scroll-view自带的下拉刷新
-	 * @property {Number|String} refresher-fps 自定义下拉刷新下拉帧率，默认为40，过高可能会出现抖动问题
-	 * @property {Number|String} refresher-max-angle 自定义下拉刷新允许触发的最大下拉角度，默认为40度，当下拉角度小于设定值时，自定义下拉刷新动画不会被触发
-	 * @property {Boolean} refresher-angle-enable-change-continued 自定义下拉刷新的角度由未达到最大角度变到达到最大角度时，是否继续下拉刷新手势，默认为否
 	 * @property {String|Object} refresher-default-text 自定义下拉刷新默认状态下的文字
 	 * @property {String|Object} refresher-pulling-text 自定义下拉刷新松手立即刷新状态下的文字
 	 * @property {String|Object} refresher-refreshing-text 自定义下拉刷新刷新中状态下的文字
@@ -332,7 +323,6 @@ by ZXLee
 	 * @property {String|Object} loading-more-loading-text 滑动到底部"加载中"文字，默认为【正在加载...】
 	 * @property {String|Object} loading-more-no-more-text 滑动到底部"没有更多"文字，默认为【没有更多了】
 	 * @property {String|Object} loading-more-fail-text 滑动到底部"加载失败"文字，默认为【加载失败，点击重新加载】
-	 * @property {Boolean} hide-loading-more-when-no-more-and-inside-of-paging 当没有更多数据且分页内容未超出z-paging时是否隐藏没有更多数据的view，默认为是
 	 * @property {Boolean} hide-loading-more-when-no-more-and-inside-of-paging 当没有更多数据且分页内容未超出z-paging时是否隐藏没有更多数据的view，默认为是
 	 * @property {Boolean} inside-more 当分页未满一屏时，是否自动加载更多(nvue无效)，默认为否
 	 * @property {Boolean} show-default-loading-more-text 是否显示默认的加载更多text，默认为是
@@ -366,7 +356,6 @@ by ZXLee
 	 * @property {Boolean} show-scrollbar 控制是否出现滚动条，默认为是
 	 * @property {Boolean} scroll-x 是否允许横向滚动，默认为否
 	 * @property {Boolean} scroll-to-top-bounce-enabled iOS设备上滚动到顶部时是否允许回弹效果，默认为否。关闭回弹效果后可使滚动到顶部与下拉刷新更连贯，但是有吸顶view时滚动到顶部时可能出现抖动。
-	 * @property {Boolean} scroll-with-animation 控制是否出现滚动条，默认为否
 	 * @property {String} scroll-into-view 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素
 	 * @property {Number|String} lower-threshold 距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为100rpx
 	 * @property {Boolean} enable-back-to-top iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向，默认为是

@@ -4,18 +4,24 @@
 	<!-- 如果要在这里设置极简写法，这里的ref不能设置为paging，设置为其他名即可，因为极简写法会修改/调用第一个包含了ref="paging"的付view中的list和query -->
 	<!-- 极简写法在下方设置autowire-list-name="xxx" autowire-query-name="xxx"即可，与minimalism-demo.vue中的一致，并且不用再从这个组件转发到页面，只要遵循上一行的规则即可 -->
 	<z-paging ref="paging" v-model="list" fixed auto-show-back-to-top refresher-threshold="160rpx" @query="queryList"
+		:useVirtualList="useVirtualList" :useInnerList="useInnerList" :cellKeyName="cellKeyName" :innerListStyle="innerListStyle" :preloadPage="preloadPage" :cellHeightMode="cellHeightMode" :virtualScrollFps="virtualScrollFps"
 		:loading-more-loading-text="{'en':'英文的加载中','zh-cn':'中文的加载中','zh-hant-cn':'繁体的加载中'}">
+		
 		<!-- 这里插入一个view到z-paging中，并且这个view会被z-paging标记为top固定在顶部 -->
-		<view slot="top">
+		<template v-slot:top>
 			<!-- 这里接收页面传进来的slot，这样相当于将页面传进来的slot传给z-paging的slot="top"了 -->
 			<slot name="top"></slot>
-		</view>
-
-		<!-- 这里插入一个view到z-paging中，并且这个view会被z-paging标记为bottom固定在底部 -->
-		<view slot="bottom">
+		</template>
+		
+		<!-- 这里插入一个view到z-paging中，并且这个view会被z-paging标记为bottom固定在顶部 -->
+		<template v-slot:bottom>
 			<!-- 这里接收页面传进来的slot，这样相当于将页面传进来的slot传给z-paging的slot="bottom"了 -->
 			<slot name="bottom"></slot>
-		</view>
+		</template>
+		
+		<template v-slot:cell="{item,index}">
+			<slot name="cell" :item="item" :index="index"/>
+		</template>
 
 		<!-- 这里通过slot自定义了下拉刷新view和没有更多数据view，页面那边就不用再写下面两行了 -->
 		<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
@@ -43,7 +49,44 @@
 				default: function() {
 					return [];
 				}
-			}
+			},
+			//是否使用虚拟列表，默认为否
+			useVirtualList: {
+				type: Boolean,
+				default: false
+			},
+			//是否在z-paging内部循环渲染列表(内置列表)，默认为否。若use-virtual-list为true，则此项恒为true
+			useInnerList: {
+				type: Boolean,
+				default: false
+			},
+			//内置列表cell的key名称，仅nvue有效，在nvue中开启use-inner-list时必须填此项
+			cellKeyName: {
+				type: String,
+				default: ''
+			},
+			//innerList样式
+			innerListStyle: {
+				type: Object,
+				default: function() {
+					return {};
+				}
+			},
+			//预加载的列表可视范围(列表高度)页数，默认为7，即预加载当前页及上下各7页的cell。此数值越大，则虚拟列表中加载的dom越多，内存消耗越大(会维持在一个稳定值)，但增加预加载页面数量可缓解快速滚动短暂白屏问题
+			preloadPage: {
+				type: [Number, String],
+				default: 7
+			},
+			//虚拟列表cell高度模式，默认为fixed，也就是每个cell高度完全相同，将以第一个cell高度为准进行计算。可选值【dynamic】，即代表高度是动态非固定的，【dynamic】性能低于【fixed】。
+			cellHeightMode: {
+				type: String,
+				default: 'fixed'
+			},
+			//虚拟列表scroll取样帧率，默认为60，过高可能出现卡顿等问题
+			virtualScrollFps: {
+				type: [Number, String],
+				default: 60
+			},
 		},
 		watch: {
 			//监听页面v-mode传过来的值，同时传给z-paging
