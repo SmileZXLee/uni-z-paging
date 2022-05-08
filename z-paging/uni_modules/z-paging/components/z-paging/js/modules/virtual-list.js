@@ -53,10 +53,10 @@ const ZPVirtualList = {
 			type: String,
 			default: u.gc('cellHeightMode', 'fixed')
 		},
-		//虚拟列表可视区域数组的区间index的倍数，默认为1。常用于每行有多列的情况，例如每行有2列数据，需要将此值设置为2，则可视范围的数组index必然为2的倍数：0、2、4、6(总数组长度为奇数时，最后一组可视区间的结尾也为奇数)，由此可避免可视范围数组动态改变导致的用户可感知的数据跳动变化的问题。
-		virtualListTimes: {
+		//虚拟列表列数，默认为1。常用于每行有多列的情况，例如每行有2列数据，需要将此值设置为2
+		virtualListCol: {
 			type: [Number, String],
-			default: u.gc('virtualListTimes', 1)
+			default: u.gc('virtualListCol', 1)
 		},
 		//虚拟列表scroll取样帧率，默认为60，过高可能出现卡顿等问题
 		virtualScrollFps: {
@@ -313,18 +313,18 @@ const ZPVirtualList = {
 		//更新fixedCell模式下topRangeIndex&placeholderTopHeight
 		_updateFixedTopRangeIndex(scrollIndex) {
 			let virtualTopRangeIndex = this.virtualCellHeight === 0 ? 0 : scrollIndex - parseInt(this.finalVirtualPageHeight / this.virtualCellHeight) * this.preloadPage;
-			virtualTopRangeIndex *= this.virtualListTimes;
+			virtualTopRangeIndex *= this.virtualListCol;
 			virtualTopRangeIndex = Math.max(0, virtualTopRangeIndex);
 			this.virtualTopRangeIndex = virtualTopRangeIndex;
-			this.virtualPlaceholderTopHeight = (virtualTopRangeIndex / this.virtualListTimes) * this.virtualCellHeight;
+			this.virtualPlaceholderTopHeight = (virtualTopRangeIndex / this.virtualListCol) * this.virtualCellHeight;
 		},
 		//更新fixedCell模式下bottomRangeIndex&placeholderBottomHeight
 		_updateFixedBottomRangeIndex(scrollIndex) {
 			let virtualBottomRangeIndex = this.virtualCellHeight === 0 ? this.pageSize : scrollIndex + parseInt(this.finalVirtualPageHeight / this.virtualCellHeight) * (this.preloadPage + 1);
-			virtualBottomRangeIndex *= this.virtualListTimes;
+			virtualBottomRangeIndex *= this.virtualListCol;
 			virtualBottomRangeIndex = Math.min(this.realTotalData.length, virtualBottomRangeIndex);
 			this.virtualBottomRangeIndex = virtualBottomRangeIndex;
-			this.virtualPlaceholderBottomHeight = (this.realTotalData.length - virtualBottomRangeIndex) * this.virtualCellHeight / this.virtualListTimes;
+			this.virtualPlaceholderBottomHeight = (this.realTotalData.length - virtualBottomRangeIndex) * this.virtualCellHeight / this.virtualListCol;
 			this._updateVirtualList();
 		},
 		//更新virtualList
