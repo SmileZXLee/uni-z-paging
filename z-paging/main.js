@@ -4,16 +4,24 @@ import request from '@/http/request.js'
 // ----------------------全局引入z-paging的mixin示例(使用页面滚动时需要引入)-------------------------
 //如果需要全局引入z-paging的mixin，请使用下方注释掉的代码，当大多数页面都使用z-paging并使用页面滚动时，可进行全局mixin注册，此mixin仅对使用页面滚动时的z-paging有效
 /*
-import ZPagingMixin from '@/uni_modules/z-paging/components/z-paging/js/z-paging-mixin'
-Vue.mixin(ZPagingMixin)
+import ZPMixin from '@/uni_modules/z-paging/components/z-paging/js/z-paging-mixin'
+Vue.mixin(ZPMixin)
 */
-
 
 // ----------------------全局配置z-paging默认的属性值方案：第①步：引入z-paging-config-----------------------
 //注意：这里的全局配置不是全局引入组件，全局配置是指统一配置z-paging默认的属性值，z-paging遵循easycom组件规范，无需注册即可使用。
 //关于easycom组件规范，可查阅https://uniapp.dcloud.io/component/README?id=easycom组件规范
 /*
 import zConfig from '@/uni_modules/z-paging/components/z-paging/js/z-paging-config'
+*/
+
+// ----------------------全局引入z-paging@query拦截器-------------------------
+/*
+import ZPInterceptor from '@/uni_modules/z-paging/components/z-paging/js/z-paging-interceptor'
+ZPInterceptor.handleQuery((pageNo, pageSize, from)=>{
+	//这里可以对pageNo, pageSize, from进行一些处理后return，请注意需要return一个数组，数组中0、1、2的元素就代表@query中绑定方法获取到的参数，数组长度不一定为3，数组长度为多少，@query中的参数就有多少个
+	return [pageNo, pageSize, from];
+})
 */
 
 Vue.config.productionTip = false

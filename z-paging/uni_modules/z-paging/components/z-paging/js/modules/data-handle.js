@@ -2,6 +2,7 @@
 import u from '.././z-paging-utils'
 import c from '.././z-paging-constant'
 import Enum from '.././z-paging-enum'
+import interceptor from '../z-paging-interceptor'
 
 const ZPData = {
 	props: {
@@ -656,7 +657,7 @@ const ZPData = {
 			pageNo = parseInt(pageNo);
 			pageSize = parseInt(pageSize);
 			if (pageNo < 0 || pageSize <= 0) {
-				callQueryResult(callback, []);
+				this._localPagingQueryResult(callback, [], localPagingLoadingTime);
 				return;
 			}
 			pageNo = Math.max(1,pageNo);
@@ -704,9 +705,9 @@ const ZPData = {
 			}
 		},
 		//发射query事件
-		_emitQuery(pageNo,pageSize,from){
+		_emitQuery(pageNo, pageSize, from){
 			this.requestTimeStamp = u.getTime();
-			this.$emit('query',pageNo,pageSize,from);
+			this.$emit('query',...interceptor._handleQuery(pageNo, pageSize, from));
 		},
 		//检查complete data的类型
 		_checkDataType(data, success, isLocal) {

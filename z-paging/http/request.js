@@ -14,13 +14,13 @@ function queryListLong(data) {
 
 function _queryList(data, listCount, showNews = false ,random = false) {
 	if (!data.pageNo || !data.pageSize) {
-		return callQueryResult([]);
+		return _callQueryResult([]);
 	}
 	let pageNo = parseInt(data.pageNo);
 	let pageSize = parseInt(data.pageSize);
 	let type = data.type || 0;
 	if (pageNo < 0 || pageSize <= 0) {
-		return callQueryResult([]);
+		return _callQueryResult([]);
 	}
 	if (showLog) {
 		console.log('%c\n----------请求开始--------', 'color:green;');
