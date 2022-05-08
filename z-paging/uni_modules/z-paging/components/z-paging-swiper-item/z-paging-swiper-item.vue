@@ -7,7 +7,8 @@
 <template>
 	<view class="zp-swiper-item-container">
 		<z-paging ref="paging" :fixed="false" 
-			:useVirtualList="useVirtualList" :useInnerList="useInnerList" :cellKeyName="cellKeyName" :innerListStyle="innerListStyle" :preloadPage="preloadPage" :cellHeightMode="cellHeightMode" :virtualScrollFps="virtualScrollFps"
+			:useVirtualList="useVirtualList" :useInnerList="useInnerList" :cellKeyName="cellKeyName" :innerListStyle="innerListStyle" 
+			:preloadPage="preloadPage" :cellHeightMode="cellHeightMode" :virtualScrollFps="virtualScrollFps" :virtualListTimes="virtualListTimes"
 			@query="_queryList" @listChange="_updateList" :mounted-auto-call-reload="false" style="height: 100%;">
 			<slot />
 			<template v-slot:header>
@@ -81,6 +82,11 @@
 			cellHeightMode: {
 				type: String,
 				default: 'fixed'
+			},
+			//虚拟列表可视区域数组的区间index的倍数，默认为1。常用于每行有多列的情况，例如每行有2列数据，需要将此值设置为2，则可视范围的数组index必然为2的倍数：0、2、4、6(总数组长度为奇数时，最后一组可视区间的结尾也为奇数)，由此可避免可视范围数组动态改变导致的用户可感知的数据跳动变化的问题。
+			virtualListTimes: {
+				type: [Number, String],
+				default: u.gc('virtualListTimes', 1)
 			},
 			//虚拟列表scroll取样帧率，默认为60，过高可能出现卡顿等问题
 			virtualScrollFps: {
