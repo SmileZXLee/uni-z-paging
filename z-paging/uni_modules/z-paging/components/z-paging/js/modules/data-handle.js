@@ -633,12 +633,14 @@ const ZPData = {
 		
 				} else {
 					if (this.finalConcat) {
+						const currentScrollTop = this.oldScrollTop;
 						this.totalData = [...this.totalData, ...newVal];
 						// #ifdef MP-WEIXIN
 						if (!this.isIos && !this.refresherOnly && !this.usePageScroll && newVal.length) {
 							this.loadingMoreTimeStamp = u.getTime();
-							const currentScrollTop = this.oldScrollTop;
-							this.scrollToY(currentScrollTop);
+							this.$nextTick(()=>{
+								this.scrollToY(currentScrollTop);
+							})
 						}
 						// #endif
 					} else {
