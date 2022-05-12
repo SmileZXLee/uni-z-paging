@@ -271,13 +271,12 @@ by ZXLee
 	import pagingRenderjs from './wxs/z-paging-renderjs.js';
 	/**
 	 * z-paging 分页组件
-	 * @description 【uni-app自动分页器】超简单，低耦合！仅需两步轻松完成完整分页逻辑(下拉刷新、上拉加载更多)，分页全自动处理。支持自定义加载更多的文字或整个view，自定义下拉刷新样式，自动管理空数据view等。
+	 * @description 高性能，全平台兼容。支持虚拟列表，支持nvue、vue3
 	 * @tutorial https://z-paging.zxlee.cn
+	 * @notice 以下仅为部分常用属性、方法&事件，完整文档请查阅z-paging官网
 	 * @property {Number|String} default-page-no 自定义初始的pageNo，默认为1
 	 * @property {Number|String} default-page-size 自定义pageSize，默认为10
-	 * @property {Number|Object} data-key 为保证数据一致，设置当前tab切换时的标识key，并在complete中传递相同key，若二者不一致，则complete将不会生效
 	 * @property {Number|String} delay 调用complete后延迟处理的时间，单位为毫秒
-	 * @property {Number|String} min-delay 触发@query后最小延迟处理的时间，单位为毫秒，默认0毫秒，优先级低于delay（假设设置为300毫秒，若分页请求时间小于300毫秒，则在调用complete后延迟[300毫秒-请求时长]；若请求时长大于300毫秒，则不延迟），当show-refresher-when-reload为true或reload(true)时，其最小值为400
 	 * @property {String} language i18n国际化设置语言，支持简体中文(zh-cn)、繁体中文(zh-hant-cn)和英文(en)
 	 * @property {Boolean} follow-system-language i18n国际化默认是否跟随系统语言，默认为是
 	 * @property {Object} paging-style 设置z-paging的style，部分平台(如微信小程序)无法直接修改组件的style，可使用此属性代替
@@ -286,48 +285,30 @@ by ZXLee
 	 * @property {String} bg-color z-paging的背景色，优先级低于pagingStyle中设置的background。传字符串，如"#ffffff"
 	 * @property {String} default-theme-style loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
 	 * @property {String} refresher-theme-style 下拉刷新的主题样式，支持black，white，默认black
-	 * @property {Object} refresher-img-style 自定义下拉刷新中左侧图标的样式
-	 * @property {Object} refresher-title-style 自定义下拉刷新中右侧状态描述文字的样式
-	 * @property {Object} refresher-update-time-style 自定义下拉刷新中右侧最后更新时间文字的样式(show-refresher-update-time为true时有效)
-	 * @property {Boolean} watch-refresher-touchmove 在微信小程序和QQ小程序中，是否实时监听下拉刷新中进度，默认为否
-	 * @property {String} loading-more-theme-style 底部加载更多的主题样式，支持black，white，默认black
 	 * @property {Boolean} refresher-only 是否只使用下拉刷新，设置为true后将关闭mounted自动请求数据、关闭滚动到底部加载更多，强制隐藏空数据图。默认为否
 	 * @property {Number|String} refresher-complete-delay 自定义下拉刷新结束以后延迟收回的时间，单位为毫秒，默认为0
-	 * @property {Number|String} refresher-complete-duration 自定义下拉刷新结束收回的动画时间，单位为毫秒，默认为300毫秒(refresherEndBounceEnabled为false时，refresherCompleteDuration为设定值的1/3)，nvue无效
-	 * @property {Boolean} refresher-complete-scrollable 自定义下拉刷新结束状态下是否允许列表滚动，默认为否
+	 * @property {Number|String} refresher-complete-duration 自定义下拉刷新结束收回的动画时间，单位为毫秒，默认为300毫秒，nvue无效
 	 * @property {Boolean} use-page-scroll 使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
 	 * @property {Boolean} use-virtual-list 是否使用虚拟列表，默认为否
 	 * @property {Boolean} fixed z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为是(当使用内置scroll-view滚动时有效)
 	 * @property {Boolean} safe-area-inset-bottom 是否开启底部安全区域适配，默认为否
 	 * @property {Boolean} auto [z-paging]mounted后是否自动调用reload方法(mounted后自动调用接口)，默认为是
-	 * @property {Boolean} reload-when-refresh 用户下拉刷新时是否触发reload方法，默认为是
 	 * @property {Boolean} auto-scroll-to-top-when-reload reload时是否自动滚动到顶部，默认为是
 	 * @property {Boolean} auto-clean-list-when-reload reload时是否立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
 	 * @property {Boolean} show-refresher-when-reload 列表刷新时是否自动显示下拉刷新view，默认为否
-	 * @property {Boolean} show-loading-more-when-reload 列表刷新时自动显示加载更多view，且为加载中状态(仅初始设置有效，不可动态修改)
-	 * @property {Boolean} refresher-update-time-key 如果需要区别不同页面的最后更新时间，请为不同页面的z-paging的`refresher-update-time-key`设置不同的字符串
-	 * @property {Boolean} use-custom-refresher 是否使用自定义的下拉刷新，默认为是，即使用z-paging的下拉刷新。设置为false即代表使用uni scroll-view自带的下拉刷新，h5、App、微信小程序以外的平台不支持uni scroll-view自带的下拉刷新
 	 * @property {String|Object} refresher-default-text 自定义下拉刷新默认状态下的文字
 	 * @property {String|Object} refresher-pulling-text 自定义下拉刷新松手立即刷新状态下的文字
 	 * @property {String|Object} refresher-refreshing-text 自定义下拉刷新刷新中状态下的文字
 	 * @property {String|Object} refresher-complete-text 自定义下拉刷新刷新结束状态下的文字
 	 * @property {Boolean} refresher-end-bounce-enabled 是否开启自定义下拉刷新刷新结束回弹效果，默认为是
 	 * @property {Object} loading-more-custom-style 自定义底部加载更多样式
-	 * @property {Object} loading-more-loading-icon-custom-style 自定义底部加载更多加载中动画样式
-	 * @property {String} loading-more-loading-icon-type 自定义底部加载更多加载中动画图标类型，可选circle或flower，默认为circle
-	 * @property {String} loading-more-loading-icon-custom-image 自定义底部加载更多加载中动画图标图片
-	 * @property {Boolean} loading-more-loading-animated 底部加载更多加载中view是否展示旋转动画(loading-more-loading-icon-custom-image有值时有效，nvue无效)
 	 * @property {Boolean} loading-more-enabled 是否启用加载更多数据(含滑动到底部加载更多数据和点击加载更多数据)，默认为是
-	 * @property {Boolean} to-bottom-loading-more-enabled 是否启用滑动到底部加载更多数据
 	 * @property {String|Object} loading-more-default-text 滑动到底部"默认"文字，默认为【点击加载更多】
 	 * @property {String|Object} loading-more-loading-text 滑动到底部"加载中"文字，默认为【正在加载...】
 	 * @property {String|Object} loading-more-no-more-text 滑动到底部"没有更多"文字，默认为【没有更多了】
 	 * @property {String|Object} loading-more-fail-text 滑动到底部"加载失败"文字，默认为【加载失败，点击重新加载】
 	 * @property {Boolean} hide-loading-more-when-no-more-and-inside-of-paging 当没有更多数据且分页内容未超出z-paging时是否隐藏没有更多数据的view，默认为是
 	 * @property {Boolean} inside-more 当分页未满一屏时，是否自动加载更多(nvue无效)，默认为否
-	 * @property {Boolean} show-default-loading-more-text 是否显示默认的加载更多text，默认为是
-	 * @property {Boolean} show-loading-more-no-more-line 是否显示没有更多数据的分割线，默认为是
-	 * @property {Object} loading-more-no-more-line-custom-style 自定义底部没有更多数据的分割线样式
 	 * @property {Boolean} hide-empty-view 是否强制隐藏空数据图，默认为否
 	 * @property {String|Object} empty-view-text 空数据图描述文字，默认为“没有数据哦~”
 	 * @property {Boolean} show-empty-view-reload 是否显示空数据图重新加载按钮(无数据时)，默认为否
@@ -343,10 +324,6 @@ by ZXLee
 	 * @property {Object} empty-view-reload-style 空数据图重新加载按钮样式
 	 * @property {Boolean} empty-view-fixed 空数据图片是否铺满z-paging，默认为是。若设置为否，则为填充满z-paging的剩余部分
 	 * @property {Boolean} empty-view-center 空数据图片是否垂直居中，默认为是。emptyViewFixed为false时有效
-	 * @property {Boolean} auto-hide-empty-view-when-loading 加载中时是否自动隐藏空数据图，默认为是
-	 * @property {Boolean} auto-hide-empty-view-when-pull 用户下拉列表触发下拉刷新加载中时是否自动隐藏空数据图，默认为是
-	 * @property {Boolean} auto-hide-loading-after-first-loaded 第一次加载后是否自动隐藏loading slot，默认为是
-	 * @property {Boolean} loading-full-fixed loading slot是否铺满屏幕并固定，默认为否
 	 * @property {Boolean} auto-show-back-to-top 自动显示点击返回顶部按钮，默认为否
 	 * @property {Number|String} back-to-top-threshold 点击返回顶部按钮显示/隐藏的阈值(滚动距离)，单位为px，默认为400rpx
 	 * @property {String} back-to-top-img 点击返回顶部按钮的自定义图片地址，默认使用z-paging内置的图片
@@ -365,12 +342,7 @@ by ZXLee
 	 * @property {String} refresher-background 设置自定义下拉刷新区域背景颜色
 	 * @property {Boolean} show-refresher-update-time 是否显示上次下拉刷新更新时间，默认为否
 	 * @property {String} refresher-update-time-key 上次下拉刷新更新时间的key，用于区别不同的上次更新时间
-	 * @property {Number|String} local-paging-loading-time 本地分页时上拉加载更多延迟时间，单位为毫秒，默认200毫秒
 	 * @property {Boolean} use-chat-record-mode 使用聊天记录模式，默认为否
-	 * @property {Number} top-z-index slot="top"的view的z-index，仅使用页面滚动时有效，默认为99
-	 * @property {Number} super-content-z-index z-paging内容容器父view的z-index，默认为1
-	 * @property {Number} content-z-index z-paging内容容器部分的z-index，默认为10
-	 * @property {Number} empty-view-z-index 空数据view的z-index，默认为9
 	 * @property {Boolean} auto-full-height 使用页面滚动时，是否在不满屏时自动填充满屏幕，默认为是
 	 * @property {Boolean} concat 自动拼接complete中传过来的数组(使用聊天记录模式时无效)，默认为是
 	 * @property {String} nvue-list-is nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list
@@ -378,15 +350,13 @@ by ZXLee
 	 * @property {Boolean} nvue-bounce nvue 控制是否回弹效果，iOS不支持动态修改(若禁用回弹效果，下拉刷新将失效)，默认为是
 	 * @property {Boolean} nvue-fast-scroll nvue中通过代码滚动到顶部/底部时，是否加快动画效果(无滚动动画时无效)，默认为否
 	 * @property {String} nvue-list-id nvue中list的id
-	 * @property {Object} nvue-refresher-style nvue中refresh组件的样式
-	 * @property {Boolean} hide-nvue-bottom-tag 是否隐藏nvue列表底部的tagView，此view用于标识滚动到底部位置，若隐藏则滚动到底部功能将失效，在nvue中实现吸顶+swiper功能时需将最外层z-paging的此属性设置为true。默认为否
 	 * @property {Boolean} show-console-error 是否将错误信息打印至控制台，默认为是
 	 * @event {Function} query 下拉刷新或滚动到底部时会自动触发此方法。z-paging加载时也会触发(若要禁止，请设置:auto="false")。pageNo和pageSize会自动计算好，直接传给服务器即可。
-	 * @event {Function} refresherStatusChange 自定义下拉刷新状态改变(use-custom-refresher为true时生效)【注：通过`:refresher-status.sync`绑定当前data中的指定变量亦可】
+	 * @event {Function} refresherStatusChange 自定义下拉刷新状态改变(use-custom-refresher为true时生效)
 	 * @event {Function} loadingStatusChange 上拉加载更多状态改变
-	 * @event {Function} refresherTouchstart 自定义下拉刷新下拉开始(use-custom-refresher为true时生效)【注：当需要更细致定制自定义下拉刷新时使用，如果只需监听下拉刷新各个状态改变，使用`refresherStatusChange`即可】
-	 * @event {Function} refresherTouchmove 自定义下拉刷新下拉中开始(use-custom-refresher为true时生效)【注：当需要更细致定制自定义下拉刷新时使用，如果只需监听下拉刷新各个状态改变，使用`refresherStatusChange`即可】
-	 * @event {Function} refresherTouchend 自定义下拉刷新下拉结束(use-custom-refresher为true时生效)【注：当需要更细致定制自定义下拉刷新时使用，如果只需监听下拉刷新各个状态改变，使用`refresherStatusChange`即可】
+	 * @event {Function} refresherTouchstart 自定义下拉刷新下拉开始(use-custom-refresher为true时生效)
+	 * @event {Function} refresherTouchmove 自定义下拉刷新下拉中开始(use-custom-refresher为true时生效)
+	 * @event {Function} refresherTouchend 自定义下拉刷新下拉结束(use-custom-refresher为true时生效)
 	 * @event {Function} onRefresh 自定义下拉刷新被触发
 	 * @event {Function} onRestore 自定义下拉刷新被复位
 	 * @event {Function} scroll `z-paging`内置的scroll-view滚动时触发
