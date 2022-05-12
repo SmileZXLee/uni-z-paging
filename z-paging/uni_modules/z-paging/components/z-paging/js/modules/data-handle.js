@@ -485,18 +485,14 @@ const ZPData = {
 			data = dataTypeRes.data;
 			success = dataTypeRes.success;
 			let delayTime = c.delayTime;
-			let shouldEndLoadingDelay = true;
 			// #ifdef APP-NVUE
-			if (this.useChatRecordMode) {
-				delayTime = 0
-			}
-			shouldEndLoadingDelay = false;
+			if (this.useChatRecordMode) delayTime = 0;
 			// #endif
 			this.loadingForNow = false;
 			setTimeout(() => {
 				this.pagingLoaded = true;
 				this.$nextTick(()=>{
-					this._refresherEnd(shouldEndLoadingDelay, true, tempIsUserPullDown);
+					this._refresherEnd(delayTime > 0, true, tempIsUserPullDown);
 				})
 			}, delayTime)
 			if (this.isFirstPage) {
