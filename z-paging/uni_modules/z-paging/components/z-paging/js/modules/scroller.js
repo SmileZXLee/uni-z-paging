@@ -53,6 +53,7 @@ const ZPScroller = {
 			scrollTop: 0,
 			oldScrollTop: 0,
 			scrollViewStyle: {},
+			scrollViewContainerStyle: {},
 			scrollViewInStyle: {},
 			pageScrollTop: -1,
 			scrollEnable: true,
@@ -440,6 +441,14 @@ const ZPScroller = {
 					});
 				}, delayTime)
 			})
+		},
+		//更新scrollViewContainerStyle，使其高度等于父view高度，用于解决在部分低版本系统中出现的flex布局中100%高度无效导致的列表无法展示的问题
+		_updateScrollViewContainerStyle(){
+			this._getNodeClientRect('.zp-view-super').then((res) => {
+				if (res) {
+					this.scrollViewContainerStyle = {height: res[0].height + 'px'};
+				}
+			});
 		},
 	}
 }

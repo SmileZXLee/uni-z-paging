@@ -231,10 +231,13 @@ export default {
 		// #endif
 		// #ifndef APP-NVUE
 		this.finalUseVirtualList && this._virtualListInit();
+		this.$nextTick(() => {
+			!this.usePageScroll && systemInfo.system.indexOf('iOS 10') !== -1 && this._updateScrollViewContainerStyle();
+		})
 		// #endif
 		// #ifndef APP-PLUS
-		this.$nextTick(()=>{
-			setTimeout(()=>{
+		this.$nextTick(() => {
+			setTimeout(() => {
 				this._getCssSafeAreaInsetBottom();
 			},delay)
 		})

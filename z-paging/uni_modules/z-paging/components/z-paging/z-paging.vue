@@ -27,7 +27,7 @@ by ZXLee
 			<view v-if="$slots.left" class="zp-page-left">
 				<slot name="left" />
 			</view>
-			<view class="zp-scroll-view-container">
+			<view class="zp-scroll-view-container" :style="[scrollViewContainerStyle]">
 				<scroll-view
 					ref="zp-scroll-view" :class="{'zp-scroll-view':true,'zp-scroll-view-absolute':!usePageScroll,'zp-scroll-view-hide-scrollbar':!showScrollbar}"
 					:scroll-top="scrollTop" :scroll-x="scrollX"
