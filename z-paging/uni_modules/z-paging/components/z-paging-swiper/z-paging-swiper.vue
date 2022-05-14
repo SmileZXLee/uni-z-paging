@@ -14,7 +14,7 @@
 			<view v-if="$slots.left" class="zp-swiper-left">
 				<slot name="left" />
 			</view>
-			<view class="zp-swiper">
+			<view :class="{'zp-swiper':true,'zp-swiper-absoulte':isIos10}">
 				<slot />
 			</view>
 			<view v-if="$slots.right" class="zp-swiper-right">
@@ -31,7 +31,8 @@
 		data() {
 			return {
 				systemInfo: null,
-				cssSafeAreaInsetBottom: -1
+				cssSafeAreaInsetBottom: -1,
+				isIos10: uni.getSystemInfoSync().system.indexOf('iOS 10') !== -1
 			};
 		},
 		props: {
@@ -158,6 +159,15 @@
 		flex: 1;
 		/* #ifndef APP-NVUE */
 		height: 100%;
+		width: 100%;
+		/* #endif */
+	}
+	
+	.zp-swiper-absoulte {
+		/* #ifndef APP-NVUE */
+		position: absolute;
+		left: 0;
+		top: 0;
 		/* #endif */
 	}
 	
