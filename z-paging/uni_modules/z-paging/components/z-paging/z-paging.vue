@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-v2.2.8 (2022-05-08)
+v2.2.9 (2022-05-08)
 by ZXLee
 -->
 <!-- API文档地址：https://z-paging.zxlee.cn -->
@@ -286,8 +286,6 @@ by ZXLee
 	 * @property {String} default-theme-style loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
 	 * @property {String} refresher-theme-style 下拉刷新的主题样式，支持black，white，默认black
 	 * @property {Boolean} refresher-only 是否只使用下拉刷新，设置为true后将关闭mounted自动请求数据、关闭滚动到底部加载更多，强制隐藏空数据图。默认为否
-	 * @property {Number|String} refresher-complete-delay 自定义下拉刷新结束以后延迟收回的时间，单位为毫秒，默认为0
-	 * @property {Number|String} refresher-complete-duration 自定义下拉刷新结束收回的动画时间，单位为毫秒，默认为300毫秒，nvue无效
 	 * @property {Boolean} use-page-scroll 使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
 	 * @property {Boolean} use-virtual-list 是否使用虚拟列表，默认为否
 	 * @property {Boolean} fixed z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为是(当使用内置scroll-view滚动时有效)
