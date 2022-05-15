@@ -419,7 +419,7 @@ const ZPScroller = {
 			// #endif
 			this.$nextTick(() => {
 				let delayTime = 0;
-				// #ifdef MP-BAIDU
+				// #ifdef MP-BAIDU || APP-NVUE
 				delayTime = 10;
 				// #endif
 				setTimeout(() => {

@@ -332,7 +332,6 @@ by ZXLee
 	 * @property {Object} back-to-top-style 点击返回顶部按钮的自定义样式
 	 * @property {Boolean} show-scrollbar 控制是否出现滚动条，默认为是
 	 * @property {Boolean} scroll-x 是否允许横向滚动，默认为否
-	 * @property {Boolean} scroll-to-top-bounce-enabled iOS设备上滚动到顶部时是否允许回弹效果，默认为否。关闭回弹效果后可使滚动到顶部与下拉刷新更连贯，但是有吸顶view时滚动到顶部时可能出现抖动。
 	 * @property {String} scroll-into-view 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素
 	 * @property {Number|String} lower-threshold 距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为100rpx
 	 * @property {Boolean} enable-back-to-top iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向，默认为是
@@ -344,13 +343,9 @@ by ZXLee
 	 * @property {String} refresher-update-time-key 上次下拉刷新更新时间的key，用于区别不同的上次更新时间
 	 * @property {Boolean} use-chat-record-mode 使用聊天记录模式，默认为否
 	 * @property {Boolean} auto-full-height 使用页面滚动时，是否在不满屏时自动填充满屏幕，默认为是
-	 * @property {Boolean} concat 自动拼接complete中传过来的数组(使用聊天记录模式时无效)，默认为是
 	 * @property {String} nvue-list-is nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list
 	 * @property {Object} nvue-waterfall-config nvue waterfall配置，仅在nvue中且nvueListIs=waterfall时有效，配置参数详情参见：https://uniapp.dcloud.io/component/waterfall
 	 * @property {Boolean} nvue-bounce nvue 控制是否回弹效果，iOS不支持动态修改(若禁用回弹效果，下拉刷新将失效)，默认为是
-	 * @property {Boolean} nvue-fast-scroll nvue中通过代码滚动到顶部/底部时，是否加快动画效果(无滚动动画时无效)，默认为否
-	 * @property {String} nvue-list-id nvue中list的id
-	 * @property {Boolean} show-console-error 是否将错误信息打印至控制台，默认为是
 	 * @event {Function} query 下拉刷新或滚动到底部时会自动触发此方法。z-paging加载时也会触发(若要禁止，请设置:auto="false")。pageNo和pageSize会自动计算好，直接传给服务器即可。
 	 * @event {Function} refresherStatusChange 自定义下拉刷新状态改变(use-custom-refresher为true时生效)
 	 * @event {Function} loadingStatusChange 上拉加载更多状态改变
@@ -360,7 +355,6 @@ by ZXLee
 	 * @event {Function} onRefresh 自定义下拉刷新被触发
 	 * @event {Function} onRestore 自定义下拉刷新被复位
 	 * @event {Function} scroll `z-paging`内置的scroll-view滚动时触发
-	 * @event {Function} scrollTopChange scrollTop改变时触发，使用点击返回顶部时需要获取scrollTop时可使用此事件【注：通过`:scroll-top.sync`绑定当前data中的指定变量亦可】(@scrolltoupper触发时，也会自动触发此方法，且scrollTop=0)
 	 * @event {Function} scrolltolower `z-paging`内置的scroll-view滚动底部时触发
 	 * @event {Function} scrolltoupper `z-paging`内置的scroll-view滚动顶部时触发
 	 * @event {Function} listChange 分页渲染的数组改变时触发
