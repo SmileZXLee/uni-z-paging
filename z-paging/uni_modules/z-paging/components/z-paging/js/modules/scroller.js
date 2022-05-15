@@ -58,7 +58,7 @@ const ZPScroller = {
 			pageScrollTop: -1,
 			scrollEnable: true,
 			privateScrollWithAnimation: -1,
-			cacheScrollNodeHeight: -1,
+			cacheScrollNodeHeight: -1
 		}
 	},
 	watch: {
@@ -114,6 +114,9 @@ const ZPScroller = {
 		finalScrollTop() {
 			return this.usePageScroll ? this.pageScrollTop : this.oldScrollTop;
 		},
+		finalIos10Absoulte() {
+			return this.isIos10 && !this.usePageScroll;
+		}
 	},
 	methods: {
 		//滚动到顶部，animate为是否展示滚动动画，默认为是
@@ -442,14 +445,27 @@ const ZPScroller = {
 				}, delayTime)
 			})
 		},
-		//更新scrollViewContainerStyle，使其高度等于父view高度，用于解决在部分低版本系统中出现的flex布局中100%高度无效导致的列表无法展示的问题
-		_updateScrollViewContainerStyle(){
-			this._getNodeClientRect('.zp-view-super').then((res) => {
-				if (res) {
-					this.scrollViewContainerStyle = {height: res[0].height + 'px'};
-				}
-			});
-		},
+		//获取slot="left"和slot="right"宽度并且更新布局
+		_updateLeftAndRightWidth(){
+			// #ifdef APP-NVUE
+			return;
+			// #endif
+			if (!this.finalIos10Absoulte) return;
+			this.$nextTick(() => {
+				let delayTime = 0;
+				// #ifdef MP-BAIDU
+				delayTime = 10;
+				// #endif
+				setTimeout(() => {
+					this._getNodeClientRect('.zp-page-left').then((res) => {
+						this.scrollViewContainerStyle['left'] = res ? res[0].width + 'px' : 0;
+					});
+					this._getNodeClientRect('.zp-page-right').then((res) => {
+						this.scrollViewContainerStyle['right'] = res ? res[0].width + 'px' : 0;
+					});
+				}, delayTime)
+			})
+		}
 	}
 }
 

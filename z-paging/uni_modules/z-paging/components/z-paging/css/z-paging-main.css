@@ -57,8 +57,22 @@
 
 .zp-scroll-view-container,.zp-scroll-view {
 	position: relative;
+	/* #ifndef APP-NVUE */
 	height: 100%;
 	width: 100%;
+	/* #endif */
+}
+
+.zp-absoulte{
+	/* #ifndef APP-NVUE */
+	position: absolute;
+	top: 0;
+	width: auto;
+	/* #endif */
+}
+
+.zp-right{
+	right: 0;
 }
 
 .zp-scroll-view-absolute {

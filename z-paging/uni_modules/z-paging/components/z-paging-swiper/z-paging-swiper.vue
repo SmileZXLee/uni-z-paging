@@ -11,13 +11,13 @@
 		<!-- #endif -->
 		<slot v-if="$slots.top" name="top" />
 		<view class="zp-swiper-super">
-			<view v-if="$slots.left" class="zp-swiper-left">
+			<view v-if="$slots.left" :class="{'zp-swiper-left':true,'zp-absoulte':isIos10}">
 				<slot name="left" />
 			</view>
-			<view :class="{'zp-swiper':true,'zp-swiper-absoulte':isIos10}">
+			<view :class="{'zp-swiper':true,'zp-absoulte':isIos10}" :style="[swiperContentStyle]">
 				<slot />
 			</view>
-			<view v-if="$slots.right" class="zp-swiper-right">
+			<view v-if="$slots.right" :class="{'zp-swiper-right':true,'zp-absoulte zp-right':isIos10}">
 				<slot name="right" />
 			</view>
 		</view>
@@ -32,7 +32,8 @@
 			return {
 				systemInfo: null,
 				cssSafeAreaInsetBottom: -1,
-				isIos10: uni.getSystemInfoSync().system.indexOf('iOS 10') !== -1
+				isIos10: uni.getSystemInfoSync().system.indexOf('iOS 10') !== -1,
+				swiperContentStyle: {}
 			};
 		},
 		props: {
@@ -61,6 +62,7 @@
 			// #ifndef APP-PLUS
 			this._getCssSafeAreaInsetBottom();
 			// #endif
+			this._updateLeftAndRightWidth();
 		},
 		computed: {
 			finalSwiperStyle() {
@@ -107,6 +109,29 @@
 						this.cssSafeAreaInsetBottom = res.height;
 					}
 				}).exec();
+			},
+			//获取slot="left"和slot="right"宽度并且更新布局
+			_updateLeftAndRightWidth(){
+				// #ifdef APP-NVUE
+				return;
+				// #endif
+				if (!this.isIos10) return;
+				this.$nextTick(() => {
+					let delayTime = 0;
+					// #ifdef MP-BAIDU
+					delayTime = 10;
+					// #endif
+					setTimeout(() => {
+						const query = uni.createSelectorQuery().in(this);
+						this.swiperContentStyle = {}
+						query.select('.zp-swiper-left').boundingClientRect(res => {
+							this.swiperContentStyle['left'] = res ? res.width + 'px' : 0;
+						}).exec();
+						query.select('.zp-swiper-right').boundingClientRect(res => {
+							this.swiperContentStyle['right'] = res ? res.width + 'px' : 0;
+						}).exec();
+					}, delayTime)
+				})
 			}
 		}
 	}
@@ -154,6 +179,8 @@
 		height: 100%;
 		/* #endif */
 	}
+	
+	
 
 	.zp-swiper {
 		flex: 1;
@@ -163,12 +190,16 @@
 		/* #endif */
 	}
 	
-	.zp-swiper-absoulte {
+	.zp-absoulte {
 		/* #ifndef APP-NVUE */
 		position: absolute;
-		left: 0;
 		top: 0;
+		width: auto;
 		/* #endif */
+	}
+	
+	.zp-right{
+		right: 0;
 	}
 	
 	.zp-swiper-item {

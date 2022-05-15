@@ -74,6 +74,7 @@ export default {
 			disabledBounce: false,
 			fromCompleteEmit: false,
 			disabledCompleteEmit: false,
+			isIos10: systemInfo.system.indexOf('iOS 10') !== -1,
 			
 			//---------------wxs相关---------------
 			wxsIsScrollTopInTopRange: true,
@@ -217,6 +218,7 @@ export default {
 		})
 		this.updatePageScrollTopHeight();
 		this.updatePageScrollBottomHeight();
+		this._updateLeftAndRightWidth();
 		if (this.finalRefresherEnabled && this.useCustomRefresher) {
 			this.$nextTick(() => {
 				this.isTouchmoving = true;
@@ -231,9 +233,6 @@ export default {
 		// #endif
 		// #ifndef APP-NVUE
 		this.finalUseVirtualList && this._virtualListInit();
-		this.$nextTick(() => {
-			!this.usePageScroll && systemInfo.system.indexOf('iOS 10') !== -1 && this._updateScrollViewContainerStyle();
-		})
 		// #endif
 		// #ifndef APP-PLUS
 		this.$nextTick(() => {
