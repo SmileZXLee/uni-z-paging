@@ -1,6 +1,14 @@
 const loadingTime = 500;
 const showLog = false;
-/* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件 */
+
+/* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件。实际项目中在queryList中调用自己的请求即可 */
+/* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件。实际项目中在queryList中调用自己的请求即可 */
+/* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件。实际项目中在queryList中调用自己的请求即可 */
+/* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件。实际项目中在queryList中调用自己的请求即可 */
+/* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件。实际项目中在queryList中调用自己的请求即可 */
+/* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件。实际项目中在queryList中调用自己的请求即可 */
+/* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件。实际项目中在queryList中调用自己的请求即可 */
+/* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件。实际项目中在queryList中调用自己的请求即可 */
 
 function queryList(data) {
 	const listCount = 24;
