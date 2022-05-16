@@ -1,7 +1,7 @@
 <!-- [z-paging]上拉加载更多view -->
 
 <template>
-	<view class="zp-l-container" :style="[zConfig.customStyle]">
+	<view class="zp-l-container" :style="[zConfig.customStyle]" @click="doClick">
 		<template v-if="!zConfig.hideContent">
 			<text v-if="zConfig.showNoMoreLine&&finalStatus===2" :class="zConfig.defaultThemeStyle==='white'?'zp-l-line zp-l-line-white':'zp-l-line zp-l-line-black'"
 				:style="[zConfig.noMoreLineCustomStyle]" />
@@ -45,6 +45,11 @@
 			finalStatus() {
 				if (this.zConfig.defaultAsLoading && this.zConfig.status === 0) return 1;
 				return this.zConfig.status;
+			}
+		},
+		methods: {
+			doClick() {
+				this.$emit('doClick');
 			}
 		}
 	}
