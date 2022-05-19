@@ -85,13 +85,15 @@ const ZPVirtualList = {
 				fixed: 0,
 				dynamic: 0
 			},
-			pagingOrgTop: -1
+			pagingOrgTop: -1,
+			updateVirtualListFromDataChange: false
 		}
 	},
 	watch: {
 		realTotalData(newVal) {
 			// #ifndef APP-NVUE
 			if (this.finalUseVirtualList) {
+				this.updateVirtualListFromDataChange = true;
 				this.$nextTick(() => {
 					if (!newVal.length) {
 						this._resetDynamicListState(!this.isUserPullDown);
@@ -329,7 +331,9 @@ const ZPVirtualList = {
 		},
 		//更新virtualList
 		_updateVirtualList() {
-			if (this.lastVirtualTopRangeIndex !== this.virtualTopRangeIndex || this.lastVirtualBottomRangeIndex !== this.virtualBottomRangeIndex) {
+			const shouldUpdateList = this.updateVirtualListFromDataChange || (this.lastVirtualTopRangeIndex !== this.virtualTopRangeIndex || this.lastVirtualBottomRangeIndex !== this.virtualBottomRangeIndex);
+			if (shouldUpdateList) {
+				this.updateVirtualListFromDataChange = false;
 				this.lastVirtualTopRangeIndex =  this.virtualTopRangeIndex;
 				this.lastVirtualBottomRangeIndex =  this.virtualBottomRangeIndex;
 				this.virtualList = this.realTotalData.slice(this.virtualTopRangeIndex, this.virtualBottomRangeIndex + 1);
