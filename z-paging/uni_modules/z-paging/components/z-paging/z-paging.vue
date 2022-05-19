@@ -24,10 +24,10 @@ by ZXLee
 			<slot name="top" />
 		</view>
 		<view :class="{'zp-view-super':true,'zp-scroll-view-super':!usePageScroll}" :style="[finalScrollViewStyle]">
-			<view v-if="$slots.left" :class="{'zp-page-left':true,'zp-absoulte':finalIos10Absoulte}">
+			<view v-if="$slots.left" :class="{'zp-page-left':true,'zp-absoulte':finalIsOldWebView}">
 				<slot name="left" />
 			</view>
-			<view :class="{'zp-scroll-view-container':true,'zp-absoulte':finalIos10Absoulte}" :style="[scrollViewContainerStyle]">
+			<view :class="{'zp-scroll-view-container':true,'zp-absoulte':finalIsOldWebView}" :style="[scrollViewContainerStyle]">
 				<scroll-view
 					ref="zp-scroll-view" :class="{'zp-scroll-view':true,'zp-scroll-view-absolute':!usePageScroll,'zp-scroll-view-hide-scrollbar':!showScrollbar}"
 					:scroll-top="scrollTop" :scroll-x="scrollX"
@@ -137,7 +137,7 @@ by ZXLee
 					</view>
 				</scroll-view>
 			</view>
-			<view v-if="$slots.right" :class="{'zp-page-right':true,'zp-absoulte zp-right':finalIos10Absoulte}">
+			<view v-if="$slots.right" :class="{'zp-page-right':true,'zp-absoulte zp-right':finalIsOldWebView}">
 				<slot name="right" />
 			</view>
 		</view>

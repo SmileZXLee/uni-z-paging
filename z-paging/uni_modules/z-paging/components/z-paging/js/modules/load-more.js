@@ -166,8 +166,8 @@ const ZPLoadMore = {
 	},
 	methods: {
 		//手动触发上拉加载更多(非必须，可依据具体需求使用)
-		doLoadMore() {
-			this._onLoadingMore('toBottom');
+		doLoadMore(type) {
+			this._onLoadingMore(type);
 		},
 		//通过@scroll事件检测是否滚动到了底部
 		_checkScrolledToBottom(scrollDiff, checked = false) {

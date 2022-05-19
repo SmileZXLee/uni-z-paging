@@ -713,6 +713,8 @@ const ZPData = {
 			if (dataType === '[object Boolean]') {
 				success = data;
 				data = [];
+			} else if (dataType === '[object Null]') {
+				data = [];
 			} else if (dataType !== '[object Array]') {
 				data = [];
 				let methodStr = isLocal ? 'setLocalPaging' : 'complete';

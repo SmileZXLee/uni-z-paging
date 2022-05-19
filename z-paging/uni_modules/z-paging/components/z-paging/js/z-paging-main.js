@@ -74,7 +74,6 @@ export default {
 			disabledBounce: false,
 			fromCompleteEmit: false,
 			disabledCompleteEmit: false,
-			isIos10: systemInfo.system.indexOf('iOS 10') !== -1,
 			
 			//---------------wxs相关---------------
 			wxsIsScrollTopInTopRange: true,
@@ -375,6 +374,21 @@ export default {
 			}
 			return windowBottom;
 		},
+		isOldWebView() {
+			// #ifndef APP-NVUE
+			try {
+				const systemInfos = systemInfo.system.split(' ');
+				const deviceType = systemInfos[0];
+				const version = parseInt(systemInfos[1].slice(0,1));
+				if ((deviceType === 'iOS' && version <= 10) || (deviceType === 'Android' && version <= 6)) {
+					return true;
+				}
+			} catch(e){
+				return false;
+			}
+			// #endif
+			return false;
+		}
 	},
 	methods: {
 		//当前版本号

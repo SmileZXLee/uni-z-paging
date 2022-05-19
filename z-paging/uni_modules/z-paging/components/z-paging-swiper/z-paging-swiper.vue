@@ -32,7 +32,6 @@
 			return {
 				systemInfo: null,
 				cssSafeAreaInsetBottom: -1,
-				isIos10: uni.getSystemInfoSync().system.indexOf('iOS 10') !== -1,
 				swiperContentStyle: {}
 			};
 		},
@@ -98,6 +97,21 @@
 				safeAreaBottom = this.cssSafeAreaInsetBottom === -1 ? 0 : this.cssSafeAreaInsetBottom;
 				// #endif
 				return safeAreaBottom;
+			},
+			isOldWebView() {
+				// #ifndef APP-NVUE
+				try {
+					const systemInfos = uni.getSystemInfoSync().system.split(' ');
+					const deviceType = systemInfos[0];
+					const version = parseInt(systemInfos[1].slice(0,1));
+					if ((deviceType === 'iOS' && version <= 10) || (deviceType === 'Android' && version <= 6)) {
+						return true;
+					}
+				} catch(e){
+					return false;
+				}
+				// #endif
+				return false;
 			}
 		},
 		methods: {
@@ -112,10 +126,7 @@
 			},
 			//获取slot="left"和slot="right"宽度并且更新布局
 			_updateLeftAndRightWidth(){
-				// #ifdef APP-NVUE
-				return;
-				// #endif
-				if (!this.isIos10) return;
+				if (!this.isOldWebView) return;
 				this.$nextTick(() => {
 					let delayTime = 0;
 					// #ifdef MP-BAIDU

@@ -114,8 +114,8 @@ const ZPScroller = {
 		finalScrollTop() {
 			return this.usePageScroll ? this.pageScrollTop : this.oldScrollTop;
 		},
-		finalIos10Absoulte() {
-			return this.isIos10 && !this.usePageScroll;
+		finalIsOldWebView() {
+			return this.isOldWebView && !this.usePageScroll;
 		}
 	},
 	methods: {
@@ -447,10 +447,7 @@ const ZPScroller = {
 		},
 		//获取slot="left"和slot="right"宽度并且更新布局
 		_updateLeftAndRightWidth(){
-			// #ifdef APP-NVUE
-			return;
-			// #endif
-			if (!this.finalIos10Absoulte) return;
+			if (!this.finalIsOldWebView) return;
 			this.$nextTick(() => {
 				let delayTime = 0;
 				// #ifdef MP-BAIDU
