@@ -1,0 +1,28 @@
+// [z-tabs]微信小程序、QQ小程序、app-vue、h5上使用wxs实现tab底部dot切换动画，降低逻辑层与视图层的通信折损，提升性能
+
+function propObserver(newValue, oldValue, ownerIns, ins) {
+	if (newValue && newValue.transition) {
+		_setTransformValue(newValue.transformValue, newValue.transition, ins);
+	}
+}
+
+function _setTransformValue(value, transition, ins) {
+	value = value || 0;
+	_setTransform('translateX(' + value + 'px)', transition, ins);
+}
+
+function _setTransform(transform, transition, ins) {
+	if (transform == 'translateY(0px)') {
+		transform = 'none';
+	}
+	ins.requestAnimationFrame(function() {
+		ins.setStyle({
+			'transform': transform,
+			'transition': transition
+		});
+	})
+}
+
+module.exports = {
+	propObserver: propObserver
+}

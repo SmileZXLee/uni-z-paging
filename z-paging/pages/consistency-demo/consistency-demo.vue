@@ -8,7 +8,7 @@
 		<!-- data-key需要绑定一个在切换tab时会跟着改变的且能标识当前切换tab标识的变量 -->
 		<z-paging ref="paging" v-model="dataList" :data-key="tabIndex" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
-			<tabs-view slot="top" @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
+			<z-tabs slot="top" @change="tabChange" :list="['测试1','测试2','测试3','测试4']"></z-tabs>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
 				<view class="item-title">{{item.title}}</view>

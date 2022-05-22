@@ -5,7 +5,7 @@
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<view slot="top">
 				<view class="language-view" @click="languageSwitch">当前语言：[{{language}}] 点击切换</view>
-				<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
+				<z-tabs slot="top" @change="tabChange" :list="['测试1','测试2','测试3','测试4']"></z-tabs>
 			</view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">

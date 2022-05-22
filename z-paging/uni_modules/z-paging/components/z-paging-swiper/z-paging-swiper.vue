@@ -11,13 +11,13 @@
 		<!-- #endif -->
 		<slot v-if="$slots.top" name="top" />
 		<view class="zp-swiper-super">
-			<view v-if="$slots.left" :class="{'zp-swiper-left':true,'zp-absoulte':isIos10}">
+			<view v-if="$slots.left" :class="{'zp-swiper-left':true,'zp-absoulte':isOldWebView}">
 				<slot name="left" />
 			</view>
-			<view :class="{'zp-swiper':true,'zp-absoulte':isIos10}" :style="[swiperContentStyle]">
+			<view :class="{'zp-swiper':true,'zp-absoulte':isOldWebView}" :style="[swiperContentStyle]">
 				<slot />
 			</view>
-			<view v-if="$slots.right" :class="{'zp-swiper-right':true,'zp-absoulte zp-right':isIos10}">
+			<view v-if="$slots.right" :class="{'zp-swiper-right':true,'zp-absoulte zp-right':isOldWebView}">
 				<slot name="right" />
 			</view>
 		</view>

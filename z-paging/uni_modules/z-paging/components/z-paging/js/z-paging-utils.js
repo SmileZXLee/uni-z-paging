@@ -11,6 +11,7 @@ let config = null;
 当z-paging未使用uni_modules管理时，控制台会有警告：WARNING: Module not found: Error: Can't resolve '@/uni_modules/z-paging'...
 此时注释下方try中的代码即可
 */
+// #ifdef VUE2
 try {
 	const contextKeys = require.context('@/uni_modules/z-paging', false, /\z-paging-config$/).keys();
 	if (contextKeys.length) {
@@ -18,6 +19,7 @@ try {
 		config = require('@/uni_modules/z-paging/z-paging-config' + suffix);
 	}
 } catch (e) {}
+// #endif
 
 //获取默认配置信息
 function gc(key, defaultValue) {
