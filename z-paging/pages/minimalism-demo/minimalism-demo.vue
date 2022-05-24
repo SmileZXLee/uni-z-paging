@@ -9,7 +9,7 @@
 				<view class="notice">
 					<view>最大程度简化重复代码，具体写法和说明请查阅demo源码</view>
 				</view>
-				<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
+				<z-tabs @change="tabChange" :list="tabList"></z-tabs>
 			</view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<view class="item" v-for="(item,index) in zList" :key="index" @click="itemClick(item)">
@@ -25,6 +25,7 @@
 	export default {
 		data() {
 			return {
+				tabList: ['测试1','测试2','测试3','测试4'],
 				tabIndex: 0,
 				zList: []
 			}

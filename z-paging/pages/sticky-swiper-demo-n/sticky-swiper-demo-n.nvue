@@ -17,7 +17,7 @@
 		<cell>
 			<view :style="'height:' + pageHeight + 'px'">
 				<!-- 吸顶view -->
-				<tabs-view @change="tabsChange" :current="current" :items="tabList"></tabs-view>
+				<z-tabs slot="top" @change="tabChange" :list="tabList" :current="current"></z-tabs>
 				<!-- swiper -->
 				<swiper class="swiper" :current="current" @transition="transition" @animationfinish="animationfinish"
 					@change="onswiperchange">
@@ -79,7 +79,7 @@
 				});
 			},
 			// tabs通知swiper切换
-			tabsChange(index) {
+			tabChange(index) {
 				this.current = index;
 			},
 			// swiper-item左右移动，通知tabs的滑块跟随移动

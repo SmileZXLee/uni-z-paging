@@ -62,6 +62,11 @@
 			this._getCssSafeAreaInsetBottom();
 			// #endif
 			this._updateLeftAndRightWidth();
+
+			this.swiperContentStyle = {'flex': '1'};
+			// #ifndef APP-NVUE
+			this.swiperContentStyle = {width: '100%',height: '100%'};
+			// #endif
 		},
 		computed: {
 			finalSwiperStyle() {
@@ -134,7 +139,6 @@
 					// #endif
 					setTimeout(() => {
 						const query = uni.createSelectorQuery().in(this);
-						this.swiperContentStyle = {}
 						query.select('.zp-swiper-left').boundingClientRect(res => {
 							this.swiperContentStyle['left'] = res ? res.width + 'px' : 0;
 						}).exec();
@@ -190,8 +194,6 @@
 		height: 100%;
 		/* #endif */
 	}
-	
-	
 
 	.zp-swiper {
 		flex: 1;

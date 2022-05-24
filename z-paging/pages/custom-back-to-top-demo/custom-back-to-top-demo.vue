@@ -3,7 +3,7 @@
 	<view class="content">
 		<z-paging @scroll="scroll" ref="paging" v-model="dataList" auto-show-back-to-top @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
-			<z-tabs slot="top" @change="tabChange" :list="['测试1','测试2','测试3','测试4']"></z-tabs>
+			<z-tabs slot="top" @change="tabChange" :list="tabList"></z-tabs>
 			<!-- 自定义返回顶部view -->
 			<custom-back-to-top slot="backToTop" ref="backToTop" :current="current" :total="total"></custom-back-to-top>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
@@ -22,6 +22,7 @@
 			return {
 				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
 				dataList: [],
+				tabList: ['测试1','测试2','测试3','测试4'],
 				tabIndex: 0,
 				current: 0,
 				total: 0

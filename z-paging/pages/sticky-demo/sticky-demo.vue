@@ -10,7 +10,7 @@
 			</view>
 			<!-- 小程序中直接修改组件style为position: sticky;无效，需要在组件外层套一层view -->
 			<view style="z-index: 100;position: sticky;top :0;">
-				<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
+				<z-tabs @change="tabChange" :list="tabList"></z-tabs>
 			</view>
 			<!-- 自定义下拉刷新view -->
 			<!-- 注意注意注意！！如果您的项目不是QQ小程序，:status="refresherStatus有更简化的写法，请参阅custom-demo.vue -->
@@ -30,6 +30,7 @@
 			return {
 				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
 				dataList: [],
+				tabList: ['测试1','测试2','测试3','测试4'],
 				tabIndex: 0,
 				refresherStatus: 0
 			}

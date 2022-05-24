@@ -3,7 +3,7 @@
 	<view class="content">
 		<z-paging ref="paging" v-model="dataList" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
-			<z-tabs slot="top" @change="tabChange" :list="['测试1','测试2','测试3','测试4']"></z-tabs>
+			<z-tabs slot="top" @change="tabChange" :list="tabList"></z-tabs>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item,index)">
 				<view class="item-title">{{item.title}}</view>
@@ -20,7 +20,8 @@
 			return {
 				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
 				dataList: [],
-				tabIndex: 0
+				tabList: ['测试1','测试2','测试3','测试4'],
+				tabIndex: 0,
 			}
 		},
 		methods: {

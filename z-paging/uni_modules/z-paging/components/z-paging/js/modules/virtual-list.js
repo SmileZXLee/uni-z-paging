@@ -271,10 +271,10 @@ const ZPVirtualList = {
 					lastHeightCache = heightCacheList.slice(-1)[0];
 				}
 				let startTopRangeIndex = this.virtualTopRangeIndex;
-				if(scrollDirection === 'bottom'){
+				if (scrollDirection === 'bottom') {
 					for (let i = startTopRangeIndex; i < heightCacheList.length;i++){
 						const heightCacheItem = heightCacheList[i];
-						if(heightCacheItem && heightCacheItem.totalHeight > topRangePageOffset){
+						if (heightCacheItem && heightCacheItem.totalHeight > topRangePageOffset) {
 							this.virtualTopRangeIndex = i;
 							this.virtualPlaceholderTopHeight = heightCacheItem.lastHeight;
 							break;
@@ -284,7 +284,7 @@ const ZPVirtualList = {
 					let topRangeMatched = false;
 					for (let i = startTopRangeIndex; i >= 0;i--){
 						const heightCacheItem = heightCacheList[i];
-						if(heightCacheItem && heightCacheItem.totalHeight < topRangePageOffset){
+						if (heightCacheItem && heightCacheItem.totalHeight < topRangePageOffset) {
 							this.virtualTopRangeIndex = i;
 							this.virtualPlaceholderTopHeight = heightCacheItem.lastHeight;
 							topRangeMatched = true;
@@ -295,7 +295,7 @@ const ZPVirtualList = {
 				}
 				for (let i = this.virtualTopRangeIndex; i < heightCacheList.length;i++){
 					const heightCacheItem = heightCacheList[i];
-					if(heightCacheItem && heightCacheItem.totalHeight > bottomRangePageOffset){
+					if (heightCacheItem && heightCacheItem.totalHeight > bottomRangePageOffset) {
 						virtualBottomRangeIndex = i;
 						virtualPlaceholderBottomHeight = lastHeightCache.totalHeight - heightCacheItem.totalHeight;
 						reachedLimitBottom = true;

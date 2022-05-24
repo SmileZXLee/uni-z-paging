@@ -14,7 +14,7 @@
 			</cell>
 			<!-- 用header包住的view会吸顶 -->
 			<header>
-				<tabs-view @change="tabChange" :items="['测试1','测试2','测试3','测试4']"></tabs-view>
+				<z-tabs @change="tabChange" :list="tabList"></z-tabs>
 			</header>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内，并用header(吸顶)或cell包住 -->
 			<!-- 在nvue中，z-paging中插入的列表item必须是cell，必须使用cell包住，因为在nvue中，z-paging使用的是nvue的list组件。 -->
@@ -35,6 +35,7 @@
 			return {
 				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
 				dataList: [],
+				tabList: ['测试1','测试2','测试3','测试4'],
 				tabIndex: 0
 			}
 		},
