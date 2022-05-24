@@ -146,10 +146,8 @@
 		watch: {
 			current: {
 				handler(newVal) {
-					if(newVal > 0){
-						this.currentIndex = newVal;
-						this._updateDotPosition(this.currentIndex);
-					}
+					this.currentIndex = newVal;
+					this._updateDotPosition(this.currentIndex);
 					if (this.initTriggerChange) {
 						if (newVal < this.list.length) {
 							this.$emit('change', newVal, this.list[newVal][this.valueKey]);
@@ -232,6 +230,9 @@
 			},
 		},
 		methods: {
+			setDx(dx){
+				this.bottomDotX = dx;
+			},
 			//点击了tabs
 			tabsClick(index,item) {
 				if (this.currentIndex != index) {
@@ -317,6 +318,7 @@
 		width: 750rpx;
 		height: 72rpx;
 		flex-direction: row;
+		background-color: white;
 	}
 	
 	.z-tabs-scroll-view-conatiner{
