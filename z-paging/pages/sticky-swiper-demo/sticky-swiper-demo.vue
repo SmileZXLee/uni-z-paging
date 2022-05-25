@@ -21,7 +21,7 @@
 				</view>
 				<swiper class="swiper" :current="current" @animationfinish="animationfinish">
 					<swiper-item class="swiper-item" v-for="(item, index) in tabList" :key="index">
-						<sticky-swiper-item ref="swiperItem" :tabIndex="index" :currentIndex="current" @setScrollable="setScrollable" />
+						<sticky-swiper-item ref="swiperItem" :tabIndex="index" :currentIndex="current" @setScrollable="setScrollable" @setStickyed="setStickyed" />
 					</swiper-item>
 				</swiper>
 			</view>
@@ -77,15 +77,20 @@
 					this.$refs.swiperItem[this.current].setScrollable(true);
 				}
 			},
+			//子组件设置当前页面的列表是否可以滚动
 			setScrollable(scrollable) {
 				this.scrollable = scrollable;
+			},
+			//子组件设置当前页面进入吸顶状态并禁止滚动
+			setStickyed() {
+				this.scrollable = false;
+				this.$refs.paging.scrollToY(this.headerHeight);
 			},
 			// tabs通知swiper切换
 			tabChange(index) {
 				this.current = index;
 			},
-			// 由于swiper的内部机制问题，快速切换swiper不会触发dx的连续变化，需要在结束时重置状态
-			// swiper滑动结束，分别设置tabs和swiper的状态
+			// swiper滑动结束
 			animationfinish(e) {
 				let current = e.detail.current;
 				this.current = current;

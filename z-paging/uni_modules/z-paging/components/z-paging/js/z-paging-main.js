@@ -184,6 +184,11 @@ export default {
 			type: Boolean,
 			default: u.gc('autoFullHeight', true)
 		},
+		//是否监听列表触摸方向改变，默认为否
+		watchTouchDirectionChange: {
+			type: Boolean,
+			default: u.gc('watchTouchDirectionChange', false)
+		},
 		//是否将错误信息打印至控制台，默认为是
 		showConsoleError: {
 			type: Boolean,

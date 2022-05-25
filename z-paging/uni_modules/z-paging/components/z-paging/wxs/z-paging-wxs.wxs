@@ -51,6 +51,21 @@ function touchmove(e, ownerIns) {
 	var refresherThreshold = dataset.refresherthreshold;
 	var isIos = _getIsTrue(dataset.isios);
 	var state = ins.getState();
+	var dataset = ins.getDataset();
+	var watchTouchDirectionChange = _getIsTrue(dataset.watchtouchdirectionchange);
+	var moveDisObj = {};
+	var moveDis = 0;
+	var prevent = false;
+	if (watchTouchDirectionChange) {
+		moveDisObj = _getMoveDis(e, ins);
+		moveDis = moveDisObj.currentDis;
+		prevent = moveDisObj.isDown;
+		if(state.oldAcceptedIsDown == prevent){
+			ownerIns.callMethod('_handleTouchDirectionChange', {direction: prevent ? 'top' : 'bottom'}); 
+			state.oldIsDown = prevent;
+		}
+		state.oldAcceptedIsDown = prevent;
+	}
 	if (_touchDisabled(e, ins, 1)) {
 		_handlePullingDown(state, ownerIns, false);
 		return true;
@@ -59,9 +74,9 @@ function touchmove(e, ownerIns) {
 		_handlePullingDown(state, ownerIns, false);
 		return true;
 	}
-	var moveDisObj = _getMoveDis(e, ins);
-	var moveDis = moveDisObj.currentDis;
-	var prevent = moveDisObj.isDown;
+	moveDisObj = _getMoveDis(e, ins);
+	moveDis = moveDisObj.currentDis;
+	prevent = moveDisObj.isDown;
 	if (moveDis < 0) {
 		_setTransformValue(0, ins, state, false);
 		_handlePullingDown(state, ownerIns, false);
@@ -77,7 +92,6 @@ function touchmove(e, ownerIns) {
 	}
 	_setTransformValue(moveDis, ins, state, false);
 	var oldRefresherStatus = state.refresherStatus;
-	var dataset = ins.getDataset();
 	var oldIsTouchmoving = _getIsTrue(dataset.oldistouchmoving);
 	var hasTouchmove = _getIsTrue(dataset.hastouchmove);
 	var isTouchmoving = state.isTouchmoving;

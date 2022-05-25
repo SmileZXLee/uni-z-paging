@@ -55,7 +55,7 @@ by ZXLee
 						:data-loading="loading||isRefresherInComplete" :data-useChatRecordMode="useChatRecordMode" 
 						:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="wxsPageScrollTop"
 						:data-scrollTop="wxsScrollTop" :data-refresherMaxAngle="refresherMaxAngle" 
-						:data-refresherAecc="refresherAngleEnableChangeContinued" :data-usePageScroll="usePageScroll"
+						:data-refresherAecc="refresherAngleEnableChangeContinued" :data-usePageScroll="usePageScroll" :data-watchTouchDirectionChange="watchTouchDirectionChange"
 						:data-oldIsTouchmoving="isTouchmoving" :data-refresherOutRate="finalRefresherOutRate" :data-hasTouchmove="hasTouchmove"
 						<!-- #endif -->
 						<!-- #ifdef APP-VUE || H5 -->

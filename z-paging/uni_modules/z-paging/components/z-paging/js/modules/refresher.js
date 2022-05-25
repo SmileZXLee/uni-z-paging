@@ -183,6 +183,8 @@ const ZPRefresher = {
 			pullDownTimeStamp: 0,
 			moveDis: 0,
 			oldMoveDis: 0,
+			oldRefresherTouchmoveY: 0,
+			oldTouchDirection: ''
 		}
 	},
 	watch: {
@@ -344,11 +346,21 @@ const ZPRefresher = {
 		//拖拽中
 		_refresherTouchmove(e) {
 			const currentTimeStamp = u.getTime();
+			let touch = null;
+			let refresherTouchmoveY = 0;
+			if (this.watchTouchDirectionChange) {
+				touch = u.getTouch(e);
+				refresherTouchmoveY = touch.touchY;
+				const direction  = refresherTouchmoveY > this.oldRefresherTouchmoveY ? 'top' : 'bottom';
+				direction === this.oldTouchDirection && this._handleTouchDirectionChange({direction});
+				this.oldTouchDirection = direction;
+				this.oldRefresherTouchmoveY = refresherTouchmoveY;
+			}
 			if (this.pullDownTimeStamp && currentTimeStamp - this.pullDownTimeStamp <= this.pullDownDisTimeStamp) return;
 			if (this._touchDisabled()) return;
 			this.pullDownTimeStamp = Number(currentTimeStamp);
-			const touch = u.getTouch(e);
-			let refresherTouchmoveY = touch.touchY;
+			touch = u.getTouch(e);
+			refresherTouchmoveY = touch.touchY;
 			let moveDis = refresherTouchmoveY - this.refresherTouchstartY;
 			if (moveDis < 0) return;
 			if (this.refresherMaxAngle >= 0 && this.refresherMaxAngle <= 90 && this.lastRefresherTouchmove && this.lastRefresherTouchmove.touchY <= refresherTouchmoveY) {
@@ -451,6 +463,10 @@ const ZPRefresher = {
 		//wxs正在下拉处理
 		_handleWxsPullingDown(e){
 			this._emitTouchmove({pullingDistance:e.moveDis,dy:e.diffDis});
+		},
+		//wxs触摸方向改变
+		_handleTouchDirectionChange(e) {
+			this.$emit('touchDirectionChange',e.direction);
 		},
 		//wxs通知更新其props
 		_handlePropUpdate(e){

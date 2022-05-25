@@ -67,7 +67,7 @@
 					,{
 						title: '滑动切换选项卡+吸顶演示①',
 						file: 'sticky-swiper-demo',
-						subTitle: '【不推荐】上一个tab数据保留，滚动卡顿，一些情况下可能出现无法滚动的问题'
+						subTitle: '【不推荐】上一个tab数据保留，滚动不流畅，一些情况下可能出现无法滚动的问题'
 					},{
 						title: '滑动切换选项卡+吸顶演示②',
 						file: 'sticky-swiper-next-demo',
