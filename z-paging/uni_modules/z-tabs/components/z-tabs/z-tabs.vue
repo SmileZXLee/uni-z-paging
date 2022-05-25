@@ -1,4 +1,4 @@
-<!-- z-tabs v0.0.3 by-ZXLee -->
+<!-- z-tabs v0.0.4 by-ZXLee -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-tabs -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?name=z-tabs -->
 <!-- 反馈QQ群：790460711 -->
@@ -191,7 +191,7 @@
 							this.tabsContainerWidth = 0;
 							this.itemNodeInfos = [];
 							let delayTime = 0;
-							// #ifdef APP-VUE
+							// #ifdef APP-VUE || MP-BAIDU
 							delayTime = 200;
 							// #endif
 							setTimeout(async()=>{
@@ -348,6 +348,7 @@
 		/* #endif */
 		width: 750rpx;
 		flex-direction: row;
+		height: 82rpx;
 	}
 	
 	.z-tabs-scroll-view-conatiner{
