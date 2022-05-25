@@ -14,7 +14,6 @@
 		},
 		onShow: function() {
 			console.log('App Show')
-			// uni.$emit('z-paging-app-show-emit');
 		},
 		onHide: function() {
 			console.log('App Hide')

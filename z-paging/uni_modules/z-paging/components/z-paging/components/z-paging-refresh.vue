@@ -246,7 +246,8 @@
 		margin-top: 10rpx;
 		font-size: 24rpx;
 	}
-
+	
+	/* #ifndef APP-NVUE */
 	@keyframes refresher-arrow-top {
 		0% {
 			-webkit-transform: rotate(180deg);
@@ -257,7 +258,7 @@
 			transform: rotate(0deg);
 		}
 	}
-
+	
 	@keyframes refresher-arrow-down {
 		0% {
 			-webkit-transform: rotate(0deg);
@@ -268,4 +269,5 @@
 			transform: rotate(180deg);
 		}
 	}
+	/* #endif */
 </style>

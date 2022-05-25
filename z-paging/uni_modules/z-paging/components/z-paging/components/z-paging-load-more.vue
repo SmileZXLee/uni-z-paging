@@ -136,7 +136,8 @@
 	.zp-l-line-white {
 		background-color: #efefef;
 	}
-
+	
+	/* #ifndef APP-NVUE */
 	@keyframes loading-circle {
 		0% {
 			-webkit-transform: rotate(0deg);
@@ -147,4 +148,5 @@
 			transform: rotate(360deg);
 		}
 	}
+	/* #endif */
 </style>

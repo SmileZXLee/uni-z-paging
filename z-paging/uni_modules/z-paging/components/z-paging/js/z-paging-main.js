@@ -401,7 +401,7 @@ export default {
 		},
 		//与setSpecialEffects等效，兼容旧版本
 		setListSpecialEffects(args) {
-			this.nFixFreezing = args !== {};
+			this.nFixFreezing = args && Object.keys(args).length;
 			if (this.isIos) {
 				this.privateRefresherEnabled = 0;
 			}
