@@ -6,10 +6,9 @@
 <!-- 如果在App中，推荐使用nvue写法，滚动和过渡更流畅，参照sticky-swiper-demo-n -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" @scroll="scroll" :auto="false" :scrollable="scrollable" :hide-empty-view="true"
-			:refresher-status.sync="refresherStatus" @query="queryList">
+		<z-paging ref="paging" @scroll="scroll" refresher-only :scrollable="scrollable" :refresher-status.sync="refresherStatus" @query="queryList">
 			<!-- 自定义下拉刷新view -->
-			<custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>
+			<custom-refresher slot="refresher" :status="refresherStatus" />
 			<view class="banner-view" style="height: 250rpx;">
 				<view style="font-size: 40rpx;font-weight: 700;">这是一个banner</view>
 				<view style="font-size: 24rpx;margin-top: 5rpx;">下方tab滚动时可吸附在顶部</view>
@@ -17,15 +16,11 @@
 			<view class="paging-content" :style="'height:' + pageHeight + 'px'">
 				<!-- 小程序中直接修改组件style为position: sticky;无效，需要在组件外层套一层view -->
 				<view style="z-index: 100;position: sticky;top :0;">
-					<u-tabs-swiper ref="uTabs" :list="list" :current="current" @change="tabsChange" :is-scroll="false"
-						swiperWidth="750"></u-tabs-swiper>
+					<z-tabs ref="tabs" :list="tabList" :current="current" @change="tabChange"></z-tabs>
 				</view>
-				<swiper class="swiper" :current="swiperCurrent" @transition="transition"
-					@animationfinish="animationfinish">
-					<swiper-item class="swiper-item" v-for="(item, index) in list" :key="index">
-						<sticky-swiper-item ref="swiperItem" :tabIndex="index" :currentIndex="swiperCurrent"
-							@setScrollable="setScrollable">
-						</sticky-swiper-item>
+				<swiper class="swiper" :current="current" @animationfinish="animationfinish">
+					<swiper-item class="swiper-item" v-for="(item, index) in tabList" :key="index">
+						<sticky-swiper-item ref="swiperItem" :tabIndex="index" :currentIndex="current" @setScrollable="setScrollable" />
 					</swiper-item>
 				</swiper>
 			</view>
@@ -44,18 +39,9 @@
 				// header高度
 				headerHeight: 0,
 				scrollable: true,
-				list: [{
-					name: '测试1'
-				}, {
-					name: '测试2'
-				}, {
-					name: '测试3'
-				}, {
-					name: '测试4'
-				}],
-				// 因为内部的滑动机制限制，请将tabs组件和swiper组件的current用不同变量赋值
+				list: [],
+				tabList: ['测试1','测试2','测试3','测试4'],
 				current: 0, // tabs组件的current值，表示当前活动的tab选项
-				swiperCurrent: 0, // swiper组件的current值，表示当前那个swiper-item是活动的
 			}
 		},
 		onLoad() {
@@ -94,21 +80,13 @@
 				this.scrollable = scrollable;
 			},
 			// tabs通知swiper切换
-			tabsChange(index) {
-				this.swiperCurrent = index;
-
-			},
-			// swiper-item左右移动，通知tabs的滑块跟随移动
-			transition(e) {
-				let dx = e.detail.dx;
-				this.$refs.uTabs.setDx(dx);
+			tabChange(index) {
+				this.current = index;
 			},
 			// 由于swiper的内部机制问题，快速切换swiper不会触发dx的连续变化，需要在结束时重置状态
 			// swiper滑动结束，分别设置tabs和swiper的状态
 			animationfinish(e) {
 				let current = e.detail.current;
-				this.$refs.uTabs.setFinishCurrent(current);
-				this.swiperCurrent = current;
 				this.current = current;
 				this.$refs.swiperItem[this.current].setScrollable(!this.scrollable);
 			}

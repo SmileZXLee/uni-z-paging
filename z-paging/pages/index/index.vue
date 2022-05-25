@@ -42,12 +42,12 @@
 					{
 						title: '滑动切换选项卡演示(标准写法)',
 						file: 'swiper-demo',
-						subTitle: '使用了uView的tabsSwiper组件'
+						subTitle: ''
 					},
 					{
 						title: '滑动切换选项卡演示(简化写法,不推荐)',
 						file: 'swiper-simplify-demo',
-						subTitle: '使用了uView的tabsSwiper组件'
+						subTitle: ''
 					},
 					{
 						title: '使用页面滚动示例',

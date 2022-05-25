@@ -57,7 +57,7 @@
 		}, {
 			"path": "pages/sticky-swiper-demo/sticky-swiper-demo",
 			"style": {
-				"navigationBarTitleText": "滑动切换选项卡+吸顶演示",
+				"navigationBarTitleText": "滑动切换选项卡+吸顶演示1(不推荐)",
 				"enablePullDownRefresh": false
 			}
 

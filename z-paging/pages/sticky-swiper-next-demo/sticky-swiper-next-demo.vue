@@ -11,7 +11,7 @@
 			<view>
 				<!-- 小程序中直接修改组件style为position: sticky;无效，需要在组件外层套一层view -->
 				<view style="z-index: 100;position: sticky;top :0;">
-					<tabs-view @change="tabsChange" :current="current" :items="tabList"></tabs-view>
+					<z-tabs @change="tabChange" :current="current" :list="tabList"></z-tabs>
 				</view>
 				<swiper class="swiper" :style="[{height:swiperHeight+'px'}]" :current="current" @animationfinish="animationfinish">
 					<swiper-item class="swiper-item" v-for="(item, index) in tabList" :key="index">
@@ -36,7 +36,7 @@
 		},
 		methods: {
 			//tabs通知swiper切换
-			tabsChange(index) {
+			tabChange(index) {
 				this._setCurrent(index);
 			},
 			//下拉刷新时，通知当前显示的列表进行reload操作

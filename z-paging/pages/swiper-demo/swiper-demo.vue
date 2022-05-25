@@ -19,15 +19,7 @@
 	export default {
 		data() {
 			return {
-				tabList: [{
-					name: '测试1'
-				}, {
-					name: '测试2'
-				}, {
-					name: '测试3'
-				}, {
-					name: '测试4'
-				}],
+				tabList: ['测试1','测试2','测试3','测试4'],
 				current: 0, // tabs组件的current值，表示当前活动的tab选项
 			};
 		},

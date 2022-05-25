@@ -22,7 +22,7 @@
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<view slot="top">
 				<view class="header">列表总数据量：10万条</view>
-				<tabs-view @change="tabChange" :items="['cell高度固定','cell高度动态']"></tabs-view>
+				<z-tabs @change="tabChange" :list="tabList"></z-tabs>
 			</view>
 			
 			<!-- :id="`zp-${item.zp_index}`" 必须写，必须写！！！！ -->
@@ -46,6 +46,7 @@
 			return {
 				//虚拟列表数组，请使用:virtualList.sync绑定而非v-model绑定
 				virtualList: [],
+				tabList: ['cell高度固定','cell高度动态'],
 				tabIndex: 0
 			}
 		},

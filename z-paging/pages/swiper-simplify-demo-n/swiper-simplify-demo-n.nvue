@@ -6,7 +6,7 @@
 		<z-paging-swiper>
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中 -->
 			<view style="height: 80rpx;" slot="top">
-				<tabs-view @change="tabChange" :current="current" :items="tabList"></tabs-view>
+				<z-tabs @change="tabChange" :list="tabList" :current="current"></z-tabs>
 			</view>
 			<!-- 因swiper与swiper-item无法封装在不同组件中，因此这边依然需要设置swiper包裹swiper-item -->
 			<swiper style="flex: 1;" :current="current" @transition="transition" @animationfinish="animationfinish" @change="onswiperchange">

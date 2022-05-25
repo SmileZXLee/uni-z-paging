@@ -17,9 +17,9 @@
 		<cell>
 			<view :style="'height:' + pageHeight + 'px'">
 				<!-- 吸顶view -->
-				<z-tabs slot="top" @change="tabChange" :list="tabList" :current="current"></z-tabs>
+				<z-tabs @change="tabChange" :list="tabList" :current="current"></z-tabs>
 				<!-- swiper -->
-				<swiper class="swiper" :current="current" @transition="transition" @animationfinish="animationfinish"
+				<swiper class="swiper" :current="current" @animationfinish="animationfinish"
 					@change="onswiperchange">
 					<swiper-item class="swiper-item" v-for="(item, index) in tabList" :key="index">
 						<sticky-swiper-item-n ref="swiperItem" :tabIndex="index" :currentIndex="current">
@@ -81,10 +81,6 @@
 			// tabs通知swiper切换
 			tabChange(index) {
 				this.current = index;
-			},
-			// swiper-item左右移动，通知tabs的滑块跟随移动
-			transition(e) {
-				let dx = e.detail.dx;
 			},
 			onswiperchange(e) {
 				// #ifndef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
