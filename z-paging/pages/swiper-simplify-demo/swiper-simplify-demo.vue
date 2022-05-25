@@ -1,5 +1,4 @@
 <!-- 滑动切换选项卡演示(简化写法，不推荐。建议使用标准写法swiper-demo.vue)(vue) -->
-<!--  此demo使用了uView的tabsSwiper全屏选项卡 https://uviewui.com/components/tabsSwiper.html -->
 <!-- 简化写法灵活性不如标准写法高，暂时无法设置内部z-paging自定义下拉刷新view，自定义上拉加载view等slot插入的view，设置z-paging只支持全局配置 -->
 <!-- 适用于简单的低自定义场景 -->
 <!-- 支付宝小程序不支持此写法 -->
@@ -13,11 +12,11 @@
 	<z-paging-swiper>
 		<!-- 需要固定在顶部不滚动的view放在slot="top"的view中 -->
 		<view style="height: 80rpx;" slot="top">
-			<u-tabs-swiper ref="uTabs" :list="tabList" :current="current" @change="tabsChange" :is-scroll="false"
-				swiperWidth="750"></u-tabs-swiper>
+			<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
+			<z-tabs @change="tabChange" :list="tabList" :current="current"></z-tabs>
 		</view>
 		<!-- 因swiper与swiper-item无法封装在不同组件中，因此这边依然需要设置swiper包裹swiper-item -->
-		<swiper style="height: 100%;" :current="swiperCurrent" @transition="transition" @animationfinish="animationfinish">
+		<swiper style="height: 100%;" :current="current" @transition="transition" @animationfinish="animationfinish">
 			<swiper-item v-for="(item,index) in tabList" :key="index">
 				<z-paging-swiper-item ref="swiperItem" :tabIndex="index" :currentIndex="current" @query="queryList"
 					@updateList="updateList">
@@ -38,36 +37,18 @@
 			return {
 				//注意，这个数组是一个二维数组，数组里面包含的是所有tabs的list数组
 				dataList: [],
-				tabList: [{
-					name: '测试1'
-				}, {
-					name: '测试2'
-				}, {
-					name: '测试3'
-				}, {
-					name: '测试4'
-				}],
-				// 因为内部的滑动机制限制，请将tabs组件和swiper组件的current用不同变量赋值
+				tabList: ['测试1','测试2','测试3','测试4'],
 				current: 0, // tabs组件的current值，表示当前活动的tab选项
-				swiperCurrent: 0, // swiper组件的current值，表示当前那个swiper-item是活动的
 			}
 		},
 		methods: {
 			// tabs通知swiper切换
-			tabsChange(index) {
-				this.swiperCurrent = index;
+			tabChange(index) {
+				this.current = index;
 			},
-			// swiper-item左右移动，通知tabs的滑块跟随移动
-			transition(e) {
-				let dx = e.detail.dx;
-				this.$refs.uTabs.setDx(dx);
-			},
-			// 由于swiper的内部机制问题，快速切换swiper不会触发dx的连续变化，需要在结束时重置状态
 			// swiper滑动结束，分别设置tabs和swiper的状态
 			animationfinish(e) {
 				let current = e.detail.current;
-				this.$refs.uTabs.setFinishCurrent(current);
-				this.swiperCurrent = current;
 				this.current = current;
 			},
 			queryList(pageNo, pageSize) {

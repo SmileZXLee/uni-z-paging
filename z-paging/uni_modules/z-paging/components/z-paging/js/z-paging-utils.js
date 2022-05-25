@@ -33,16 +33,9 @@ function gc(key, defaultValue) {
 			}
 		}
 	}
-	if (!config) {
-		return defaultValue;
-	}
-	let value = config[_toKebab(key)];
-	if (value === undefined) {
-		value = config[key];
-	} else {
-		return value;
-	}
-	return defaultValue;
+	if (!config) return defaultValue;
+	const value = config[_toKebab(key)];
+	return value === undefined ? defaultValue : value;
 }
 
 //判断两个数组是否相等

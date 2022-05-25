@@ -9,6 +9,7 @@
 					<view>①此demo演示了基于z-paging封装个性化分页组件的流程</view>
 					<view>②可将重复的配置或者重复插入的slot封装在自定义的分页组件中</view>
 				</view>
+				<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
 				<z-tabs @change="tabChange" :list="tabList"></z-tabs>
 			</view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->

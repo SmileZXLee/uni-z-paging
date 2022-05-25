@@ -11,6 +11,7 @@
 			<view>
 				<!-- 小程序中直接修改组件style为position: sticky;无效，需要在组件外层套一层view -->
 				<view style="z-index: 100;position: sticky;top :0;">
+					<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
 					<z-tabs @change="tabChange" :current="current" :list="tabList"></z-tabs>
 				</view>
 				<swiper class="swiper" :style="[{height:swiperHeight+'px'}]" :current="current" @animationfinish="animationfinish">

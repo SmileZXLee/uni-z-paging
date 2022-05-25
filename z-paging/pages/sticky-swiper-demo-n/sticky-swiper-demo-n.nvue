@@ -17,6 +17,7 @@
 		<cell>
 			<view :style="'height:' + pageHeight + 'px'">
 				<!-- 吸顶view -->
+				<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
 				<z-tabs @change="tabChange" :list="tabList" :current="current"></z-tabs>
 				<!-- swiper -->
 				<swiper class="swiper" :current="current" @animationfinish="animationfinish"
