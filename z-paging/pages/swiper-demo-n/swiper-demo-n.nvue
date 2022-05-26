@@ -5,7 +5,7 @@
 		<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
 		<z-tabs slot="top" :list="tabList" :current="current" @change="tabsChange" ></z-tabs>
 		<!-- swiper必须设置flex:1，因为swiper有默认的高度，只有设置flex:1才可以铺满页面  -->
-		<swiper class="swiper" :current="current" @transition="transition" @animationfinish="animationfinish" @change="onswiperchange">
+		<swiper class="swiper" :current="current" @animationfinish="animationfinish" @change="onswiperchange">
 			<swiper-item class="swiper-item" v-for="(item, index) in tabList" :key="index">
 				<swiper-item-n :tabIndex="index" :currentIndex="current"></swiper-item-n>
 			</swiper-item>
@@ -23,20 +23,18 @@
 			};
 		},
 		methods: {
-			// tabs通知swiper切换
+			//tabs通知swiper切换
 			tabsChange(index) {
 				this.current = index;
 			},
-			// swiper-item左右移动，通知tabs的滑块跟随移动
-			transition(e) {
-				let dx = e.detail.dx;
-			},
+			//swiper change时触发
 			onswiperchange(e) {
 				// #ifndef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
 				let index = e.target.current || e.detail.current;
 				this.tabsChange(index);
 				// #endif
 			},
+			//swiper动画结束
 			animationfinish(e) {
 				let current = e.detail.current;
 				this.current = current;

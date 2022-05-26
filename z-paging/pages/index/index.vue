@@ -64,16 +64,17 @@
 						file: 'sticky-demo',
 						subTitle: ''
 					}
-					,{
+					,
+					{
 						title: '滑动切换选项卡+吸顶演示①',
 						file: 'sticky-swiper-demo',
-						subTitle: '【不推荐】上一个tab数据保留，滚动不流畅，一些情况下可能出现无法滚动的问题'
-					},{
+						subTitle: '上一个tab数据保留，滚动过渡效果不够流畅，具体可点击体验'
+					},
+					{
 						title: '滑动切换选项卡+吸顶演示②',
 						file: 'sticky-swiper-next-demo',
-						subTitle: '【推荐】上一个tab数据不保留，滚动流畅'
-					}
-					,
+						subTitle: '上一个tab数据不保留，滚动过渡效果流畅'
+					},
 					{
 						title: '显示最后更新时间演示',
 						file: 'show-update-time-demo',

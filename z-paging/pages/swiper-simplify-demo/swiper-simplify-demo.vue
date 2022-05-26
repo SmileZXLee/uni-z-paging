@@ -16,7 +16,7 @@
 			<z-tabs @change="tabChange" :list="tabList" :current="current"></z-tabs>
 		</view>
 		<!-- 因swiper与swiper-item无法封装在不同组件中，因此这边依然需要设置swiper包裹swiper-item -->
-		<swiper style="height: 100%;" :current="current" @transition="transition" @animationfinish="animationfinish">
+		<swiper style="height: 100%;" :current="current" @animationfinish="animationfinish">
 			<swiper-item v-for="(item,index) in tabList" :key="index">
 				<z-paging-swiper-item ref="swiperItem" :tabIndex="index" :currentIndex="current" @query="queryList"
 					@updateList="updateList">

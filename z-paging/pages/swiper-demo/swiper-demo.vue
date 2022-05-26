@@ -6,7 +6,7 @@
 		<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
 		<z-tabs ref="tabs" slot="top" :list="tabList" :current="current" @change="tabsChange" ></z-tabs>
 		<!-- swiper必须设置height:100%，因为swiper有默认的高度，只有设置高度100%才可以铺满页面  -->
-		<swiper class="swiper" :current="current" @transition="transition" @animationfinish="animationfinish">
+		<swiper class="swiper" :current="current" @animationfinish="animationfinish">
 			<swiper-item class="swiper-item" v-for="(item, index) in tabList" :key="index">
 				<swiper-list-item :tabIndex="index" :currentIndex="current"></swiper-list-item>
 			</swiper-item>
@@ -23,17 +23,11 @@
 			};
 		},
 		methods: {
-			// tabs通知swiper切换
+			//tabs通知swiper切换
 			tabsChange(index) {
 				this.current = index;
 			},
-			// swiper-item左右移动，通知tabs的滑块跟随移动
-			transition(e) {
-				let dx = e.detail.dx;
-				// this.$refs.tabs.setDx(dx);
-			},
-			// 由于swiper的内部机制问题，快速切换swiper不会触发dx的连续变化，需要在结束时重置状态
-			// swiper滑动结束，分别设置tabs和swiper的状态
+			//swiper滑动结束
 			animationfinish(e) {
 				let current = e.detail.current;
 				this.current = current;
