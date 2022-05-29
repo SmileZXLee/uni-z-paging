@@ -18,6 +18,7 @@
 <script>
 	import zStatic from '../z-paging/js/z-paging-static'
 	export default {
+		name: "z-paging-empty-view",
 		data() {
 			return {
 				base64Empty: zStatic.base64Empty,
