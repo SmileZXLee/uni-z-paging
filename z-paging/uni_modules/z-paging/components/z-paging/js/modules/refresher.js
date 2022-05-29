@@ -50,6 +50,11 @@ const ZPRefresher = {
 			type: Boolean,
 			default: u.gc('refresherOnly', false)
 		},
+		//自定义下拉刷新默认状态下回弹动画时间，单位为毫秒，默认为100毫秒，nvue无效
+		refresherDefaultDuration: {
+			type: [Number, String],
+			default: u.gc('refresherDefaultDuration', 100)
+		},
 		//自定义下拉刷新结束以后延迟回弹的时间，单位为毫秒，默认为0
 		refresherCompleteDelay: {
 			type: [Number, String],
@@ -170,6 +175,7 @@ const ZPRefresher = {
 			refresherCompleteTimeout: null,
 			refresherCompleteSubTimeout: null,
 			refresherEndTimeout: null,
+			isTouchmovingTimeout: null,
 			refresherTriggered: false,
 			isTouchmoving: false,
 			isTouchEnded: false,
@@ -334,6 +340,7 @@ const ZPRefresher = {
 			if (!this.loading && this.isTouchEnded) {
 				this.isTouchmoving = false;
 			}
+			this.isTouchmovingTimeout && clearTimeout(this.isTouchmovingTimeout);
 			this.isTouchEnded = false;
 			this.refresherTransition = '';
 			this.refresherTouchstartY = touch.touchY;
@@ -393,6 +400,7 @@ const ZPRefresher = {
 		//进一步处理拖拽中结果
 		_handleRefresherTouchmove(moveDis, touch) {
 			this.refresherReachMaxAngle = true;
+			this.isTouchmovingTimeout && clearTimeout(this.isTouchmovingTimeout);
 			this.isTouchmoving = true;
 			//this.refresherTransition = '';
 			this.isTouchEnded = false;
@@ -422,6 +430,7 @@ const ZPRefresher = {
 			// #ifndef APP-PLUS || H5 || MP-WEIXIN
 			if (!this.isTouchmoving) return;
 			// #endif
+			this.isTouchmovingTimeout && clearTimeout(this.isTouchmovingTimeout);
 			this.refresherReachMaxAngle = true;
 			if (moveDis < 0 && this.usePageScroll && this.loadingMoreEnabled && this.useCustomRefresher && this.pageScrollTop === -1) {
 				if (this.showConsoleError) {
@@ -438,12 +447,11 @@ const ZPRefresher = {
 				this._doRefresherLoad();
 			} else {
 				this._refresherEnd();
-				setTimeout(() => {
+				this.isTouchmovingTimeout = setTimeout(() => {
 					this.isTouchmoving = false;
-				}, c.delayTime);
+				}, this.refresherDefaultDuration);
 			}
 			this.scrollEnable = true;
-			// this.refresherTransition = 'transform .1s linear';
 			this.$emit('refresherTouchend', moveDis);
 		},
 		//处理scroll-view bounce是否生效
@@ -502,7 +510,7 @@ const ZPRefresher = {
 					if (fromAddData) {
 						animateDuration = this.refresherEndBounceEnabled ? this.refresherCompleteDuration / 1000 : this.refresherCompleteDuration / 3000;
 					}
-					this.refresherTransition = `transform ${fromAddData?animateDuration:0.1}s ${animateType}`;
+					this.refresherTransition = `transform ${fromAddData ? animateDuration : this.refresherDefaultDuration / 1000}s ${animateType}`;
 					// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 					this.refresherTransform = 'translateY(0px)';
 					// #endif
@@ -557,6 +565,7 @@ const ZPRefresher = {
 			this.moveDis = this.finalRefresherThreshold;
 			this.refresherStatus = Enum.Refresher.Loading;
 			this.isTouchmoving = true;
+			this.isTouchmovingTimeout && clearTimeout(this.isTouchmovingTimeout);
 			this._doRefresherLoad(false);
 		},
 		//触发下拉刷新

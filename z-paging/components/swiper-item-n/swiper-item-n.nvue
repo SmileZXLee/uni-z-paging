@@ -6,6 +6,7 @@
 		<z-paging ref="paging" v-model="dataList" @query="queryList" :fixed="false" :auto="false">
 			<!-- 在nvue中，z-paging中插入的列表item必须是cell，必须使用cell包住，因为在nvue中，z-paging使用的是nvue的list组件。 -->
 			<!-- 不能使用index作为key的唯一标识，:key必须添加并且必须是唯一的 -->
+			<!-- 如果希望在vue中渲染view，nvue中渲染cell，可使用z-paging-cell代替cell -->
 			<cell class="item" v-for="(item,index) in dataList" :key="item.title" @click="itemClick(item)">
 				<text class="item-title">{{item.title}}</text>
 				<text class="item-detail">{{item.detail}}</text>

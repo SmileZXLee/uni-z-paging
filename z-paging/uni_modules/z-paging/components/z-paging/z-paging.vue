@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-v2.3.0 (2022-05-26)
+v2.3.1 (2022-05-29)
 by ZXLee
 -->
 <!-- API文档地址：https://z-paging.zxlee.cn -->
@@ -278,7 +278,6 @@ by ZXLee
 	 * @property {Number|String} default-page-size 自定义pageSize，默认为10
 	 * @property {Number|String} delay 调用complete后延迟处理的时间，单位为毫秒
 	 * @property {String} language i18n国际化设置语言，支持简体中文(zh-cn)、繁体中文(zh-hant-cn)和英文(en)
-	 * @property {Boolean} follow-system-language i18n国际化默认是否跟随系统语言，默认为是
 	 * @property {Object} paging-style 设置z-paging的style，部分平台(如微信小程序)无法直接修改组件的style，可使用此属性代替
 	 * @property {String} height z-paging的高度，优先级低于pagingStyle中设置的height，传字符串，如100px、100rpx、100%
 	 * @property {String} width z-paging的宽度，优先级低于pagingStyle中设置的width，传字符串，如100px、100rpx、100%
@@ -305,7 +304,6 @@ by ZXLee
 	 * @property {String|Object} loading-more-loading-text 滑动到底部"加载中"文字，默认为【正在加载...】
 	 * @property {String|Object} loading-more-no-more-text 滑动到底部"没有更多"文字，默认为【没有更多了】
 	 * @property {String|Object} loading-more-fail-text 滑动到底部"加载失败"文字，默认为【加载失败，点击重新加载】
-	 * @property {Boolean} hide-loading-more-when-no-more-and-inside-of-paging 当没有更多数据且分页内容未超出z-paging时是否隐藏没有更多数据的view，默认为是
 	 * @property {Boolean} inside-more 当分页未满一屏时，是否自动加载更多(nvue无效)，默认为否
 	 * @property {Boolean} hide-empty-view 是否强制隐藏空数据图，默认为否
 	 * @property {String|Object} empty-view-text 空数据图描述文字，默认为“没有数据哦~”
@@ -316,10 +314,6 @@ by ZXLee
 	 * @property {String|Object} empty-view-error-text 空数据图“加载失败”描述文字
 	 * @property {String} empty-view-error-img 空数据图“加载失败”图片，默认使用z-paging内置的图片(建议使用绝对路径)
 	 * @property {Object} empty-view-style 空数据图样式
-	 * @property {Object} empty-view-super-style 空数据图容器样式
-	 * @property {Object} empty-view-img-style 空数据图img样式
-	 * @property {Object} empty-view-title-style 空数据图描述文字样式
-	 * @property {Object} empty-view-reload-style 空数据图重新加载按钮样式
 	 * @property {Boolean} empty-view-fixed 空数据图片是否铺满z-paging，默认为是。若设置为否，则为填充满z-paging的剩余部分
 	 * @property {Boolean} empty-view-center 空数据图片是否垂直居中，默认为是。emptyViewFixed为false时有效
 	 * @property {Boolean} auto-show-back-to-top 自动显示点击返回顶部按钮，默认为否
@@ -329,12 +323,8 @@ by ZXLee
 	 * @property {Number|String} back-to-top-bottom 点击返回顶部按钮与底部的距离，注意添加单位px或rpx，默认为160rpx
 	 * @property {Object} back-to-top-style 点击返回顶部按钮的自定义样式
 	 * @property {Boolean} show-scrollbar 控制是否出现滚动条，默认为是
-	 * @property {Boolean} scroll-x 是否允许横向滚动，默认为否
-	 * @property {String} scroll-into-view 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素
 	 * @property {Number|String} lower-threshold 距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为100rpx
-	 * @property {Boolean} enable-back-to-top iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向，默认为是
 	 * @property {Boolean} refresher-enabled 是否开启自定义下拉刷新，默认为是
-	 * @property {Number|String} refresher-threshold 设置自定义下拉刷新阈值，默认为80rpx
 	 * @property {String} refresher-default-style 设置自定义下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式，默认为black
 	 * @property {String} refresher-background 设置自定义下拉刷新区域背景颜色
 	 * @property {Boolean} show-refresher-update-time 是否显示上次下拉刷新更新时间，默认为否
@@ -343,15 +333,10 @@ by ZXLee
 	 * @property {Boolean} auto-full-height 使用页面滚动时，是否在不满屏时自动填充满屏幕，默认为是
 	 * @property {String} nvue-list-is nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list
 	 * @property {Object} nvue-waterfall-config nvue waterfall配置，仅在nvue中且nvueListIs=waterfall时有效，配置参数详情参见：https://uniapp.dcloud.io/component/waterfall
-	 * @property {Boolean} nvue-bounce nvue 控制是否回弹效果，iOS不支持动态修改(若禁用回弹效果，下拉刷新将失效)，默认为是
 	 * @event {Function} query 下拉刷新或滚动到底部时会自动触发此方法。z-paging加载时也会触发(若要禁止，请设置:auto="false")。pageNo和pageSize会自动计算好，直接传给服务器即可。
 	 * @event {Function} refresherStatusChange 自定义下拉刷新状态改变(use-custom-refresher为true时生效)
 	 * @event {Function} loadingStatusChange 上拉加载更多状态改变
-	 * @event {Function} refresherTouchstart 自定义下拉刷新下拉开始(use-custom-refresher为true时生效)
-	 * @event {Function} refresherTouchmove 自定义下拉刷新下拉中开始(use-custom-refresher为true时生效)
-	 * @event {Function} refresherTouchend 自定义下拉刷新下拉结束(use-custom-refresher为true时生效)
 	 * @event {Function} onRefresh 自定义下拉刷新被触发
-	 * @event {Function} onRestore 自定义下拉刷新被复位
 	 * @event {Function} scroll `z-paging`内置的scroll-view滚动时触发
 	 * @event {Function} scrolltolower `z-paging`内置的scroll-view滚动底部时触发
 	 * @event {Function} scrolltoupper `z-paging`内置的scroll-view滚动顶部时触发
