@@ -43,7 +43,7 @@ const ZPNvue = {
 		},
 		//nvue中是否按分页模式(类似竖向swiper)显示List，默认为false
 		nvuePagingEnabled: {
-			type: Object,
+			type: Boolean,
 			default: u.gc('nvuePagingEnabled', false)
 		},
 		//是否隐藏nvue列表底部的tagView，此view用于标识滚动到底部位置，若隐藏则滚动到底部功能将失效，在nvue中实现吸顶+swiper功能时需将最外层z-paging的此属性设置为true。默认为否

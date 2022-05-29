@@ -314,7 +314,7 @@ const ZPScroller = {
 				if (pagingContainerH > scrollViewH) {
 					this.scrollTop = this.oldScrollTop;
 					this.$nextTick(() => {
-						this.scrollTop = pagingContainerH - scrollViewH;
+						this.scrollTop = pagingContainerH - scrollViewH + this.virtualPlaceholderTopHeight;
 						this.oldScrollTop = this.scrollTop;
 					});
 				}
@@ -369,6 +369,7 @@ const ZPScroller = {
 		},
 		//滚动到指定位置
 		_scrollToY(y, offset = 0, animate = false, addScrollTop = false) {
+			y += this.virtualPlaceholderTopHeight;
 			this.privateScrollWithAnimation = animate ? 1 : 0;
 			if (this.usePageScroll) {
 				uni.pageScrollTo({
