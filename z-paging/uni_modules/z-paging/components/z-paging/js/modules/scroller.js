@@ -462,6 +462,15 @@ const ZPScroller = {
 					});
 				}, delayTime)
 			})
+		},
+		//更新renderJs数据
+		_updateRenderJsData(){
+			this.renderPropUsePageScroll = -1;
+			this.renderPropUsePageScroll = this.usePageScroll;
+			if (!this.useChatRecordMode) {
+				this.renderPropScrollTop = -1;
+				this.renderPropScrollTop = this.finalScrollTop < 6 ? 0 : 10;
+			}
 		}
 	}
 }
