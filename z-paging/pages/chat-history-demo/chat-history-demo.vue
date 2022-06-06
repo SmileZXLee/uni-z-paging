@@ -1,8 +1,11 @@
 <!-- 聊天记录模式演示(vue)，vue中目前无法解决分页闪动问题，使用nvue可实现聊天记录无闪动分页 -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" v-model="dataList" use-chat-record-mode use-page-scroll @query="queryList">
+		<z-paging ref="paging" v-model="dataList" use-chat-record-mode @query="queryList">
 			<!-- :id="`z-paging-${index}`必须加！！！！ -->
+			<view class="" slot="top" style="background-color: red;height: 100rpx;">
+				
+			</view>
 			<view class="item" :id="`z-paging-${index}`" v-for="(item,index) in dataList" :key="index">
 				<view class="item-title" v-if="item.title.length<3">第{{item.title}}条聊天记录</view>
 				<view class="item-title" v-else>{{item.title}}</view>

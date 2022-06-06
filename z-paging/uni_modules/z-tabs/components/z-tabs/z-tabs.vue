@@ -1,4 +1,4 @@
-<!-- z-tabs v0.0.6 by-ZXLee -->
+<!-- z-tabs v0.0.7 by-ZXLee -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-tabs -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?name=z-tabs -->
 <!-- 反馈QQ群：790460711 -->
@@ -199,6 +199,7 @@
 									const nodeRes = await this._getNodeClientRect(`#z-tabs-item-${i}`,true);
 									if(nodeRes && nodeRes.length){
 										const node = nodeRes[0];
+										node.left += this.currentScrollLeft;
 										this.itemNodeInfos.push(node);
 										this.tabsContainerWidth += node.width;
 									}

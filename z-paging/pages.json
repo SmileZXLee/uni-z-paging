@@ -222,6 +222,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/traditional-long-list-demo/traditional-long-list-demo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
