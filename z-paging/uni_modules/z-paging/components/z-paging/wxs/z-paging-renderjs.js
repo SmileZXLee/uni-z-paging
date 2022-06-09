@@ -49,7 +49,6 @@ export default {
 		_handleTouchmove(e) {
 			const touch = u.getTouch(e);
 			var moveY = touch.touchY - data.startY;
-			console.log('挡掉',data.renderScrollTop)
 			//v2.1.4起删除条件：(data.isTouchFromZPaging && data.renderIsIos && !data.renderUsePageScroll && moveY < 0)
 			if (data.isTouchFromZPaging && data.renderScrollTop < 1 && moveY > 0) {
 				if (e.cancelable && !e.defaultPrevented) {

@@ -617,13 +617,12 @@ const ZPData = {
 					this.totalData = [...newVal, ...this.totalData];
 					if (this.pageNo !== this.defaultPageNo) {
 						this.privateScrollWithAnimation = 0;
-						let delayTime = 200;
 						this.$emit('update:chatIndex', idIndex);
 						setTimeout(() => {
 							this._scrollIntoView(idIndexStr, 30 + this.cacheTopHeight, false, () => {
 								this.$emit('update:chatIndex', 0);
 							});
-						}, this.usePageScroll ? 0 : delayTime)
+						}, this.usePageScroll ? 50 : 200)
 					} else {
 						this.$nextTick(() => {
 							this._scrollToBottom(false);
