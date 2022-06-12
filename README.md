@@ -1,6 +1,6 @@
 # z-paging
 
-[![version](https://img.shields.io/badge/version-2.3.0-blue)](https://github.com/SmileZXLee/uni-z-paging)
+[![version](https://img.shields.io/badge/version-2.3.1-blue)](https://github.com/SmileZXLee/uni-z-paging)
 [![license](https://img.shields.io/github/license/SmileZXLee/uni-z-paging)](https://en.wikipedia.org/wiki/MIT_License)
 
 > 【支持nvue、vue3，使用wxs+renderjs实现】高性能，全平台兼容。支持虚拟列表，支持自定义下拉刷新、上拉加载更多，支持自动管理空数据图、点击返回顶部，支持聊天分页、本地分页，支持国际化等100+项配置
