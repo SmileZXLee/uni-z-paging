@@ -3,9 +3,6 @@
 	<view class="content">
 		<z-paging ref="paging" v-model="dataList" use-page-scroll use-chat-record-mode @query="queryList">
 			<!-- :id="`z-paging-${index}`必须加！！！！ -->
-			<view class="" slot="top" style="background-color: red;height: 100rpx;">
-				
-			</view>
 			<view class="item" :id="`z-paging-${index}`" v-for="(item,index) in dataList" :key="index">
 				<view class="item-title" v-if="item.title.length<3">第{{item.title}}条聊天记录</view>
 				<view class="item-title" v-else>{{item.title}}</view>
