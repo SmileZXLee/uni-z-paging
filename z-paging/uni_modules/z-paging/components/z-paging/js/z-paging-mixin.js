@@ -14,7 +14,7 @@ const ZPagingMixin = {
 	},
 	onReachBottom() {
 		if (this.isPagingRefNotFound()) return;
-		this.$refs.paging.doLoadMore();
+		this.$refs.paging.doLoadMore('toBottom');
 	},
 	methods: {
 		isPagingRefNotFound() {

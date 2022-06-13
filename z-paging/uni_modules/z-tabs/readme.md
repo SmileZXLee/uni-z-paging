@@ -1,6 +1,6 @@
 # z-tabs
 
-[![version](https://img.shields.io/badge/version-0.0.6-blue)](https://github.com/SmileZXLee/uni-z-tabs)
+[![version](https://img.shields.io/badge/version-0.0.8-blue)](https://github.com/SmileZXLee/uni-z-tabs)
 [![license](https://img.shields.io/github/license/SmileZXLee/uni-z-tabs)](https://en.wikipedia.org/wiki/MIT_License)
 
 ***
@@ -18,7 +18,9 @@
 | list                | 数据源数组，支持形如`['tab1','tab2']`的格式或`[{name:'tab1',value:1}]`的格式 | Array          | []      | -      |
 | current             | 当前选中的index                                              | Number\|String | 0       | -      |
 | scroll-count        | list数组长度超过scrollCount时滚动显示(不自动铺满全屏)        | Number\|String | 5       | -      |
-| tab-width           | 自定义每个tab的宽度，默认为0，即代表根据内容自动撑开，单位为rpx | Number         | 0       | -      |
+| tab-width           | 自定义每个tab的宽度，默认为0，即代表根据内容自动撑开，单位为rpx | Number\|String | 0       | 0      |
+| bar-width           | 滑块宽度，单位rpx                                            | Number\|String | 45      | -      |
+| bar-height          | 滑块高度，单位rpx                                            | Number\|String | 8       | -      |
 | name-key            | list中item的name(标题)的key                                  | String         | name    | -      |
 | value-key           | list中item的value的key                                       | String         | value   | -      |
 | active-color        | 激活状态tab的颜色                                            | String         | #007AFF | -      |

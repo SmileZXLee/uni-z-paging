@@ -1,4 +1,4 @@
-<!-- z-tabs v0.0.7 by-ZXLee -->
+<!-- z-tabs v0.0.8 by-ZXLee -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-tabs -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?name=z-tabs -->
 <!-- 反馈QQ群：790460711 -->
@@ -20,10 +20,10 @@
 						<view v-if="showBottomDot" ref="z-tabs-bottom-dot" class="z-tabs-bottom-dot"
 						<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 						:change:prop="tabsWxs.propObserver" :prop="wxsPropType"
-						:style="[{background:activeColor}]"
+						:style="[{background:activeColor},finalDotStyle]"
 						<!-- #endif -->
 						<!-- #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5 || APP-NVUE -->
-						:style="[{transform:`translateX(${bottomDotX}px)`,transition:dotTransition,background:activeColor}]"
+						:style="[{transform:`translateX(${bottomDotX}px)`,transition:dotTransition,background:activeColor},finalDotStyle]"
 						<!-- #endif -->
 						<!-- #ifdef APP-NVUE -->
 						:style="[{background:activeColor}]"
@@ -70,7 +70,9 @@
 	 * @property {Array} list 数据源数组，支持形如['tab1','tab2']的格式或[{name:'tab1',value:1}]的格式
 	 * @property {Number|String} current 当前选中的index，默认为0
 	 * @property {Number|String} scroll-count list数组长度超过scrollCount时滚动显示(不自动铺满全屏)，默认为5
-	 * @property {Number} tab-width 自定义每个tab的宽度，默认为0，即代表根据内容自动撑开，单位为rpx
+	 * @property {Number|String} tab-width 自定义每个tab的宽度，默认为0，即代表根据内容自动撑开，单位为rpx
+	 * @property {Number|String} bar-width 滑块宽度，单位rpx
+	 * @property {Number|String} bar-height 滑块高度，单位rpx
 	 * @property {String} name-key list中item的name(标题)的key，默认为name
 	 * @property {String} value-key list中item的value的key，默认为value
 	 * @property {String} active-color 激活状态tab的颜色
@@ -117,8 +119,16 @@
 				default: _gc('scrollCount',5)
 			},
 			tabWidth: {
-				type: Number,
+				type: [Number, String],
 				default: _gc('tabWidth',0)
+			},
+			barWidth: {
+				type: [Number, String],
+				default: _gc('barWidth',45)
+			},
+			barHeight: {
+				type: [Number, String],
+				default: _gc('barHeight',8)
 			},
 			nameKey: {
 				type: String,
@@ -188,8 +198,8 @@
 				handler(newVal) {
 					this.$nextTick(async ()=>{
 						if(newVal.length){
-							this.tabsContainerWidth = 0;
-							this.itemNodeInfos = [];
+							let itemNodeInfos = [];
+							let tabsContainerWidth = 0;
 							let delayTime = 0;
 							// #ifdef APP-VUE || MP-BAIDU
 							delayTime = 200;
@@ -200,10 +210,12 @@
 									if(nodeRes && nodeRes.length){
 										const node = nodeRes[0];
 										node.left += this.currentScrollLeft;
-										this.itemNodeInfos.push(node);
-										this.tabsContainerWidth += node.width;
+										itemNodeInfos.push(node);
+										tabsContainerWidth += node.width;
 									}
 								}
+								this.itemNodeInfos = itemNodeInfos;
+								this.tabsContainerWidth = tabsContainerWidth;
 								this._updateDotPosition(this.currentIndex);
 							},delayTime)
 						}
@@ -260,6 +272,9 @@
 			dotTransition(){
 				return this.isFirstLoaded ? 'transform .2s linear':'none';
 			},
+			finalDotStyle(){
+				return {width: this.barWidth + 'rpx',height: this.barHeight + 'rpx'};
+			}
 		},
 		methods: {
 			setDx(dx){
@@ -297,10 +312,10 @@
 							}
 						}
 					}
-					this.bottomDotX = node.left + node.width / 2 - uni.upx2px(45) / 2 + offset;
+					this.bottomDotX = node.left + node.width / 2 - uni.upx2px(this.barWidth) / 2 + offset;
 					if(this.tabsWidth){
 						setTimeout(()=>{
-							let scrollLeft = this.bottomDotX - this.tabsWidth / 2 + uni.upx2px(45) / 2;
+							let scrollLeft = this.bottomDotX - this.tabsWidth / 2 + uni.upx2px(this.barWidth) / 2;
 							scrollLeft = Math.max(0,scrollLeft);
 							if(tabsContainerWidth){
 								scrollLeft = Math.min(scrollLeft,tabsContainerWidth - this.tabsWidth + 10);
@@ -419,8 +434,6 @@
 	}
 	
 	.z-tabs-bottom-dot{
-		height: 8rpx;
-		width: 45rpx;
 		border-radius: 100px;
 	}
 </style>

@@ -1,7 +1,7 @@
 <!-- 聊天记录模式演示(vue)，vue中目前无法解决分页闪动问题，使用nvue可实现聊天记录无闪动分页 -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" v-model="dataList" use-chat-record-mode @query="queryList">
+		<z-paging ref="paging" v-model="dataList" use-page-scroll use-chat-record-mode @query="queryList">
 			<!-- :id="`z-paging-${index}`必须加！！！！ -->
 			<view class="" slot="top" style="background-color: red;height: 100rpx;">
 				
@@ -20,7 +20,10 @@
 </template>
 
 <script>
+	import ZPMixin from '@/uni_modules/z-paging/components/z-paging/js/z-paging-mixin'
 	export default {
+		//注意这一步不要漏掉，必须注册mixins(如果全局引入了，就不要这一步，全局引入示例见main.js)
+		mixins: [ZPMixin],
 		data() {
 			return {
 				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
