@@ -72,8 +72,8 @@ function getTouch(e) {
 //判断当前手势是否在z-paging内触发
 function getTouchFromZPaging(target) {
 	if (target && target.tagName && target.tagName !== 'BODY' && target.tagName !== 'UNI-PAGE-BODY') {
-		var classList = target.classList;
-		if (classList && classList.contains('zp-paging-touch-view')) {
+		const classList = target.classList;
+		if (classList && classList.contains('z-paging-content')) {
 			return true;
 		} else {
 			return getTouchFromZPaging(target.parentNode);
