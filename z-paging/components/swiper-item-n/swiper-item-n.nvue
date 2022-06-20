@@ -85,7 +85,7 @@
 	}
 </script>
 
-<style>
+<style scoped>
 	.content {
 		flex: 1;
 		height: 100%;

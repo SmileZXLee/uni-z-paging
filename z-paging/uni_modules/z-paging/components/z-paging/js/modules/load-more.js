@@ -303,7 +303,7 @@ const ZPLoadMore = {
 		},
 		//是否要展示上拉加载更多view
 		_showLoadingMore(type) {
-			if (!(this.loadingStatus === Enum.More.Default ? this.nShowBottom : true) || !this.totalData.length) return false;
+			if (!this.showLoadingMoreWhenReload && (!(this.loadingStatus === Enum.More.Default ? this.nShowBottom : true) || !this.totalData.length)) return false;
 			if (((!this.showLoadingMoreWhenReload || this.isUserPullDown || this.loadingStatus !== Enum.More.Loading) && !this.showLoadingMore) || 
 			(!this.loadingMoreEnabled && (!this.showLoadingMoreWhenReload || this.isUserPullDown || this.loadingStatus !== Enum.More.Loading)) || 
 			this.refresherOnly) return false;

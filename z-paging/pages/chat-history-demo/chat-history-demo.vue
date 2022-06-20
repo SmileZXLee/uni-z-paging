@@ -17,10 +17,7 @@
 </template>
 
 <script>
-	import ZPMixin from '@/uni_modules/z-paging/components/z-paging/js/z-paging-mixin'
 	export default {
-		//注意这一步不要漏掉，必须注册mixins(如果全局引入了，就不要这一步，全局引入示例见main.js)
-		mixins: [ZPMixin],
 		data() {
 			return {
 				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
@@ -30,6 +27,7 @@
 			}
 		},
 		onPageScroll(e) {
+			//如果滚动到顶部，触发加载更多聊天记录
 			if (e.scrollTop < 10) {
 				this.$refs.paging.doChatRecordLoadMore();
 			}
