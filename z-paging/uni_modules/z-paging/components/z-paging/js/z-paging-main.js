@@ -299,28 +299,16 @@ export default {
 			return this.$scopedSlots;
 		},
 		finalPagingStyle() {
-			let pagingStyle = this.pagingStyle;
+			const pagingStyle = this.pagingStyle;
 			if (!this.systemInfo) return pagingStyle;
-			let windowTop = this.systemInfo.windowTop;
-			//暂时修复vue3中隐藏系统导航栏后windowTop获取不正确的问题，具体bug详见https://ask.dcloud.net.cn/question/141634
-			//感谢litangyu！！https://github.com/SmileZXLee/uni-z-paging/issues/25
-			// #ifdef VUE3 && H5
-			const pageHeadNode = document.getElementsByTagName("uni-page-head");
-			if (!pageHeadNode.length) windowTop = 0;
-			// #endif
-			const windowBottom = this.systemInfo.windowBottom;
+			const windowTop = this.windowTop;
+			const windowBottom = this.windowBottom;
 			if (!this.usePageScroll && this.fixed) {
 				if (windowTop && !pagingStyle.top) {
 					pagingStyle.top = windowTop + 'px';
 				}
-				if (!pagingStyle.bottom) {
-					let bottom = windowBottom || 0;
-					if (this.safeAreaInsetBottom && !this.useSafeAreaPlaceholder) {
-						bottom += this.safeAreaBottom;
-					}
-					if(bottom > 0){
-						pagingStyle.bottom = bottom + 'px';
-					}
+				if (windowBottom && !pagingStyle.bottom) {
+					pagingStyle.bottom = windowBottom + 'px';
 				}
 			}
 			if (this.bgColor.length && !pagingStyle['background']) {
@@ -375,6 +363,12 @@ export default {
 			return !this.systemInfo ? 0 : this.systemInfo.windowHeight || 0;
 		},
 		windowTop() {
+			//暂时修复vue3中隐藏系统导航栏后windowTop获取不正确的问题，具体bug详见https://ask.dcloud.net.cn/question/141634
+			//感谢litangyu！！https://github.com/SmileZXLee/uni-z-paging/issues/25
+			// #ifdef VUE3 && H5
+			const pageHeadNode = document.getElementsByTagName("uni-page-head");
+			if (!pageHeadNode.length) return 0;
+			// #endif
 			return !this.systemInfo ? 0 : this.systemInfo.windowTop || 0;
 		},
 		windowBottom() {
