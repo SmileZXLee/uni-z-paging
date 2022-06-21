@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-v2.3.3 (2022-06-15)
+v2.3.2 (2022-06-21)
 by ZXLee
 -->
 <!-- API文档地址：https://z-paging.zxlee.cn -->
@@ -297,7 +297,6 @@ by ZXLee
 	 * @property {String|Object} refresher-pulling-text 自定义下拉刷新松手立即刷新状态下的文字
 	 * @property {String|Object} refresher-refreshing-text 自定义下拉刷新刷新中状态下的文字
 	 * @property {String|Object} refresher-complete-text 自定义下拉刷新刷新结束状态下的文字
-	 * @property {Boolean} refresher-end-bounce-enabled 是否开启自定义下拉刷新刷新结束回弹效果，默认为是
 	 * @property {Object} loading-more-custom-style 自定义底部加载更多样式
 	 * @property {Boolean} loading-more-enabled 是否启用加载更多数据(含滑动到底部加载更多数据和点击加载更多数据)，默认为是
 	 * @property {String|Object} loading-more-default-text 滑动到底部"默认"文字，默认为【点击加载更多】
@@ -319,18 +318,13 @@ by ZXLee
 	 * @property {Boolean} auto-show-back-to-top 自动显示点击返回顶部按钮，默认为否
 	 * @property {Number|String} back-to-top-threshold 点击返回顶部按钮显示/隐藏的阈值(滚动距离)，单位为px，默认为400rpx
 	 * @property {String} back-to-top-img 点击返回顶部按钮的自定义图片地址，默认使用z-paging内置的图片
-	 * @property {Boolean} back-to-top-with-animate 点击返回顶部按钮返回到顶部时是否展示过渡动画，默认为是
-	 * @property {Number|String} back-to-top-bottom 点击返回顶部按钮与底部的距离，注意添加单位px或rpx，默认为160rpx
 	 * @property {Object} back-to-top-style 点击返回顶部按钮的自定义样式
 	 * @property {Boolean} show-scrollbar 控制是否出现滚动条，默认为是
 	 * @property {Number|String} lower-threshold 距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为100rpx
 	 * @property {Boolean} refresher-enabled 是否开启自定义下拉刷新，默认为是
-	 * @property {String} refresher-default-style 设置自定义下拉刷新默认样式，支持设置 black，white，none，none 表示不使用默认样式，默认为black
-	 * @property {String} refresher-background 设置自定义下拉刷新区域背景颜色
 	 * @property {Boolean} show-refresher-update-time 是否显示上次下拉刷新更新时间，默认为否
 	 * @property {String} refresher-update-time-key 上次下拉刷新更新时间的key，用于区别不同的上次更新时间
 	 * @property {Boolean} use-chat-record-mode 使用聊天记录模式，默认为否
-	 * @property {Boolean} auto-full-height 使用页面滚动时，是否在不满屏时自动填充满屏幕，默认为是
 	 * @property {String} nvue-list-is nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list
 	 * @property {Object} nvue-waterfall-config nvue waterfall配置，仅在nvue中且nvueListIs=waterfall时有效，配置参数详情参见：https://uniapp.dcloud.io/component/waterfall
 	 * @event {Function} query 下拉刷新或滚动到底部时会自动触发此方法。z-paging加载时也会触发(若要禁止，请设置:auto="false")。pageNo和pageSize会自动计算好，直接传给服务器即可。

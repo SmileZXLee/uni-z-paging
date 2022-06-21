@@ -1,6 +1,7 @@
-## 2.3.1（2022-05-29）
-1.新增组件：`z-paging-cell`用于兼容nvue和vue中的cell渲染。  
-2.新增props：`nvue-paging-enabled`，支持设置nvue中是否按分页模式(类似竖向swiper)显示List。  
-3.新增props：`refresher-default-duration`，支持设置自定义下拉刷新默认状态下回弹动画时间。  
-4.修复在虚拟列表中，scrollToBottom滚动位置不正确的问题。  
-5.修复vue3中隐藏系统导航栏后windowTop获取不正确的问题，具体bug详见[https://ask.dcloud.net.cn/question/141634](https://ask.dcloud.net.cn/question/141634)。
+## 2.3.2（2022-06-21）
+1.修复使用页面滚动跳转下一个页面时，返回上一个页面列表偶现的无法滚动的问题。  
+2.修复`loading-more-loading-icon-custom-style`对自定义的image无效的问题。  
+3.修复在聊天记录模式+页面滚动中，若引入mixins可能导致的滚动到底部时也会触发加载更多的问题。  
+4.修复由`2.3.1`版本引出的`show-loading-more-when-reload`属性无效的问题。  
+5.修复在vue3+h5中，使用页面滚动且隐藏了导航栏后，top位置计算不正确的问题。  
+6.优化renderjs阻止冒泡范围，以解决下拉手势从`slot="top"`view中开始时下拉导致的列表需要等待1-2秒才可以滚动的问题。
