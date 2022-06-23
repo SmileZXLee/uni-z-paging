@@ -1,4 +1,4 @@
-<!-- z-tabs v0.0.8 by-ZXLee -->
+<!-- z-tabs v0.0.9 by-ZXLee -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-tabs -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?name=z-tabs -->
 <!-- 反馈QQ群：790460711 -->
@@ -26,7 +26,7 @@
 						:style="[{transform:`translateX(${bottomDotX}px)`,transition:dotTransition,background:activeColor},finalDotStyle]"
 						<!-- #endif -->
 						<!-- #ifdef APP-NVUE -->
-						:style="[{background:activeColor}]"
+						:style="[{background:activeColor},finalDotStyle]"
 						<!-- #endif -->
 						/>
 					</view>	
@@ -317,10 +317,12 @@
 						setTimeout(()=>{
 							let scrollLeft = this.bottomDotX - this.tabsWidth / 2 + uni.upx2px(this.barWidth) / 2;
 							scrollLeft = Math.max(0,scrollLeft);
-							if(tabsContainerWidth){
+							if (tabsContainerWidth) {
 								scrollLeft = Math.min(scrollLeft,tabsContainerWidth - this.tabsWidth + 10);
 							}
-							this.scrollLeft = scrollLeft;
+							if (this.shouldScroll && tabsContainerWidth > this.tabsWidth) {
+								this.scrollLeft = scrollLeft;
+							}
 							this.$nextTick(()=>{
 								this.isFirstLoaded = true;
 							})
@@ -410,6 +412,7 @@
 		display: flex;
 		/* #endif */
 		flex-direction: row;
+		
 	}
 	
 	.z-tabs-item{
