@@ -152,7 +152,7 @@ const ZPVirtualList = {
 							this.virtualPageHeight = node[0].height;
 						}
 					});
-				}, 100);
+				}, c.delayTime);
 			})
 		},
 		//cellHeightMode为fixed时获取第一个cell高度
@@ -174,7 +174,7 @@ const ZPVirtualList = {
 							this._updateVirtualScroll(this.oldScrollTop);
 						}
 					});
-				}, 100);
+				}, c.delayTime);
 			})
 		},
 		//cellHeightMode为dynamic时获取每个cell高度
@@ -209,7 +209,7 @@ const ZPVirtualList = {
 						});
 					}
 					this._updateVirtualScroll(this.oldScrollTop);
-				}, 100)
+				}, c.delayTime)
 			})
 		},
 		//设置cellItem的index

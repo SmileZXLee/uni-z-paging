@@ -5,7 +5,8 @@ var data = {
 	renderScrollTop: 0,
 	renderUsePageScroll: false,
 	startY: 0,
-	isTouchFromZPaging: false
+	isTouchFromZPaging: false,
+	isIosAndH5: false
 }
 
 var currentVm = null;
@@ -24,9 +25,13 @@ export default {
 			currentVm = ownerVm;
 			data.renderScrollTop = newVal;
 		},
-		renderPropUsePageScrollChange(newVal, oldVal, ownerVm, vm) {
+		renderPropUsePageScrollChange(newVal) {
 			if (newVal === -1) return;
 			data.renderUsePageScroll = newVal;
+		},
+		renderPropIsIosAndH5Change(newVal) {
+			if (newVal === -1) return;
+			data.isIosAndH5 = newVal;
 		},
 		//拦截处理touch事件
 		_handleTouch() {
@@ -49,8 +54,7 @@ export default {
 		_handleTouchmove(e) {
 			const touch = u.getTouch(e);
 			var moveY = touch.touchY - data.startY;
-			//v2.1.4起删除条件：(data.isTouchFromZPaging && data.renderIsIos && !data.renderUsePageScroll && moveY < 0)
-			if (data.isTouchFromZPaging && data.renderScrollTop < 1 && moveY > 0) {
+			if (data.isTouchFromZPaging && ((data.renderScrollTop < 1 && moveY > 0)  || (data.isIosAndH5 && !data.renderUsePageScroll && moveY < 0))) {
 				if (e.cancelable && !e.defaultPrevented) {
 					e.preventDefault();
 				}

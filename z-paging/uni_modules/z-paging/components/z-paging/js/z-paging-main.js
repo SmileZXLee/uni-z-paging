@@ -393,6 +393,12 @@ export default {
 			}
 			// #endif
 			return false;
+		},
+		isIosAndH5(){
+			// #ifndef H5
+			return false;
+			// #endif
+			return this.isIos;
 		}
 	},
 	methods: {
