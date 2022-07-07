@@ -5,12 +5,12 @@
 
 <!-- 空数据占位view，此组件支持easycom规范，可以在项目中直接引用 -->
 <template>
-	<view :class="{'zp-container':true,'zp-container-fixed':emptyViewFixed}" :style="[finalEmptyViewStyle]">
+	<view :class="{'zp-container':true,'zp-container-fixed':emptyViewFixed}" :style="[finalEmptyViewStyle]" @click="emptyViewClick">
 		<view class="zp-main">
 			<image v-if="!emptyViewImg.length" class="zp-main-image" :style="[emptyViewImgStyle]" :src="emptyImg" />
 			<image v-else class="zp-main-image" mode="aspectFit" :style="[emptyViewImgStyle]" :src="emptyViewImg" />
 			<text class="zp-main-title" :style="[emptyViewTitleStyle]">{{emptyViewText}}</text>
-			<text v-if="showEmptyViewReload" class="zp-main-error-btn" :style="[emptyViewReloadStyle]" @click="reloadClick">{{emptyViewReloadText}}</text>
+			<text v-if="showEmptyViewReload" class="zp-main-error-btn" :style="[emptyViewReloadStyle]" @click.stop="reloadClick">{{emptyViewReloadText}}</text>
 		</view>
 	</view>
 </template>
@@ -102,6 +102,9 @@
 		methods: {
 			reloadClick() {
 				this.$emit('reload');
+			},
+			emptyViewClick() {
+				this.$emit('viewClick');
 			}
 		}
 	}

@@ -145,6 +145,7 @@ function touchend(e, ownerIns) {
 
 // #ifdef H5
 function isPC() {
+	if (!navigator) return false;
 	if (isPCFlag != -1) return isPCFlag;
 	var userAgentInfo = navigator.userAgent;
 	var Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];

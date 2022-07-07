@@ -144,6 +144,10 @@ const ZPEmptyView = {
 				}
 			})
 		},
+		//点击了空数据view
+		_emptyViewClick() {
+			this.$emit('emptyViewClick');
+		},
 	}
 }
 

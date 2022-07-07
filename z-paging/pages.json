@@ -243,7 +243,7 @@
 		"mp-alipay": {
 			"allowsBounceVertical": "NO"
 		},
-		//在App中，取消安卓下拉刷新灰色半弧形效果
+		//在App中，取消下拉刷新灰色半弧形效果
 		"app-plus" : {
 			"bounce" : "none"
 		}
