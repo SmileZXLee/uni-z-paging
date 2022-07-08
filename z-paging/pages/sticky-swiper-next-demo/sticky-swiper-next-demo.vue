@@ -16,6 +16,8 @@
 				</view>
 				<swiper class="swiper" :style="[{height:swiperHeight+'px'}]" :current="current" @animationfinish="animationfinish">
 					<swiper-item class="swiper-item" v-for="(item, index) in tabList" :key="index">
+						<!-- 这里的sticky-swiper-next-item为demo中为演示用定义的组件，列表及分页代码在sticky-swiper-next-item组件内 -->
+						<!-- 请注意，sticky-swiper-next-item非z-paging内置组件，在自己的项目中必须自己创建，若未创建则会报组件不存在的错误 -->
 						<sticky-swiper-next-item ref="swiperList" :tabIndex="index" :currentIndex="current" @heightChanged="heightChanged">
 						</sticky-swiper-next-item>
 					</swiper-item>
