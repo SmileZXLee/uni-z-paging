@@ -121,9 +121,10 @@ const ZPNvue = {
 		//列表滚动时触发
 		_nOnScroll(e) {
 			this.$emit('scroll', e);
-			const contentOffsetY = e.contentOffset.y;
+			const contentOffsetY = -e.contentOffset.y;
+			this.oldScrollTop = contentOffsetY;
 			this.nListIsDragging = e.isDragging;
-			this._checkShouldShowBackToTop(-e.contentOffset.y, -e.contentOffset.y - 1);
+			this._checkShouldShowBackToTop(contentOffsetY, contentOffsetY - 1);
 		},
 		//下拉刷新刷新中
 		_nOnRrefresh() {
