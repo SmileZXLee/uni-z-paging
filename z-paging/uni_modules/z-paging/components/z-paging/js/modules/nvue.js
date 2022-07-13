@@ -175,7 +175,7 @@ const ZPNvue = {
 			if (stackCount > 1) {
 				this.refresherStatus = Enum.Refresher.Loading;
 			}
-			const duration = animate ? 120 : 0;
+			const duration = animate ? 180 : 0;
 			weexAnimation.transition(this.$refs['zp-n-list-refresher-reveal'], {
 				styles: {
 					height: `${height}px`,

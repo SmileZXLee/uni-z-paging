@@ -63,7 +63,7 @@ export default {
 			checkScrolledToBottomTimeOut: null,
 			systemInfo: null,
 			cssSafeAreaInsetBottom: -1,
-			cacheTopHeight: 0,
+			cacheTopHeight: -1,
 
 			//--------------状态&判断---------------
 			insideOfPaging: -1,

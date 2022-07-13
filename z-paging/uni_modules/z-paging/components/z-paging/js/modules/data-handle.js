@@ -619,7 +619,7 @@ const ZPData = {
 						this.privateScrollWithAnimation = 0;
 						this.$emit('update:chatIndex', idIndex);
 						setTimeout(() => {
-							this._scrollIntoView(idIndexStr, 30 + this.cacheTopHeight, false, () => {
+							this._scrollIntoView(idIndexStr, 30 + Math.max(0, this.cacheTopHeight), false, () => {
 								this.$emit('update:chatIndex', 0);
 							});
 						}, this.usePageScroll ? 50 : 200)

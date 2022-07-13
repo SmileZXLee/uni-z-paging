@@ -173,7 +173,7 @@ by ZXLee
 				:scrollable="scrollable&&scrollEnable&&(refresherCompleteScrollable?true:refresherStatus!==3)" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 				:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap" :pagingEnabled="nvuePagingEnabled"
 				@loadmore="_nOnLoadmore" @scroll="_nOnScroll">
-				<refresh class="zp-n-refresh" :style="[nvueRefresherStyle]" v-if="finalNvueRefresherEnabled" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh" @pullingdown="_nOnPullingdown">
+				<refresh v-if="($slots.top?cacheTopHeight!==-1:true)&&finalNvueRefresherEnabled" class="zp-n-refresh" :style="[nvueRefresherStyle]" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh" @pullingdown="_nOnPullingdown">
 					<view ref="zp-n-refresh-container" class="zp-n-refresh-container" :style="[{background:refresherBackground,width:nRefresherWidth}]" id="zp-n-refresh-container">
 						<!-- 下拉刷新view -->
 						<slot v-if="zScopedSlots.refresherComplete&&refresherStatus===3" name="refresherComplete" />
