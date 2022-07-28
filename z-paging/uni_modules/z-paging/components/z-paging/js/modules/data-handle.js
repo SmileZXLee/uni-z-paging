@@ -223,7 +223,7 @@ const ZPData = {
 						if (exceedCount >= 0) {
 							hasMore = false;
 							exceedCount = this.defaultPageSize - exceedCount;
-							if (exceedCount > 0 && exceedCount < data.length) {
+							if (exceedCount > 0 && exceedCount < data.length && this.privateConcat) {
 								data = data.splice(0, exceedCount);
 							}
 						}
