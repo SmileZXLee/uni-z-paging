@@ -25,6 +25,7 @@ function touchstart(e, ownerIns) {
 	var ins = _getIns(ownerIns);
 	var state = {};
 	var dataset = {};
+	ownerIns.callMethod('_handleListTouchstart');
 	if (ins) {
 		state = ins.getState();
 		dataset = ins.getDataset();

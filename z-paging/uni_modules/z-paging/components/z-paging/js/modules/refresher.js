@@ -330,6 +330,7 @@ const ZPRefresher = {
 		// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
 		//拖拽开始
 		_refresherTouchstart(e) {
+			this._handleListTouchstart();
 			if (this._touchDisabled()) return;
 			const touch = u.getTouch(e);
 			this._handleRefresherTouchstart(touch);
@@ -453,6 +454,10 @@ const ZPRefresher = {
 			}
 			this.scrollEnable = true;
 			this.$emit('refresherTouchend', moveDis);
+		},
+		//处理列表触摸开始事件
+		_handleListTouchstart() {
+			this.useChatRecordMode && uni.hideKeyboard();
 		},
 		//处理scroll-view bounce是否生效
 		_handleScrollViewDisableBounce(e) {
