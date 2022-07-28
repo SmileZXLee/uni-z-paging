@@ -210,14 +210,6 @@ const ZPLoadMore = {
 						})
 					}
 				}
-				//#ifdef APP-VUE || H5
-				if (this.isIos) {
-					this.renderPropUsePageScroll = -1;
-					this.$nextTick(() => {
-						this.renderPropUsePageScroll = this.usePageScroll;
-					})
-				}
-				//#endif
 			}
 			this.$emit('scrolltolower', from);
 			if (from === 'toBottom' && (!this.toBottomLoadingMoreEnabled || this.useChatRecordMode)) return;

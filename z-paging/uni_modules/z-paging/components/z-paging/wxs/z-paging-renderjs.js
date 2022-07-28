@@ -2,14 +2,12 @@
 
 import u from '../js/z-paging-utils'
 var data = {
-	renderScrollTop: 0,
-	renderUsePageScroll: false,
 	startY: 0,
 	isTouchFromZPaging: false,
+	isUsePageScroll: false,
+	isReachedTop: true,
 	isIosAndH5: false
 }
-
-var currentVm = null;
 
 export default {
 	mounted() {
@@ -20,15 +18,6 @@ export default {
 	},
 	methods: {
 		//接收逻辑层发送的数据
-		renderPropScrollTopChange(newVal, oldVal, ownerVm, vm) {
-			if (newVal === -1) return;
-			currentVm = ownerVm;
-			data.renderScrollTop = newVal;
-		},
-		renderPropUsePageScrollChange(newVal) {
-			if (newVal === -1) return;
-			data.renderUsePageScroll = newVal;
-		},
 		renderPropIsIosAndH5Change(newVal) {
 			if (newVal === -1) return;
 			data.isIosAndH5 = newVal;
@@ -48,13 +37,15 @@ export default {
 		_handleTouchstart(e) {
 			const touch = u.getTouch(e);
 			data.startY = touch.touchY;
-			data.isTouchFromZPaging = u.getTouchFromZPaging(e.target);
-			this.$ownerInstance && this.$ownerInstance.callMethod('_updateRenderJsData');
+			const touchResult = u.getTouchFromZPaging(e.target);
+			data.isTouchFromZPaging = touchResult.isFromZp;
+			data.isUsePageScroll = touchResult.isPageScroll;
+			data.isReachedTop = touchResult.isReachedTop;
 		},
 		_handleTouchmove(e) {
 			const touch = u.getTouch(e);
 			var moveY = touch.touchY - data.startY;
-			if (data.isTouchFromZPaging && ((data.renderScrollTop < 1 && moveY > 0)  || (data.isIosAndH5 && !data.renderUsePageScroll && moveY < 0))) {
+			if (data.isTouchFromZPaging && ((data.isReachedTop && moveY > 0)  || (data.isIosAndH5 && !data.isUsePageScroll && moveY < 0))) {
 				if (e.cancelable && !e.defaultPrevented) {
 					e.preventDefault();
 				}

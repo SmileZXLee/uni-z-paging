@@ -70,9 +70,6 @@ const ZPScroller = {
 		},
 		usePageScroll: {
 			handler(newVal) {
-				this.$nextTick(() => {
-					this.renderPropUsePageScroll = newVal;
-				})
 				if (this.loaded && this.autoHeight) {
 					this._setAutoHeight(!newVal);
 				}
@@ -462,15 +459,6 @@ const ZPScroller = {
 					});
 				}, delayTime)
 			})
-		},
-		//更新renderJs数据
-		_updateRenderJsData(){
-			this.renderPropUsePageScroll = -1;
-			this.renderPropUsePageScroll = this.usePageScroll;
-			if (!this.useChatRecordMode) {
-				this.renderPropScrollTop = -1;
-				this.renderPropScrollTop = this.finalScrollTop < 6 ? 0 : 10;
-			}
 		}
 	}
 }

@@ -74,12 +74,16 @@ function getTouchFromZPaging(target) {
 	if (target && target.tagName && target.tagName !== 'BODY' && target.tagName !== 'UNI-PAGE-BODY') {
 		const classList = target.classList;
 		if (classList && classList.contains('z-paging-content')) {
-			return true;
+			return {
+				'isFromZp': true, 
+				'isPageScroll': classList.contains('z-paging-content-page'), 
+				'isReachedTop': classList.contains('z-paging-reached-top')
+			};
 		} else {
 			return getTouchFromZPaging(target.parentNode);
 		}
 	} else {
-		return false;
+		return {'isFromZp': false};
 	}
 }
 
