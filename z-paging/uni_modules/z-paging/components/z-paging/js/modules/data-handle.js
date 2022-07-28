@@ -213,20 +213,21 @@ const ZPData = {
 				success = dataTypeRes.success;
 				if (totalCount >= 0 && success) {
 					this.$nextTick(() => {
-						let nomore = true;
+						let hasMore = true;
 						let realTotalDataCount = this.realTotalData.length;
 						if (this.pageNo == this.defaultPageNo) {
 							realTotalDataCount = 0;
 						}
-						let exceedCount = realTotalDataCount + data.length - totalCount;
+						const dataLength = this.privateConcat ? data.length : 0;
+						let exceedCount = realTotalDataCount + dataLength - totalCount;
 						if (exceedCount >= 0) {
-							nomore = false;
+							hasMore = false;
 							exceedCount = this.defaultPageSize - exceedCount;
 							if (exceedCount > 0 && exceedCount < data.length) {
 								data = data.splice(0, exceedCount);
 							}
 						}
-						this.completeByNoMore(data, nomore, success);
+						this.completeByNoMore(data, hasMore, success);
 					})
 					return;
 				}
