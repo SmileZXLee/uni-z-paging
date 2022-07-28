@@ -455,10 +455,10 @@ const ZPScroller = {
 				// #endif
 				setTimeout(() => {
 					this._getNodeClientRect('.zp-page-left').then((res) => {
-						this.scrollViewContainerStyle['left'] = res ? res[0].width + 'px' : 0;
+						this.$set(this.scrollViewContainerStyle,'left',res ? res[0].width + 'px' : '0px');
 					});
 					this._getNodeClientRect('.zp-page-right').then((res) => {
-						this.scrollViewContainerStyle['right'] = res ? res[0].width + 'px' : 0;
+						this.$set(this.scrollViewContainerStyle,'right',res ? res[0].width + 'px' : '0px');
 					});
 				}, delayTime)
 			})

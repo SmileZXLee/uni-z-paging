@@ -1,5 +1,6 @@
 // [z-paging]nvue独有部分模块
 import u from '.././z-paging-utils'
+import c from '.././z-paging-constant'
 import Enum from '.././z-paging-enum'
 
 // #ifdef APP-NVUE
@@ -203,15 +204,18 @@ const ZPNvue = {
 		},
 		//更新nvue 下拉刷新view容器的宽度
 		_nUpdateRefresherWidth() {
-			this.$nextTick(()=>{
-				this._getNodeClientRect('.zp-n-list').then(node => {
-					if (node) {
-						const nodeWidth = node[0].width;
-						this.nRefresherWidth = nodeWidth;
-					}
+			setTimeout(() => {
+				this.$nextTick(()=>{
+					this._getNodeClientRect('.zp-n-list').then(node => {
+						if (node) {
+							const nodeWidth = node[0].width;
+							if (nodeWidth) {
+								this.nRefresherWidth = nodeWidth;
+							}
+						}
+					})
 				})
-			})
-			
+			},c.delayTime)	
 		}
 		// #endif
 	}
