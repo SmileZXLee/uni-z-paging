@@ -412,11 +412,6 @@ const ZPScroller = {
 			const node = `.zp-page-${type}`;
 			const marginText = `margin${type.slice(0,1).toUpperCase() + type.slice(1)}`;
 			let safeAreaInsetBottomAdd = this.safeAreaInsetBottom;
-			// #ifdef APP-NVUE
-			if (!this.usePageScroll) {
-				safeAreaInsetBottomAdd = false;
-			}
-			// #endif
 			this.$nextTick(() => {
 				let delayTime = 0;
 				// #ifdef MP-BAIDU || APP-NVUE

@@ -14,6 +14,9 @@
 				<text class="item-detail">{{item.detail}}</text>
 				<view class="item-line"></view>
 			</cell>
+			<view style="height: 100rpx;background-color: red;" slot="bottom">
+				
+			</view>
 		</z-paging>
 	</view>
 </template>
