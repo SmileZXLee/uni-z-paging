@@ -1,4 +1,4 @@
-<!-- 自定义的点击返回顶部view -->
+<!-- z-paging自定义的点击返回顶部view -->
 <template>
 	<view class="back-to-top">
 		<view v-if="type===1" class="container">

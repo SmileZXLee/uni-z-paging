@@ -164,7 +164,6 @@ const ZPVirtualList = {
 						if (!hasCellNode) {
 							clearTimeout(updateFixedCellHeightTimeout);
 							if (this.getCellHeightRetryCount.fixed > 10) {
-								u.consoleErr('获取虚拟列表cell高度失败，可能是for循环cell处没有写:id="`zp-${item.zp_index}`"，请检查您的代码！')
 								return;
 							}
 							this.getCellHeightRetryCount.fixed++;
@@ -190,7 +189,6 @@ const ZPVirtualList = {
 							clearTimeout(updateDynamicCellHeightTimeout);
 							this.virtualHeightCacheList = this.virtualHeightCacheList.slice(-i);
 							if (this.getCellHeightRetryCount.dynamic > 10) {
-								u.consoleErr('获取虚拟列表cell高度失败，可能是for循环cell处没有写:id="`zp-${item.zp_index}`"，请检查您的代码！')
 								return;
 							}
 							this.getCellHeightRetryCount.dynamic++;

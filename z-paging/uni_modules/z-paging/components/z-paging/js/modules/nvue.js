@@ -127,6 +127,10 @@ const ZPNvue = {
 			this.nListIsDragging = e.isDragging;
 			this._checkShouldShowBackToTop(contentOffsetY, contentOffsetY - 1);
 		},
+		//列表开始触摸
+		_nTouchstart() {
+			this._handleListTouchstart();
+		},
 		//下拉刷新刷新中
 		_nOnRrefresh() {
 			if (this.nShowRefresherReveal) return;

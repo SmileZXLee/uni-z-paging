@@ -1,18 +1,21 @@
-<!-- z-tabs v0.0.9 by-ZXLee -->
+<!-- z-tabs v0.1.0 by-ZXLee -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-tabs -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?name=z-tabs -->
 <!-- 反馈QQ群：790460711 -->
 
 <template name="z-tabs">
-	<view class="z-tabs-conatiner" :style="[{height:finalTabsHeight+'px',background:bgColor}]">
-		<slot name="left" />
-		<view class="z-tabs-scroll-view-conatiner">
+	<view class="z-tabs-conatiner" :style="[{height:finalTabsHeight+'px',background:bgColor},tabsStyle]">
+		<view class="z-tabs-left">
+			<slot name="left" />
+		</view>
+		<view ref="z-tabs-scroll-view-conatiner" class="z-tabs-scroll-view-conatiner">
 			<scroll-view ref="z-tabs-scroll-view" class="z-tabs-scroll-view" :scroll-x="shouldScroll" :scroll-left="scrollLeft" :show-scrollbar="false" :scroll-with-animation="isFirstLoaded" @scroll="scroll">
 				<view class="z-tabs-list-container" :style="[tabsListStyle]">
 					<view class="z-tabs-list" :style="[tabsListStyle]">
-						<view :ref="`z-tabs-item-${index}`" :id="`z-tabs-item-${index}`" class="z-tabs-item" :style="[tabsStyle]" v-for="(item,index) in list" :key="index" @click="tabsClick(index,item)">
+						<view :ref="`z-tabs-item-${index}`" :id="`z-tabs-item-${index}`" class="z-tabs-item" :style="[tabStyle]" v-for="(item,index) in list" :key="index" @click="tabsClick(index,item)">
 							<view class="z-tabs-item-title-container">
 								<text class="z-tabs-item-title" :style="[{color:currentIndex===index?activeColor:inactiveColor},currentIndex===index?activeStyle:inactiveStyle]">{{item[nameKey]||item}}</text>
+								<text v-if="item.badge&&_formatCount(item.badge.count).length" class="z-tabs-item-badge" :style="[badgeStyle]">{{_formatCount(item.badge.count)}}</text>
 							</view>
 						</view>
 					</view>
@@ -33,7 +36,10 @@
 				</view>
 			</scroll-view>
 		</view>
-		<slot name="right" />
+		<view class="z-tabs-right">
+			<slot name="right" />
+		</view>
+		
 	</view>
 </template>
 
@@ -71,15 +77,20 @@
 	 * @property {Number|String} current 当前选中的index，默认为0
 	 * @property {Number|String} scroll-count list数组长度超过scrollCount时滚动显示(不自动铺满全屏)，默认为5
 	 * @property {Number|String} tab-width 自定义每个tab的宽度，默认为0，即代表根据内容自动撑开，单位为rpx
+	 * @property {Number|String} tab-width 自定义每个tab的宽度，默认为0，即代表根据内容自动撑开，单位为rpx
 	 * @property {Number|String} bar-width 滑块宽度，单位rpx
 	 * @property {Number|String} bar-height 滑块高度，单位rpx
+	 * @property {Object} bar-style 滑块样式，其中的width和height将被bar-width和bar-height覆盖
 	 * @property {String} name-key list中item的name(标题)的key，默认为name
 	 * @property {String} value-key list中item的value的key，默认为value
 	 * @property {String} active-color 激活状态tab的颜色
 	 * @property {String} inactive-color 未激活状态tab的颜色
 	 * @property {Object} active-style 激活状态tab的样式
 	 * @property {Object} inactive-style 未激活状态tab的样式
-	 * @property {String} bg-color tabs背景色
+	 * @property {Number|String} badge-max-count 徽标数最大数字限制，超过这个数字将变成badge-max-count+，默认为99
+	 * @property {Object} badge-style 徽标样式，例如可自定义背景色，字体等等
+	 * @property {String} bg-color z-tabs背景色
+	 * @property {Object} tabs-style z-tabs样式
 	 * @property {Boolean} init-trigger-change 初始化时是否自动触发change事件
 	 * @event {Function(index,value)} change tabs改变时触发，index:当前切换到的index；value:当前切换到的value
 	 * @example <z-tabs :list="list"></z-tabs>
@@ -96,6 +107,7 @@
 				wxsPropType: '',
 				tabsWidth: uni.upx2px(750),
 				tabsHeight: uni.upx2px(82),
+				tabsLeft: 0,
 				tabsContainerWidth: 0,
 				itemNodeInfos: [],
 				isFirstLoaded: false,
@@ -118,6 +130,12 @@
 				type: [Number, String],
 				default: _gc('scrollCount',5)
 			},
+			tabsStyle: {
+				type: Object,
+				default: function() {
+					return _gc('tabsStyle',{})
+				}
+			},
 			tabWidth: {
 				type: [Number, String],
 				default: _gc('tabWidth',0)
@@ -129,6 +147,12 @@
 			barHeight: {
 				type: [Number, String],
 				default: _gc('barHeight',8)
+			},
+			barStyle: {
+				type: Object,
+				default: function() {
+					return _gc('barStyle',{});
+				}
 			},
 			nameKey: {
 				type: String,
@@ -162,6 +186,16 @@
 				type: String,
 				default: _gc('bgColor','white')
 			},
+			badgeMaxCount: {
+				type: [Number, String],
+				default: _gc('badgeMaxCount',99)
+			},
+			badgeStyle: {
+				type: Object,
+				default: function() {
+					return _gc('badgeStyle',{})
+				}
+			},
 			initTriggerChange: {
 				type: Boolean,
 				default: _gc('initTriggerChange',false)
@@ -170,10 +204,12 @@
 		mounted() {
 			this.$nextTick(()=>{
 				setTimeout(()=>{
-					this._getNodeClientRect(`.z-tabs-scroll-view`).then(res=>{
+					this._getNodeClientRect(`.z-tabs-scroll-view-conatiner`).then(res=>{
 						if(res && res.length && res[0].width){
 							this.tabsWidth = res[0].width;
 							this.tabsHeight = res[0].height;
+							this.tabsLeft = res[0].left;
+							this._handleListChange(this.list);
 						}
 					})
 				},10)
@@ -196,36 +232,7 @@
 			},
 			list: {
 				handler(newVal) {
-					this.$nextTick(async ()=>{
-						if(newVal.length){
-							let itemNodeInfos = [];
-							let tabsContainerWidth = 0;
-							let delayTime = 0;
-							// #ifdef APP-VUE || MP-BAIDU
-							delayTime = 200;
-							// #endif
-							setTimeout(async()=>{
-								for(let i = 0;i < newVal.length;i++){
-									const nodeRes = await this._getNodeClientRect(`#z-tabs-item-${i}`,true);
-									if(nodeRes && nodeRes.length){
-										const node = nodeRes[0];
-										node.left += this.currentScrollLeft;
-										itemNodeInfos.push(node);
-										tabsContainerWidth += node.width;
-									}
-								}
-								this.itemNodeInfos = itemNodeInfos;
-								this.tabsContainerWidth = tabsContainerWidth;
-								this._updateDotPosition(this.currentIndex);
-							},delayTime)
-						}
-					})
 					
-					if (this.initTriggerChange && this.changeTriggerFailed && newVal.length) {
-						if (this.current < newVal.length) {
-							this.$emit('change', this.current, newVal[this.current][this.valueKey]);
-						}
-					}
 				},
 				immediate: true
 			},
@@ -257,7 +264,7 @@
 			finalTabsHeight(){
 				return this.tabsHeight;
 			},
-			tabsStyle(){
+			tabStyle(){
 				const stl = this.shouldScroll ? {'flex-shrink': 0} : {'flex': 1};
 				if(this.tabWidth > 0){
 					stl['width'] = this.tabWidth + 'rpx';
@@ -273,7 +280,7 @@
 				return this.isFirstLoaded ? 'transform .2s linear':'none';
 			},
 			finalDotStyle(){
-				return {width: this.barWidth + 'rpx',height: this.barHeight + 'rpx'};
+				return Object.assign(this.barStyle,{width: this.barWidth + 'rpx',height: this.barHeight + 'rpx'});
 			}
 		},
 		methods: {
@@ -312,7 +319,7 @@
 							}
 						}
 					}
-					this.bottomDotX = node.left + node.width / 2 - uni.upx2px(this.barWidth) / 2 + offset;
+					this.bottomDotX = node.left + node.width / 2 - uni.upx2px(this.barWidth) / 2 + offset - this.tabsLeft;
 					if(this.tabsWidth){
 						setTimeout(()=>{
 							let scrollLeft = this.bottomDotX - this.tabsWidth / 2 + uni.upx2px(this.barWidth) / 2;
@@ -329,6 +336,39 @@
 						},200)
 					}
 				})
+			},
+			// 处理list改变
+			_handleListChange(newVal) {
+				this.$nextTick(async ()=>{
+					if(newVal.length){
+						let itemNodeInfos = [];
+						let tabsContainerWidth = 0;
+						let delayTime = 0;
+						// #ifdef APP-VUE || MP-BAIDU
+						delayTime = 200;
+						// #endif
+						setTimeout(async()=>{
+							for(let i = 0;i < newVal.length;i++){
+								const nodeRes = await this._getNodeClientRect(`#z-tabs-item-${i}`,true);
+								if(nodeRes && nodeRes.length){
+									const node = nodeRes[0];
+									node.left += this.currentScrollLeft;
+									itemNodeInfos.push(node);
+									tabsContainerWidth += node.width;
+								}
+							}
+							this.itemNodeInfos = itemNodeInfos;
+							this.tabsContainerWidth = tabsContainerWidth;
+							this._updateDotPosition(this.currentIndex);
+						},delayTime)
+					}
+				})
+				
+				if (this.initTriggerChange && this.changeTriggerFailed && newVal.length) {
+					if (this.current < newVal.length) {
+						this.$emit('change', this.current, newVal[this.current][this.valueKey]);
+					}
+				}
 			},
 			//获取节点信息
 			_getNodeClientRect(select, withRefArr = false) {
@@ -353,6 +393,14 @@
 						resolve((data && data != '' && data != undefined && data.length) ? data : false);
 					});
 				});
+			},
+			//格式化badge中的count
+			_formatCount(count) {
+				if (!count) return '';
+				if (count > this.badgeMaxCount) {
+					return this.badgeMaxCount + '+';
+				}
+				return count.toString();
 			}
 		}
 	}
@@ -374,6 +422,7 @@
 		position: relative;
 		/* #ifndef APP-NVUE */
 		display: flex;
+		height: 100%;
 		/* #endif */
 		flex-direction: row;
 	}
@@ -425,8 +474,25 @@
 		padding: 0px 20rpx;
 	}
 	
+	.z-tabs-item-title-container{
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		flex-direction: row;
+		align-items: center;
+	}
+	
 	.z-tabs-item-title{
 		font-size: 30rpx;
+	}
+	
+	.z-tabs-item-badge{
+		margin-left: 8rpx;
+		background-color: #ec5b56;
+		color: white;
+		font-size: 22rpx;
+		border-radius: 100px;
+		padding: 0rpx 10rpx;
 	}
 	
 	.z-tabs-bottom{
@@ -438,6 +504,14 @@
 	
 	.z-tabs-bottom-dot{
 		border-radius: 100px;
+	}
+	
+	.z-tabs-left,.z-tabs-right{
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		flex-direction: row;
+		align-items: center;
 	}
 </style>
 

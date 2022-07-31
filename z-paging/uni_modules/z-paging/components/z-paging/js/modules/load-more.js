@@ -142,7 +142,7 @@ const ZPLoadMore = {
 				loadingText: this.finalLoadingMoreLoadingText,
 				noMoreText: this.finalLoadingMoreNoMoreText,
 				failText: this.finalLoadingMoreFailText,
-				hideContent: !this.loadingMoreDefaultAsLoading && this.listRendering
+				hideContent: !this.loadingMoreDefaultAsLoading && this.listRendering,
 			};
 		},
 		finalLoadingMoreThemeStyle() {
@@ -165,6 +165,10 @@ const ZPLoadMore = {
 		}
 	},
 	methods: {
+		//页面滚动到底部时通知z-paging进行进一步处理
+		pageReachBottom() {
+			!this.useChatRecordMode && this._onLoadingMore('toBottom');
+		},
 		//手动触发上拉加载更多(非必须，可依据具体需求使用)
 		doLoadMore(type) {
 			this._onLoadingMore(type);

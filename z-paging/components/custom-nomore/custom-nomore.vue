@@ -1,4 +1,4 @@
-<!-- 自定义的没有更多数据view -->
+<!-- z-paging自定义的没有更多数据view -->
 <template>
 	<view class="nomore">
 		<!-- 这里的图片请换成自己项目的图片 -->

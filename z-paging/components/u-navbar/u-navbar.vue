@@ -238,7 +238,7 @@
 	};
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 
 	.u-navbar {
 		width: 100%;

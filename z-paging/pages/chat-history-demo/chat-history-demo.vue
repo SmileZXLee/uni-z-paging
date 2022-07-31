@@ -2,17 +2,11 @@
 <template>
 	<view class="content">
 		<z-paging ref="paging" v-model="dataList" use-page-scroll use-chat-record-mode @query="queryList">
-			<!-- :id="`z-paging-${index}`必须加！！！！ -->
-			<view class="item" :id="`z-paging-${index}`" v-for="(item,index) in dataList" :key="index">
-				<view class="item-title" v-if="item.title.length<3">第{{item.title}}条聊天记录</view>
-				<view class="item-title" v-else>{{item.title}}</view>
-				<view class="item-detail">{{item.detail}}</view>
-				<view class="item-line"></view>
-			</view>
+			<!-- 聊天item -->
+			<chat-item :id="`z-paging-${index}`" v-for="(item,index) in dataList" :item="item" :key="index"></chat-item>
+			<!-- 底部聊天输入框 -->
+			<chat-input-bar slot="bottom" @send="doSend"></chat-input-bar>
 		</z-paging>
-		<view class="add-chat-record" @click="addChatRecordClick">
-			新增
-		</view>
 	</view>
 </template>
 
@@ -22,8 +16,6 @@
 			return {
 				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
 				dataList: [],
-				tabIndex: 0,
-				newIndex: 0
 			}
 		},
 		onPageScroll(e) {
@@ -40,9 +32,8 @@
 				const params = {
 					pageNo: pageNo,
 					pageSize: pageSize,
-					type: this.tabIndex + 1
 				}
-				this.$request.queryList(params).then(res => {
+				this.$request.queryChatList(params).then(res => {
 					//将请求的结果数组传递给z-paging
 					this.$refs.paging.complete(res.data.list);
 				}).catch(res => {
@@ -52,58 +43,25 @@
 					this.$refs.paging.complete(false);
 				})
 			},
-			addChatRecordClick() {
-				this.newIndex++;
-				this.$refs.paging.addChatRecordData({
-					'title': '新增数据' + this.newIndex,
-					'detail': '新增的聊天数据'
-				});
+			doSend(msg){
+				uni.showLoading({
+					title: '发送中...'
+				})
+				setTimeout(()=>{
+					uni.hideLoading();
+					this.$refs.paging.addChatRecordData({
+						time: '',
+						icon: '/static/daxiong.jpg',
+						name: '大雄',
+						content: msg,
+						isMe: true
+					});
+				},500)
 			}
 		}
 	}
 </script>
 
 <style>
-	.add-chat-record {
-		position: fixed;
-		z-index: 100;
-		width: 80rpx;
-		height: 80rpx;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		background-color: red;
-		color: white;
-		font-size: 28rpx;
-		border-radius: 50%;
-		right: 30rpx;
-		bottom: 100rpx;
-	}
-
-	.item {
-		position: relative;
-		height: 200rpx;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 0rpx 30rpx;
-	}
-
-	.item-detail {
-		padding: 5rpx 15rpx;
-		border-radius: 10rpx;
-		font-size: 28rpx;
-		color: white;
-		background-color: #007AFF;
-	}
-
-	.item-line {
-		position: absolute;
-		bottom: 0rpx;
-		left: 0rpx;
-		height: 1px;
-		width: 100%;
-		background-color: #eeeeee;
-	}
+	
 </style>

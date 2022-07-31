@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import App from './App'
 import request from '@/http/request.js'
 // ----------------------全局引入z-paging的mixin示例(使用页面滚动时需要引入)-------------------------
@@ -24,10 +23,6 @@ ZPInterceptor.handleQuery((pageNo, pageSize, from)=>{
 })
 */
 
-Vue.config.productionTip = false
-Vue.prototype.$request = request
-App.mpType = 'app'
-
 // ----------------------全局配置z-paging默认的属性值方案：第②步：设置配置信息-----------------------
 //注意，如果调用过setConfig进行配置，后期又需要取消配置，则需要设置zConfig.setConfig(null)。需要将配置置空，因为setConfig是将配置设置在缓存中，直接删除配置代码将导致原先缓存的配置无法清空。
 /*
@@ -41,9 +36,27 @@ zConfig.setConfig({
 */
 
 
+// #ifndef VUE3
+import Vue from 'vue'
+Vue.config.productionTip = false
+App.mpType = 'app'
+Vue.prototype.$request = request
 const app = new Vue({
-	...App
+    ...App
 })
 app.$mount()
+// #endif
+
+// #ifdef VUE3
+import { createSSRApp } from 'vue'
+export function createApp() {
+  const app = createSSRApp(App)
+  app.config.globalProperties.$request = request
+  return {
+    app
+  }
+}
+// #endif
+
 
 

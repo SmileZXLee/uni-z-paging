@@ -457,7 +457,7 @@ const ZPRefresher = {
 		},
 		//处理列表触摸开始事件
 		_handleListTouchstart() {
-			this.useChatRecordMode && uni.hideKeyboard();
+			this.useChatRecordMode && this.autoHideKeyboardWhenChat && uni.hideKeyboard();
 		},
 		//处理scroll-view bounce是否生效
 		_handleScrollViewDisableBounce(e) {

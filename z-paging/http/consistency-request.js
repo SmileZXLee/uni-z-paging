@@ -24,6 +24,7 @@ function myQueryList(prarm, callback) {
 	})
 }
 
-module.exports = {
+export default {
 	myQueryList
 }
+

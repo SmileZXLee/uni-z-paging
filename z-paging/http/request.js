@@ -20,7 +20,12 @@ function queryListLong(data) {
 	return _queryList(data, listCount, true, data.random);
 }
 
-function _queryList(data, listCount, showNews = false ,random = false) {
+function queryChatList(data) {
+	const listCount = 24;
+	return _queryList(data, listCount, false, false, true);
+}
+
+function _queryList(data, listCount, showNews = false ,random = false, showChat = false) {
 	if (!data.pageNo || !data.pageSize) {
 		return _callQueryResult([]);
 	}
@@ -43,14 +48,24 @@ function _queryList(data, listCount, showNews = false ,random = false) {
 	}
 	var totalPagingList = [];
 	for (let i = 0; i < listCount; i++) {
-		const item = {
-			'title': (i + 1).toString(),
-			'detail': '测试信息' + type
-		};
-		if (showNews) {
-			item.detail = getNews(random);
+		if (!showChat) {
+			const item = {
+				'title': (i + 1).toString(),
+				'detail': '测试信息' + type
+			};
+			if (showNews) {
+				item.detail = getNews(random);
+			}
+			totalPagingList.push(item);
+		} else {
+			const item = {
+				'name': '哆啦A梦',
+				'icon': '/static/duola.jpg',
+				'content': getNews(true),
+				'isMe': false
+			};
+			totalPagingList.push(item);
 		}
-		totalPagingList.push(item);
 	}
 	let pageNoIndex = (pageNo - 1) * pageSize;
 	if (pageNoIndex + pageSize <= totalPagingList.length) {
@@ -102,8 +117,8 @@ function getNews(random) {
 	return newses[random ? Math.floor(Math.random() * newses.length) : 0];
 }
 
-
-module.exports = {
+export default {
 	queryList,
-	queryListLong
+	queryListLong,
+	queryChatList
 }

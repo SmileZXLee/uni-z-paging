@@ -99,6 +99,11 @@ const ZPData = {
 			type: Boolean,
 			default: u.gc('useChatRecordMode', false)
 		},
+		//使用聊天记录模式时是否自动隐藏键盘：在用户触摸列表时候自动隐藏键盘，默认为是
+		autoHideKeyboardWhenChat: {
+			type: Boolean,
+			default: u.gc('autoHideKeyboardWhenChat', true)
+		},
 		//自动拼接complete中传过来的数组(使用聊天记录模式时无效)
 		concat: {
 			type: Boolean,
@@ -623,7 +628,7 @@ const ZPData = {
 							this._scrollIntoView(idIndexStr, 30 + Math.max(0, this.cacheTopHeight), false, () => {
 								this.$emit('update:chatIndex', 0);
 							});
-						}, this.usePageScroll ? 50 : 200)
+						}, this.usePageScroll ? 30 : 200)
 					} else {
 						this.$nextTick(() => {
 							this._scrollToBottom(false);

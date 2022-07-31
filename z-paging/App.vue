@@ -3,13 +3,18 @@
 	export default {
 		onLaunch: function() {
 			console.log('App Launch')
+			let vueVersion = 'vue2';
+			// #ifdef VUE3
+			vueVersion = 'vue3';
+			// #endif
+			
 			// #ifdef APP-PLUS
 			plus.screen.lockOrientation("portrait-primary");
-			console.log(`z-paging v${version}`)
+			console.log(`z-paging v${version} (${vueVersion})`)
 			// #endif
 			
 			// #ifndef APP-PLUS
-			console.log(`%c z-paging %c v${version} `,'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff','background:#007AFF ;padding: 1px; border-radius: 0 3px 3px 0;  color: #fff; font-weight: bold;')
+			console.log(`%c z-paging %c v${version} %c ${vueVersion} `,'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff','background:#007AFF ;padding: 1px; color: #fff; font-weight: bold;','background:#3eaf7c ;padding: 1px; border-radius: 0 3px 3px 0;  color: #fff; font-weight: bold;')
 			// #endif
 		},
 		onShow: function() {
