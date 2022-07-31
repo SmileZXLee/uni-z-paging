@@ -5,16 +5,16 @@
 		<text class="chat-time" v-if="item.time&&item.time.length">
 			{{item.time}}
 		</text>
-		<view :class="{'chat-container':true,'me':item.isMe}">
+		<view :class="{'chat-container':true,'chat-location-me':item.isMe}">
 			<view class="chat-icon-container">
 				<image class="chat-icon" :src="item.icon" mode="aspectFill" />
 			</view>
 			<view class="chat-content-container">
-				<text :class="{'chat-user-name':true,'me':item.isMe}">
+				<text :class="{'chat-user-name':true,'chat-location-me':item.isMe}">
 					{{item.name}}
 				</text>
-				<view class="chat-text-container">
-					<text class="char-text">{{item.content}}</text>
+				<view :class="{'chat-text-container':true,'chat-text-container-me':item.isMe}">
+					<text :class="{'char-text':true,'char-text-me':item.isMe}">{{item.content}}</text>
 				</view>
 			</view>
 		</view>
@@ -62,7 +62,7 @@
 		display: flex;
 		flex-direction: row;
 	}
-	.me{
+	.chat-location-me{
 		flex-direction: row-reverse;
 		text-align: right;
 	}
@@ -91,6 +91,9 @@
 		max-width: 500rpx;
 		/* #endif */
 	}
+	.chat-text-container-me{
+		background-color: #007AFF;
+	}
 	.char-text{
 		font-size: 28rpx;
 		/* #ifndef APP-NVUE */
@@ -99,6 +102,8 @@
 		/* #ifdef APP-NVUE */
 		max-width: 500rpx;
 		/* #endif */
-		
+	}
+	.char-text-me{
+		color: white;
 	}
 </style>
