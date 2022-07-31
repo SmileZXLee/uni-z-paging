@@ -26,6 +26,7 @@
 </template>
 
 <script>
+	import { version } from '@/uni_modules/z-paging/package.json'
 	export default {
 		data() {
 			return {
@@ -171,6 +172,10 @@
 			// #ifdef APP-PLUS
 			this.list = this.list.concat(this.listNvue);
 			// #endif
+			
+			uni.setNavigationBarTitle({
+				title: `z-paging(v${version})`
+			})
 		},
 		methods: {
 			//下拉刷新被触发
