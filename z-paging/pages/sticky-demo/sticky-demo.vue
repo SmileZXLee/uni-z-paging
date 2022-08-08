@@ -1,4 +1,4 @@
-<!-- 滚动吸附效果演示 -->
+<!-- 滚动吸附效果演示(vue) -->
 <template>
 	<view class="content">
 		<!-- 此处为了让reload时不自动滚动到顶部，需要设置auto-clean-list-when-reload和auto-scroll-to-top-when-reload为false，即在reload时关闭自动清空数组和自动滚动到顶部 -->

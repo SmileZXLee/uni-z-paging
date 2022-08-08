@@ -341,6 +341,7 @@ const ZPRefresher = {
 			if (!this.loading && this.isTouchEnded) {
 				this.isTouchmoving = false;
 			}
+			this.loadingType = Enum.LoadingType.Refresher;
 			this.isTouchmovingTimeout && clearTimeout(this.isTouchmovingTimeout);
 			this.isTouchEnded = false;
 			this.refresherTransition = '';

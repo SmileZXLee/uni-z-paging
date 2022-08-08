@@ -1,4 +1,4 @@
-<!-- 自定义下拉刷新与上拉加载演示(nvue) -->
+<!-- 滚动吸附效果演示(nvue) -->
 <template>
 	<view class="content">
 		<z-paging ref="paging" v-model="dataList" @query="queryList">
