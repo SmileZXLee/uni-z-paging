@@ -200,6 +200,12 @@ const ZPScroller = {
 		updatePageScrollBottomHeight() {
 			this._updatePageScrollTopOrBottomHeight('bottom');
 		},
+		//更新slot="left"和slot="right"宽度，当slot="left"或slot="right"宽度动态改变时调用
+		updateLeftAndRightWidth() {
+			this.$nextTick(() => {
+				this._updateLeftAndRightWidth();
+			})
+		},
 		//更新z-paging内置scroll-view的scrollTop
 		updateScrollViewScrollTop(scrollTop, animate = true) {
 			this.privateScrollWithAnimation = animate ? 1 : 0;

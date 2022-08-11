@@ -52,6 +52,11 @@ const ZPNvue = {
 			type: Boolean,
 			default: u.gc('hideNvueBottomTag', false)
 		},
+		//nvue中控制onscroll事件触发的频率：表示两次onscroll事件之间列表至少滚动了10px。注意，将该值设置为较小的数值会提高滚动事件采样的精度，但同时也会降低页面的性能
+		offsetAccuracy: {
+			type: Number,
+			default: u.gc('offsetAccuracy', 10)
+		},
 	},
 	data() {
 		return {

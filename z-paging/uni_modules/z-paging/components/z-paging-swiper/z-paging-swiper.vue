@@ -126,8 +126,14 @@
 			}
 		},
 		methods: {
+			//更新slot="left"和slot="right"宽度，当slot="left"或slot="right"宽度动态改变时调用
+			updateLeftAndRightWidth() {
+				this.$nextTick(() => {
+					this._updateLeftAndRightWidth();
+				})
+			},
 			//通过获取css设置的底部安全区域占位view高度设置bottom距离
-			_getCssSafeAreaInsetBottom(){
+			_getCssSafeAreaInsetBottom() {
 				const query = uni.createSelectorQuery().in(this);
 				query.select('.zp-safe-area-inset-bottom').boundingClientRect(res => {
 					if (res) {
@@ -136,7 +142,7 @@
 				}).exec();
 			},
 			//获取slot="left"和slot="right"宽度并且更新布局
-			_updateLeftAndRightWidth(){
+			_updateLeftAndRightWidth() {
 				if (!this.isOldWebView) return;
 				this.$nextTick(() => {
 					let delayTime = 0;
