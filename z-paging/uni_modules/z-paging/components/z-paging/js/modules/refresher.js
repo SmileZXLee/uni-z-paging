@@ -110,6 +110,26 @@ const ZPRefresher = {
 			type: [String, Object],
 			default: u.gc('refresherCompleteText', null)
 		},
+		//自定义下拉刷新默认状态下的图片
+		refresherDefaultImg: {
+			type: String,
+			default: u.gc('refresherDefaultImg', null)
+		},
+		//自定义下拉刷新松手立即刷新状态下的图片，默认与refresherDefaultImg一致
+		refresherPullingImg: {
+			type: String,
+			default: u.gc('refresherPullingImg', null)
+		},
+		//自定义下拉刷新刷新中状态下的图片
+		refresherRefreshingImg: {
+			type: String,
+			default: u.gc('refresherRefreshingImg', null)
+		},
+		//自定义下拉刷新刷新结束状态下的图片
+		refresherCompleteImg: {
+			type: String,
+			default: u.gc('refresherCompleteImg', null)
+		},
 		//是否开启自定义下拉刷新刷新结束回弹效果，默认为是
 		refresherEndBounceEnabled: {
 			type: Boolean,
@@ -458,7 +478,10 @@ const ZPRefresher = {
 		},
 		//处理列表触摸开始事件
 		_handleListTouchstart() {
-			this.useChatRecordMode && this.autoHideKeyboardWhenChat && uni.hideKeyboard();
+			if (this.useChatRecordMode && this.autoHideKeyboardWhenChat) {
+				uni.hideKeyboard();
+				this.$emit('hidedKeyboard');
+			}
 		},
 		//处理scroll-view bounce是否生效
 		_handleScrollViewDisableBounce(e) {

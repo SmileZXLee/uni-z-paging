@@ -72,6 +72,7 @@ by ZXLee
 									<z-paging-refresh ref="refresh" v-else-if="!showCustomRefresher" :style="[{'height': `${finalRefresherThreshold}px`}]" :status="refresherStatus"
 										:defaultThemeStyle="finalRefresherThemeStyle" :defaultText="finalRefresherDefaultText"
 										:pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText"
+										:defaultImg="refresherDefaultImg" :pullingImg="refresherPullingImg" :refreshingImg="refresherRefreshingImg" :completeImg="refresherCompleteImg"
 										:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey"
 										:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle" />
 								</view>
@@ -178,6 +179,7 @@ by ZXLee
 						<slot v-else-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
 						<z-paging-refresh ref="refresh" v-else :status="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
 							:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText"
+							:defaultImg="refresherDefaultImg" :pullingImg="refresherPullingImg" :refreshingImg="refresherRefreshingImg" :completeImg="refresherCompleteImg"
 							:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey"
 							:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle" />
 					</view>
@@ -189,6 +191,7 @@ by ZXLee
 					<slot v-else-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
 					<z-paging-refresh ref="refresh" v-else :status="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
 						:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText" 
+						:defaultImg="refresherDefaultImg" :pullingImg="refresherPullingImg" :refreshingImg="refresherRefreshingImg" :completeImg="refresherCompleteImg"
 						:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey"
 						:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle" />
 				</view>

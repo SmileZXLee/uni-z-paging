@@ -3,32 +3,34 @@
 <template>
 	<view class="zp-l-container" :style="[zConfig.customStyle]" @click="doClick">
 		<template v-if="!zConfig.hideContent">
-			<text v-if="zConfig.showNoMoreLine&&finalStatus===2" :class="zConfig.defaultThemeStyle==='white'?'zp-l-line zp-l-line-white':'zp-l-line zp-l-line-black'"
+			<text v-if="zConfig.showNoMoreLine&&finalStatus===M.NoMore" :class="zConfig.defaultThemeStyle==='white'?'zp-l-line zp-l-line-white':'zp-l-line zp-l-line-black'"
 				:style="[zConfig.noMoreLineCustomStyle]" />
 			<!-- #ifndef APP-NVUE -->
-			<image v-if="finalStatus===1&&zConfig.loadingIconCustomImage.length"
+			<image v-if="finalStatus===M.Loading&&zConfig.loadingIconCustomImage.length"
 				:src="zConfig.loadingIconCustomImage" :style="[zConfig.iconCustomStyle]" :class="{'zp-l-line-loading-custom-image':true,'zp-l-line-loading-custom-image-animated':zConfig.loadingAnimated}" />
-			<image v-if="finalStatus===1&&zConfig.loadingIconType==='flower'&&!zConfig.loadingIconCustomImage.length"
+			<image v-if="finalStatus===M.Loading&&zConfig.loadingIconType==='flower'&&!zConfig.loadingIconCustomImage.length"
 				class="zp-line-loading-image" :style="[zConfig.iconCustomStyle]" :src="zConfig.defaultThemeStyle==='white'?base64FlowerWhite:base64Flower" />
 			<!-- #endif -->
 			<!-- #ifdef APP-NVUE -->
 			<view>
-				<loading-indicator v-if="finalStatus===1&&zConfig.loadingIconType!=='circle'" class="zp-line-loading-image" :style="[{color:zConfig.defaultThemeStyle==='white'?'white':'#777777'}]" animating />
+				<loading-indicator v-if="finalStatus===M.Loading&&zConfig.loadingIconType!=='circle'" class="zp-line-loading-image" :style="[{color:zConfig.defaultThemeStyle==='white'?'white':'#777777'}]" animating />
 			</view>
 			<!-- #endif -->
-			<text v-if="finalStatus===1&&zConfig.loadingIconType==='circle'&&!zConfig.loadingIconCustomImage.length"
+			<text v-if="finalStatus===M.Loading&&zConfig.loadingIconType==='circle'&&!zConfig.loadingIconCustomImage.length"
 				:class="zConfig.defaultThemeStyle==='white'?'zp-l-line-loading-view zp-l-line-loading-view-white':'zp-l-line-loading-view zp-l-line-loading-view-black'" :style="[zConfig.iconCustomStyle]" />
 			<text :class="zConfig.defaultThemeStyle==='white'?'zp-l-text zp-l-text-white':'zp-l-text zp-l-text-black'" :style="[zConfig.titleCustomStyle]">{{ownLoadingMoreText}}</text>
-			<text v-if="zConfig.showNoMoreLine&&finalStatus===2" :class="zConfig.defaultThemeStyle==='white'?'zp-l-line zp-l-line-white':'zp-l-line zp-l-line-black'" :style="[zConfig.noMoreLineCustomStyle]" />
+			<text v-if="zConfig.showNoMoreLine&&finalStatus===M.NoMore" :class="zConfig.defaultThemeStyle==='white'?'zp-l-line zp-l-line-white':'zp-l-line zp-l-line-black'" :style="[zConfig.noMoreLineCustomStyle]" />
 		</template>
 	</view>
 </template>
 <script>
 	import zStatic from '../js/z-paging-static'
+	import Enum from '../js/z-paging-enum'
 	export default {
 		name: 'z-paging-load-more',
 		data() {
 			return {
+				M: Enum.More,
 				base64Arrow: zStatic.base64Arrow,
 				base64Flower: zStatic.base64Flower,
 				base64FlowerWhite: zStatic.base64FlowerWhite,
@@ -43,7 +45,7 @@
 				return [this.zConfig.defaultText,this.zConfig.loadingText,this.zConfig.noMoreText,this.zConfig.failText];
 			},
 			finalStatus() {
-				if (this.zConfig.defaultAsLoading && this.zConfig.status === 0) return 1;
+				if (this.zConfig.defaultAsLoading && this.zConfig.status === this.M.Default) return this.M.Loading;
 				return this.zConfig.status;
 			}
 		},

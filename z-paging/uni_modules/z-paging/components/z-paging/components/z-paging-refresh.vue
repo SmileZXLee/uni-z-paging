@@ -4,13 +4,13 @@
 	<view style="height: 100%;">
 		<view :class="showUpdateTime?'zp-r-container zp-r-container-padding':'zp-r-container'">
 			<view class="zp-r-left">
-				<image v-if="status!==2" :class="leftImageClass"
-					:style="[{width: showUpdateTime?'36rpx':'30rpx',height: showUpdateTime?'36rpx':'30rpx','margin-right': showUpdateTime?'20rpx':'9rpx'},imgStyle]"
-					:src="defaultThemeStyle==='white'?(status===3?base64SuccessWhite:base64ArrowWhite):(status===3?base64Success:base64Arrow)" />
+				<image v-if="status!==R.Loading" :class="leftImageClass"
+					:style="[leftImageStyle,imgStyle]"
+					:src="leftImageSrc" />
 				<!-- #ifndef APP-NVUE -->
 				<image v-else class="zp-line-loading-image zp-r-left-image"
-					:style="[{width: showUpdateTime?'36rpx':'30rpx',height: showUpdateTime?'36rpx':'30rpx','margin-right': showUpdateTime?'20rpx':'9rpx'},imgStyle]"
-					:src="defaultThemeStyle==='white'?base64FlowerWhite:base64Flower" />
+					:style="[leftImageStyle,imgStyle]"
+					:src="leftImageSrc" />
 				<!-- #endif -->
 				<!-- #ifdef APP-NVUE -->
 				<view v-else :style="[{'margin-right':showUpdateTime?'18rpx':'12rpx'}]">
@@ -20,10 +20,12 @@
 				<!-- #endif -->
 			</view>
 			<view class="zp-r-right">
-				<text class="zp-r-right-text"
-					:style="[rightTextStyle,titleStyle]">{{statusTextArr[status]||defaultText}}
+				<text class="zp-r-right-text" :style="[rightTextStyle,titleStyle]">
+					{{statusTextArr[status]||defaultText}}
 				</text>
-				<text v-if="showUpdateTime&&refresherTimeText.length" class="zp-r-right-text zp-r-right-time-text" :style="[rightTextStyle,updateTimeStyle]">{{refresherTimeText}}</text>
+				<text v-if="showUpdateTime&&refresherTimeText.length" class="zp-r-right-text zp-r-right-time-text" :style="[rightTextStyle,updateTimeStyle]">
+					{{refresherTimeText}}
+				</text>
 			</view>
 		</view>
 	</view>
@@ -32,10 +34,13 @@
 	const systemInfo = uni.getSystemInfoSync();
 	import zStatic from '../js/z-paging-static'
 	import u from '../js/z-paging-utils'
+	import Enum from '../js/z-paging-enum'
+	
 	export default {
 		name: 'z-paging-refresh',
 		data() {
 			return {
+				R: Enum.Refresher,
 				systemInfo: systemInfo,
 				base64Arrow: zStatic.base64Arrow,
 				base64ArrowWhite: zStatic.base64ArrowWhite,
@@ -49,13 +54,17 @@
 		},
 		props: {
 			'status': {
-				default: 0
+				default: Enum.Refresher.Default
 			},
 			'defaultThemeStyle': {},
 			'defaultText': '',
 			'pullingText': '',
 			'refreshingText': '',
 			'completeText': '',
+			'defaultImg': '',
+			'pullingImg': '',
+			'refreshingImg': '',
+			'completeImg': '',
 			'showUpdateTime': {
 				default: false
 			},
@@ -76,11 +85,11 @@
 				return [this.defaultText,this.pullingText,this.refreshingText,this.completeText];
 			},
 			leftImageClass() {
-				if(this.status === 3){
+				if(this.status === this.R.Complete){
 					return 'zp-r-left-image-no-transform .zp-r-left-image-pre-size';
 				}
 				let cls = 'zp-r-left-image ';
-				if (this.status === 0) {
+				if (this.status === this.R.Default) {
 					if (this.leftImageLoaded) {
 						cls += 'zp-r-arrow-down';
 					} else {
@@ -91,6 +100,31 @@
 					cls += 'zp-r-arrow-top';
 				}
 				return cls + ' zp-r-left-image-pre-size';
+			},
+			leftImageStyle() {
+				const showUpdateTime = this.showUpdateTime;
+				const size = showUpdateTime ? '36rpx' : '30rpx';
+				return {width: size,height: size,'margin-right': showUpdateTime ? '20rpx' : '9rpx'};
+			},
+			leftImageSrc() {
+				const R = this.R;
+				const status = this.status;
+				const isWhite = this.defaultThemeStyle === 'white';
+				if (status  === R.Default) {
+					if (!!this.defaultImg) return this.defaultImg;
+					return isWhite ? this.base64ArrowWhite : this.base64Arrow;
+				} else if (status  === R.ReleaseToRefresh) {
+					if (!!this.pullingImg) return this.pullingImg;
+					if (!!this.defaultImg) return this.defaultImg;
+					return isWhite ? this.base64ArrowWhite : this.base64Arrow;
+				} else if (status  === R.Loading) {
+					if (!!this.refreshingImg) return this.refreshingImg;
+					return isWhite ? this.base64FlowerWhite : this.base64Flower;
+				} else if (status  === R.Complete) {
+					if (!!this.completeImg) return this.completeImg;
+					return isWhite ? this.base64SuccessWhite : this.base64Success;
+				}
+				return '';
 			},
 			rightTextStyle() {
 				let stl = {};
