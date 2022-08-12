@@ -295,10 +295,6 @@ by ZXLee
 	 * @property {Boolean} auto-scroll-to-top-when-reload reload时是否自动滚动到顶部，默认为是
 	 * @property {Boolean} auto-clean-list-when-reload reload时是否立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
 	 * @property {Boolean} show-refresher-when-reload 列表刷新时是否自动显示下拉刷新view，默认为否
-	 * @property {String|Object} refresher-default-text 自定义下拉刷新默认状态下的文字
-	 * @property {String|Object} refresher-pulling-text 自定义下拉刷新松手立即刷新状态下的文字
-	 * @property {String|Object} refresher-refreshing-text 自定义下拉刷新刷新中状态下的文字
-	 * @property {String|Object} refresher-complete-text 自定义下拉刷新刷新结束状态下的文字
 	 * @property {Object} loading-more-custom-style 自定义底部加载更多样式
 	 * @property {Boolean} loading-more-enabled 是否启用加载更多数据(含滑动到底部加载更多数据和点击加载更多数据)，默认为是
 	 * @property {String|Object} loading-more-default-text 滑动到底部"默认"文字，默认为【点击加载更多】
@@ -315,17 +311,12 @@ by ZXLee
 	 * @property {String|Object} empty-view-error-text 空数据图“加载失败”描述文字
 	 * @property {String} empty-view-error-img 空数据图“加载失败”图片，默认使用z-paging内置的图片(建议使用绝对路径)
 	 * @property {Object} empty-view-style 空数据图样式
-	 * @property {Boolean} empty-view-fixed 空数据图片是否铺满z-paging，默认为是。若设置为否，则为填充满z-paging的剩余部分
-	 * @property {Boolean} empty-view-center 空数据图片是否垂直居中，默认为是。emptyViewFixed为false时有效
 	 * @property {Boolean} auto-show-back-to-top 自动显示点击返回顶部按钮，默认为否
-	 * @property {Number|String} back-to-top-threshold 点击返回顶部按钮显示/隐藏的阈值(滚动距离)，单位为px，默认为400rpx
 	 * @property {String} back-to-top-img 点击返回顶部按钮的自定义图片地址，默认使用z-paging内置的图片
 	 * @property {Object} back-to-top-style 点击返回顶部按钮的自定义样式
 	 * @property {Boolean} show-scrollbar 控制是否出现滚动条，默认为是
-	 * @property {Number|String} lower-threshold 距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为100rpx
 	 * @property {Boolean} refresher-enabled 是否开启自定义下拉刷新，默认为是
 	 * @property {Boolean} show-refresher-update-time 是否显示上次下拉刷新更新时间，默认为否
-	 * @property {String} refresher-update-time-key 上次下拉刷新更新时间的key，用于区别不同的上次更新时间
 	 * @property {Boolean} use-chat-record-mode 使用聊天记录模式，默认为否
 	 * @property {String} nvue-list-is nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list
 	 * @property {Object} nvue-waterfall-config nvue waterfall配置，仅在nvue中且nvueListIs=waterfall时有效，配置参数详情参见：https://uniapp.dcloud.io/component/waterfall
