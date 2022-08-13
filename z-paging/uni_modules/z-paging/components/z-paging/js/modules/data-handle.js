@@ -417,7 +417,7 @@ const ZPData = {
 						this._reload(false, isFromMounted);
 						this._doRefresherLoad(false);
 					});
-				}, 10)
+				}, this.pagingLoaded ? 10 : 100)
 				return;
 				// #endif
 			} else {

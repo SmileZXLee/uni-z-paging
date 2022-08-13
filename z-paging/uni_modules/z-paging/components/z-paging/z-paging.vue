@@ -31,7 +31,7 @@ by ZXLee
 				<scroll-view
 					ref="zp-scroll-view" :class="{'zp-scroll-view':true,'zp-scroll-view-absolute':!usePageScroll,'zp-scroll-view-hide-scrollbar':!showScrollbar}"
 					:scroll-top="scrollTop" :scroll-x="scrollX"
-					:scroll-y="scrollable&&!usePageScroll&&scrollEnable&&(refresherCompleteScrollable?true:refresherStatus!==3)" :enable-back-to-top="finalEnableBackToTop"
+					:scroll-y="scrollable&&!usePageScroll&&scrollEnable&&(refresherCompleteScrollable?true:refresherStatus!==R.Complete)" :enable-back-to-top="finalEnableBackToTop"
 					:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
 					:scroll-into-view="scrollIntoView" :lower-threshold="finalLowerThreshold" :upper-threshold="5"
 					:refresher-enabled="finalRefresherEnabled&&!useCustomRefresher" :refresher-threshold="finalRefresherThreshold"
@@ -66,9 +66,9 @@ by ZXLee
 								<view class="zp-custom-refresher-container" :style="[{'height': `${finalRefresherThreshold}px`,'background': refresherBackground}]">
 									<!-- 下拉刷新view -->
 									<view class="zp-custom-refresher-slot-view">
-										<slot v-if="!($slots.refresherComplete&&refresherStatus===3)" :refresherStatus="refresherStatus" name="refresher" />
+										<slot v-if="!($slots.refresherComplete&&refresherStatus===R.Complete)" :refresherStatus="refresherStatus" name="refresher" />
 									</view>
-									<slot v-if="$slots.refresherComplete&&refresherStatus===3" name="refresherComplete" />
+									<slot v-if="$slots.refresherComplete&&refresherStatus===R.Complete" name="refresherComplete" />
 									<z-paging-refresh ref="refresh" v-else-if="!showCustomRefresher" :style="[{'height': `${finalRefresherThreshold}px`}]" :status="refresherStatus"
 										:defaultThemeStyle="finalRefresherThemeStyle" :defaultText="finalRefresherDefaultText"
 										:pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText"
@@ -169,13 +169,13 @@ by ZXLee
 			</view>
 			<view ref="zp-n-list" @touchstart="_nTouchstart" :id="nvueListId" :style="[{'flex': 1,'top':isIos?'0px':'-1px'},usePageScroll?scrollViewStyle:{},useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" :is="finalNvueListIs" alwaysScrollableVertical="true"
 				:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar&&!useChatRecordMode" :loadmoreoffset="finalLowerThreshold" :enable-back-to-top="enableBackToTop"
-				:scrollable="scrollable&&scrollEnable&&(refresherCompleteScrollable?true:refresherStatus!==3)" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
+				:scrollable="scrollable&&scrollEnable&&(refresherCompleteScrollable?true:refresherStatus!==R.Complete)" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 				:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap" :pagingEnabled="nvuePagingEnabled" :offset-accuracy="offsetAccuracy"
 				@loadmore="_nOnLoadmore" @scroll="_nOnScroll">
 				<refresh v-if="($slots.top?cacheTopHeight!==-1:true)&&finalNvueRefresherEnabled" class="zp-n-refresh" :style="[nvueRefresherStyle]" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh" @pullingdown="_nOnPullingdown">
 					<view ref="zp-n-refresh-container" class="zp-n-refresh-container" :style="[{background:refresherBackground,width:nRefresherWidth}]" id="zp-n-refresh-container">
 						<!-- 下拉刷新view -->
-						<slot v-if="zScopedSlots.refresherComplete&&refresherStatus===3" name="refresherComplete" />
+						<slot v-if="zScopedSlots.refresherComplete&&refresherStatus===R.Complete" name="refresherComplete" />
 						<slot v-else-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
 						<z-paging-refresh ref="refresh" v-else :status="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
 							:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText"
@@ -184,12 +184,12 @@ by ZXLee
 							:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle" />
 					</view>
 				</refresh>
-				<view v-if="oldScrollTop > 10" ref="zp-n-list-top-tag" class="zp-n-list-top-tag" style="margin-top: -1rpx;" :style="[{height:finalNvueRefresherEnabled?'0px':'1px'}]" :is="nViewIs"></view>
-				<view v-if="nShowRefresherReveal" ref="zp-n-list-refresher-reveal" :style="[{transform:`translateY(-${nShowRefresherRevealHeight}px)`,height:'0px'},{background:refresherBackground}]" :is="nViewIs">
+				<view v-if="isIos?oldScrollTop>10:true" ref="zp-n-list-top-tag" class="zp-n-list-top-tag" style="margin-top: -1rpx;" :style="[{height:finalNvueRefresherEnabled?'0px':'1px'}]" :is="nViewIs"></view>
+				<view v-if="nShowRefresherReveal" ref="zp-n-list-refresher-reveal" :style="[{transform:`translateY(-${nShowRefresherRevealHeight}px)`},{background:refresherBackground}]" :is="nViewIs">
 					<!-- 下拉刷新view -->
-					<slot v-if="zScopedSlots.refresherComplete&&refresherStatus===3" name="refresherComplete" />
-					<slot v-else-if="zScopedSlots.refresher" :refresherStatus="refresherStatus" name="refresher" />
-					<z-paging-refresh ref="refresh" v-else :status="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
+					<slot v-if="zScopedSlots.refresherComplete&&refresherStatus===R.Complete" name="refresherComplete" />
+					<slot v-else-if="zScopedSlots.refresher" :refresherStatus="R.Loading" name="refresher" />
+					<z-paging-refresh ref="refresh" v-else :status="R.Loading" :defaultThemeStyle="finalRefresherThemeStyle"
 						:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText" 
 						:defaultImg="refresherDefaultImg" :pullingImg="refresherPullingImg" :refreshingImg="refresherRefreshingImg" :completeImg="refresherCompleteImg"
 						:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey"

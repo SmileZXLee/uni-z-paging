@@ -183,6 +183,7 @@ const ZPRefresher = {
 	},
 	data() {
 		return {
+			R: Enum.Refresher,
 			//下拉刷新状态
 			refresherStatus: Enum.Refresher.Default,
 			refresherTouchstartY: 0,

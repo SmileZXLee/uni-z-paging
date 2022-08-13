@@ -69,6 +69,7 @@ const ZPNvue = {
 			nFirstPageAndNoMoreChecked: false,
 			nLoadingMoreFixedHeight: false,
 			nShowRefresherRevealHeight: 0,
+			nOldShowRefresherRevealHeight: -1,
 			nRefresherWidth: uni.upx2px(750),
 		}
 	},
@@ -168,6 +169,7 @@ const ZPNvue = {
 		_nDoRefresherEndAnimation(height, translateY, animate = true, checkStack = true) {
 			this._cleanRefresherCompleteTimeout();
 			this._cleanRefresherEndTimeout();
+			
 			if (!this.finalShowRefresherWhenReload) {
 				this.refresherEndTimeout = setTimeout(() => {
 					this.refresherStatus = Enum.Refresher.Default;
@@ -185,22 +187,29 @@ const ZPNvue = {
 			if (stackCount > 1) {
 				this.refresherStatus = Enum.Refresher.Loading;
 			}
+			
 			const duration = animate ? 180 : 0;
-			weexAnimation.transition(this.$refs['zp-n-list-refresher-reveal'], {
-				styles: {
-					height: `${height}px`,
-					transform: `translateY(${translateY}px)`,
-				},
-				duration: duration,
-				timingFunction: 'linear',
-				needLayout: true,
-				delay: 0
-			})
+			if (this.nOldShowRefresherRevealHeight !== height) {
+				if(height > 0){
+					this.nShowRefresherReveal = true;
+				}
+				weexAnimation.transition(this.$refs['zp-n-list-refresher-reveal'], {
+					styles: {
+						height: `${height}px`,
+						transform: `translateY(${translateY}px)`,
+					},
+					duration: duration,
+					timingFunction: 'linear',
+					needLayout: true,
+					delay: 0
+				})
+			}
 			setTimeout(() => {
 				if (animate) {
 					this.nShowRefresherReveal = height > 0;
 				}
 			}, duration > 0 ? duration - 100 : 0);
+			this.nOldShowRefresherRevealHeight = height;
 		},
 		//滚动到底部加载更多
 		_nOnLoadmore() {
