@@ -115,6 +115,7 @@ const ZPLoadMore = {
 	},
 	data() {
 		return {
+			M: Enum.More,
 			//底部加载更多状态
 			loadingStatus: Enum.More.Default,
 			loadingStatusAfterRender: Enum.More.Default,

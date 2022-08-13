@@ -78,9 +78,9 @@ by ZXLee
 								</view>
 							</view>
 							<view class="zp-paging-container">
-								<slot v-if="useChatRecordMode&&$slots.chatLoading&&loadingStatus!==2&&realTotalData.length" name="chatLoading" />
-								<view v-else-if="useChatRecordMode&&loadingStatus!==2&&realTotalData.length" class="zp-chat-record-loading-container">
-									<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
+								<slot v-if="useChatRecordMode&&$slots.chatLoading&&loadingStatus!==M.NoMore&&realTotalData.length" name="chatLoading" />
+								<view v-else-if="useChatRecordMode&&loadingStatus!==M.NoMore&&realTotalData.length" class="zp-chat-record-loading-container">
+									<text v-if="loadingStatus!==M.Loading" @click="_scrollToUpper()"
 										:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
 									<image v-else :src="base64Flower" class="zp-chat-record-loading-custom-image" />
 								</view>
@@ -116,11 +116,11 @@ by ZXLee
 									<z-paging-load-more @doClick="_onLoadingMore('click')" v-else-if="showLoadingMoreCustom" :zConfig="zPagingLoadMoreConfig" />
 									<!-- #endif -->
 									<!-- #ifdef MP-ALIPAY -->
-									<slot v-if="loadingStatus===0&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreDefault" />
-									<slot v-else-if="loadingStatus===1&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled" name="loadingMoreLoading" />
-									<slot v-else-if="loadingStatus===2&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreNoMore" />
-									<slot v-else-if="loadingStatus===3&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreFail" />
-									<z-paging-load-more @doClick="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===2&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode" :zConfig="zPagingLoadMoreConfig" />
+									<slot v-if="loadingStatus===M.Default&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreDefault" />
+									<slot v-else-if="loadingStatus===M.Loading&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled" name="loadingMoreLoading" />
+									<slot v-else-if="loadingStatus===M.NoMore&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreNoMore" />
+									<slot v-else-if="loadingStatus===M.Fail&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreFail" />
+									<z-paging-load-more @doClick="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===M.NoMore&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode" :zConfig="zPagingLoadMoreConfig" />
 									<!-- #endif -->
 									<view v-if="safeAreaInsetBottom && useSafeAreaPlaceholder" class="zp-safe-area-placeholder" :style="[{height:safeAreaBottom+'px'}]" />
 								</view>
@@ -227,13 +227,13 @@ by ZXLee
 				<!-- 上拉加载更多view -->
 				<view :is="nViewIs" v-if="!refresherOnly&&loadingMoreEnabled">
 					<view v-if="useChatRecordMode">
-						<view v-if="loadingStatus!==2&&realTotalData.length">
+						<view v-if="loadingStatus!==M.NoMore&&realTotalData.length">
 							<slot v-if="$slots.chatLoading" name="chatLoading" />
 							<view v-else class="zp-chat-record-loading-container">
-								<text v-if="loadingStatus!==1" @click="_scrollToUpper()"
+								<text v-if="loadingStatus!==M.Loading" @click="_scrollToUpper()"
 									:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
 								<view>
-									<loading-indicator v-if="loadingStatus===1" class="zp-line-loading-image" animating />
+									<loading-indicator v-if="loadingStatus===M.Loading" class="zp-line-loading-image" animating />
 								</view>
 							</view>
 						</view>
