@@ -3,7 +3,10 @@
 	<view class="content">
 		<z-paging ref="paging" v-model="dataList" use-page-scroll use-chat-record-mode @query="queryList">
 			<!-- 聊天item -->
-			<chat-item :id="`z-paging-${index}`" v-for="(item,index) in dataList" :item="item" :key="index"></chat-item>
+			<view :id="`z-paging-${index}`" v-for="(item,index) in dataList" :key="index">
+				<chat-item :item="item"></chat-item>
+			</view>
+			
 			<!-- 底部聊天输入框 -->
 			<chat-input-bar slot="bottom" @send="doSend"></chat-input-bar>
 		</z-paging>

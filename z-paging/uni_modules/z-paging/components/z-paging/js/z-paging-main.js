@@ -294,9 +294,6 @@ export default {
 		},
 	},
 	computed: {
-		zScopedSlots() {
-			return this.$scopedSlots;
-		},
 		finalPagingStyle() {
 			const pagingStyle = this.pagingStyle;
 			if (!this.systemInfo) return pagingStyle;
