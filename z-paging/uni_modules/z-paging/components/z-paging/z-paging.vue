@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-v2.3.5 (2022-08-10)
+v2.3.6 (2022-08-16)
 by ZXLee
 -->
 <!-- API文档地址：https://z-paging.zxlee.cn -->
@@ -176,7 +176,7 @@ by ZXLee
 					<view ref="zp-n-refresh-container" class="zp-n-refresh-container" :style="[{background:refresherBackground,width:nRefresherWidth}]" id="zp-n-refresh-container">
 						<!-- 下拉刷新view -->
 						<slot v-if="$slots.refresherComplete&&refresherStatus===R.Complete" name="refresherComplete" />
-						<slot v-else-if="$slots.refresher" :refresherStatus="refresherStatus" name="refresher" />
+						<slot v-else-if="(nScopedSlots?nScopedSlots:$slots).refresher" :refresherStatus="refresherStatus" name="refresher" />
 						<z-paging-refresh ref="refresh" v-else :status="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
 							:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText"
 							:defaultImg="refresherDefaultImg" :pullingImg="refresherPullingImg" :refreshingImg="refresherRefreshingImg" :completeImg="refresherCompleteImg"
@@ -188,7 +188,7 @@ by ZXLee
 				<component v-if="nShowRefresherReveal" ref="zp-n-list-refresher-reveal" :style="[{transform:`translateY(-${nShowRefresherRevealHeight}px)`},{background:refresherBackground}]" :is="nViewIs">
 					<!-- 下拉刷新view -->
 					<slot v-if="$slots.refresherComplete&&refresherStatus===R.Complete" name="refresherComplete" />
-					<slot v-else-if="$slots.refresher" :refresherStatus="R.Loading" name="refresher" />
+					<slot v-else-if="(nScopedSlots?nScopedSlots:$slots).refresher" :refresherStatus="R.Loading" name="refresher" />
 					<z-paging-refresh ref="refresh" v-else :status="R.Loading" :defaultThemeStyle="finalRefresherThemeStyle"
 						:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText" 
 						:defaultImg="refresherDefaultImg" :pullingImg="refresherPullingImg" :refreshingImg="refresherRefreshingImg" :completeImg="refresherCompleteImg"

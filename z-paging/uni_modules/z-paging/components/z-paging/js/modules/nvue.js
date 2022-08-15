@@ -84,6 +84,14 @@ const ZPNvue = {
 	},
 	computed: {
 		// #ifdef APP-NVUE
+		nScopedSlots() {
+			// #ifdef VUE2
+			return this.$scopedSlots;
+			// #endif
+			// #ifdef VUE3
+			return null;
+			// #endif
+		},
 		nWaterfallColumnCount() {
 			if (this.finalNvueListIs !== 'waterfall') return 0;
 			return this._nGetWaterfallConfig('column-count', 2);
