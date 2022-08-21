@@ -1,4 +1,4 @@
-<!-- z-tabs v0.1.0 by-ZXLee -->
+<!-- z-tabs v0.1.3 by-ZXLee -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-tabs -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?name=z-tabs -->
 <!-- 反馈QQ群：790460711 -->
@@ -219,7 +219,7 @@
 			current: {
 				handler(newVal) {
 					this.currentIndex = newVal;
-					this._updateDotPosition(this.currentIndex);
+					this._preUpdateDotPosition(this.currentIndex);
 					if (this.initTriggerChange) {
 						if (newVal < this.list.length) {
 							this.$emit('change', newVal, this.list[newVal][this.valueKey]);
@@ -232,9 +232,9 @@
 			},
 			list: {
 				handler(newVal) {
-					
+					this._handleListChange(newVal);
 				},
-				immediate: true
+				immediate: false
 			},
 			bottomDotX(newVal) {
 				setTimeout(()=>{
@@ -292,12 +292,34 @@
 				if (this.currentIndex != index) {
 					this.$emit('change', index, item[this.valueKey]);
 					this.currentIndex = index;
-					this._updateDotPosition(index);
+					this._preUpdateDotPosition(index);
 				}
 			},
 			//scroll-view滚动
 			scroll(e){
 				this.currentScrollLeft = e.detail.scrollLeft;
+			},
+			//更新底部dot位置之前的预处理
+			_preUpdateDotPosition(index) {
+				// #ifndef APP-NVUE
+				this.$nextTick(() => {
+					uni.createSelectorQuery().in(this).select(".z-tabs-scroll-view").fields({
+					  scrollOffset: true
+					}, data => {
+						if (data) {
+							this.currentScrollLeft = data.scrollLeft;
+							this._updateDotPosition(index);
+						} else {
+							this._updateDotPosition(index);
+						}
+					}).exec();
+				})
+				// #endif
+				
+				// #ifdef APP-NVUE
+				this._updateDotPosition(index);
+				// #endif
+				
 			},
 			//更新底部dot位置
 			_updateDotPosition(index){

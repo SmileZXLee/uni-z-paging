@@ -215,6 +215,7 @@ function _getMoveDis(e, ins) {
 	var state = ins.getState();
 	var refresherThreshold = parseFloat(ins.getDataset().refresherthreshold);
 	var refresherOutRate = parseFloat(ins.getDataset().refresheroutrate);
+	var refresherPullRate = parseFloat(ins.getDataset().refresherpullrate);
 	var touch = _getTouch(e);
 	var currentStartY = !state.startY || state.startY == 'NaN' ? startY : state.startY;
 	var moveDis = touch.touchY - currentStartY;
@@ -222,7 +223,7 @@ function _getMoveDis(e, ins) {
 	state.oldMoveDis = moveDis;
 	var diffDis = moveDis - oldMoveDis;
 	if (diffDis > 0) {
-		diffDis = diffDis * 0.85;
+		diffDis = diffDis * refresherPullRate;
 		if (currentDis > refresherThreshold) {
 			diffDis = diffDis * (1 - refresherOutRate);
 		}

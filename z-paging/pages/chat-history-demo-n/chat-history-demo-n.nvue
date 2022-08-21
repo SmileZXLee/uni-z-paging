@@ -9,7 +9,7 @@
 			<!-- 注意！！！！这里ref必须绑定index，且格式为z-paging-${index}，格式不能变，否则会导致滑动到顶部加载更多数据时滚动位置不正确！！！！！！ -->
 			<!-- :style="cellStyle"必须写，必须写！！！ -->
 			<!-- 如果希望在vue中渲染view，nvue中渲染cell，可使用z-paging-cell代替cell -->
-			<cell v-for="(item,index) in dataList" :style="cellStyle" class="item" :key="item.title" :ref="`z-paging-${index}`">
+			<cell @touchstart="touchstart" v-for="(item,index) in dataList" :style="cellStyle" class="item" :key="item.title" :ref="`z-paging-${index}`">
 				<!-- 聊天item -->
 				<chat-item :item="item"></chat-item>
 			</cell>
@@ -49,6 +49,10 @@
 					//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
 					this.$refs.paging.complete(false);
 				})
+			},
+			// 触摸列表cell时，隐藏键盘。(为什么不放在list内部处理？因为在list上或其父view上添加@touchstart可能引发列表被锁住无法滚动等一系列问题)
+			touchstart(){
+				uni.hideKeyboard()
 			},
 			doSend(msg){
 				uni.showLoading({

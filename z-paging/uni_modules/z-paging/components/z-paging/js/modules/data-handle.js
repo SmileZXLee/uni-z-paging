@@ -142,7 +142,8 @@ const ZPData = {
 			loaded: false,
 			isUserReload: true,
 			fromEmptyViewReload: false,
-			listRendering: false
+			listRendering: false,
+			listRenderingTimeout: null
 		}
 	},
 	computed: {
@@ -573,10 +574,11 @@ const ZPData = {
 		_currentDataChange(newVal, oldVal) {
 			newVal = [...newVal];
 			this.listRendering = true;
+			this.listRenderingTimeout && clearTimeout(this.listRenderingTimeout);
 			this.$nextTick(() => {
-				setTimeout(() => {
+				this.listRenderingTimeout = setTimeout(() => {
 					this.listRendering = false;
-				},50)
+				},100)
 			})
 			// #ifndef APP-NVUE
 			if (this.finalUseVirtualList) {
@@ -628,7 +630,7 @@ const ZPData = {
 							this._scrollIntoView(idIndexStr, 30 + Math.max(0, this.cacheTopHeight), false, () => {
 								this.$emit('update:chatIndex', 0);
 							});
-						}, this.usePageScroll ? 30 : 200)
+						}, this.usePageScroll ? this.isIos ? 50 : 100 : 200)
 					} else {
 						this.$nextTick(() => {
 							this._scrollToBottom(false);

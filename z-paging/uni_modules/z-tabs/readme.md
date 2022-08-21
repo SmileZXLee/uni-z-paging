@@ -1,6 +1,6 @@
 # z-tabs
 
-[![version](https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/SmileZXLee/uni-z-tabs)
+[![version](https://img.shields.io/badge/version-0.1.3-blue)](https://github.com/SmileZXLee/uni-z-tabs)
 [![license](https://img.shields.io/github/license/SmileZXLee/uni-z-tabs)](https://en.wikipedia.org/wiki/MIT_License)
 
 ***
@@ -19,31 +19,30 @@
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				list: []
-			}
-		},
-		onLoad() {
-			const list = [];
-			for(let i = 0;i < 10;i++) {
-        // list内item支持字符串或对象，下方这个是字符串
+    export default {
+        data() {
+            return {
+                list: []
+            }
+        },
+        onLoad() {
+            const list = [];
+            for(let i = 0;i < 10;i++) {
+				// list内item支持字符串或对象，下方这个是字符串
 				list.push('tab标题');
-        
-        // 如果要展示徽标数，则list中item的数据结构应为：
-        /*
-        {
-          name: 'tab标题',
-          badge: {
-            // 设置徽标数为6
-            count: 6
-          }
-        }
-        */
-			}
-      this.list = list;
-	}
+
+				// 如果要展示徽标数，则list中item的数据结构应为：
+				list.push({
+					name: 'tab标题',
+					badge: {
+						// 设置徽标数为6
+						count: 6
+					}
+				});
+            }
+			this.list = list;
+		}
+    }
 </script>
 ```
 

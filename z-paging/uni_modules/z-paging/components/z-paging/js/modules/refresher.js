@@ -170,6 +170,11 @@ const ZPRefresher = {
 			type: Number,
 			default: u.gc('refresherOutRate', 0.7)
 		},
+		//设置自定义下拉刷新下拉时实际下拉位移与用户下拉距离的比值，默认为0.85，即代表若用户下拉10px，则实际位移为8.5px(nvue无效)
+		refresherPullRate: {
+			type: Number,
+			default: u.gc('refresherPullRate', 0.85)
+		},
 		//是否显示最后更新时间，默认为否
 		showRefresherUpdateTime: {
 			type: Boolean,
@@ -267,6 +272,11 @@ const ZPRefresher = {
 			let rate = this.refresherOutRate;
 			rate = Math.max(0,rate);
 			rate = Math.min(1,rate);
+			return rate;
+		},
+		finalRefresherPullRate() {
+			let rate = this.refresherPullRate;
+			rate = Math.max(0,rate);
 			return rate;
 		},
 		finalRefresherTransform() {
@@ -605,7 +615,7 @@ const ZPRefresher = {
 		},
 		//获取处理后的moveDis
 		_getFinalRefresherMoveDis(moveDis) {
-			moveDis = moveDis * 0.85;
+			moveDis = moveDis * this.finalRefresherPullRate;
 			if (moveDis >= this.finalRefresherThreshold) {
 				moveDis = this.finalRefresherThreshold + (moveDis - this.finalRefresherThreshold) * (1 - this.finalRefresherOutRate);
 			}

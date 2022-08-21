@@ -11,7 +11,7 @@
 					</view>
 				</u-navbar>
 				<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-				<z-tabs slot="top" @change="tabChange" :list="tabList"></z-tabs>
+				<z-tabs @change="tabChange" :list="tabList"></z-tabs>
 			</view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
