@@ -86,7 +86,7 @@ by ZXLee
 									<image v-else :src="base64Flower" class="zp-chat-record-loading-custom-image" />
 								</view>
 								<!-- 全屏Loading -->
-								<slot v-if="$slots.loading&&showLoading&&!loadingFullFixed" name="loading" />
+								<slot v-if="showLoading&&$slots.loading&&!loadingFullFixed" name="loading" />
 								<!-- 主体内容 -->
 								<view class="zp-paging-container-content" :style="[{transform:virtualPlaceholderTopHeight>0?`translateY(${virtualPlaceholderTopHeight}px)`:'none'},finalPagingContentStyle]">
 									<slot />
@@ -153,7 +153,7 @@ by ZXLee
 			<image v-else class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop" />
 		</view>
 		<!-- 全屏Loading(铺满z-paging并固定) -->
-		<view v-if="$slots.loading&&showLoading&&loadingFullFixed" class="zp-loading-fixed">
+		<view v-if="showLoading&&$slots.loading&&loadingFullFixed" class="zp-loading-fixed">
 			<slot name="loading" />
 		</view>
 	</view>
@@ -211,7 +211,7 @@ by ZXLee
 					<slot />
 				</template>
 				<!-- 全屏Loading -->
-				<component :class="{'z-paging-content-fixed':usePageScroll}" style="flex: 1;" :style="[useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="$slots.loading&&showLoading&&!loadingFullFixed" :is="nViewIs">
+				<component :class="{'z-paging-content-fixed':usePageScroll}" style="flex: 1;" :style="[useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" v-if="showLoading&&$slots.loading&&!loadingFullFixed" :is="nViewIs">
 					<slot name="loading" />
 				</component>
 				<!-- 空数据图 -->
@@ -261,7 +261,7 @@ by ZXLee
 			<image v-else class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop" />
 		</view>
 		<!-- 全屏Loading(铺满z-paging并固定) -->
-		<view v-if="$slots.loading&&showLoading&&loadingFullFixed" class="zp-loading-fixed">
+		<view v-if="showLoading&&$slots.loading&&loadingFullFixed" class="zp-loading-fixed">
 			<slot name="loading" />
 		</view>
 	</component>
@@ -279,14 +279,11 @@ by ZXLee
 	 * @notice 以下仅为部分常用属性、方法&事件，完整文档请查阅z-paging官网
 	 * @property {Number|String} default-page-no 自定义初始的pageNo，默认为1
 	 * @property {Number|String} default-page-size 自定义pageSize，默认为10
-	 * @property {Number|String} delay 调用complete后延迟处理的时间，单位为毫秒
 	 * @property {String} language i18n国际化设置语言，支持简体中文(zh-cn)、繁体中文(zh-hant-cn)和英文(en)
 	 * @property {Object} paging-style 设置z-paging的style，部分平台(如微信小程序)无法直接修改组件的style，可使用此属性代替
 	 * @property {String} height z-paging的高度，优先级低于pagingStyle中设置的height，传字符串，如100px、100rpx、100%
 	 * @property {String} width z-paging的宽度，优先级低于pagingStyle中设置的width，传字符串，如100px、100rpx、100%
 	 * @property {String} bg-color z-paging的背景色，优先级低于pagingStyle中设置的background。传字符串，如"#ffffff"
-	 * @property {String} default-theme-style loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
-	 * @property {String} refresher-theme-style 下拉刷新的主题样式，支持black，white，默认black
 	 * @property {Boolean} refresher-only 是否只使用下拉刷新，设置为true后将关闭mounted自动请求数据、关闭滚动到底部加载更多，强制隐藏空数据图。默认为否
 	 * @property {Boolean} use-page-scroll 使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
 	 * @property {Boolean} use-virtual-list 是否使用虚拟列表，默认为否
@@ -298,23 +295,14 @@ by ZXLee
 	 * @property {Boolean} show-refresher-when-reload 列表刷新时是否自动显示下拉刷新view，默认为否
 	 * @property {Object} loading-more-custom-style 自定义底部加载更多样式
 	 * @property {Boolean} loading-more-enabled 是否启用加载更多数据(含滑动到底部加载更多数据和点击加载更多数据)，默认为是
-	 * @property {String|Object} loading-more-default-text 滑动到底部"默认"文字，默认为【点击加载更多】
-	 * @property {String|Object} loading-more-loading-text 滑动到底部"加载中"文字，默认为【正在加载...】
-	 * @property {String|Object} loading-more-no-more-text 滑动到底部"没有更多"文字，默认为【没有更多了】
-	 * @property {String|Object} loading-more-fail-text 滑动到底部"加载失败"文字，默认为【加载失败，点击重新加载】
 	 * @property {Boolean} inside-more 当分页未满一屏时，是否自动加载更多(nvue无效)，默认为否
 	 * @property {Boolean} hide-empty-view 是否强制隐藏空数据图，默认为否
 	 * @property {String|Object} empty-view-text 空数据图描述文字，默认为“没有数据哦~”
 	 * @property {Boolean} show-empty-view-reload 是否显示空数据图重新加载按钮(无数据时)，默认为否
 	 * @property {Boolean} show-empty-view-reload-when-error 加载失败时是否显示空数据图重新加载按钮，默认为是
 	 * @property {String} empty-view-img 空数据图图片，默认使用z-paging内置的图片
-	 * @property {String|Object} empty-view-reload-text 空数据图点击重新加载文字
-	 * @property {String|Object} empty-view-error-text 空数据图“加载失败”描述文字
-	 * @property {String} empty-view-error-img 空数据图“加载失败”图片，默认使用z-paging内置的图片(建议使用绝对路径)
 	 * @property {Object} empty-view-style 空数据图样式
 	 * @property {Boolean} auto-show-back-to-top 自动显示点击返回顶部按钮，默认为否
-	 * @property {String} back-to-top-img 点击返回顶部按钮的自定义图片地址，默认使用z-paging内置的图片
-	 * @property {Object} back-to-top-style 点击返回顶部按钮的自定义样式
 	 * @property {Boolean} show-scrollbar 控制是否出现滚动条，默认为是
 	 * @property {Boolean} refresher-enabled 是否开启自定义下拉刷新，默认为是
 	 * @property {Boolean} show-refresher-update-time 是否显示上次下拉刷新更新时间，默认为否
@@ -326,10 +314,6 @@ by ZXLee
 	 * @event {Function} loadingStatusChange 上拉加载更多状态改变
 	 * @event {Function} onRefresh 自定义下拉刷新被触发
 	 * @event {Function} scroll `z-paging`内置的scroll-view滚动时触发
-	 * @event {Function} scrolltolower `z-paging`内置的scroll-view滚动底部时触发
-	 * @event {Function} scrolltoupper `z-paging`内置的scroll-view滚动顶部时触发
-	 * @event {Function} listChange 分页渲染的数组改变时触发
-	 * @event {Function} emptyViewReload 点击了空数据图中的重新加载按钮
 	 * @example <z-paging ref="paging" v-model="dataList" @query="queryList"></z-paging>
 	 */
 	export default {

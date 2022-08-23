@@ -57,6 +57,11 @@ const t = {
 		'zh-cn': '很抱歉，加载失败',
 		'zh-hant-cn': '很抱歉，加載失敗',
 	},
+	systemLoadingText: {
+		'en': 'Loading...',
+		'zh-cn': '加载中...',
+		'zh-hant-cn': '加載中...',
+	},
 	refresherUpdateTimeText: {
 		'en': 'Last update: ',
 		'zh-cn': '最后更新：',

@@ -71,6 +71,9 @@ const ZPI18n = {
 		finalEmptyViewErrorText() {
 			return this._getI18nText('emptyViewErrorText', this.emptyViewErrorText);
 		},
+		finalSystemLoadingText() {
+			return this._getI18nText('systemLoadingText', this.systemLoadingText);
+		},
 	},
 	methods: {
 		//设置i18n国际化语言
