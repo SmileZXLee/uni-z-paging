@@ -110,7 +110,7 @@
 				return safeAreaBottom;
 			},
 			isOldWebView() {
-				// #ifndef APP-NVUE
+				// #ifndef APP-NVUE || MP-KUAISHOU
 				try {
 					const systemInfos = uni.getSystemInfoSync().system.split(' ');
 					const deviceType = systemInfos[0];

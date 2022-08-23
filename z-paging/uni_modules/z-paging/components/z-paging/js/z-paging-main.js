@@ -376,7 +376,7 @@ export default {
 			return windowBottom;
 		},
 		isOldWebView() {
-			// #ifndef APP-NVUE
+			// #ifndef APP-NVUE || MP-KUAISHOU
 			try {
 				const systemInfos = systemInfo.system.split(' ');
 				const deviceType = systemInfos[0];

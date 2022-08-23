@@ -21,7 +21,7 @@
 			</view>
 			<view class="zp-r-right">
 				<text class="zp-r-right-text" :style="[rightTextStyle,titleStyle]">
-					{{statusTextArr[status]||defaultText}}
+					{{currentTitle}}
 				</text>
 				<text v-if="showUpdateTime&&refresherTimeText.length" class="zp-r-right-text zp-r-right-time-text" :style="[rightTextStyle,updateTimeStyle]">
 					{{refresherTimeText}}
@@ -83,6 +83,9 @@
 			statusTextArr() {
 				this.updateTime(this.updateTimeKey);
 				return [this.defaultText,this.pullingText,this.refreshingText,this.completeText];
+			},
+			currentTitle() {
+				return this.statusTextArr[this.status] || this.defaultText;
 			},
 			leftImageClass() {
 				if(this.status === this.R.Complete){

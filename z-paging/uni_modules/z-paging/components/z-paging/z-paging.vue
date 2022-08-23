@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-v2.3.6 (2022-08-16)
+v2.3.7 (2022-08-23)
 by ZXLee
 -->
 <!-- API文档地址：https://z-paging.zxlee.cn -->
@@ -37,7 +37,8 @@ by ZXLee
 					:refresher-enabled="finalRefresherEnabled&&!useCustomRefresher" :refresher-threshold="finalRefresherThreshold"
 					:refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
 					:refresher-triggered="finalRefresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
-					@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh(true)">	
+					@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh(true)"
+					>	
 					<view class="zp-paging-touch-view"
 					<!-- #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5 -->
 					@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend" @touchcancel="_refresherTouchend"
@@ -48,7 +49,7 @@ by ZXLee
 					<!-- #endif -->
 					>	
 						<view v-if="finalRefresherFixedBacHeight>0" class="zp-fixed-bac-view" :style="[{'background': refresherFixedBackground,'height': `${finalRefresherFixedBacHeight}px`}]"></view>
-						<view class="zp-paging-main"
+						<view class="zp-paging-main" :style="[scrollViewInStyle,{'transform': finalRefresherTransform,'transition': refresherTransition}]"
 						<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 						:change:prop="pagingWxs.propObserver" :prop="wxsPropType"
 						:data-refresherThreshold="finalRefresherThreshold" :data-isIos="isIos"
