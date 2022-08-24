@@ -89,7 +89,7 @@
 			},
 			leftImageClass() {
 				if(this.status === this.R.Complete){
-					return 'zp-r-left-image-no-transform .zp-r-left-image-pre-size';
+					return 'zp-r-left-image-no-transform zp-r-left-image-pre-size';
 				}
 				let cls = 'zp-r-left-image ';
 				if (this.status === this.R.Default) {
