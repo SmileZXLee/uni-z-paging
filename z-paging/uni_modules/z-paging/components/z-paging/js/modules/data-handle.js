@@ -438,6 +438,8 @@ const ZPData = {
 			this.isTotalChangeFromAddData = false;
 			if (this.isUserReload && this.autoCleanListWhenReload) {
 				this.totalData = [];
+			} else{
+				this.firstPageLoaded = false;
 			}
 			if (!isClean) {
 				this._emitQuery(this.pageNo, this.defaultPageSize, isUserPullDown ? Enum.QueryFrom.UserPullDown : Enum.QueryFrom.Reload);
