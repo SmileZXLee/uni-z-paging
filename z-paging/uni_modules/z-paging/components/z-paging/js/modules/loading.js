@@ -17,7 +17,7 @@ const ZPLoading = {
 		//是否自动显示系统Loading：即uni.showLoading，若开启则将在刷新列表时(调用reload、refresh时)显示，下拉刷新和滚动到底部加载更多不会显示，默认为false。
 		autoShowSystemLoading: {
 			type: Boolean,
-			default: u.gc('autoShowSystemLoading', true)
+			default: u.gc('autoShowSystemLoading', false)
 		},
 		//显示系统Loading时显示的文字，默认为"加载中"
 		systemLoadingText: {
