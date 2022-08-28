@@ -12,9 +12,9 @@
 				<!-- 小程序中直接修改组件style为position: sticky;无效，需要在组件外层套一层view -->
 				<view style="z-index: 100;position: sticky;top :0;">
 					<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-					<z-tabs @change="tabChange" :current="current" :list="tabList"></z-tabs>
+					<z-tabs ref="tabs" @change="tabChange" :current="current" :list="tabList"></z-tabs>
 				</view>
-				<swiper class="swiper" :style="[{height:swiperHeight+'px'}]" :current="current" @animationfinish="animationfinish">
+				<swiper class="swiper" :style="[{height:swiperHeight+'px'}]" :current="current" @transition="swiperTransition" @animationfinish="swiperAnimationfinish">
 					<swiper-item class="swiper-item" v-for="(item, index) in tabList" :key="index">
 						<!-- 这里的sticky-swiper-next-item为demo中为演示用定义的组件，列表及分页代码在sticky-swiper-next-item组件内 -->
 						<!-- 请注意，sticky-swiper-next-item非z-paging内置组件，在自己的项目中必须自己创建，若未创建则会报组件不存在的错误 -->
@@ -52,10 +52,13 @@
 			scrolltolower(){
 				this.$refs.swiperList[this.current].doLoadMore();
 			},
-			// swiper滑动结束
-			animationfinish(e) {
-				let current = e.detail.current;
-				this._setCurrent(current);
+			//swiper滑动中
+			swiperTransition(e) {
+				this.$refs.tabs.setDx(e.detail.dx);
+			},
+			//swiper滑动结束
+			swiperAnimationfinish(e) {
+				this._setCurrent(e.detail.current);
 			},
 			//设置swiper的高度
 			heightChanged(height){

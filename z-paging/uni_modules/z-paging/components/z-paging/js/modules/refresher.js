@@ -319,7 +319,8 @@ const ZPRefresher = {
 	methods: {
 		//终止下拉刷新状态
 		endRefresh(){
-		   this._refresherEnd();
+			this.totalData = this.realTotalData;
+			this._refresherEnd();
 		},
 		handleRefresherStatusChanged(func) {
 			this.refresherStatusChangedFunc = func;

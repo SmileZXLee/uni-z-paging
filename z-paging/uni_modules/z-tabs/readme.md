@@ -1,6 +1,6 @@
 # z-tabs
 
-[![version](https://img.shields.io/badge/version-0.1.3-blue)](https://github.com/SmileZXLee/uni-z-tabs)
+[![version](https://img.shields.io/badge/version-0.1.4-blue)](https://github.com/SmileZXLee/uni-z-tabs)
 [![license](https://img.shields.io/github/license/SmileZXLee/uni-z-tabs)](https://en.wikipedia.org/wiki/MIT_License)
 
 ***
@@ -78,6 +78,13 @@
 | ------- | -------------------- | ------------------------------------------------------------ |
 | @change | tabs改变(点击)时触发 | `参数1`:index(当前切换到的index)；<br/>`参数2`:value(当前切换到的value) |
 
+### methods
+
+| 方法名   | 说明                                                         | 参数                                   |
+| -------- | ------------------------------------------------------------ | -------------------------------------- |
+| setDx    | 【v0.1.4起支持】根据swiper的`@transition`实时更新底部dot位置 | swiper的`@transition`中的`e.detail.dx` |
+| unlockDx | 【v0.1.4起支持】在swiper的`@animationfinish`中通知`z-tabs`结束多`setDx`的锁定，若在父组件中调用了`setDx`，则必须调用`unlockDx` | -                                      |
+
 ### slots
 
 | 名称  | 说明         |
@@ -94,3 +101,42 @@ export default {
 	'active-color': 'red'
 }
 ```
+
+### 【v0.1.4起支持】底部dot与swiper联动演示
+
+```html
+<template>
+  <z-tabs ref="tabs" slot="top" :list="tabList" :current="current" @change="tabsChange" />
+  <swiper :current="current" @transition="swiperTransition" @animationfinish="swiperAnimationfinish">
+    <swiper-item class="swiper-item" v-for="(item, index) in tabList" :key="index">
+      xxx
+    </swiper-item>
+  </swiper>
+<template>
+<script>
+	export default {
+		data() {
+			return {
+				tabList: ['测试1','测试2','测试3','测试4'],
+				current: 0, // tabs组件的current值，表示当前活动的tab选项
+			};
+		},
+		methods: {
+			//tabs通知swiper切换
+			tabsChange(index) {
+				this.current = index;
+			},
+			//swiper滑动中
+			swiperTransition(e) {
+				this.$refs.tabs.setDx(e.detail.dx);
+			},
+			//swiper滑动结束
+			swiperAnimationfinish(e) {
+				this.current = e.detail.current;
+				this.$refs.tabs.unlockDx();
+			}
+		}
+	}
+</script>
+```
+

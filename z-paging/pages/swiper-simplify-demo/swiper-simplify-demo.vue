@@ -13,10 +13,10 @@
 		<!-- 需要固定在顶部不滚动的view放在slot="top"的view中 -->
 		<view style="height: 80rpx;" slot="top">
 			<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-			<z-tabs @change="tabChange" :list="tabList" :current="current"></z-tabs>
+			<z-tabs ref="tabs" @change="tabChange" :list="tabList" :current="current"></z-tabs>
 		</view>
 		<!-- 因swiper与swiper-item无法封装在不同组件中，因此这边依然需要设置swiper包裹swiper-item -->
-		<swiper style="height: 100%;" :current="current" @animationfinish="animationfinish">
+		<swiper style="height: 100%;" :current="current" @transition="swiperTransition" @animationfinish="swiperAnimationfinish">
 			<swiper-item v-for="(item,index) in tabList" :key="index">
 				<z-paging-swiper-item ref="swiperItem" :tabIndex="index" :currentIndex="current" @query="queryList"
 					@updateList="updateList">
@@ -46,10 +46,14 @@
 			tabChange(index) {
 				this.current = index;
 			},
-			// swiper滑动结束，分别设置tabs和swiper的状态
-			animationfinish(e) {
-				let current = e.detail.current;
-				this.current = current;
+			//swiper滑动中
+			swiperTransition(e) {
+				this.$refs.tabs.setDx(e.detail.dx);
+			},
+			//swiper滑动结束
+			swiperAnimationfinish(e) {
+				this.current = e.detail.current;
+				this.$refs.tabs.unlockDx();
 			},
 			queryList(pageNo, pageSize) {
 				//这里的网络请求请替换成自己的网络请求

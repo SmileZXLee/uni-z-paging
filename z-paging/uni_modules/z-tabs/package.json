@@ -2,7 +2,7 @@
   "id": "z-tabs",
   "name": "z-tabs",
   "displayName": "【z-tabs】一个简单轻量的tabs组件",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "全平台兼容，支持nvue、vue3",
   "keywords": [
     "tabs"
@@ -62,7 +62,11 @@
           "阿里": "y",
           "百度": "y",
           "字节跳动": "y",
-          "QQ": "y"
+          "QQ": "y",
+		  "钉钉": "y",
+		  "快手": "y",
+		  "飞书": "y",
+		  "京东": "y"
         },
         "快应用": {
           "华为": "y",

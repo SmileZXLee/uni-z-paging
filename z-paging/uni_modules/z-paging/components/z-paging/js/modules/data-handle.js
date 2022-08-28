@@ -436,11 +436,7 @@ const ZPData = {
 			!this.privateShowRefresherWhenReload && !isClean && this._startLoading(true);
 			this.firstPageLoaded = true;
 			this.isTotalChangeFromAddData = false;
-			if (this.isUserReload && this.autoCleanListWhenReload) {
-				this.totalData = [];
-			} else{
-				this.firstPageLoaded = false;
-			}
+			this.totalData = [];
 			if (!isClean) {
 				this._emitQuery(this.pageNo, this.defaultPageSize, isUserPullDown ? Enum.QueryFrom.UserPullDown : Enum.QueryFrom.Reload);
 				let delay = 0;

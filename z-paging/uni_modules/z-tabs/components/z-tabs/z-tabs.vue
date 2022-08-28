@@ -1,4 +1,4 @@
-<!-- z-tabs v0.1.3 by-ZXLee -->
+<!-- z-tabs v0.1.4 by-ZXLee -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-tabs -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?name=z-tabs -->
 <!-- 反馈QQ群：790460711 -->
@@ -101,7 +101,9 @@
 			return {
 				currentIndex: 0,
 				bottomDotX: 0,
+				bottomDotXForIndex: 0,
 				showBottomDot: false,
+				shouldSetDx: true,
 				
 				scrollLeft: 0,
 				wxsPropType: '',
@@ -277,19 +279,34 @@
 				return this.shouldScroll ? {} : {'flex':1};
 			},
 			dotTransition(){
-				return this.isFirstLoaded ? 'transform .2s linear':'none';
+				return this.isFirstLoaded && !this.shouldSetDx ? 'transform .2s linear':'none';
 			},
 			finalDotStyle(){
 				return Object.assign(this.barStyle,{width: this.barWidth + 'rpx',height: this.barHeight + 'rpx'});
 			}
 		},
 		methods: {
-			setDx(dx){
-				//todo
+			//根据swiper的@transition实时更新底部dot位置
+			setDx(dx) {
+				if (!this.shouldSetDx) return;
+				const dxRate = dx / this.tabsWidth;
+				const isRight = dxRate > 0;
+				let nextIndex = this.currentIndex + (isRight ? 1 : -1);
+				nextIndex = Math.max(0, nextIndex);
+				nextIndex = Math.min(nextIndex, this.itemNodeInfos.length - 1);
+				const currentNodeInfo = this.itemNodeInfos[this.currentIndex];
+				const nextNodeInfo = this.itemNodeInfos[nextIndex];
+				const leftOffset = nextNodeInfo.left - currentNodeInfo.left;
+				this.bottomDotX = this.bottomDotXForIndex + leftOffset * Math.abs(dxRate);
+			},
+			//在swiper的@animationfinish中通知z-tabs结束多setDx的锁定，若在父组件中调用了setDx，则必须调用unlockDx
+			unlockDx() {
+				this.shouldSetDx = true;
 			},
 			//点击了tabs
 			tabsClick(index,item) {
 				if (this.currentIndex != index) {
+					this.shouldSetDx = false;
 					this.$emit('change', index, item[this.valueKey]);
 					this.currentIndex = index;
 					this._preUpdateDotPosition(index);
@@ -342,6 +359,7 @@
 						}
 					}
 					this.bottomDotX = node.left + node.width / 2 - uni.upx2px(this.barWidth) / 2 + offset - this.tabsLeft;
+					this.bottomDotXForIndex = this.bottomDotX;
 					if(this.tabsWidth){
 						setTimeout(()=>{
 							let scrollLeft = this.bottomDotX - this.tabsWidth / 2 + uni.upx2px(this.barWidth) / 2;
