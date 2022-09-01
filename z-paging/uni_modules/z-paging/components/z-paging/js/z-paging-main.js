@@ -198,6 +198,7 @@ export default {
 				this._preReload();
 			})
 		}
+		this.finalUseCache && this._setListByLocalCache();
 		let delay = 0;
 		// #ifdef H5 || MP
 		delay = 100;

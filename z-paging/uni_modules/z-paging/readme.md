@@ -33,8 +33,8 @@
 
 ### 在线demo体验地址：
 
-* [http://www.zxlee.cn/github/uni-z-paging/demo/index.html](http://www.zxlee.cn/github/uni-z-paging/demo/index.html)
+* [https://demo.z-paging.zxlee.cn](https://demo.z-paging.zxlee.cn)
 
 | 扫码体验                                                     |
 | ------------------------------------------------------------ |
-| ![](http://www.zxlee.cn/github/uni-z-paging/z-paging-demo.png) |
+| ![](https://z-paging.zxlee.cn/public/img/code.png) |

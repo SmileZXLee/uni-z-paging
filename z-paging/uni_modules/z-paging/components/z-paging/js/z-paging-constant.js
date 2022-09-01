@@ -6,6 +6,7 @@ const i18nUpdateKey = 'z-paging-i18n-update';
 
 const errorUpdateKey = 'z-paging-error-emit';
 const completeUpdateKey = 'z-paging-complete-emit';
+const cachePrefixKey = 'z-paging-cache';
 
 const listCellIndexKey = 'zp_index';
 const listCellIndexUniqueKey = 'zp_unique_index';
@@ -16,6 +17,7 @@ export default {
 	i18nUpdateKey,
 	errorUpdateKey,
 	completeUpdateKey,
+	cachePrefixKey,
 	listCellIndexKey,
 	listCellIndexUniqueKey
 }

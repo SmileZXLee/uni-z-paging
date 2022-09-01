@@ -30,6 +30,16 @@ const ZPData = {
 				return u.gc('dataKey', null);
 			},
 		},
+		//使用缓存，若开启将自动缓存第一页的数据，默认为否
+		useCache: {
+			type: Boolean,
+			default: u.gc('useCache', false)
+		},
+		//使用缓存时缓存的key，不同列表应当不同，useCache为true时必须设置，否则缓存无效
+		cacheKey: {
+			type: String,
+			default: u.gc('cacheKey', null)
+		},
 		//自动注入的list名，可自动修改父view(包含ref="paging")中对应name的list值
 		autowireListName: {
 			type: String,
@@ -89,11 +99,6 @@ const ZPData = {
 			type: [Number, String],
 			default: u.gc('localPagingLoadingTime', 200)
 		},
-		//当分页未满一屏时，是否自动加载更多，默认为否(nvue无效)
-		insideMore: {
-			type: Boolean,
-			default: u.gc('insideMore', false)
-		},
 		//使用聊天记录模式，默认为否
 		useChatRecordMode: {
 			type: Boolean,
@@ -131,6 +136,7 @@ const ZPData = {
 			totalData: [],
 			realTotalData: [],
 			totalLocalPagingList: [],
+			isSettingCacheList: false,
 			pageNo: 1,
 			isLocalPaging: false,
 			isAddedData: false,
@@ -152,6 +158,16 @@ const ZPData = {
 		},
 		finalConcat() {
 			return this.concat && this.privateConcat;
+		},
+		finalUseCache() {
+			if (this.useCache && !this.cacheKey) {
+				u.consoleErr('use-cache为true时，必须设置cache-key，否则缓存无效！');
+			}
+			return this.useCache && !!this.cacheKey;
+		},
+		finalCacheKey() {
+			if (!this.cacheKey) return null;
+			return `${c.cachePrefixKey}-${this.cacheKey}`; 
 		},
 		isFirstPage() {
 			return this.pageNo === this.defaultPageNo;
@@ -436,7 +452,9 @@ const ZPData = {
 			!this.privateShowRefresherWhenReload && !isClean && this._startLoading(true);
 			this.firstPageLoaded = true;
 			this.isTotalChangeFromAddData = false;
-			this.totalData = [];
+			if (!this.isSettingCacheList) {
+				this.totalData = [];
+			}
 			if (!isClean) {
 				this._emitQuery(this.pageNo, this.defaultPageSize, isUserPullDown ? Enum.QueryFrom.UserPullDown : Enum.QueryFrom.Reload);
 				let delay = 0;
@@ -501,7 +519,11 @@ const ZPData = {
 			}, delayTime)
 			if (this.isFirstPage) {
 				this.isLoadFailed = !success;
+				if (this.finalUseCache && this.isSettingCacheList && success) {
+					this._saveLocalCache(data);
+				}
 			}
+			this.isSettingCacheList = false;
 			if (success) {
 				if (!(this.privateConcat === false && this.loadingStatus === Enum.More.NoMore)) {
 					this.loadingStatus = Enum.More.Default;
@@ -679,6 +701,15 @@ const ZPData = {
 				callback(arg);
 			}, localPagingLoadingTime)
 		},
+		//存储列表缓存数据
+		_saveLocalCache(data) {
+			uni.setStorageSync(this.finalCacheKey, data);
+		},
+		//通过缓存数据填充列表数据
+		_setListByLocalCache() {
+			this.totalData = uni.getStorageSync(this.finalCacheKey) || [];
+			this.isSettingCacheList = true;
+		},
 		//修改父view的list
 		_callMyParentList(newVal) {
 			if (this.autowireListName.length) {
@@ -706,7 +737,7 @@ const ZPData = {
 				}
 			}
 		},
-		//发射query事件
+		//emit query事件
 		_emitQuery(pageNo, pageSize, from){
 			this.requestTimeStamp = u.getTime();
 			this.$emit('query', ...interceptor._handleQuery(pageNo, pageSize, from));

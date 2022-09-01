@@ -107,6 +107,11 @@ const ZPLoadMore = {
 				return u.gc('loadingMoreNoMoreLineCustomStyle', {});
 			},
 		},
+		//当分页未满一屏时，是否自动加载更多，默认为否(nvue无效)
+		insideMore: {
+			type: Boolean,
+			default: u.gc('insideMore', false)
+		},
 		//距底部/右边多远时（单位px），触发 scrolltolower 事件，默认为100rpx
 		lowerThreshold: {
 			type: [Number, String],
