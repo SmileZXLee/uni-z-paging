@@ -170,10 +170,10 @@ const ZPRefresher = {
 			type: Number,
 			default: u.gc('refresherOutRate', 0.7)
 		},
-		//设置自定义下拉刷新下拉时实际下拉位移与用户下拉距离的比值，默认为0.85，即代表若用户下拉10px，则实际位移为8.5px(nvue无效)
+		//设置自定义下拉刷新下拉时实际下拉位移与用户下拉距离的比值，默认为0.7，即代表若用户下拉10px，则实际位移为7px(nvue无效)
 		refresherPullRate: {
 			type: Number,
-			default: u.gc('refresherPullRate', 0.85)
+			default: u.gc('refresherPullRate', 0.7)
 		},
 		//是否显示最后更新时间，默认为否
 		showRefresherUpdateTime: {
@@ -321,6 +321,7 @@ const ZPRefresher = {
 		endRefresh(){
 			this.totalData = this.realTotalData;
 			this._refresherEnd();
+			this._endSystemLoadingAndRefresh();
 		},
 		handleRefresherStatusChanged(func) {
 			this.refresherStatusChangedFunc = func;

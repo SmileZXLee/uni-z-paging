@@ -475,10 +475,7 @@ const ZPData = {
 			this.fromEmptyViewReload = false;
 			this.isTotalChangeFromAddData = true;
 			this.refresherTriggered = false;
-			!this.useCustomRefresher && uni.stopPullDownRefresh();
-			// #ifdef APP-NVUE
-			this.usePageScroll && uni.stopPullDownRefresh();
-			// #endif
+			this._endSystemLoadingAndRefresh();
 			const tempIsUserPullDown = this.isUserPullDown;
 			if (this.showRefresherUpdateTime && this.isFirstPage) {
 				u.setRefesrherTime(u.getTime(), this.refresherUpdateTimeKey);

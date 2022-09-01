@@ -71,9 +71,9 @@
     },
     "h5" : {
         "title" : "z-paging",
-        "domain" : "http://www.zxlee.cn/github/uni-z-paging/demo",
+        "domain" : "https://demo.z-paging.zxlee.cn",
         "router" : {
-            "base" : "/github/uni-z-paging/demo/"
+            "base" : ""
         }
     },
     "vueVersion" : "2"

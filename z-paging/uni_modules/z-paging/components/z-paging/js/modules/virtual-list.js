@@ -159,7 +159,7 @@ const ZPVirtualList = {
 		_updateFixedCellHeight() {
 			this.$nextTick(() => {
 				const updateFixedCellHeightTimeout = setTimeout(() => {
-					this._getNodeClientRect(`#zp-${0}`,this.finalUseInnerList).then(cellNode => {
+					this._getNodeClientRect(`#zp-id-${0}`,this.finalUseInnerList).then(cellNode => {
 						const hasCellNode = cellNode && cellNode.length;
 						if (!hasCellNode) {
 							clearTimeout(updateFixedCellHeightTimeout);
@@ -182,7 +182,7 @@ const ZPVirtualList = {
 				const updateDynamicCellHeightTimeout = setTimeout(async () => {
 					for (let i = 0; i < list.length; i++) {
 						let item = list[i];
-						const cellNode = await this._getNodeClientRect(`#zp-${item[c.listCellIndexKey]}`,this.finalUseInnerList);
+						const cellNode = await this._getNodeClientRect(`#zp-id-${item[c.listCellIndexKey]}`,this.finalUseInnerList);
 						const hasCellNode = cellNode && cellNode.length;
 						const currentHeight = hasCellNode ? cellNode[0].height : 0;
 						if (!hasCellNode) {

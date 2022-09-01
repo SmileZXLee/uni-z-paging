@@ -1,4 +1,4 @@
-<!-- z-tabs v0.1.4 by-ZXLee -->
+<!-- z-tabs v0.1.6 by-ZXLee -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-tabs -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?name=z-tabs -->
 <!-- 反馈QQ群：790460711 -->
@@ -20,12 +20,8 @@
 						</view>
 					</view>
 					<view class="z-tabs-bottom" :style="[{width: tabsContainerWidth+'px'}]">
-						<view v-if="showBottomDot" ref="z-tabs-bottom-dot" class="z-tabs-bottom-dot"
-						<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
-						:change:prop="tabsWxs.propObserver" :prop="wxsPropType"
-						:style="[{background:activeColor},finalDotStyle]"
-						<!-- #endif -->
-						<!-- #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5 || APP-NVUE -->
+						<view ref="z-tabs-bottom-dot" class="z-tabs-bottom-dot"
+						<!-- #ifndef APP-NVUE -->
 						:style="[{transform:`translateX(${bottomDotX}px)`,transition:dotTransition,background:activeColor},finalDotStyle]"
 						<!-- #endif -->
 						<!-- #ifdef APP-NVUE -->
@@ -43,9 +39,6 @@
 	</view>
 </template>
 
-<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
-<script src="./wxs/z-tabs-wxs.wxs" module="tabsWxs" lang="wxs"></script>
-<!-- #endif -->
 <script>
 	// #ifdef APP-NVUE
 	const weexDom = weex.requireModule('dom');
@@ -72,7 +65,7 @@
 	/**
 	 * z-tabs 标签
 	 * @description 一个简单轻量的tabs标签，全平台兼容，支持nvue、vue3
-	 * @tutorial 
+	 * @tutorial https://ext.dcloud.net.cn/plugin?name=z-tabs
 	 * @property {Array} list 数据源数组，支持形如['tab1','tab2']的格式或[{name:'tab1',value:1}]的格式
 	 * @property {Number|String} current 当前选中的index，默认为0
 	 * @property {Number|String} scroll-count list数组长度超过scrollCount时滚动显示(不自动铺满全屏)，默认为5
@@ -81,6 +74,7 @@
 	 * @property {Number|String} bar-width 滑块宽度，单位rpx
 	 * @property {Number|String} bar-height 滑块高度，单位rpx
 	 * @property {Object} bar-style 滑块样式，其中的width和height将被bar-width和bar-height覆盖
+	 * @property {String} bar-animate-mode 切换tab时滑块动画模式，与swiper联动时有效，点击切换tab时无效，必须调用setDx。默认为line，即切换tab时滑块宽度保持不变，线性运动。可选值为worm，即为类似毛毛虫蠕动效果
 	 * @property {String} name-key list中item的name(标题)的key，默认为name
 	 * @property {String} value-key list中item的value的key，默认为value
 	 * @property {String} active-color 激活状态tab的颜色
@@ -100,13 +94,15 @@
 		data() {
 			return {
 				currentIndex: 0,
-				bottomDotX: 0,
+				currentSwiperIndex: 0,
+				bottomDotX: -1,
 				bottomDotXForIndex: 0,
 				showBottomDot: false,
 				shouldSetDx: true,
 				
+				finalBarWidth: 0,
+				pxBarWidth: 0,
 				scrollLeft: 0,
-				wxsPropType: '',
 				tabsWidth: uni.upx2px(750),
 				tabsHeight: uni.upx2px(82),
 				tabsLeft: 0,
@@ -118,94 +114,121 @@
 			};
 		},
 		props: {
+			//数据源数组，支持形如['tab1','tab2']的格式或[{name:'tab1',value:1}]的格式
 			list: {
 				type: Array,
 				default: function() {
 					return [];
 				}
 			},
+			//当前选中的index
 			current: {
 				type: [Number, String],
 				default: _gc('current',0)
 			},
+			//list数组长度超过scrollCount时滚动显示(不自动铺满全屏)
 			scrollCount: {
 				type: [Number, String],
 				default: _gc('scrollCount',5)
 			},
+			//z-tabs样式
 			tabsStyle: {
 				type: Object,
 				default: function() {
 					return _gc('tabsStyle',{})
 				}
 			},
+			//自定义每个tab的宽度，默认为0，即代表根据内容自动撑开，单位为rpx
 			tabWidth: {
 				type: [Number, String],
 				default: _gc('tabWidth',0)
 			},
+			//滑块宽度，单位rpx
 			barWidth: {
 				type: [Number, String],
 				default: _gc('barWidth',45)
 			},
+			//滑块高度，单位rpx
 			barHeight: {
 				type: [Number, String],
 				default: _gc('barHeight',8)
 			},
+			//滑块样式，其中的width和height将被barWidth和barHeight覆盖
 			barStyle: {
 				type: Object,
 				default: function() {
 					return _gc('barStyle',{});
 				}
 			},
+			//切换tab时滑块动画模式，与swiper联动时有效，点击切换tab时无效，必须调用setDx。默认为line，即切换tab时滑块宽度保持不变，线性运动。可选值为worm，即为类似毛毛虫蠕动效果
+			barAnimateMode: {
+				type: String,
+				default: _gc('barAnimateMode','line')
+			},
+			//list中item的name(标题)的key
 			nameKey: {
 				type: String,
 				default: _gc('nameKey','name')
 			},
+			//list中item的value的key
 			valueKey: {
 				type: String,
 				default: _gc('valueKey','value')
 			},
+			//激活状态tab的颜色
 			activeColor: {
 				type: String,
 				default: _gc('activeColor','#007AFF')
 			},
+			//未激活状态tab的颜色
 			inactiveColor: {
 				type: String,
 				default: _gc('inactiveColor','#888888')
 			},
+			//激活状态tab的样式
 			activeStyle: {
 				type: Object,
 				default: function() {
 					return _gc('activeStyle',{});
 				}
 			},
+			//未激活状态tab的样式
 			inactiveStyle: {
 				type: Object,
 				default: function() {
 					return _gc('inactiveStyle',{});
 				}
 			},
+			//z-tabs背景色
 			bgColor: {
 				type: String,
 				default: _gc('bgColor','white')
 			},
+			//徽标数最大数字限制，超过这个数字将变成badgeMaxCount+
 			badgeMaxCount: {
 				type: [Number, String],
 				default: _gc('badgeMaxCount',99)
 			},
+			//徽标样式，例如可自定义背景色，字体等等
 			badgeStyle: {
 				type: Object,
 				default: function() {
 					return _gc('badgeStyle',{})
 				}
 			},
+			//初始化时是否自动触发change事件
 			initTriggerChange: {
 				type: Boolean,
 				default: _gc('initTriggerChange',false)
 			},
 		},
 		mounted() {
-			this.$nextTick(()=>{
-				setTimeout(()=>{
+			this.$nextTick(() => {
+				let delayTime = 10;
+				// #ifdef APP-NVUE || MP-BAIDU
+				delayTime = 50;
+				// #endif
+				setTimeout(() => {
 					this._getNodeClientRect(`.z-tabs-scroll-view-conatiner`).then(res=>{
 						if(res && res.length && res[0].width){
 							this.tabsWidth = res[0].width;
@@ -214,7 +237,7 @@
 							this._handleListChange(this.list);
 						}
 					})
-				},10)
+				},delayTime)
 			})
 		},
 		watch: {
@@ -239,24 +262,37 @@
 				immediate: false
 			},
 			bottomDotX(newVal) {
-				setTimeout(()=>{
-					if(newVal > 0){
-						this.showBottomDot = true;
-					}
-					this.$nextTick(()=>{
-						// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
-						this.wxsPropType = {transformValue:newVal,transition:this.dotTransition};
-						// #endif
+				if(newVal >= 0){
+					// #ifndef APP-NVUE
+					this.showBottomDot = true;
+					// #endif
+					this.$nextTick(() => {
 						// #ifdef APP-NVUE
 						weexAnimation.transition(this.$refs['z-tabs-bottom-dot'], {
 							styles: {
 								transform: `translateX(${newVal}px)`,
 							},
-							duration: this.isFirstLoaded ? 200 : 0
+							duration: this.showAnimate ? 200 : 0
 						})
+						setTimeout(() => {
+							this.showBottomDot = true;
+						},10)
 						// #endif
 					})
-				})
+				}
+			},
+			barWidth: {
+				handler(newVal) {
+					this.finalBarWidth = uni.upx2px(newVal);
+					this.pxBarWidth = this.finalBarWidth;
+				},
+				immediate: true
+			},
+			currentIndex: {
+				handler(newVal) {
+					this.currentSwiperIndex = newVal;
+				},
+				immediate: true
 			}
 		},
 		computed: {
@@ -278,26 +314,62 @@
 			tabsListStyle(){
 				return this.shouldScroll ? {} : {'flex':1};
 			},
+			showAnimate() {
+				return this.isFirstLoaded && !this.shouldSetDx;
+			},
 			dotTransition(){
-				return this.isFirstLoaded && !this.shouldSetDx ? 'transform .2s linear':'none';
+				return this.showAnimate ? 'transform .2s linear':'none';
 			},
 			finalDotStyle(){
-				return Object.assign(this.barStyle,{width: this.barWidth + 'rpx',height: this.barHeight + 'rpx'});
+				return Object.assign(this.barStyle,{width: this.finalBarWidth + 'px',height: this.barHeight + 'rpx', opacity: this.showBottomDot ? 1 : 0});
 			}
 		},
 		methods: {
 			//根据swiper的@transition实时更新底部dot位置
 			setDx(dx) {
 				if (!this.shouldSetDx) return;
-				const dxRate = dx / this.tabsWidth;
+				const isLineMode = this.barAnimateMode === 'line';
+				const isWormMode = this.barAnimateMode === 'worm';
+				let dxRate = dx / this.tabsWidth;
+				this.currentSwiperIndex = isWormMode ? this.currentIndex + parseInt(dxRate) : this.currentIndex;
 				const isRight = dxRate > 0;
-				let nextIndex = this.currentIndex + (isRight ? 1 : -1);
+				const barWidth = this.pxBarWidth;
+				if(this.currentSwiperIndex !== this.currentIndex){
+					dxRate = dxRate - (this.currentSwiperIndex - this.currentIndex);
+					this.bottomDotXForIndex = this._getBottomDotX(this.itemNodeInfos[this.currentSwiperIndex], barWidth);
+				}
+				const currentIndex = this.currentSwiperIndex;
+				let nextIndex = currentIndex + (isRight ? 1 : -1);
 				nextIndex = Math.max(0, nextIndex);
 				nextIndex = Math.min(nextIndex, this.itemNodeInfos.length - 1);
-				const currentNodeInfo = this.itemNodeInfos[this.currentIndex];
+				const currentNodeInfo = this.itemNodeInfos[currentIndex];
 				const nextNodeInfo = this.itemNodeInfos[nextIndex];
-				const leftOffset = nextNodeInfo.left - currentNodeInfo.left;
-				this.bottomDotX = this.bottomDotXForIndex + leftOffset * Math.abs(dxRate);
+				if (isLineMode){
+					const leftOffset = nextNodeInfo.left - currentNodeInfo.left;
+					this.bottomDotX = this.bottomDotXForIndex + leftOffset * Math.abs(dxRate);
+				} else if (isWormMode) {
+					if ((isRight && currentIndex >= this.itemNodeInfos.length - 1) || (!isRight && currentIndex <= 0)) return;
+					const spaceOffset = isRight ? nextNodeInfo.right - currentNodeInfo.left : currentNodeInfo.right - nextNodeInfo.left;
+					let barCalcedWidth = barWidth + spaceOffset * Math.abs(dxRate);
+					const nextBottomX = this._getBottomDotX(nextNodeInfo, barWidth);
+					if (isRight) {
+						if (barCalcedWidth > nextBottomX - this.bottomDotX + barWidth) {
+							const barMinusWidth = barWidth + spaceOffset * (1 - dxRate);
+							this.bottomDotX = this.bottomDotXForIndex + (barCalcedWidth - barMinusWidth) / 2;
+							barCalcedWidth = barMinusWidth;
+						}
+					}else if (!isRight) {
+						if (barCalcedWidth > this.bottomDotXForIndex + barWidth - nextBottomX){
+							const barMinusWidth = barWidth + spaceOffset * (1 + dxRate);
+							barCalcedWidth = barMinusWidth;
+							this.bottomDotX = nextBottomX;
+						} else{
+							this.bottomDotX = this.bottomDotXForIndex - (barCalcedWidth - barWidth);
+						}
+					}
+					barCalcedWidth = Math.max(barCalcedWidth, barWidth);
+					this.finalBarWidth = barCalcedWidth;
+				}
 			},
 			//在swiper的@animationfinish中通知z-tabs结束多setDx的锁定，若在父组件中调用了setDx，则必须调用unlockDx
 			unlockDx() {
@@ -336,7 +408,6 @@
 				// #ifdef APP-NVUE
 				this._updateDotPosition(index);
 				// #endif
-				
 			},
 			//更新底部dot位置
 			_updateDotPosition(index){
@@ -358,7 +429,7 @@
 							}
 						}
 					}
-					this.bottomDotX = node.left + node.width / 2 - uni.upx2px(this.barWidth) / 2 + offset - this.tabsLeft;
+					this.bottomDotX = this._getBottomDotX(node, uni.upx2px(this.barWidth), offset);
 					this.bottomDotXForIndex = this.bottomDotX;
 					if(this.tabsWidth){
 						setTimeout(()=>{
@@ -384,8 +455,8 @@
 						let itemNodeInfos = [];
 						let tabsContainerWidth = 0;
 						let delayTime = 0;
-						// #ifdef APP-VUE || MP-BAIDU
-						delayTime = 200;
+						// #ifdef MP-BAIDU
+						delayTime = 100;
 						// #endif
 						setTimeout(async()=>{
 							for(let i = 0;i < newVal.length;i++){
@@ -396,10 +467,14 @@
 									itemNodeInfos.push(node);
 									tabsContainerWidth += node.width;
 								}
+								if (i === this.currentIndex){
+									this.itemNodeInfos = itemNodeInfos;
+									this.tabsContainerWidth = tabsContainerWidth;
+									this._updateDotPosition(this.currentIndex);
+								}
 							}
 							this.itemNodeInfos = itemNodeInfos;
 							this.tabsContainerWidth = tabsContainerWidth;
-							this._updateDotPosition(this.currentIndex);
 						},delayTime)
 					}
 				})
@@ -441,6 +516,10 @@
 					return this.badgeMaxCount + '+';
 				}
 				return count.toString();
+			},
+			//根据node获取bottomX
+			_getBottomDotX(node, barWidth = uni.upx2px(this.barWidth), offset = 0){
+				return node.left + node.width / 2 - barWidth / 2 + offset - this.tabsLeft;
 			}
 		}
 	}

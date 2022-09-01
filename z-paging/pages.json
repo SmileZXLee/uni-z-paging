@@ -237,15 +237,14 @@
 		"navigationBarTitleText": "z-paging",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8",
-		//将iOS中回弹效果顶部的灰色改为白色
-		"backgroundColorTop": "#FFFFFF",
 		//支付宝和钉钉小程序需要取消回弹效果
 		"mp-alipay": {
 			"allowsBounceVertical": "NO"
 		},
 		//在App中，取消下拉刷新灰色半弧形效果
 		"app-plus" : {
-			"bounce" : "none"
+			"bounce" : "none",
+			"backgroundColor": "white"
 		}
 	}
 }

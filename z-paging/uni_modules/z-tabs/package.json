@@ -2,7 +2,7 @@
   "id": "z-tabs",
   "name": "z-tabs",
   "displayName": "【z-tabs】一个简单轻量的tabs组件",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "description": "全平台兼容，支持nvue、vue3",
   "keywords": [
     "tabs"

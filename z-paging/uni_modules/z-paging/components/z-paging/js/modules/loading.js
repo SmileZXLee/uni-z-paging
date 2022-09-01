@@ -19,6 +19,11 @@ const ZPLoading = {
 			type: Boolean,
 			default: u.gc('autoShowSystemLoading', false)
 		},
+		//显示系统Loading时是否显示透明蒙层，防止触摸穿透，默认为是(H5、App、微信小程序、百度小程序有效)
+		systemLoadingMask: {
+			type: Boolean,
+			default: u.gc('systemLoadingMask', true)
+		},
 		//显示系统Loading时显示的文字，默认为"加载中"
 		systemLoadingText: {
 			type: [String, Object],
@@ -62,13 +67,17 @@ const ZPLoading = {
 			} else{
 				res =  this.loadingType === Enum.LoadingType.Refresher;
 			}
-			if (this.autoShowSystemLoading && this.loadingType === Enum.LoadingType.Refresher){
+			if (this.finalShowSystemLoading){
 				uni.showLoading({
-					title: this.finalSystemLoadingText
+					title: this.finalSystemLoadingText,
+					mask: this.systemLoadingMask
 				})
 			}
 			return res;
 		},
+		finalShowSystemLoading() {
+			return this.autoShowSystemLoading && this.loadingType === Enum.LoadingType.Refresher;
+		}
 	},
 	methods: {
 		//处理开始加载更多状态
@@ -78,6 +87,14 @@ const ZPLoading = {
 			}
 			this.loading = true;
 		},
+		//停止系统loading和refresh
+		_endSystemLoadingAndRefresh(){
+			this.finalShowSystemLoading && uni.hideLoading();
+			!this.useCustomRefresher && uni.stopPullDownRefresh();
+			// #ifdef APP-NVUE
+			this.usePageScroll && uni.stopPullDownRefresh();
+			// #endif
+		}
 	}
 }
 
