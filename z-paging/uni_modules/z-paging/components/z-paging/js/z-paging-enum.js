@@ -29,8 +29,17 @@ const Enum = {
 	},
 	//虚拟列表cell高度模式
 	CellHeightMode: {
+		//固定高度
 		Fixed: 'fixed',
+		//动态高度
 		Dynamic: 'dynamic'
+	},
+	//列表缓存模式
+	CacheMode: {
+		//默认模式，只会缓存一次
+		Default: 'default',
+		//总是缓存，每次列表刷新(下拉刷新、调用reload等)都会更新缓存
+		Always: 'always'
 	}
 }
 

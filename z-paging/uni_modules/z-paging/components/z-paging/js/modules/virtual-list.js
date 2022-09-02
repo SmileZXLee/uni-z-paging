@@ -51,7 +51,7 @@ const ZPVirtualList = {
 		//虚拟列表cell高度模式，默认为fixed，也就是每个cell高度完全相同，将以第一个cell高度为准进行计算。可选值【dynamic】，即代表高度是动态非固定的，【dynamic】性能低于【fixed】。
 		cellHeightMode: {
 			type: String,
-			default: u.gc('cellHeightMode', 'fixed')
+			default: u.gc('cellHeightMode', Enum.CacheMode.Fixed)
 		},
 		//虚拟列表列数，默认为1。常用于每行有多列的情况，例如每行有2列数据，需要将此值设置为2
 		virtualListCol: {

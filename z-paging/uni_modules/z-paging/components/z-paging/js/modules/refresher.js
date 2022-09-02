@@ -165,15 +165,15 @@ const ZPRefresher = {
 			type: [Number, String],
 			default: u.gc('refresherFixedBacHeight', 0)
 		},
-		//设置自定义下拉刷新下拉超出阈值后继续下拉位移衰减的比例，范围0-1，值越大代表衰减越多。默认为0.7(nvue无效)
+		//设置自定义下拉刷新下拉超出阈值后继续下拉位移衰减的比例，范围0-1，值越大代表衰减越多。默认为0.65(nvue无效)
 		refresherOutRate: {
 			type: Number,
-			default: u.gc('refresherOutRate', 0.7)
+			default: u.gc('refresherOutRate', 0.65)
 		},
-		//设置自定义下拉刷新下拉时实际下拉位移与用户下拉距离的比值，默认为0.7，即代表若用户下拉10px，则实际位移为7px(nvue无效)
+		//设置自定义下拉刷新下拉时实际下拉位移与用户下拉距离的比值，默认为0.75，即代表若用户下拉10px，则实际位移为7.5px(nvue无效)
 		refresherPullRate: {
 			type: Number,
-			default: u.gc('refresherPullRate', 0.7)
+			default: u.gc('refresherPullRate', 0.75)
 		},
 		//是否显示最后更新时间，默认为否
 		showRefresherUpdateTime: {

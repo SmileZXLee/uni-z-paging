@@ -30,7 +30,7 @@ const ZPData = {
 				return u.gc('dataKey', null);
 			},
 		},
-		//使用缓存，若开启将自动缓存第一页的数据，默认为否
+		//使用缓存，若开启将自动缓存第一页的数据，默认为否。请注意，因考虑到切换tab时不同tab数据不同的情况，默认仅会缓存组件首次加载时第一次请求到的数据，后续的下拉刷新操作不会更新缓存。
 		useCache: {
 			type: Boolean,
 			default: u.gc('useCache', false)
@@ -39,6 +39,11 @@ const ZPData = {
 		cacheKey: {
 			type: String,
 			default: u.gc('cacheKey', null)
+		},
+		//缓存模式，默认仅会缓存组件首次加载时第一次请求到的数据，可设置为always，即代表总是缓存，每次列表刷新(下拉刷新、调用reload等)都会更新缓存
+		cacheMode: {
+			type: String,
+			default: u.gc('cacheMode', Enum.CacheMode.Default)
 		},
 		//自动注入的list名，可自动修改父view(包含ref="paging")中对应name的list值
 		autowireListName: {
@@ -389,6 +394,12 @@ const ZPData = {
 				this._callMyParentQuery(this.defaultPageNo, totalPageSize);
 			}
 		},
+		//手动更新列表缓存数据，自动截取v-model绑定的list中的前pageSize条覆盖缓存，请确保在list数据更新到预期结果后再调用此方法
+		updateCache() {
+			if (this.finalUseCache && this.totalData.length) {
+				this._saveLocalCache(this.totalData.slice(0, Math.min(this.totalData.length, this.pageSize)));
+			}
+		},
 		//清空分页数据
 		clean() {
 			this._reload(true);
@@ -519,7 +530,7 @@ const ZPData = {
 			}, delayTime)
 			if (this.isFirstPage) {
 				this.isLoadFailed = !success;
-				if (this.finalUseCache && this.isSettingCacheList && success) {
+				if (this.finalUseCache && success && (this.cacheMode === Enum.CacheMode.Always ? true : this.isSettingCacheList)) {
 					this._saveLocalCache(data);
 				}
 			}
