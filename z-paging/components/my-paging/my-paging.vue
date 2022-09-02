@@ -8,18 +8,21 @@
 		:loading-more-loading-text="{'en':'英文的加载中','zh-cn':'中文的加载中','zh-hant-cn':'繁体的加载中'}">
 		
 		<!-- 这里插入一个view到z-paging中，并且这个view会被z-paging标记为top固定在顶部 -->
-		<template v-slot:top>
+		<!-- vue3中用v-slot:top -->
+		<template slot="top">
 			<!-- 这里接收页面传进来的slot，这样相当于将页面传进来的slot传给z-paging的slot="top"了 -->
 			<slot name="top"></slot>
 		</template>
 		
 		<!-- 这里插入一个view到z-paging中，并且这个view会被z-paging标记为bottom固定在顶部 -->
-		<template v-slot:bottom>
+		<!-- vue3中用v-slot:bottom -->
+		<template slot="bottom">
 			<!-- 这里接收页面传进来的slot，这样相当于将页面传进来的slot传给z-paging的slot="bottom"了 -->
 			<slot name="bottom"></slot>
 		</template>
 		
-		<template v-slot:cell="{item,index}">
+		<!-- vue3中用v-slot:cell="{item,index}" -->
+		<template slot="cell" slot-scope="{item,index}">
 			<slot name="cell" :item="item" :index="index"/>
 		</template>
 

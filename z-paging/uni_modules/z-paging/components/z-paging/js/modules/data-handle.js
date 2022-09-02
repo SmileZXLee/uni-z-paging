@@ -143,6 +143,7 @@ const ZPData = {
 			totalLocalPagingList: [],
 			isSettingCacheList: false,
 			pageNo: 1,
+			currentRefreshPageSize: 0,
 			isLocalPaging: false,
 			isAddedData: false,
 			isTotalChangeFromAddData: false,
@@ -153,6 +154,7 @@ const ZPData = {
 			loaded: false,
 			isUserReload: true,
 			fromEmptyViewReload: false,
+			queryFrom: '',
 			listRendering: false,
 			listRenderingTimeout: null
 		}
@@ -390,6 +392,7 @@ const ZPData = {
 				this.loading = true;
 				this.privateConcat = false;
 				const totalPageSize = disPageNo * this.pageSize;
+				this.currentRefreshPageSize = totalPageSize;
 				this._emitQuery(this.defaultPageNo, totalPageSize, Enum.QueryFrom.Refresh);
 				this._callMyParentQuery(this.defaultPageNo, totalPageSize);
 			}
@@ -541,7 +544,9 @@ const ZPData = {
 				}
 				if (isLocal) {
 					this.totalLocalPagingList = data;
-					this._localPagingQueryList(this.defaultPageNo, this.defaultPageSize, 0, (res) => {
+					const localPageNo = this.defaultPageNo;
+					const localPageSize = this.queryFrom !== Enum.QueryFrom.Refresh ? this.defaultPageSize : this.currentRefreshPageSize;
+					this._localPagingQueryList(localPageNo, localPageSize, 0, (res) => {
 						this.complete(res);
 					})
 				} else {
@@ -750,6 +755,7 @@ const ZPData = {
 		},
 		//emit query事件
 		_emitQuery(pageNo, pageSize, from){
+			this.queryFrom = from;
 			this.requestTimeStamp = u.getTime();
 			this.$emit('query', ...interceptor._handleQuery(pageNo, pageSize, from));
 		},
