@@ -1,5 +1,4 @@
 <!-- [z-paging]下拉刷新view -->
-
 <template>
 	<view style="height: 100%;">
 		<view :class="showUpdateTime?'zp-r-container zp-r-container-padding':'zp-r-container'">

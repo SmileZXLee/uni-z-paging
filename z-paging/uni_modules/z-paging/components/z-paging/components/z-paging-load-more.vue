@@ -1,5 +1,4 @@
 <!-- [z-paging]上拉加载更多view -->
-
 <template>
 	<view class="zp-l-container" :style="[zConfig.customStyle]" @click="doClick">
 		<template v-if="!zConfig.hideContent">

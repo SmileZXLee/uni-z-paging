@@ -35,7 +35,7 @@ const ZPData = {
 			type: Boolean,
 			default: u.gc('useCache', false)
 		},
-		//使用缓存时缓存的key，不同列表应当不同，useCache为true时必须设置，否则缓存无效
+		//使用缓存时缓存的key，用于区分不同列表的缓存数据，useCache为true时必须设置，否则缓存无效
 		cacheKey: {
 			type: String,
 			default: u.gc('cacheKey', null)
@@ -397,7 +397,7 @@ const ZPData = {
 				this._callMyParentQuery(this.defaultPageNo, totalPageSize);
 			}
 		},
-		//手动更新列表缓存数据，自动截取v-model绑定的list中的前pageSize条覆盖缓存，请确保在list数据更新到预期结果后再调用此方法
+		//手动更新列表缓存数据，将自动截取v-model绑定的list中的前pageSize条覆盖缓存，请确保在list数据更新到预期结果后再调用此方法
 		updateCache() {
 			if (this.finalUseCache && this.totalData.length) {
 				this._saveLocalCache(this.totalData.slice(0, Math.min(this.totalData.length, this.pageSize)));
