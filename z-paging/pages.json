@@ -190,7 +190,7 @@
             "path" : "pages/virtual-list-demo/virtual-list-demo",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "虚拟列表演示",
+                "navigationBarTitleText": "虚拟列表演示(一般写法)",
                 "enablePullDownRefresh": false
             }
             
@@ -227,6 +227,15 @@
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/virtual-list-compatibility-demo/virtual-list-compatibility-demo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "虚拟列表演示(兼容写法)",
                 "enablePullDownRefresh": false
             }
             

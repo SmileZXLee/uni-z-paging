@@ -10,6 +10,18 @@ const ZPVirtualList = {
 			type: Boolean,
 			default: u.gc('useVirtualList', false)
 		},
+		//在使用虚拟列表时，是否使用兼容模式
+		useCompatibilityMode: {
+			type: Boolean,
+			default: u.gc('useCompatibilityMode', false)
+		},
+		//使用兼容模式时传递的附加数据
+		extraData: {
+			type: Object,
+			default: function() {
+				return u.gc('extraData', {});
+			}
+		},
 		//是否在z-paging内部循环渲染列表(内置列表)，默认为否。若use-virtual-list为true，则此项恒为true
 		useInnerList: {
 			type: Boolean,
