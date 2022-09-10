@@ -14,7 +14,7 @@
 				<!-- #ifdef APP-NVUE -->
 				<view v-else :style="[{'margin-right':showUpdateTime?'18rpx':'12rpx'}]">
 					<loading-indicator :class="systemInfo.platform==='ios'?'zp-loading-image-ios':'zp-loading-image-android'" 
-					:style="[{color:defaultThemeStyle==='white'?'white':'#777777'},imgStyle]" animating />
+					:style="[{color:defaultThemeStyle==='white'?'white':'#777777'},imgStyle]" :animating="true" />
 				</view>
 				<!-- #endif -->
 			</view>

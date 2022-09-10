@@ -12,7 +12,7 @@
 			<!-- #endif -->
 			<!-- #ifdef APP-NVUE -->
 			<view>
-				<loading-indicator v-if="finalStatus===M.Loading&&zConfig.loadingIconType!=='circle'" class="zp-line-loading-image" :style="[{color:zConfig.defaultThemeStyle==='white'?'white':'#777777'}]" animating />
+				<loading-indicator v-if="finalStatus===M.Loading&&zConfig.loadingIconType!=='circle'" class="zp-line-loading-image" :style="[{color:zConfig.defaultThemeStyle==='white'?'white':'#777777'}]" :animating="true" />
 			</view>
 			<!-- #endif -->
 			<text v-if="finalStatus===M.Loading&&zConfig.loadingIconType==='circle'&&!zConfig.loadingIconCustomImage.length"
