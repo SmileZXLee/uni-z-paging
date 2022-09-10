@@ -331,7 +331,7 @@
 				const isLineMode = this.barAnimateMode === 'line';
 				const isWormMode = this.barAnimateMode === 'worm';
 				let dxRate = dx / this.tabsWidth;
-				this.currentSwiperIndex = isWormMode ? this.currentIndex + parseInt(dxRate) : this.currentIndex;
+				this.currentSwiperIndex = this.currentIndex + parseInt(dxRate);
 				const isRight = dxRate > 0;
 				const barWidth = this.pxBarWidth;
 				if(this.currentSwiperIndex !== this.currentIndex){
@@ -344,14 +344,13 @@
 				nextIndex = Math.min(nextIndex, this.itemNodeInfos.length - 1);
 				const currentNodeInfo = this.itemNodeInfos[currentIndex];
 				const nextNodeInfo = this.itemNodeInfos[nextIndex];
+				const nextBottomX = this._getBottomDotX(nextNodeInfo, barWidth);
 				if (isLineMode){
-					const leftOffset = nextNodeInfo.left - currentNodeInfo.left;
-					this.bottomDotX = this.bottomDotXForIndex + leftOffset * Math.abs(dxRate);
+					this.bottomDotX = this.bottomDotXForIndex + (nextBottomX - this.bottomDotXForIndex) * Math.abs(dxRate);
 				} else if (isWormMode) {
 					if ((isRight && currentIndex >= this.itemNodeInfos.length - 1) || (!isRight && currentIndex <= 0)) return;
 					const spaceOffset = isRight ? nextNodeInfo.right - currentNodeInfo.left : currentNodeInfo.right - nextNodeInfo.left;
 					let barCalcedWidth = barWidth + spaceOffset * Math.abs(dxRate);
-					const nextBottomX = this._getBottomDotX(nextNodeInfo, barWidth);
 					if (isRight) {
 						if (barCalcedWidth > nextBottomX - this.bottomDotX + barWidth) {
 							const barMinusWidth = barWidth + spaceOffset * (1 - dxRate);
