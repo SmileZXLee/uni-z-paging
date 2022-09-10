@@ -154,6 +154,25 @@ const ZPVirtualList = {
 		},
 	},
 	methods: {
+		//在使用动态高度虚拟列表时，手动更新指定cell的缓存高度(当cell高度在初始化之后再次改变时调用)。index代表需要更新的cell在列表中的位置，从0开始
+		updateVirtualListHeight(index) {
+			const currentNode = this.virtualHeightCacheList[index];
+			this._getNodeClientRect(`#zp-id-${index}`,this.finalUseInnerList).then(cellNode => {
+				const cellNodeHeight = cellNode && cellNode.length ? cellNode[0].height : 0;
+				
+				const heightDis = cellNodeHeight - currentNode.height;
+				currentNode.height = cellNodeHeight;
+				currentNode.totalHeight = currentNode.lastHeight + cellNodeHeight;
+				
+				for (let i = index + 1; i < this.virtualHeightCacheList.length; i++) {
+					const thisNode = this.virtualHeightCacheList[i];
+					if (i === index + 1) {
+						thisNode.lastHeight = cellNodeHeight;
+					}
+					thisNode.totalHeight += heightDis;
+				}
+			});
+		},
 		//初始化虚拟列表
 		_virtualListInit() {
 			this.$nextTick(() => {
