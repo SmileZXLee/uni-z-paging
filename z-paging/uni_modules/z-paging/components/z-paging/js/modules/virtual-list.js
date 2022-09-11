@@ -63,17 +63,17 @@ const ZPVirtualList = {
 		//虚拟列表cell高度模式，默认为fixed，也就是每个cell高度完全相同，将以第一个cell高度为准进行计算。可选值【dynamic】，即代表高度是动态非固定的，【dynamic】性能低于【fixed】。
 		cellHeightMode: {
 			type: String,
-			default: u.gc('cellHeightMode', Enum.CacheMode.Fixed)
+			default: u.gc('cellHeightMode', Enum.CellHeightMode.Fixed)
 		},
 		//虚拟列表列数，默认为1。常用于每行有多列的情况，例如每行有2列数据，需要将此值设置为2
 		virtualListCol: {
 			type: [Number, String],
 			default: u.gc('virtualListCol', 1)
 		},
-		//虚拟列表scroll取样帧率，默认为60，过高可能出现卡顿等问题
+		//虚拟列表scroll取样帧率，默认为80，过低容易出现白屏问题，过高容易出现卡顿问题
 		virtualScrollFps: {
 			type: [Number, String],
-			default: u.gc('virtualScrollFps', 60)
+			default: u.gc('virtualScrollFps', 80)
 		},
 	},
 	data() {
@@ -154,8 +154,9 @@ const ZPVirtualList = {
 		},
 	},
 	methods: {
-		//在使用动态高度虚拟列表时，手动更新指定cell的缓存高度(当cell高度在初始化之后再次改变时调用)。index代表需要更新的cell在列表中的位置，从0开始
-		updateVirtualListHeight(index) {
+		//在使用动态高度虚拟列表时，手动更新指定cell的缓存高度(当cell高度在初始化之后再次改变时调用)，index代表需要更新的cell在列表中的位置，从0开始
+		didUpdateVirtualListCell(index) {
+			if (this.cellHeightMode !== Enum.CellHeightMode.Dynamic) return;
 			const currentNode = this.virtualHeightCacheList[index];
 			this._getNodeClientRect(`#zp-id-${index}`,this.finalUseInnerList).then(cellNode => {
 				const cellNodeHeight = cellNode && cellNode.length ? cellNode[0].height : 0;
@@ -172,6 +173,19 @@ const ZPVirtualList = {
 					thisNode.totalHeight += heightDis;
 				}
 			});
+		},
+		//在使用动态高度虚拟列表时，若删除了列表数组中的某个item，需要调用此方法以更新高度缓存数组，index代表需要更新的cell在列表中的位置，从0开始
+		didDeleteVirtualListCell(index) {
+			if (this.cellHeightMode !== Enum.CellHeightMode.Dynamic) return;
+			const currentNode = this.virtualHeightCacheList[index];
+			for (let i = index + 1; i < this.virtualHeightCacheList.length; i++) {
+				const thisNode = this.virtualHeightCacheList[i];
+				if (i === index + 1) {
+					thisNode.lastHeight = currentNode.lastHeight;
+				}
+				thisNode.totalHeight -= currentNode.height;
+			}
+			this.virtualHeightCacheList.splice(index, 1);
 		},
 		//初始化虚拟列表
 		_virtualListInit() {

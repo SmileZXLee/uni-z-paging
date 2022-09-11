@@ -4,14 +4,14 @@
 <!-- 反馈QQ群：790460711 -->
 
 <template name="z-tabs">
-	<view class="z-tabs-conatiner" :style="[{height:finalTabsHeight+'px',background:bgColor},tabsStyle]">
+	<view class="z-tabs-conatiner" :style="[{background:bgColor}, tabsStyle]">
 		<view class="z-tabs-left">
 			<slot name="left" />
 		</view>
 		<view ref="z-tabs-scroll-view-conatiner" class="z-tabs-scroll-view-conatiner">
 			<scroll-view ref="z-tabs-scroll-view" class="z-tabs-scroll-view" :scroll-x="shouldScroll" :scroll-left="scrollLeft" :show-scrollbar="false" :scroll-with-animation="isFirstLoaded" @scroll="scroll">
 				<view class="z-tabs-list-container" :style="[tabsListStyle]">
-					<view class="z-tabs-list" :style="[tabsListStyle]">
+					<view class="z-tabs-list" :style="[tabsListStyle, {marginTop: -bottomSpace+'rpx'}]">
 						<view :ref="`z-tabs-item-${index}`" :id="`z-tabs-item-${index}`" class="z-tabs-item" :style="[tabStyle]" v-for="(item,index) in list" :key="index" @click="tabsClick(index,item)">
 							<view class="z-tabs-item-title-container">
 								<text class="z-tabs-item-title" :style="[{color:currentIndex===index?activeColor:inactiveColor},currentIndex===index?activeStyle:inactiveStyle]">{{item[nameKey]||item}}</text>
@@ -19,7 +19,7 @@
 							</view>
 						</view>
 					</view>
-					<view class="z-tabs-bottom" :style="[{width: tabsContainerWidth+'px'}]">
+					<view class="z-tabs-bottom" :style="[{width: tabsContainerWidth+'px', bottom: bottomSpace+'rpx'}]">
 						<view ref="z-tabs-bottom-dot" class="z-tabs-bottom-dot"
 						<!-- #ifndef APP-NVUE -->
 						:style="[{transform:`translateX(${bottomDotX}px)`,transition:dotTransition,background:activeColor},finalDotStyle]"
@@ -74,6 +74,7 @@
 	 * @property {Number|String} bar-width 滑块宽度，单位rpx
 	 * @property {Number|String} bar-height 滑块高度，单位rpx
 	 * @property {Object} bar-style 滑块样式，其中的width和height将被bar-width和bar-height覆盖
+	 * @property {Number|String} bottom-space tabs与底部的间距，单位rpx
 	 * @property {String} bar-animate-mode 切换tab时滑块动画模式，与swiper联动时有效，点击切换tab时无效，必须调用setDx。默认为line，即切换tab时滑块宽度保持不变，线性运动。可选值为worm，即为类似毛毛虫蠕动效果
 	 * @property {String} name-key list中item的name(标题)的key，默认为name
 	 * @property {String} value-key list中item的value的key，默认为value
@@ -104,7 +105,7 @@
 				pxBarWidth: 0,
 				scrollLeft: 0,
 				tabsWidth: uni.upx2px(750),
-				tabsHeight: uni.upx2px(82),
+				tabsHeight: uni.upx2px(80),
 				tabsLeft: 0,
 				tabsContainerWidth: 0,
 				itemNodeInfos: [],
@@ -159,6 +160,11 @@
 				default: function() {
 					return _gc('barStyle',{});
 				}
+			},
+			//tabs与底部的间距，单位rpx
+			bottomSpace: {
+				type: [Number, String],
+				default: _gc('bottomSpace',8)
 			},
 			//切换tab时滑块动画模式，与swiper联动时有效，点击切换tab时无效，必须调用setDx。默认为line，即切换tab时滑块宽度保持不变，线性运动。可选值为worm，即为类似毛毛虫蠕动效果
 			barAnimateMode: {
@@ -321,7 +327,7 @@
 				return this.showAnimate ? 'transform .2s linear':'none';
 			},
 			finalDotStyle(){
-				return Object.assign(this.barStyle,{width: this.finalBarWidth + 'px',height: this.barHeight + 'rpx', opacity: this.showBottomDot ? 1 : 0});
+				return {...this.barStyle, width: this.finalBarWidth + 'px', height: this.barHeight + 'rpx', opacity: this.showBottomDot ? 1 : 0};
 			}
 		},
 		methods: {
@@ -420,7 +426,7 @@
 						if (nodeRes && nodeRes.length){
 							node = nodeRes[0];
 							offset = this.currentScrollLeft;
-							this.tabsHeight = Math.max(node.height + uni.upx2px(28),this.tabsHeight);
+							this.tabsHeight = Math.max(node.height + uni.upx2px(28), this.tabsHeight);
 							tabsContainerWidth = 0;
 							for(let i = 0;i < this.itemNodeInfos.length;i++){
 								let oldNode = this.itemNodeInfos[i];
@@ -532,7 +538,7 @@
 		/* #endif */
 		width: 750rpx;
 		flex-direction: row;
-		height: 82rpx;
+		height: 80rpx;
 	}
 	
 	.z-tabs-scroll-view-conatiner{
@@ -570,8 +576,10 @@
 	}
 	
 	.z-tabs-list-container{
-		padding: 14rpx 0;
 		position: relative;
+		/* #ifndef APP-NVUE */
+		height: 100%;
+		/* #endif */
 	}
 	
 	.z-tabs-list,.z-tabs-list-container{
@@ -579,7 +587,6 @@
 		display: flex;
 		/* #endif */
 		flex-direction: row;
-		
 	}
 	
 	.z-tabs-item{
