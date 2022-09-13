@@ -417,15 +417,13 @@ export default {
 		},
 		//设置z-paging高度
 		async _setAutoHeight(shouldFullHeight = true, scrollViewNode = null) {
-			let heightKey = 'height';
+			let heightKey = 'min-height';
 			// #ifndef APP-NVUE
-			if (this.usePageScroll) {
-				heightKey = 'min-height';
-			}
+			heightKey = 'min-height';
 			// #endif
 			try {
 				if (shouldFullHeight) {
-					let finalScrollViewNode = scrollViewNode ? scrollViewNode : await this._getNodeClientRect('.scroll-view');
+					let finalScrollViewNode = scrollViewNode ? scrollViewNode : await this._getNodeClientRect('.zp-scroll-view');
 					let finalScrollBottomNode = await this._getNodeClientRect('.zp-page-bottom');
 					if (finalScrollViewNode) {
 						const scrollViewTop = finalScrollViewNode[0].top;
@@ -433,9 +431,10 @@ export default {
 						if(finalScrollBottomNode){
 							scrollViewHeight -= finalScrollBottomNode[0].height;
 						}
-						let additionHeight = u.convertTextToPx(this.autoHeightAddition);
-						this.$set(this.scrollViewStyle, heightKey, scrollViewHeight + additionHeight - (this.insideMore ? 1 : 0) + 'px');
-						this.$set(this.scrollViewInStyle, heightKey, scrollViewHeight + additionHeight - (this.insideMore ? 1 : 0) + 'px');
+						const additionHeight = u.convertTextToPx(this.autoHeightAddition);
+						const finalHeight = scrollViewHeight + additionHeight - (this.insideMore ? 1 : 0) + 'px !important';
+						this.$set(this.scrollViewStyle, heightKey, finalHeight);
+						this.$set(this.scrollViewInStyle, heightKey, finalHeight);
 					}
 				} else {
 					this.$delete(this.scrollViewStyle, heightKey);
