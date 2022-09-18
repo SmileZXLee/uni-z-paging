@@ -410,6 +410,10 @@ const ZPVirtualList = {
 					});
 				})
 			}
+		},
+		//处理内置列表时点击了cell事件
+		_innerCellClick(item, index) {
+			this.$emit('innerCellClick', item, index);
 		}
 	}
 }

@@ -2,7 +2,8 @@
 <template>
 	<view class="content">
 		<!-- 如果页面中的cell高度是固定不变的，则不需要设置cell-height-mode，如果页面中高度是动态改变的，则设置cell-height-mode="dynamic" -->
-		<z-paging ref="paging" use-virtual-list :extra-data="extraData" use-compatibility-mode :cell-height-mode="tabIndex===0?'fixed':'dynamic'" @query="queryList">
+		<z-paging ref="paging" use-virtual-list use-compatibility-mode :extra-data="extraData" :cell-height-mode="tabIndex===0?'fixed':'dynamic'" 
+			@query="queryList" @innerCellClick="innerCellClick">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<template slot="top">
 				<view class="header">列表总数据量：10万条</view>
@@ -26,10 +27,7 @@
 				extraData: {
 					//给这个页面的虚拟列表取一个名字，这样在zp-common-cell中可以根据这个名字来区分不同页面的cell
 					id: 'test1',
-					//这里监听了item的点击事件，这个函数是完全自定义的，不是必须叫这个名字
-					clickFunc: (item, index) => {
-						console.log('点击了' + item.title)
-					}
+					//这边可以附加其他的当前页面需要传给cell的值
 				}
 			}
 		},
@@ -58,6 +56,10 @@
 					this.$refs.paging.complete(false);
 				})
 			},
+			//内置列表cell被点击时触发，会自动带两个参数：item和index过来
+			innerCellClick(item, index){
+				console.log('点击了' + item.title)
+			}
 		}
 	}
 </script>
