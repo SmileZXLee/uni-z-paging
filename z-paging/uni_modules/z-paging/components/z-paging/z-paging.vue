@@ -97,7 +97,7 @@ by ZXLee
 										<view class="zp-list-container" :style="[innerListStyle]">
 											<template v-if="finalUseVirtualList">
 												<view class="zp-list-cell" :style="[innerCellStyle]" :id="`zp-id-${item['zp_index']}`" v-for="(item,index) in virtualList" :key="item['zp_unique_index']" @click="_innerCellClick(item,virtualTopRangeIndex+index)">
-													<zp-common-cell v-if="useCompatibilityMode" :extraData="extraData" :item="item" :index="virtualTopRangeIndex+index" />
+													<zp-virtual-cell v-if="useCompatibilityMode" :extraData="extraData" :item="item" :index="virtualTopRangeIndex+index" />
 													<slot v-else name="cell" :item="item" :index="virtualTopRangeIndex+index"/>
 												</view>
 											</template>
