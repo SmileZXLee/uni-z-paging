@@ -11,9 +11,11 @@
 				<z-tabs  @change="tabChange" :list="tabList"></z-tabs>
 			</template>
 			
-			<!-- cell中的内容写在zp-common-cell组件中，请在项目的components目录下创建名为zp-common-cell的组件 -->
-			<!-- 放在所有cell上方的用slot="header"插入，放在所有cell下方的用slot="footer"插入 -->
+			<!-- 以下内容极为重要！！！！！！！！ -->
+			<!-- cell中的内容必须写在zp-virtual-cell组件中，必须在项目的components目录下创建名为zp-virtual-cell的组件 -->
 			
+			
+			<!-- 放在所有cell上方的用slot="header"插入，放在所有cell下方的用slot="footer"插入 -->
 		</z-paging>
 	</view>
 </template>
@@ -25,7 +27,7 @@
 				tabList: ['cell高度固定','cell高度动态'],
 				tabIndex: 0,
 				extraData: {
-					//给这个页面的虚拟列表取一个名字，这样在zp-common-cell中可以根据这个名字来区分不同页面的cell
+					//给这个页面的虚拟列表取一个名字，这样在zp-virtual-cell中可以根据这个名字来区分不同页面的cell
 					id: 'test1',
 					//这边可以附加其他的当前页面需要传给cell的值
 				}

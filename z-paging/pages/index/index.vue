@@ -63,12 +63,12 @@
 					{
 						title: '虚拟列表演示(一般写法)',
 						file: 'virtual-list-demo',
-						subTitle: '采用内部for循环slot实现，写法较为简单，字节跳动小程序不支持，且微信小程序中此写法有一些限制和问题'
+						subTitle: '采用内部for循环slot实现，写法较为简单，在微信小程序中此写法有一些限制和问题'
 					},
 					{
 						title: '虚拟列表演示(兼容写法)',
 						file: 'virtual-list-compatibility-demo',
-						subTitle: '为提升兼容性而提供的写法，微信小程序或字节跳动小程序建议使用兼容写法'
+						subTitle: '为提升兼容性而提供的写法，微信小程序中建议使用兼容写法'
 					},
 					{
 						title: '滚动吸附效果演示',
