@@ -1,20 +1,14 @@
-<!-- 滚动吸附效果演示(vue) -->
+<!-- 在使用页面滚动时，在子组件内使用z-paging写法演示 -->
+<!-- 使用页面滚动示例(vue) -->
 <template>
 	<view class="content">
-		<!-- 此处为了让reload时不自动滚动到顶部，需要设置auto-clean-list-when-reload和auto-scroll-to-top-when-reload为false，即在reload时关闭自动清空数组和自动滚动到顶部 -->
-		<z-paging ref="paging" v-model="dataList" :auto-clean-list-when-reload="false"
-			:auto-scroll-to-top-when-reload="false" :refresher-status.sync="refresherStatus" @query="queryList">
-			<view class="banner-view" style="height: 250rpx;">
-				<view style="font-size: 40rpx;font-weight: 700;">这是一个banner</view>
-				<view style="font-size: 24rpx;margin-top: 5rpx;">下方tab滚动时可吸附在顶部</view>
-			</view>
-			<!-- 小程序中直接修改组件style为position: sticky;无效，需要在组件外层套一层view -->
-			<view style="z-index: 100;position: sticky;top :0;">
-				<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-				<z-tabs @change="tabChange" :list="tabList"></z-tabs>
-			</view>
-			<!-- 自定义下拉刷新view -->
-			<custom-refresher slot="refresher" :status="refresherStatus"></custom-refresher>
+		<!-- 此时使用了页面的滚动，z-paging不需要有确定的高度，use-page-scroll需要设置为true -->
+		<!-- 注意注意！！这里的ref必须设置且必须等于"paging"，否则mixin方法无效 -->
+		<z-paging ref="paging" v-model="dataList" use-page-scroll @query="queryList">
+			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
+			<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
+			<z-tabs slot="top" @change="tabChange" :list="tabList"></z-tabs>
+			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
 				<view class="item-title">{{item.title}}</view>
 				<view class="item-detail">{{item.detail}}</view>
@@ -26,19 +20,20 @@
 
 <script>
 	export default {
+		
+		name:"page-default-list",
 		data() {
 			return {
 				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
 				dataList: [],
 				tabList: ['测试1','测试2','测试3','测试4'],
-				tabIndex: 0,
-				refresherStatus: 0
+				tabIndex: 0
 			}
 		},
 		methods: {
 			tabChange(index) {
 				this.tabIndex = index;
-				//当切换tab时请调用组件的reload方法，请勿直接调用：queryList方法！！
+				//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
 				this.$refs.paging.reload();
 			},
 			queryList(pageNo, pageSize) {
@@ -62,22 +57,30 @@
 			},
 			itemClick(item) {
 				console.log('点击了', item.title);
-			}
+			},
+			
+			// ---------------- 子组件内实现z-paging的mixin内的相应方法，并转发给z-paging组件 -------------------
+			// 以下四个方法内的代码是固定不变的
+			reload() {
+				this.$refs.paging.reload();
+			},
+			updatePageScrollTop(scrollTop) {
+				this.$refs.paging.updatePageScrollTop(scrollTop);
+			},
+			doChatRecordLoadMore() {
+				this.$refs.paging.doChatRecordLoadMore();
+			},
+			pageReachBottom() {
+				this.$refs.paging.pageReachBottom();
+			},
 		}
 	}
 </script>
 
 <style>
-	.banner-view {
-		background-color: #007AFF;
-		color: white;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-	}
-
+	/* 这种情况无需确定z-paging的高度，内部元素会自动将其撑高 */
 	.item {
+		z-index: 1;
 		position: relative;
 		height: 150rpx;
 		display: flex;
@@ -87,6 +90,7 @@
 	}
 
 	.item-detail {
+		z-index: 1;
 		padding: 5rpx 15rpx;
 		border-radius: 10rpx;
 		font-size: 28rpx;

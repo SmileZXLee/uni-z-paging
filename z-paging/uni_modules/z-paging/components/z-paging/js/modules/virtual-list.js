@@ -10,7 +10,7 @@ const ZPVirtualList = {
 			type: Boolean,
 			default: u.gc('useVirtualList', false)
 		},
-		//在使用虚拟列表时，是否使用兼容模式
+		//在使用虚拟列表时，是否使用兼容模式，默认为否
 		useCompatibilityMode: {
 			type: Boolean,
 			default: u.gc('useCompatibilityMode', false)

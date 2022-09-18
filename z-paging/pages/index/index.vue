@@ -56,6 +56,11 @@
 						subTitle: ''
 					},
 					{
+						title: '使用页面滚动且在子组件内使用z-paging示例',
+						file: 'page-default-by-comp-demo',
+						subTitle: ''
+					},
+					{
 						title: '虚拟列表演示(一般写法)',
 						file: 'virtual-list-demo',
 						subTitle: '采用内部for循环slot实现，写法较为简单，字节跳动小程序不支持，且微信小程序中此写法有一些限制和问题'

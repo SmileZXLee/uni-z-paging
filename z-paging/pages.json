@@ -240,6 +240,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/page-default-by-comp-demo/page-default-by-comp-demo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "使用页面滚动且在子组件内使用z-paging示例",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
