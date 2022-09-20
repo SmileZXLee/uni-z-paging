@@ -9,7 +9,7 @@
 
 <script>
 	export default {
-		name:"zp-virtual-cell",
+		name: "zp-public-virtual-cell",
 		props: {
 			item: null,
 			index: 0,
