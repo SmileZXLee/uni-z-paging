@@ -291,7 +291,7 @@ const ZPRefresher = {
 			return this.refresherTriggered;
 		},
 		showRefresher() {
-			const showRefresher = this.finalRefresherEnabled && this.useCustomRefresher && this.isTouchmoving;
+			const showRefresher = this.finalRefresherEnabled && this.useCustomRefresher;
 			// #ifndef APP-NVUE
 			if (this.customRefresherHeight === -1 && showRefresher) {
 				setTimeout(() => {
