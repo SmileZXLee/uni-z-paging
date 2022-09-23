@@ -506,9 +506,6 @@ export default {
 		},
 		//添加全局emit监听
 		_onEmit() {
-			uni.$on(c.i18nUpdateKey, () => {
-				this.tempLanguageUpdateKey = u.getTime();
-			})
 			uni.$on(c.errorUpdateKey, () => {
 				if (this.loading) {
 					this.complete(false);
@@ -547,7 +544,6 @@ export default {
 		},
 		//销毁全局emit和listener监听
 		_offEmit(){
-			uni.$off(c.i18nUpdateKey);
 			uni.$off(c.errorUpdateKey);
 			uni.$off(c.completeUpdateKey);
 		}

@@ -2,7 +2,7 @@
 <template>
 	<view class="content">
 		<!-- 如果需要区别不同页面的最后更新时间，请为不同页面的z-paging的refresher-update-time-key设置不同的字符串 -->
-		<z-paging ref="paging" v-model="dataList" show-refresher-when-reload show-refresher-update-time @query="queryList">
+		<z-paging ref="paging" v-model="dataList" show-refresher-update-time @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
 			<z-tabs slot="top" @change="tabChange" :list="tabList"></z-tabs>

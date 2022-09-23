@@ -1,85 +1,55 @@
 // [z-paging]i18n模块
+import { initVueI18n } from '@dcloudio/uni-i18n'
+import messages from '../../i18n/index.js'
+const {	t } = initVueI18n(messages)
+
 import u from '.././z-paging-utils'
 import c from '.././z-paging-constant'
-import zI18n from '.././z-paging-i18n'
 
-const systemInfo = uni.getSystemInfoSync();
 const ZPI18n = {
-	props: {
-		//i18n国际化设置语言，支持简体中文(zh-cn)、繁体中文(zh-hant-cn)和英文(en)
-		language: {
-			type: String,
-			default: u.gc('language', '')
-		},
-		//i18n国际化默认是否跟随系统语言，默认为是
-		followSystemLanguage: {
-			type: Boolean,
-			default: u.gc('followSystemLanguage', true)
-		},
-	},
-	data() {
-		return {
-			tempLanguageUpdateKey: 0,
-		}
-	},
 	computed: {
-		tempLanguage() {
-			let systemLanguage = false;
-			const temp = this.tempLanguageUpdateKey;
-			if (this.followSystemLanguage) {
-				systemLanguage = systemInfo.language;
-			}
-			return uni.getStorageSync(c.i18nUpdateKey) || systemLanguage || 'zh-cn';
-		},
-		finalTempLanguage() {
-			return this.language.length ? this.language : this.tempLanguage;
-		},
 		finalLanguage() {
-			let language = this.finalTempLanguage.toLowerCase();
-			return zI18n._getPrivateLanguage(language, this.followSystemLanguage);
+			const language = uni.getLocale();
+			return language === 'auto' ? uni.getSystemInfoSync().language : language;
 		},
 		finalRefresherDefaultText() {
-			return this._getI18nText('refresherDefaultText', this.refresherDefaultText);
+			return this._getI18nText('zp.refresher.default', this.refresherDefaultText);
 		},
 		finalRefresherPullingText() {
-			return this._getI18nText('refresherPullingText', this.refresherPullingText);
+			return this._getI18nText('zp.refresher.pulling', this.refresherPullingText);
 		},
 		finalRefresherRefreshingText() {
-			return this._getI18nText('refresherRefreshingText', this.refresherRefreshingText);
+			return this._getI18nText('zp.refresher.refreshing', this.refresherRefreshingText);
 		},
 		finalRefresherCompleteText() {
-			return this._getI18nText('refresherCompleteText', this.refresherCompleteText);
+			return this._getI18nText('zp.refresher.complete', this.refresherCompleteText);
 		},
 		finalLoadingMoreDefaultText() {
-			return this._getI18nText('loadingMoreDefaultText', this.loadingMoreDefaultText);
+			return this._getI18nText('zp.loadingMore.default', this.loadingMoreDefaultText);
 		},
 		finalLoadingMoreLoadingText() {
-			return this._getI18nText('loadingMoreLoadingText', this.loadingMoreLoadingText);
+			return this._getI18nText('zp.loadingMore.loading', this.loadingMoreLoadingText);
 		},
 		finalLoadingMoreNoMoreText() {
-			return this._getI18nText('loadingMoreNoMoreText', this.loadingMoreNoMoreText);
+			return this._getI18nText('zp.loadingMore.noMore', this.loadingMoreNoMoreText);
 		},
 		finalLoadingMoreFailText() {
-			return this._getI18nText('loadingMoreFailText', this.loadingMoreFailText);
+			return this._getI18nText('zp.loadingMore.fail', this.loadingMoreFailText);
 		},
 		finalEmptyViewText() {
-			return this.isLoadFailed ? this.finalEmptyViewErrorText : this._getI18nText('emptyViewText', this.emptyViewText);
+			return this.isLoadFailed ? this.finalEmptyViewErrorText : this._getI18nText('zp.emptyView.title', this.emptyViewText);
 		},
 		finalEmptyViewReloadText() {
-			return this._getI18nText('emptyViewReloadText', this.emptyViewReloadText);
+			return this._getI18nText('zp.emptyView.reload', this.emptyViewReloadText);
 		},
 		finalEmptyViewErrorText() {
-			return this._getI18nText('emptyViewErrorText', this.emptyViewErrorText);
+			return this._getI18nText('zp.emptyView.error', this.emptyViewErrorText);
 		},
 		finalSystemLoadingText() {
-			return this._getI18nText('systemLoadingText', this.systemLoadingText);
+			return this._getI18nText('zp.systemLoading.title', this.systemLoadingText);
 		},
 	},
 	methods: {
-		//设置i18n国际化语言
-		setI18n(language) {
-			zI18n.setLanguage(language);
-		},
 		//获取当前z-paging的语言
 		getLanguage() {
 			return this.finalLanguage;
@@ -93,7 +63,7 @@ const ZPI18n = {
 			} else if (dataType === '[object String]') {
 				return value;
 			}
-			return zI18n.t[key][this.finalLanguage];
+			return t(key);
 		},
 	}
 }

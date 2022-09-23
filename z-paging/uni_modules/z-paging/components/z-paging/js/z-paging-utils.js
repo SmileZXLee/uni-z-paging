@@ -1,6 +1,8 @@
 // [z-paging]工具类
+import { initVueI18n } from '@dcloudio/uni-i18n'
+import messages from '../i18n/index.js'
+const {	t } = initVueI18n(messages)
 
-import zI18n from './z-paging-i18n'
 import zConfig from './z-paging-config'
 import zLocalConfig from '../config/index'
 
@@ -139,11 +141,11 @@ function getRefesrherTimeByKey(key) {
 //通过下拉刷新标识key获取下拉刷新时间(格式化之后)
 function getRefesrherFormatTimeByKey(key) {
 	const time = getRefesrherTimeByKey(key);
-	let timeText = zI18n.t['refresherUpdateTimeNoneText'][zI18n.getLanguage()];
+	let timeText = t('zp.refresherUpdateTime.none');
 	if (time) {
 		timeText = _timeFormat(time);
 	}
-	return `${zI18n.t['refresherUpdateTimeText'][zI18n.getLanguage()]}${timeText}`;
+	return `${t('zp.refresherUpdateTime.title')}${timeText}`;
 }
 
 //将文本的px或者rpx转为px的值
@@ -192,9 +194,9 @@ function _timeFormat(time) {
 	let dayStr = '';
 	const timeStr = _dateTimeFormat(date);
 	if (disTime === 0) {
-		dayStr = zI18n.t['refresherUpdateTimeTodayText'][zI18n.getLanguage()];
+		dayStr = t('zp.refresherUpdateTime.today');
 	} else if (disTime === -86400000) {
-		dayStr = zI18n.t['refresherUpdateTimeYesterdayText'][zI18n.getLanguage()];
+		dayStr = t('zp.refresherUpdateTime.yesterday');
 	} else {
 		dayStr = _dateDayFormat(date, date.getFullYear() !== currentDate.getFullYear());
 	}

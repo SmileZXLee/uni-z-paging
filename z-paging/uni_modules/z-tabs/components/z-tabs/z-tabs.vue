@@ -1,4 +1,4 @@
-<!-- z-tabs v0.1.6 by-ZXLee -->
+<!-- z-tabs v0.1.9 by-ZXLee -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-tabs -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?name=z-tabs -->
 <!-- 反馈QQ群：790460711 -->
@@ -9,9 +9,9 @@
 			<slot name="left" />
 		</view>
 		<view ref="z-tabs-scroll-view-conatiner" class="z-tabs-scroll-view-conatiner">
-			<scroll-view ref="z-tabs-scroll-view" class="z-tabs-scroll-view" :scroll-x="shouldScroll" :scroll-left="scrollLeft" :show-scrollbar="false" :scroll-with-animation="isFirstLoaded" @scroll="scroll">
+			<scroll-view ref="z-tabs-scroll-view" class="z-tabs-scroll-view" :scroll-x="true" :scroll-left="scrollLeft" :show-scrollbar="false" :scroll-with-animation="isFirstLoaded" @scroll="scroll">
 				<view class="z-tabs-list-container" :style="[tabsListStyle]">
-					<view class="z-tabs-list" :style="[tabsListStyle, {marginTop: -bottomSpace+'rpx'}]">
+					<view class="z-tabs-list" :style="[tabsListStyle, {marginTop: -finalBottomSpace+'px'}]">
 						<view :ref="`z-tabs-item-${index}`" :id="`z-tabs-item-${index}`" class="z-tabs-item" :style="[tabStyle]" v-for="(item,index) in list" :key="index" @click="tabsClick(index,item)">
 							<view class="z-tabs-item-title-container">
 								<text class="z-tabs-item-title" :style="[{color:currentIndex===index?activeColor:inactiveColor},currentIndex===index?activeStyle:inactiveStyle]">{{item[nameKey]||item}}</text>
@@ -19,7 +19,7 @@
 							</view>
 						</view>
 					</view>
-					<view class="z-tabs-bottom" :style="[{width: tabsContainerWidth+'px', bottom: bottomSpace+'rpx'}]">
+					<view class="z-tabs-bottom" :style="[{width: tabsContainerWidth+'px', bottom: finalBottomSpace+'px'}]">
 						<view ref="z-tabs-bottom-dot" class="z-tabs-bottom-dot"
 						<!-- #ifndef APP-NVUE -->
 						:style="[{transform:`translateX(${bottomDotX}px)`,transition:dotTransition,background:activeColor},finalDotStyle]"
@@ -69,12 +69,11 @@
 	 * @property {Array} list 数据源数组，支持形如['tab1','tab2']的格式或[{name:'tab1',value:1}]的格式
 	 * @property {Number|String} current 当前选中的index，默认为0
 	 * @property {Number|String} scroll-count list数组长度超过scrollCount时滚动显示(不自动铺满全屏)，默认为5
-	 * @property {Number|String} tab-width 自定义每个tab的宽度，默认为0，即代表根据内容自动撑开，单位为rpx
-	 * @property {Number|String} tab-width 自定义每个tab的宽度，默认为0，即代表根据内容自动撑开，单位为rpx
-	 * @property {Number|String} bar-width 滑块宽度，单位rpx
-	 * @property {Number|String} bar-height 滑块高度，单位rpx
+	 * @property {Number|String} tab-width 自定义每个tab的宽度，默认为0，即代表根据内容自动撑开，单位px，支持传100、"100px"或"100rpx"
+	 * @property {Number|String} bar-width 滑块宽度，单位px，支持传100、"100px"或"100rpx"
+	 * @property {Number|String} bar-height 滑块高度，单位px，支持传100、"100px"或"100rpx"
 	 * @property {Object} bar-style 滑块样式，其中的width和height将被bar-width和bar-height覆盖
-	 * @property {Number|String} bottom-space tabs与底部的间距，单位rpx
+	 * @property {Number|String} bottom-space tabs与底部的间距，单位px，支持传100、"100px"或"100rpx"
 	 * @property {String} bar-animate-mode 切换tab时滑块动画模式，与swiper联动时有效，点击切换tab时无效，必须调用setDx。默认为line，即切换tab时滑块宽度保持不变，线性运动。可选值为worm，即为类似毛毛虫蠕动效果
 	 * @property {String} name-key list中item的name(标题)的key，默认为name
 	 * @property {String} value-key list中item的value的key，默认为value
@@ -101,9 +100,10 @@
 				showBottomDot: false,
 				shouldSetDx: true,
 				
-				finalBarWidth: 0,
+				barCalcedWidth: 0,
 				pxBarWidth: 0,
 				scrollLeft: 0,
+				tabsSuperWidth: uni.upx2px(750),
 				tabsWidth: uni.upx2px(750),
 				tabsHeight: uni.upx2px(80),
 				tabsLeft: 0,
@@ -139,20 +139,20 @@
 					return _gc('tabsStyle',{})
 				}
 			},
-			//自定义每个tab的宽度，默认为0，即代表根据内容自动撑开，单位为rpx
+			//自定义每个tab的宽度，默认为0，即代表根据内容自动撑开，单位px，支持传100、"100px"或"100rpx"
 			tabWidth: {
 				type: [Number, String],
 				default: _gc('tabWidth',0)
 			},
-			//滑块宽度，单位rpx
+			//滑块宽度，单位px，支持传100、"100px"或"100rpx"
 			barWidth: {
 				type: [Number, String],
-				default: _gc('barWidth',45)
+				default: _gc('barWidth','45rpx')
 			},
-			//滑块高度，单位rpx
+			//滑块高度，单位px，支持传100、"100px"或"100rpx"
 			barHeight: {
 				type: [Number, String],
-				default: _gc('barHeight',8)
+				default: _gc('barHeight','8rpx')
 			},
 			//滑块样式，其中的width和height将被barWidth和barHeight覆盖
 			barStyle: {
@@ -161,10 +161,10 @@
 					return _gc('barStyle',{});
 				}
 			},
-			//tabs与底部的间距，单位rpx
+			//tabs与底部的间距，单位px，支持传100、"100px"或"100rpx"
 			bottomSpace: {
 				type: [Number, String],
-				default: _gc('bottomSpace',8)
+				default: _gc('bottomSpace','8rpx')
 			},
 			//切换tab时滑块动画模式，与swiper联动时有效，点击切换tab时无效，必须调用setDx。默认为line，即切换tab时滑块宽度保持不变，线性运动。可选值为worm，即为类似毛毛虫蠕动效果
 			barAnimateMode: {
@@ -229,22 +229,7 @@
 			},
 		},
 		mounted() {
-			this.$nextTick(() => {
-				let delayTime = 10;
-				// #ifdef APP-NVUE || MP-BAIDU
-				delayTime = 50;
-				// #endif
-				setTimeout(() => {
-					this._getNodeClientRect(`.z-tabs-scroll-view-conatiner`).then(res=>{
-						if(res && res.length && res[0].width){
-							this.tabsWidth = res[0].width;
-							this.tabsHeight = res[0].height;
-							this.tabsLeft = res[0].left;
-							this._handleListChange(this.list);
-						}
-					})
-				},delayTime)
-			})
+			this.updateSubviewLayout();
 		},
 		watch: {
 			current: {
@@ -276,9 +261,10 @@
 						// #ifdef APP-NVUE
 						weexAnimation.transition(this.$refs['z-tabs-bottom-dot'], {
 							styles: {
-								transform: `translateX(${newVal}px)`,
+								transform: `translateX(${newVal}px)`
 							},
-							duration: this.showAnimate ? 200 : 0
+							duration: this.showAnimate ? 200 : 0,
+							delay: 0
 						})
 						setTimeout(() => {
 							this.showBottomDot = true;
@@ -287,10 +273,10 @@
 					})
 				}
 			},
-			barWidth: {
+			finalBarWidth: {
 				handler(newVal) {
-					this.finalBarWidth = uni.upx2px(newVal);
-					this.pxBarWidth = this.finalBarWidth;
+					this.barCalcedWidth = newVal;
+					this.pxBarWidth = this.barCalcedWidth;
 				},
 				immediate: true
 			},
@@ -310,8 +296,8 @@
 			},
 			tabStyle(){
 				const stl = this.shouldScroll ? {'flex-shrink': 0} : {'flex': 1};
-				if(this.tabWidth > 0){
-					stl['width'] = this.tabWidth + 'rpx';
+				if(this.finalTabWidth > 0){
+					stl['width'] = this.finalTabWidth + 'px';
 				}else{
 					delete stl.width;
 				} 
@@ -320,14 +306,26 @@
 			tabsListStyle(){
 				return this.shouldScroll ? {} : {'flex':1};
 			},
-			showAnimate() {
+			showAnimate(){
 				return this.isFirstLoaded && !this.shouldSetDx;
 			},
 			dotTransition(){
 				return this.showAnimate ? 'transform .2s linear':'none';
 			},
 			finalDotStyle(){
-				return {...this.barStyle, width: this.finalBarWidth + 'px', height: this.barHeight + 'rpx', opacity: this.showBottomDot ? 1 : 0};
+				return {...this.barStyle, width: this.barCalcedWidth + 'px', height: this.finalBarHeight + 'px', opacity: this.showBottomDot ? 1 : 0};
+			},
+			finalTabWidth(){
+				return this._convertTextToPx(this.tabWidth);
+			},
+			finalBarWidth(){
+				return this._convertTextToPx(this.barWidth);
+			},
+			finalBarHeight(){
+				return this._convertTextToPx(this.barHeight);
+			},
+			finalBottomSpace(){
+				return this._convertTextToPx(this.bottomSpace);
 			}
 		},
 		methods: {
@@ -336,7 +334,7 @@
 				if (!this.shouldSetDx) return;
 				const isLineMode = this.barAnimateMode === 'line';
 				const isWormMode = this.barAnimateMode === 'worm';
-				let dxRate = dx / this.tabsWidth;
+				let dxRate = dx / this.tabsSuperWidth;
 				this.currentSwiperIndex = this.currentIndex + parseInt(dxRate);
 				const isRight = dxRate > 0;
 				const barWidth = this.pxBarWidth;
@@ -373,12 +371,36 @@
 						}
 					}
 					barCalcedWidth = Math.max(barCalcedWidth, barWidth);
-					this.finalBarWidth = barCalcedWidth;
+					this.barCalcedWidth = barCalcedWidth;
 				}
 			},
 			//在swiper的@animationfinish中通知z-tabs结束多setDx的锁定，若在父组件中调用了setDx，则必须调用unlockDx
 			unlockDx() {
 				this.shouldSetDx = true;
+			},
+			//更新z-tabs内部布局
+			updateSubviewLayout() {
+				this.$nextTick(() => {
+					let delayTime = 10;
+					// #ifdef APP-NVUE || MP-BAIDU
+					delayTime = 50;
+					// #endif
+					setTimeout(() => {
+						this._getNodeClientRect('.z-tabs-scroll-view-conatiner').then(res=>{
+							if(res && res.length && res[0].width){
+								this.tabsWidth = res[0].width;
+								this.tabsHeight = res[0].height;
+								this.tabsLeft = res[0].left;
+								this._handleListChange(this.list);
+							}
+						})
+						this._getNodeClientRect('.z-tabs-conatiner').then(res=>{
+							if(res && res.length && res[0].width){
+								this.tabsSuperWidth = res[0].width;
+							}
+						})
+					},delayTime)
+				})
 			},
 			//点击了tabs
 			tabsClick(index,item) {
@@ -434,11 +456,11 @@
 							}
 						}
 					}
-					this.bottomDotX = this._getBottomDotX(node, uni.upx2px(this.barWidth), offset);
+					this.bottomDotX = this._getBottomDotX(node, this.finalBarWidth, offset);
 					this.bottomDotXForIndex = this.bottomDotX;
-					if(this.tabsWidth){
+					if (this.tabsWidth) {
 						setTimeout(()=>{
-							let scrollLeft = this.bottomDotX - this.tabsWidth / 2 + uni.upx2px(this.barWidth) / 2;
+							let scrollLeft = this.bottomDotX - this.tabsWidth / 2 + this.finalBarWidth / 2;
 							scrollLeft = Math.max(0,scrollLeft);
 							if (tabsContainerWidth) {
 								scrollLeft = Math.min(scrollLeft,tabsContainerWidth - this.tabsWidth + 10);
@@ -480,6 +502,7 @@
 							}
 							this.itemNodeInfos = itemNodeInfos;
 							this.tabsContainerWidth = tabsContainerWidth;
+							this._updateDotPosition(this.currentIndex);
 						},delayTime)
 					}
 				})
@@ -489,6 +512,10 @@
 						this.$emit('change', this.current, newVal[this.current][this.valueKey]);
 					}
 				}
+			},
+			//根据node获取bottomX
+			_getBottomDotX(node, barWidth = this.finalBarWidth, offset = 0){
+				return node.left + node.width / 2 - barWidth / 2 + offset - this.tabsLeft;
 			},
 			//获取节点信息
 			_getNodeClientRect(select, withRefArr = false) {
@@ -522,11 +549,27 @@
 				}
 				return count.toString();
 			},
-			//根据node获取bottomX
-			_getBottomDotX(node, barWidth = uni.upx2px(this.barWidth), offset = 0){
-				return node.left + node.width / 2 - barWidth / 2 + offset - this.tabsLeft;
+			//将文本的px或者rpx转为px的值
+			_convertTextToPx(text) {
+				const dataType = Object.prototype.toString.call(text);
+				if (dataType === '[object Number]') {
+					return text;
+				}
+				let isRpx = false;
+				if (text.indexOf('rpx') !== -1 || text.indexOf('upx') !== -1) {
+					text = text.replace('rpx', '').replace('upx', '');
+					isRpx = true;
+				} else if (text.indexOf('px') !== -1) {
+					text = text.replace('px', '');
+				}
+				if (!isNaN(text)) {
+					if (isRpx) return Number(uni.upx2px(text));
+					return Number(text);
+				}
+				return 0;
 			}
 		}
+		
 	}
 </script>
 

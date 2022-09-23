@@ -2,7 +2,6 @@
 
 const version = '2.4.0';
 const delayTime = 100;
-const i18nUpdateKey = 'z-paging-i18n-update';
 
 const errorUpdateKey = 'z-paging-error-emit';
 const completeUpdateKey = 'z-paging-complete-emit';
@@ -14,7 +13,6 @@ const listCellIndexUniqueKey = 'zp_unique_index';
 export default {
 	version,
 	delayTime,
-	i18nUpdateKey,
 	errorUpdateKey,
 	completeUpdateKey,
 	cachePrefixKey,

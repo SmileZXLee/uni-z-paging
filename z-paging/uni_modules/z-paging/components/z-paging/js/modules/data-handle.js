@@ -511,7 +511,6 @@ const ZPData = {
 			const tempIsUserPullDown = this.isUserPullDown;
 			if (this.showRefresherUpdateTime && this.isFirstPage) {
 				u.setRefesrherTime(u.getTime(), this.refresherUpdateTimeKey);
-				this.tempLanguageUpdateKey = u.getTime();
 				this.$refs.refresh && this.$refs.refresh.updateTime();
 			}
 			if (tempIsUserPullDown && this.isFirstPage) {

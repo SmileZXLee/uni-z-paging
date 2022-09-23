@@ -1,0 +1,22 @@
+{	
+	"zp.refresher.default": "继续下拉刷新",
+	"zp.refresher.pulling": "松开立即刷新",
+	"zp.refresher.refreshing": "正在刷新...",
+	"zp.refresher.complete": "刷新成功",
+	
+	"zp.loadingMore.default": "点击加载更多",
+	"zp.loadingMore.loading": "正在加载...",
+	"zp.loadingMore.noMore": "没有更多了",
+	"zp.loadingMore.fail": "加载失败，点击重新加载",
+	
+	"zp.emptyView.title": "没有数据哦~",
+	"zp.emptyView.reload": "重新加载",
+	"zp.emptyView.error": "很抱歉，加载失败",
+	
+	"zp.refresherUpdateTime.title": "最后更新：",
+	"zp.refresherUpdateTime.none": "无",
+	"zp.refresherUpdateTime.today": "今天",
+	"zp.refresherUpdateTime.yesterday": "昨天",
+	
+	"zp.systemLoading.title": "加载中..."
+}
