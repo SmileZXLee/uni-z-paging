@@ -5,12 +5,14 @@ const {	t } = initVueI18n(messages)
 
 import u from '.././z-paging-utils'
 import c from '.././z-paging-constant'
+import interceptor from '../z-paging-interceptor'
 
 const ZPI18n = {
 	computed: {
 		finalLanguage() {
-			const language = uni.getLocale();
-			return language === 'auto' ? uni.getSystemInfoSync().language : language;
+			const local = uni.getLocale();
+			const language = uni.getSystemInfoSync().language;
+			return local === 'auto' ? interceptor._handleLanguage2Local(language, this._language2Local(language)) : local;
 		},
 		finalRefresherDefaultText() {
 			return this._getI18nText('zp.refresher.default', this.refresherDefaultText);
@@ -65,6 +67,22 @@ const ZPI18n = {
 			}
 			return t(key);
 		},
+		//系统language转i18n local
+		_language2Local(language) {
+			console.log('language111',language)
+			return;
+			language = language.toLowerCase().replace(new RegExp('_', ''), '-');
+			if (language.indexOf('zh') !== -1) {
+				if (language === 'zh' || language === 'zh-cn' || language.indexOf('zh-hans') !== -1) {
+					return 'zh-Hans';
+				}
+				return 'zh-Hant';
+			}
+			if (language.indexOf('en') !== -1) {
+				return 'en';
+			}
+			return 'zh-Hans';
+		}
 	}
 }
 

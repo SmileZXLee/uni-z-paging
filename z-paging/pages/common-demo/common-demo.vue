@@ -30,6 +30,7 @@
 				this.tabIndex = index;
 				//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
 				this.$refs.paging.reload();
+				console.log(this.$refs.paging.getLanguage())
 			},
 			queryList(pageNo, pageSize) {
 				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
