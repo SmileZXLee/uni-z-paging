@@ -57,8 +57,7 @@ const ZPScroller = {
 			scrollViewInStyle: {},
 			pageScrollTop: -1,
 			scrollEnable: true,
-			privateScrollWithAnimation: -1,
-			cacheScrollNodeHeight: -1
+			privateScrollWithAnimation: -1
 		}
 	},
 	watch: {
@@ -394,8 +393,6 @@ const ZPScroller = {
 			this.finalUseVirtualList && this._updateVirtualScroll(scrollTop,this.oldScrollTop - scrollTop);
 			// #endif
 			this.oldScrollTop = scrollTop;
-			const scrollDiff = e.detail.scrollHeight - this.oldScrollTop;
-			!this.isIos && this._checkScrolledToBottom(scrollDiff);
 		},
 		//scrollTop改变时触发
 		_scrollTopChange(newVal,oldVal,isPageScrollTop){

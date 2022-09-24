@@ -459,7 +459,6 @@ const ZPData = {
 		//重新加载分页数据
 		_reload(isClean = false, isFromMounted = false, isUserPullDown = false) {
 			this.isAddedData = false;
-			this.cacheScrollNodeHeight = -1;
 			this.insideOfPaging = -1;
 			this.pageNo = this.defaultPageNo;
 			this._cleanRefresherEndTimeout();

@@ -122,7 +122,7 @@
 		}, {
 			"path": "pages/show-update-time-demo/show-update-time-demo",
 			"style": {
-				"navigationBarTitleText": "显示最后更新时间演示",
+				"navigationBarTitleText": "下拉显示最后更新时间演示",
 				"enablePullDownRefresh": false
 			}
 

@@ -87,7 +87,7 @@
 						subTitle: '上一个tab数据不保留，滚动过渡效果流畅'
 					},
 					{
-						title: '显示最后更新时间演示',
+						title: '下拉显示最后更新时间演示',
 						file: 'show-update-time-demo',
 						subTitle: ''
 					},
