@@ -1,7 +1,7 @@
 <!-- i18n国际化演示(vue) -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" v-model="dataList" @query="queryList" show-refresher-update-time>
+		<z-paging ref="paging" v-model="dataList" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<view slot="top">
 				<view class="language-view" @click="languageSwitch">当前语言：[{{applicationLocale}}] 点击切换</view>
@@ -22,29 +22,28 @@
 	export default {
 		data() {
 			return {
+				locales: [{
+					text: '跟随系统',
+					code: 'auto'
+				}, {
+					text: '英文',
+					code: 'en'
+				},
+				{
+					text: '简体中文',
+					code: 'zh-Hans'
+				},
+				{
+					text: '繁体中文',
+					code: 'zh-Hant',	
+				}],
+				applicationLocale: '',
+				
+				//------------------------ z-paging分页相关 -----------------------
 				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
 				dataList: [],
 				tabList: ['测试1', '测试2', '测试3', '测试4'],
 				tabIndex: 0,
-
-				locales: [
-					{
-						text: '跟随系统',
-						code: 'auto'
-					}, {
-						text: '英文',
-						code: 'en'
-					},
-					{
-						text: '简体中文',
-						code: 'zh-Hans'
-					},
-					{
-						text: '繁体中文',
-						code: 'zh-Hant',
-					}
-				],
-				applicationLocale: ''
 			}
 		},
 		onLoad() {
@@ -69,7 +68,7 @@
 				});
 			},
 			
-			// ------------------------ z-paging分页相关 -----------------------
+			//------------------------ z-paging分页相关 -----------------------
 			tabChange(index) {
 				this.tabIndex = index;
 				//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！

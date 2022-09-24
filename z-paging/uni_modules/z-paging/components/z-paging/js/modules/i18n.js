@@ -8,10 +8,15 @@ import c from '.././z-paging-constant'
 import interceptor from '../z-paging-interceptor'
 
 const ZPI18n = {
+	data() {
+		return {
+			language: uni.getSystemInfoSync().language
+		}
+	},
 	computed: {
 		finalLanguage() {
 			const local = uni.getLocale();
-			const language = uni.getSystemInfoSync().language;
+			const language = this.language;
 			return local === 'auto' ? interceptor._handleLanguage2Local(language, this._language2Local(language)) : local;
 		},
 		finalRefresherDefaultText() {
@@ -69,19 +74,17 @@ const ZPI18n = {
 		},
 		//系统language转i18n local
 		_language2Local(language) {
-			console.log('language111',language)
-			return;
-			language = language.toLowerCase().replace(new RegExp('_', ''), '-');
-			if (language.indexOf('zh') !== -1) {
-				if (language === 'zh' || language === 'zh-cn' || language.indexOf('zh-hans') !== -1) {
+			const formatedLanguage = language.toLowerCase().replace(new RegExp('_', ''), '-');
+			if (formatedLanguage.indexOf('zh') !== -1) {
+				if (formatedLanguage === 'zh' || formatedLanguage === 'zh-cn' || formatedLanguage.indexOf('zh-hans') !== -1) {
 					return 'zh-Hans';
 				}
 				return 'zh-Hant';
 			}
-			if (language.indexOf('en') !== -1) {
+			if (formatedLanguage.indexOf('en') !== -1) {
 				return 'en';
 			}
-			return 'zh-Hans';
+			return language;
 		}
 	}
 }

@@ -31,7 +31,7 @@ function handleLanguage2Local(callback) {
 function _handleLanguage2Local(language, local){
 	const handleLanguage2LocalCallback = _getApp().globalData.zp_handleLanguage2LocalCallback;
 	if (handleLanguage2LocalCallback) {
-		return handleLanguage2LocalCallback(language);
+		return handleLanguage2LocalCallback(language, local);
 	}
 	return local;
 }
