@@ -1,7 +1,4 @@
 // [z-paging]工具类
-import { initVueI18n } from '@dcloudio/uni-i18n'
-import messages from '../i18n/index.js'
-const {	t } = initVueI18n(messages)
 
 import zConfig from './z-paging-config'
 import zLocalConfig from '../config/index'
@@ -139,13 +136,13 @@ function getRefesrherTimeByKey(key) {
 }
 
 //通过下拉刷新标识key获取下拉刷新时间(格式化之后)
-function getRefesrherFormatTimeByKey(key) {
+function getRefesrherFormatTimeByKey(key, textMap) {
 	const time = getRefesrherTimeByKey(key);
-	let timeText = t('zp.refresherUpdateTime.none');
+	let timeText = textMap.none;
 	if (time) {
-		timeText = _timeFormat(time);
+		timeText = _timeFormat(time, textMap);
 	}
-	return `${t('zp.refresherUpdateTime.title')}${timeText}`;
+	return `${textMap.title}${timeText}`;
 }
 
 //将文本的px或者rpx转为px的值
@@ -185,7 +182,7 @@ function getInstanceId() {
 
 //------------------ 私有方法 ------------------------
 //时间格式化
-function _timeFormat(time) {
+function _timeFormat(time, textMap) {
 	const date = new Date(time);
 	const currentDate = new Date();
 	const dateDay = new Date(time).setHours(0, 0, 0, 0);
@@ -194,9 +191,9 @@ function _timeFormat(time) {
 	let dayStr = '';
 	const timeStr = _dateTimeFormat(date);
 	if (disTime === 0) {
-		dayStr = t('zp.refresherUpdateTime.today');
+		dayStr = textMap.today;
 	} else if (disTime === -86400000) {
-		dayStr = t('zp.refresherUpdateTime.yesterday');
+		dayStr = textMap.yesterday;
 	} else {
 		dayStr = _dateDayFormat(date, date.getFullYear() !== currentDate.getFullYear());
 	}

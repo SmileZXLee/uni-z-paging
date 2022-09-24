@@ -30,10 +30,11 @@
 	</view>
 </template>
 <script>
-	const systemInfo = uni.getSystemInfoSync();
 	import zStatic from '../js/z-paging-static'
 	import u from '../js/z-paging-utils'
 	import Enum from '../js/z-paging-enum'
+	
+	const systemInfo = uni.getSystemInfoSync();
 	
 	export default {
 		name: 'z-paging-refresh',
@@ -75,6 +76,9 @@
 				default: {}
 			},
 			'updateTimeStyle': {
+				default: {}
+			},
+			'updateTimeTextMap': {
 				default: {}
 			},
 		},
@@ -157,7 +161,7 @@
 					updateTimeKey = this.updateTimeKey;
 				}
 				if (this.showUpdateTime) {
-					this.refresherTimeText = u.getRefesrherFormatTimeByKey(updateTimeKey);
+					this.refresherTimeText = u.getRefesrherFormatTimeByKey(updateTimeKey, this.updateTimeTextMap);
 				}
 			}
 		}

@@ -31,6 +31,14 @@ const ZPI18n = {
 		finalRefresherCompleteText() {
 			return this._getI18nText('zp.refresher.complete', this.refresherCompleteText);
 		},
+		finalRefresherUpdateTimeTextMap() {
+			return {
+				title: t('zp.refresherUpdateTime.title'),
+				none: t('zp.refresherUpdateTime.none'),
+				today: t('zp.refresherUpdateTime.today'),
+				yesterday: t('zp.refresherUpdateTime.yesterday')
+			};
+		},
 		finalLoadingMoreDefaultText() {
 			return this._getI18nText('zp.loadingMore.default', this.loadingMoreDefaultText);
 		},
