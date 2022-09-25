@@ -152,10 +152,10 @@
 					setTimeout(() => {
 						const query = uni.createSelectorQuery().in(this);
 						query.select('.zp-swiper-left').boundingClientRect(res => {
-							this.$set(this.swiperContentStyle,'left',res ? res[0].width + 'px' : '0px');
+							this.$set(this.swiperContentStyle,'left',res ? res.width + 'px' : '0px');
 						}).exec();
 						query.select('.zp-swiper-right').boundingClientRect(res => {
-							this.$set(this.swiperContentStyle,'right',res ? res[0].width + 'px' : '0px');
+							this.$set(this.swiperContentStyle,'right',res ? res.width + 'px' : '0px');
 						}).exec();
 					}, delayTime)
 				})
