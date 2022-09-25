@@ -1,4 +1,5 @@
 <!-- 虚拟列表演示(兼容写法)(vue) -->
+<!-- 使用虚拟列表兼容写法时必须手动在z-paging的源代码z-paging.vue中搜索zp-public-virtual-cell并打开相关注释 -->
 <template>
 	<view class="content">
 		<!-- 如果页面中的cell高度是固定不变的，则不需要设置cell-height-mode，如果页面中高度是动态改变的，则设置cell-height-mode="dynamic" -->

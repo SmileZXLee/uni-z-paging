@@ -1,4 +1,4 @@
-<!-- z-tabs v0.1.9 by-ZXLee -->
+<!-- z-tabs v0.2.0 by-ZXLee -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-tabs -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?name=z-tabs -->
 <!-- 反馈QQ群：790460711 -->
@@ -69,11 +69,11 @@
 	 * @property {Array} list 数据源数组，支持形如['tab1','tab2']的格式或[{name:'tab1',value:1}]的格式
 	 * @property {Number|String} current 当前选中的index，默认为0
 	 * @property {Number|String} scroll-count list数组长度超过scrollCount时滚动显示(不自动铺满全屏)，默认为5
-	 * @property {Number|String} tab-width 自定义每个tab的宽度，默认为0，即代表根据内容自动撑开，单位px，支持传100、"100px"或"100rpx"
-	 * @property {Number|String} bar-width 滑块宽度，单位px，支持传100、"100px"或"100rpx"
-	 * @property {Number|String} bar-height 滑块高度，单位px，支持传100、"100px"或"100rpx"
+	 * @property {Number|String} tab-width 自定义每个tab的宽度，默认为0，即代表根据内容自动撑开，单位rpx，支持传100、"100px"或"100rpx"
+	 * @property {Number|String} bar-width 滑块宽度，单位rpx，支持传100、"100px"或"100rpx"
+	 * @property {Number|String} bar-height 滑块高度，单位rpx，支持传100、"100px"或"100rpx"
 	 * @property {Object} bar-style 滑块样式，其中的width和height将被bar-width和bar-height覆盖
-	 * @property {Number|String} bottom-space tabs与底部的间距，单位px，支持传100、"100px"或"100rpx"
+	 * @property {Number|String} bottom-space tabs与底部的间距，单位rpx，支持传100、"100px"或"100rpx"
 	 * @property {String} bar-animate-mode 切换tab时滑块动画模式，与swiper联动时有效，点击切换tab时无效，必须调用setDx。默认为line，即切换tab时滑块宽度保持不变，线性运动。可选值为worm，即为类似毛毛虫蠕动效果
 	 * @property {String} name-key list中item的name(标题)的key，默认为name
 	 * @property {String} value-key list中item的value的key，默认为value
@@ -139,20 +139,20 @@
 					return _gc('tabsStyle',{})
 				}
 			},
-			//自定义每个tab的宽度，默认为0，即代表根据内容自动撑开，单位px，支持传100、"100px"或"100rpx"
+			//自定义每个tab的宽度，默认为0，即代表根据内容自动撑开，单位rpx，支持传100、"100px"或"100rpx"
 			tabWidth: {
 				type: [Number, String],
 				default: _gc('tabWidth',0)
 			},
-			//滑块宽度，单位px，支持传100、"100px"或"100rpx"
+			//滑块宽度，单位rpx，支持传100、"100px"或"100rpx"
 			barWidth: {
 				type: [Number, String],
-				default: _gc('barWidth','45rpx')
+				default: _gc('barWidth',45)
 			},
-			//滑块高度，单位px，支持传100、"100px"或"100rpx"
+			//滑块高度，单位rpx，支持传100、"100px"或"100rpx"
 			barHeight: {
 				type: [Number, String],
-				default: _gc('barHeight','8rpx')
+				default: _gc('barHeight',8)
 			},
 			//滑块样式，其中的width和height将被barWidth和barHeight覆盖
 			barStyle: {
@@ -161,10 +161,10 @@
 					return _gc('barStyle',{});
 				}
 			},
-			//tabs与底部的间距，单位px，支持传100、"100px"或"100rpx"
+			//tabs与底部的间距，单位rpx，支持传100、"100px"或"100rpx"
 			bottomSpace: {
 				type: [Number, String],
-				default: _gc('bottomSpace','8rpx')
+				default: _gc('bottomSpace',8)
 			},
 			//切换tab时滑块动画模式，与swiper联动时有效，点击切换tab时无效，必须调用setDx。默认为line，即切换tab时滑块宽度保持不变，线性运动。可选值为worm，即为类似毛毛虫蠕动效果
 			barAnimateMode: {
@@ -553,7 +553,7 @@
 			_convertTextToPx(text) {
 				const dataType = Object.prototype.toString.call(text);
 				if (dataType === '[object Number]') {
-					return text;
+					return uni.upx2px(text);
 				}
 				let isRpx = false;
 				if (text.indexOf('rpx') !== -1 || text.indexOf('upx') !== -1) {
@@ -561,6 +561,8 @@
 					isRpx = true;
 				} else if (text.indexOf('px') !== -1) {
 					text = text.replace('px', '');
+				} else {
+					text = uni.upx2px(text);
 				}
 				if (!isNaN(text)) {
 					if (isRpx) return Number(uni.upx2px(text));
@@ -578,8 +580,11 @@
 		/* #ifndef APP-NVUE */
 		overflow: hidden;
 		display: flex;
+		width: 100%;
 		/* #endif */
+		/* #ifdef APP-NVUE */
 		width: 750rpx;
+		/* #endif */
 		flex-direction: row;
 		height: 80rpx;
 	}
