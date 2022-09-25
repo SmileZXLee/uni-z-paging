@@ -105,24 +105,14 @@ function consoleWarn(warn) {
 
 //设置下拉刷新时间
 function setRefesrherTime(time, key) {
-	try {
-		let datas = getRefesrherTime();
-		if (!datas) {
-			datas = {};
-		}
-		datas[key] = time;
-		uni.setStorageSync(storageKey, datas);
-	} catch (e) {}
+	const datas = getRefesrherTime() || {};
+	datas[key] = time;
+	uni.setStorageSync(storageKey, datas);
 }
 
 //获取下拉刷新时间
 function getRefesrherTime() {
-	try {
-		const datas = uni.getStorageSync(storageKey);
-		return datas;
-	} catch (e) {
-		return null;
-	}
+	return uni.getStorageSync(storageKey);
 }
 
 //通过下拉刷新标识key获取下拉刷新时间
@@ -138,10 +128,7 @@ function getRefesrherTimeByKey(key) {
 //通过下拉刷新标识key获取下拉刷新时间(格式化之后)
 function getRefesrherFormatTimeByKey(key, textMap) {
 	const time = getRefesrherTimeByKey(key);
-	let timeText = textMap.none;
-	if (time) {
-		timeText = _timeFormat(time, textMap);
-	}
+	const timeText = time ? _timeFormat(time, textMap) : textMap.none;
 	return `${textMap.title}${timeText}`;
 }
 

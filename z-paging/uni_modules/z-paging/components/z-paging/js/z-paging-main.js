@@ -61,6 +61,7 @@ export default {
 			chatRecordLoadingMoreText: '',
 			wxsPropType: '',
 			renderPropScrollTop: -1,
+			checkScrolledToBottomTimeOut: null,
 			systemInfo: null,
 			cssSafeAreaInsetBottom: -1,
 			cacheTopHeight: -1,

@@ -460,6 +460,7 @@ const ZPData = {
 		_reload(isClean = false, isFromMounted = false, isUserPullDown = false) {
 			this.isAddedData = false;
 			this.insideOfPaging = -1;
+			this.cacheScrollNodeHeight = -1;
 			this.pageNo = this.defaultPageNo;
 			this._cleanRefresherEndTimeout();
 			!this.privateShowRefresherWhenReload && !isClean && this._startLoading(true);
