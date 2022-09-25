@@ -1,7 +1,7 @@
 // [z-paging]i18n模块
 import { initVueI18n } from '@dcloudio/uni-i18n'
 import messages from '../../i18n/index.js'
-const {	t } = initVueI18n(messages)
+const { t } = initVueI18n(messages)
 
 import u from '.././z-paging-utils'
 import c from '.././z-paging-constant'
