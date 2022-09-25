@@ -28,9 +28,7 @@
 	import zPaging from '../z-paging/z-paging'
 	export default {
 		name: "z-paging-swiper-item",
-		components: {
-			zPaging
-		},
+		components: { zPaging },
 		data() {
 			return {
 				firstLoaded: false

@@ -8,6 +8,7 @@ const weexAnimation = weex.requireModule('animation');
 // #endif
 const ZPNvue = {
 	props: {
+		// #ifdef APP-NVUE
 		//nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list
 		nvueListIs: {
 			type: String,
@@ -57,6 +58,7 @@ const ZPNvue = {
 			type: Number,
 			default: u.gc('offsetAccuracy', 10)
 		},
+		// #endif
 	},
 	data() {
 		return {
