@@ -594,7 +594,7 @@ const ZPData = {
 							this.$emit('contentHeightChanged', res[0].height);
 						}
 					});
-				},this.isIos?100:300)
+				},this.isIos ? 100 : 300)
 				// #ifdef APP-NVUE
 				if (this.useChatRecordMode && this.nIsFirstPageAndNoMore && this.isFirstPage && !this.nFirstPageAndNoMoreChecked) {
 					this.nFirstPageAndNoMoreChecked = true;
@@ -767,10 +767,9 @@ const ZPData = {
 				data = [];
 			} else if (dataType !== '[object Array]') {
 				data = [];
-				let methodStr = isLocal ? 'setLocalPaging' : 'complete';
 				if (dataType !== '[object Undefined]') {
 					if (this.showConsoleError) {
-						u.consoleErr(`${methodStr}参数类型不正确，第一个参数类型必须为Array!`);
+						u.consoleErr(`${isLocal ? 'setLocalPaging' : 'complete'}参数类型不正确，第一个参数类型必须为Array!`);
 					}
 				}
 			}

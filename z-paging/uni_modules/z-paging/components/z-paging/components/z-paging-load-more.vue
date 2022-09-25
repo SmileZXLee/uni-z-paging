@@ -4,7 +4,7 @@
 		<template v-if="!zConfig.hideContent">
 			<text v-if="zConfig.showNoMoreLine&&finalStatus===M.NoMore" class="zp-l-line" :style="[{backgroundColor:isWhite?'#efefef':'#eeeeee'},zConfig.noMoreLineCustomStyle]" />
 			<!-- #ifndef APP-NVUE -->
-			<image v-if="finalStatus===M.Loading&&zConfig.loadingIconCustomImage.length"
+			<image v-if="finalStatus===M.Loading&&!!zConfig.loadingIconCustomImage"
 				:src="zConfig.loadingIconCustomImage" :style="[zConfig.iconCustomStyle]" :class="{'zp-l-line-loading-custom-image':true,'zp-l-line-loading-custom-image-animated':zConfig.loadingAnimated}" />
 			<image v-if="finalStatus===M.Loading&&zConfig.loadingIconType==='flower'&&!zConfig.loadingIconCustomImage.length"
 				class="zp-line-loading-image" :style="[zConfig.iconCustomStyle]" :src="isWhite?base64FlowerWhite:base64Flower" />

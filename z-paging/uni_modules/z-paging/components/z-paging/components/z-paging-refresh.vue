@@ -10,7 +10,7 @@
 				<!-- #ifdef APP-NVUE -->
 				<view v-else :style="[{'margin-right':showUpdateTime?'18rpx':'12rpx'}]">
 					<loading-indicator :class="isIos?'zp-loading-image-ios':'zp-loading-image-android'" 
-					:style="[{color:defaultThemeStyle==='white'?'white':'#777777'},imgStyle]" :animating="true" />
+					:style="[{color:isWhite?'white':'#777777'},imgStyle]" :animating="true" />
 				</view>
 				<!-- #endif -->
 			</view>
@@ -33,9 +33,8 @@
 		data() {
 			return {
 				R: Enum.Refresher,
-				isIos: uni.getSystemInfoSync().platform==='ios',
-				refresherTimeText: '',
-				leftImageLoaded: false
+				isIos: uni.getSystemInfoSync().platform === 'ios',
+				refresherTimeText: ''
 			};
 		},
 		props: {
@@ -68,15 +67,8 @@
 				return this.statusTextArr[this.status] || this.defaultText;
 			},
 			leftImageClass() {
-				if (this.status === this.R.Complete) return 'zp-r-left-image-no-transform zp-r-left-image-pre-size';
-				let cls = 'zp-r-left-image ';
-				if (this.status === this.R.Default) {
-					cls += this.leftImageLoaded ? 'zp-r-arrow-down' : 'zp-r-arrow-down-no-duration';
-					this.leftImageLoaded = true;
-				} else {
-					cls += 'zp-r-arrow-top';
-				}
-				return cls + ' zp-r-left-image-pre-size';
+				if (this.status === this.R.Complete) return 'zp-r-left-image-pre-size';
+				return `zp-r-left-image zp-r-left-image-pre-size ${this.status === this.R.Default ? 'zp-r-arrow-down' : 'zp-r-arrow-top'}`;
 			},
 			leftImageStyle() {
 				const showUpdateTime = this.showUpdateTime;
@@ -158,21 +150,9 @@
 	}
 
 	.zp-r-left-image {
-		/* #ifndef APP-NVUE */
-		transform: rotate(180deg);
-		margin-top: 2rpx;
-		/* #endif */
-		/* #ifdef APP-NVUE */
 		transition-duration: .2s;
 		transition-property: transform;
 		color: #666666;
-		/* #endif */
-	}
-	
-	.zp-r-left-image-no-transform {
-		/* #ifndef APP-NVUE */
-		margin-top: 2rpx;
-		/* #endif */
 	}
 	
 	.zp-r-left-image-pre-size{
@@ -184,39 +164,11 @@
 	}
 
 	.zp-r-arrow-top {
-		/* #ifndef APP-NVUE */
-		animation: refresher-arrow-top .2s linear;
-		-webkit-animation: refresher-arrow-top .2s linear;
-		animation-fill-mode: forwards;
-		-webkit-animation-fill-mode: forwards;
-		/* #endif */
-		/* #ifdef APP-NVUE */
 		transform: rotate(0deg);
-		/* #endif */
 	}
 
 	.zp-r-arrow-down {
-		/* #ifndef APP-NVUE */
-		animation: refresher-arrow-down .2s linear;
-		-webkit-animation: refresher-arrow-down .2s linear;
-		animation-fill-mode: forwards;
-		-webkit-animation-fill-mode: forwards;
-		/* #endif */
-		/* #ifdef APP-NVUE */
 		transform: rotate(180deg);
-		/* #endif */
-	}
-
-	.zp-r-arrow-down-no-duration {
-		/* #ifndef APP-NVUE */
-		animation: refresher-arrow-down 0s linear;
-		-webkit-animation: refresher-arrow-down 0s linear;
-		animation-fill-mode: forwards;
-		-webkit-animation-fill-mode: forwards;
-		/* #endif */
-		/* #ifdef APP-NVUE */
-		transform: rotate(180deg);
-		/* #endif */
 	}
 
 	.zp-r-right {
@@ -239,28 +191,4 @@
 		margin-top: 10rpx;
 		font-size: 24rpx;
 	}
-	
-	/* #ifndef APP-NVUE */
-	@keyframes refresher-arrow-top {
-		0% {
-			-webkit-transform: rotate(180deg);
-			transform: rotate(180deg);
-		}
-		100% {
-			-webkit-transform: rotate(0deg);
-			transform: rotate(0deg);
-		}
-	}
-	
-	@keyframes refresher-arrow-down {
-		0% {
-			-webkit-transform: rotate(0deg);
-			transform: rotate(0deg);
-		}
-		100% {
-			-webkit-transform: rotate(180deg);
-			transform: rotate(180deg);
-		}
-	}
-	/* #endif */
 </style>

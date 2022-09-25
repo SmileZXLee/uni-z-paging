@@ -21,8 +21,7 @@
 		name: "z-paging-empty-view",
 		data() {
 			return {
-				base64Empty: zStatic.base64Empty,
-				base64Error: zStatic.base64Error
+				
 			};
 		},
 		props: {
@@ -92,7 +91,7 @@
 		},
 		computed: {
 			emptyImg() {
-                return this.isLoadFailed ? this.base64Error : this.base64Empty;
+                return this.isLoadFailed ? zStatic.base64Error : zStatic.base64Empty;
 			},
 			finalEmptyViewStyle(){
 				this.emptyViewStyle['z-index'] = this.emptyViewZIndex;
