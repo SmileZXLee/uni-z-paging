@@ -229,9 +229,7 @@ const ZPRefresher = {
 			immediate: true
 		},
 		refresherStatus(newVal, oldVal) {
-			if (newVal === Enum.Refresher.Loading){
-				this._cleanRefresherEndTimeout();
-			}
+			newVal === Enum.Refresher.Loading && this._cleanRefresherEndTimeout();
 			this.$emit('refresherStatusChange', newVal);
 			this.$emit('update:refresherStatus', newVal);
 		},
@@ -257,9 +255,7 @@ const ZPRefresher = {
 					refresherThreshold = '120rpx';
 				}
 			}
-			if (idDefault && this.customRefresherHeight > 0) {
-				return this.customRefresherHeight;
-			}
+			if (idDefault && this.customRefresherHeight > 0) return this.customRefresherHeight;
 			return u.convertTextToPx(refresherThreshold);
 		},
 		finalRefresherFixedBacHeight() {
@@ -626,7 +622,7 @@ const ZPRefresher = {
 		// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
 		//判断touch手势是否要触发
 		_touchDisabled() {
-			let checkOldScrollTop = this.oldScrollTop > 5;
+			const checkOldScrollTop = this.oldScrollTop > 5;
 			return this.loading || this.isRefresherInComplete || this.useChatRecordMode || !this.refresherEnabled || !this.useCustomRefresher ||(this.usePageScroll && this.useCustomRefresher && this.pageScrollTop > 10) || (!(this.usePageScroll && this.useCustomRefresher) && checkOldScrollTop);
 		},
 		// #endif

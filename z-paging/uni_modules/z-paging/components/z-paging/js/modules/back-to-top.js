@@ -56,49 +56,42 @@ const ZPBackToTop = {
 			return u.convertTextToPx(this.backToTopThreshold);
 		},
 		finalBackToTopStyle() {
-			let tempBackToTopStyle = this.backToTopStyle;
-			if (!tempBackToTopStyle.bottom) {
-				tempBackToTopStyle.bottom = this.windowBottom + u.convertTextToPx(this.backToTopBottom) + 'px';
+			const backToTopStyle = this.backToTopStyle;
+			if (!backToTopStyle.bottom) {
+				backToTopStyle.bottom = this.windowBottom + u.convertTextToPx(this.backToTopBottom) + 'px';
 			}
-			if(!tempBackToTopStyle.position){
-				tempBackToTopStyle.position = this.usePageScroll ? 'fixed': 'absolute';
+			if(!backToTopStyle.position){
+				backToTopStyle.position = this.usePageScroll ? 'fixed': 'absolute';
 			}
-			return tempBackToTopStyle;
+			return backToTopStyle;
 		},
 	},
 	methods: {
 		//点击返回顶部
 		_backToTopClick() {
-			!this.backToTopWithAnimate && this._checkShouldShowBackToTop(1, 0);
+			!this.backToTopWithAnimate && this._checkShouldShowBackToTop(0);
 			this.scrollToTop(this.backToTopWithAnimate);
 		},
 		//判断是否要显示返回顶部按钮
-		_checkShouldShowBackToTop(newVal, oldVal) {
+		_checkShouldShowBackToTop(scrollTop) {
 			if (!this.autoShowBackToTop) {
 				this.showBackToTopClass = false;
 				return;
 			}
-			if (newVal !== oldVal) {
-				if (newVal > this.finalBackToTopThreshold) {
-					if (!this.showBackToTopClass) {
-						this.showBackToTopClass = true;
-						this.lastBackToTopShowTime = new Date().getTime();
-						setTimeout(() => {
-							this.backToTopClass = 'zp-back-to-top zp-back-to-top-show';
-						}, 300)
-					}
-				} else {
-					if (this.showBackToTopClass) {
-						const currentTime = new Date().getTime();
-						let dalayTime = 300;
-						if(currentTime - this.lastBackToTopShowTime < 500){
-							dalayTime = 0;
-						}
-						this.backToTopClass = 'zp-back-to-top zp-back-to-top-hide';
-						setTimeout(() => {
-							this.showBackToTopClass = false;
-						}, dalayTime)
-					}
+			if (scrollTop > this.finalBackToTopThreshold) {
+				if (!this.showBackToTopClass) {
+					this.showBackToTopClass = true;
+					this.lastBackToTopShowTime = new Date().getTime();
+					setTimeout(() => {
+						this.backToTopClass = 'zp-back-to-top zp-back-to-top-show';
+					}, 300)
+				}
+			} else {
+				if (this.showBackToTopClass) {
+					this.backToTopClass = 'zp-back-to-top zp-back-to-top-hide';
+					setTimeout(() => {
+						this.showBackToTopClass = false;
+					}, new Date().getTime() - this.lastBackToTopShowTime < 500 ? 0 : 300)
 				}
 			}
 		},

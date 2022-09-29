@@ -78,8 +78,7 @@ const ZPNvue = {
 	watch: {
 		nIsFirstPageAndNoMore: {
 			handler(newVal) {
-				const cellStyle = !this.useChatRecordMode || newVal ? {} : {transform: 'rotate(180deg)'};
-				this.$emit('update:cellStyle', cellStyle);
+				this.$emit('update:cellStyle', !this.useChatRecordMode || newVal ? {} : {transform: 'rotate(180deg)'});
 			},
 			immediate: true
 		}
@@ -120,9 +119,7 @@ const ZPNvue = {
 		finalNvueListIs() {
 			if (this.usePageScroll) return 'view';
 			const nvueListIsLowerCase = this.nvueListIs.toLowerCase();
-			if (['list','waterfall','scroller'].indexOf(nvueListIsLowerCase) !== -1) {
-				return nvueListIsLowerCase;
-			}
+			if (['list','waterfall','scroller'].indexOf(nvueListIsLowerCase) !== -1) return nvueListIsLowerCase;
 			return 'list';
 		},
 		finalNvueSuperListIs() {

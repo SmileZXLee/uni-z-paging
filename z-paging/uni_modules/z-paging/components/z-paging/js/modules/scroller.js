@@ -63,16 +63,14 @@ const ZPScroller = {
 	},
 	watch: {
 		oldScrollTop(newVal, oldVal) {
-			!this.usePageScroll && this._scrollTopChange(newVal,oldVal,false);
+			!this.usePageScroll && this._scrollTopChange(newVal,false);
 		},
 		pageScrollTop(newVal, oldVal) {
-			this.usePageScroll && this._scrollTopChange(newVal,oldVal,true);
+			this.usePageScroll && this._scrollTopChange(newVal,true);
 		},
 		usePageScroll: {
 			handler(newVal) {
-				if (this.loaded && this.autoHeight) {
-					this._setAutoHeight(!newVal);
-				}
+				this.loaded && this.autoHeight && this._setAutoHeight(!newVal)
 				// #ifdef H5
 				if (newVal) {
 					this.$nextTick(()=>{
@@ -398,10 +396,10 @@ const ZPScroller = {
 			!this.isIos && this._checkScrolledToBottom(scrollDiff);
 		},
 		//scrollTop改变时触发
-		_scrollTopChange(newVal,oldVal,isPageScrollTop){
+		_scrollTopChange(newVal,isPageScrollTop){
 			this.$emit('scrollTopChange', newVal);
 			this.$emit('update:scrollTop', newVal);
-			this._checkShouldShowBackToTop(newVal, oldVal);
+			this._checkShouldShowBackToTop(newVal);
 			const scrollTop = this.isIos ? (newVal > 5 ? 6 : 0) : newVal;
 			if (isPageScrollTop) {
 				this.wxsPageScrollTop = scrollTop;
@@ -452,12 +450,11 @@ const ZPScroller = {
 				delayTime = 10;
 				// #endif
 				setTimeout(() => {
-					this._getNodeClientRect('.zp-page-left').then((res) => {
-						this.$set(this.scrollViewContainerStyle,'left',res ? res[0].width + 'px' : '0px');
-					});
-					this._getNodeClientRect('.zp-page-right').then((res) => {
-						this.$set(this.scrollViewContainerStyle,'right',res ? res[0].width + 'px' : '0px');
-					});
+					['left','right'].map(position => {
+						this._getNodeClientRect(`.zp-page-${position}`).then((res) => {
+							this.$set(this.scrollViewContainerStyle, position, res ? res[0].width + 'px' : '0px');
+						});
+					})
 				}, delayTime)
 			})
 		}

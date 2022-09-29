@@ -74,16 +74,14 @@ function getTouchFromZPaging(target) {
 		const classList = target.classList;
 		if (classList && classList.contains('z-paging-content')) {
 			return {
-				'isFromZp': true, 
-				'isPageScroll': classList.contains('z-paging-content-page'), 
-				'isReachedTop': classList.contains('z-paging-reached-top')
+				isFromZp: true, 
+				isPageScroll: classList.contains('z-paging-content-page'), 
+				isReachedTop: classList.contains('z-paging-reached-top')
 			};
 		} else {
 			return getTouchFromZPaging(target.parentNode);
 		}
-	} else {
-		return {'isFromZp': false};
-	}
+	} else return {isFromZp: false};
 }
 
 //获取z-paging所在的parent
@@ -118,11 +116,7 @@ function getRefesrherTime() {
 //通过下拉刷新标识key获取下拉刷新时间
 function getRefesrherTimeByKey(key) {
 	const datas = getRefesrherTime();
-	if (datas) {
-		const data = datas[key];
-		if (data) return data;
-	}
-	return null;
+	return datas && datas[key] ? datas[key] : null;
 }
 
 //通过下拉刷新标识key获取下拉刷新时间(格式化之后)
@@ -135,9 +129,7 @@ function getRefesrherFormatTimeByKey(key, textMap) {
 //将文本的px或者rpx转为px的值
 function convertTextToPx(text) {
 	const dataType = Object.prototype.toString.call(text);
-	if (dataType === '[object Number]') {
-		return text;
-	}
+	if (dataType === '[object Number]') return text;
 	let isRpx = false;
 	if (text.indexOf('rpx') !== -1 || text.indexOf('upx') !== -1) {
 		text = text.replace('rpx', '').replace('upx', '');
@@ -192,11 +184,7 @@ function _dateDayFormat(date, showYear = true) {
 	const year = date.getFullYear();
 	const month = date.getMonth() + 1;
 	const day = date.getDate();
-	if (showYear) {
-		return `${year}-${_fullZeroToTwo(month)}-${_fullZeroToTwo(day)}`;
-	} else {
-		return `${_fullZeroToTwo(month)}-${_fullZeroToTwo(day)}`;
-	}
+	return showYear ? `${year}-${_fullZeroToTwo(month)}-${_fullZeroToTwo(day)}` : `${_fullZeroToTwo(month)}-${_fullZeroToTwo(day)}`;
 }
 
 //data格式化为时分
@@ -209,8 +197,7 @@ function _dateTimeFormat(date) {
 //不满2位在前面填充0
 function _fullZeroToTwo(str) {
 	str = str.toString();
-	if (str.length === 1) return '0' + str;
-	return str;
+	return str.length === 1 ? '0' + str : str;
 }
 
 //驼峰转短横线

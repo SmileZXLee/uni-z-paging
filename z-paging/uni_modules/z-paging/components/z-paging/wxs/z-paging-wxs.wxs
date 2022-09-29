@@ -283,7 +283,7 @@ function _touchDisabled(e, ins, processTag) {
 	}
 	var fixedIsTopHitCount = state.fixedIsTopHitCount || 0;
 	if (fixedIsTop) {
-		fixedIsTopHitCount++;
+		fixedIsTopHitCount ++;
 		if (fixedIsTopHitCount <= 3) {
 			fixedIsTop = false;
 		}
@@ -297,9 +297,9 @@ function _touchDisabled(e, ins, processTag) {
 	if (!isIos && processTag === 2) {
 		fixedIsTop = true;
 	}
-	var res = loading || useChatRecordMode || !refresherEnabled || !useCustomRefresher || ((usePageScroll && useCustomRefresher && pageScrollTop > 5) && !fixedIsTop) || 
+	return loading || useChatRecordMode || !refresherEnabled || !useCustomRefresher || 
+	((usePageScroll && useCustomRefresher && pageScrollTop > 5) && !fixedIsTop) || 
 	((!usePageScroll && useCustomRefresher && scrollTop > 5) && !fixedIsTop);
-	return res;
 }
 
 function _getAngleIsInRange(e, touch, state, dataset) {

@@ -208,10 +208,8 @@ const ZPVirtualList = {
 						const hasCellNode = cellNode && cellNode.length;
 						if (!hasCellNode) {
 							clearTimeout(updateFixedCellHeightTimeout);
-							if (this.getCellHeightRetryCount.fixed > 10) {
-								return;
-							}
-							this.getCellHeightRetryCount.fixed++;
+							if (this.getCellHeightRetryCount.fixed > 10) return;
+							this.getCellHeightRetryCount.fixed ++;
 							this._updateFixedCellHeight();
 						} else {
 							this.virtualCellHeight = cellNode[0].height;
@@ -233,9 +231,7 @@ const ZPVirtualList = {
 						if (!hasCellNode) {
 							clearTimeout(updateDynamicCellHeightTimeout);
 							this.virtualHeightCacheList = this.virtualHeightCacheList.slice(-i);
-							if (this.getCellHeightRetryCount.dynamic > 10) {
-								return;
-							}
+							if (this.getCellHeightRetryCount.dynamic > 10) return;
 							this.getCellHeightRetryCount.dynamic++;
 							this._updateDynamicCellHeight(list);
 							break;
@@ -285,9 +281,7 @@ const ZPVirtualList = {
 		//更新scroll滚动
 		_updateVirtualScroll(scrollTop, scrollDiff = 0) {
 			const currentTimeStamp = u.getTime();
-			if (scrollTop === 0) {
-				this._resetTopRange();
-			}
+			scrollTop === 0 && this._resetTopRange();
 			if (scrollTop !== 0 && this.virtualScrollTimeStamp && currentTimeStamp - this.virtualScrollTimeStamp <= this.virtualScrollDisTimeStamp) {
 				return;
 			}
@@ -404,7 +398,7 @@ const ZPVirtualList = {
 					this._getNodeClientRect('.zp-paging-touch-view').then(node => {
 						const hasNode = node && node.length;
 						const currentTop = hasNode ? node[0].top : 0;
-						if (!hasNode || (currentTop === this.pagingOrgTop && this.virtualPlaceholderTopHeight !== 0)){
+						if (!hasNode || (currentTop === this.pagingOrgTop && this.virtualPlaceholderTopHeight !== 0)) {
 							this._updateVirtualScroll(0);
 						}
 					});

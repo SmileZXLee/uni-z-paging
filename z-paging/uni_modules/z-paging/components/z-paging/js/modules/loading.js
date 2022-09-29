@@ -60,20 +60,14 @@ const ZPLoading = {
 	},
 	computed: {
 		showLoading() {
-			let res = false;
 			if (this.firstPageLoaded || !this.loading || !this.loadingForNow) return false;
-			if (this.autoHideLoadingAfterFirstLoaded) {
-				res = this.fromEmptyViewReload ? true : !this.pagingLoaded;
-			} else{
-				res =  this.loadingType === Enum.LoadingType.Refresher;
-			}
 			if (this.finalShowSystemLoading){
 				uni.showLoading({
 					title: this.finalSystemLoadingText,
 					mask: this.systemLoadingMask
 				})
 			}
-			return res;
+			return this.autoHideLoadingAfterFirstLoaded ? (this.fromEmptyViewReload ? true : !this.pagingLoaded) : this.loadingType === Enum.LoadingType.Refresher;
 		},
 		finalShowSystemLoading() {
 			return this.autoShowSystemLoading && this.loadingType === Enum.LoadingType.Refresher;

@@ -134,9 +134,7 @@ export default {
 		//loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认black
 		defaultThemeStyle: {
 			type: String,
-			default: function() {
-				return u.gc('defaultThemeStyle', 'black');
-			}
+			default: u.gc('defaultThemeStyle', 'black')
 		},
 		//z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为是(当使用内置scroll-view滚动时有效)
 		fixed: {
@@ -205,9 +203,7 @@ export default {
 		// #endif
 		this.$nextTick(() => {
 			this.systemInfo = uni.getSystemInfoSync();
-			if (!this.usePageScroll && this.autoHeight) {
-				this._setAutoHeight();
-			}
+			!this.usePageScroll && this.autoHeight && this._setAutoHeight();
 			this.loaded = true;
 		})
 		this.updatePageScrollTopHeight();
@@ -254,14 +250,10 @@ export default {
 			immediate: true
 		},
 		autoHeight(newVal, oldVal) {
-			if (this.loaded && !this.usePageScroll) {
-				this._setAutoHeight(newVal);
-			}
+			this.loaded && !this.usePageScroll && this._setAutoHeight(newVal);
 		},
 		autoHeightAddition(newVal, oldVal) {
-			if (this.loaded && !this.usePageScroll && this.autoHeight) {
-				this._setAutoHeight(newVal);
-			}
+			this.loaded && !this.usePageScroll && this.autoHeight && this._setAutoHeight(newVal);
 		},
 	},
 	computed: {

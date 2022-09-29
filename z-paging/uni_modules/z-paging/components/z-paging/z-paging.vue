@@ -293,21 +293,14 @@ by ZXLee
 	 * @property {Boolean} auto [z-paging]mounted后是否自动调用reload方法(mounted后自动调用接口)，默认为是
 	 * @property {Boolean} show-refresher-when-reload 列表刷新时是否自动显示下拉刷新view，默认为否
 	 * @property {Boolean} loading-more-enabled 是否启用加载更多数据(含滑动到底部加载更多数据和点击加载更多数据)，默认为是
-	 * @property {Boolean} hide-empty-view 是否强制隐藏空数据图，默认为否
 	 * @property {String|Object} empty-view-text 空数据图描述文字，默认为“没有数据哦~”
 	 * @property {String} empty-view-img 空数据图图片，默认使用z-paging内置的图片
-	 * @property {Object} empty-view-style 空数据图样式
 	 * @property {Boolean} auto-show-back-to-top 自动显示点击返回顶部按钮，默认为否
-	 * @property {Boolean} show-scrollbar 控制是否出现滚动条，默认为是
 	 * @property {Boolean} refresher-enabled 是否开启自定义下拉刷新，默认为是
 	 * @property {Boolean} show-refresher-update-time 是否显示上次下拉刷新更新时间，默认为否
 	 * @property {Boolean} use-chat-record-mode 使用聊天记录模式，默认为否
 	 * @property {String} nvue-list-is nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list
 	 * @event {Function} query 下拉刷新或滚动到底部时会自动触发此方法。z-paging加载时也会触发(若要禁止，请设置:auto="false")。pageNo和pageSize会自动计算好，直接传给服务器即可。
-	 * @event {Function} refresherStatusChange 自定义下拉刷新状态改变(use-custom-refresher为true时生效)
-	 * @event {Function} loadingStatusChange 上拉加载更多状态改变
-	 * @event {Function} onRefresh 自定义下拉刷新被触发
-	 * @event {Function} scroll `z-paging`内置的scroll-view滚动时触发
 	 * @example <z-paging ref="paging" v-model="dataList" @query="queryList"></z-paging>
 	 */
 	export default {

@@ -48,16 +48,12 @@ const ZPData = {
 		//自动注入的list名，可自动修改父view(包含ref="paging")中对应name的list值
 		autowireListName: {
 			type: String,
-			default: function() {
-				return u.gc('autowireListName', '');
-			},
+			default: u.gc('autowireListName', '')
 		},
 		//自动注入的query名，可自动调用父view(包含ref="paging")中的query方法
 		autowireQueryName: {
 			type: String,
-			default: function() {
-				return u.gc('autowireQueryName', '');
-			},
+			default: u.gc('autowireQueryName', '')
 		},
 		//z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是。请使用简便写法：auto
 		mountedAutoCallReload: {
@@ -237,7 +233,7 @@ const ZPData = {
 			if (totalCount == 'undefined') {
 				this.customNoMore = -1;
 			} else {
-				let dataTypeRes = this._checkDataType(data, success, false);
+				const dataTypeRes = this._checkDataType(data, success, false);
 				data = dataTypeRes.data;
 				success = dataTypeRes.success;
 				if (totalCount >= 0 && success) {
@@ -483,17 +479,8 @@ const ZPData = {
 					// #ifdef APP-NVUE
 					checkedNRefresherLoading = !this.nRefresherLoading;
 					// #endif
-					if (checkedNRefresherLoading) {
-						this._scrollToTop(false);
-					}
+					checkedNRefresherLoading && this._scrollToTop(false);
 				}
-				// #ifndef APP-NVUE
-				if (!this.usePageScroll && this.useChatRecordMode) {
-					if (this.showConsoleError) {
-						u.consoleWarn('使用聊天记录模式时，建议使用页面滚动，可将usePageScroll设置为true以启用页面滚动！！');
-					}
-				}
-				// #endif
 			}
 			this.$nextTick(() => {
 				// #ifdef APP-NVUE
@@ -563,7 +550,7 @@ const ZPData = {
 				this._currentDataChange(data, this.currentData);
 				this.loadingStatus = Enum.More.Fail;
 				if (this.loadingType === Enum.LoadingType.LoadingMore) {
-					this.pageNo--;
+					this.pageNo --;
 				}
 			}
 		},
@@ -615,15 +602,13 @@ const ZPData = {
 				},100)
 			})
 			// #ifndef APP-NVUE
-			if (this.finalUseVirtualList) {
-				this._setCellIndex(newVal,this.totalData.length === 0);
-			}
+			this.finalUseVirtualList && this._setCellIndex(newVal,this.totalData.length === 0)
 			this.useChatRecordMode && newVal.reverse();
 			// #endif
 			if (this.isFirstPage && this.finalConcat) {
 				this.totalData = [];
 			}
-			if (this.customNoMore !== -1) {
+			if (this.customNoMore !== -1 && (this.customNoMore === 0 || !newVal.length)) {
 				if (this.customNoMore === 0 || !newVal.length) {
 					this.loadingStatus = Enum.More.NoMore;
 				}
@@ -693,28 +678,13 @@ const ZPData = {
 		},
 		//本地分页请求
 		_localPagingQueryList(pageNo, pageSize, localPagingLoadingTime, callback) {
-			pageNo = parseInt(pageNo);
-			pageSize = parseInt(pageSize);
-			if (pageNo < 0 || pageSize <= 0) {
-				this._localPagingQueryResult(callback, [], localPagingLoadingTime);
-				return;
-			}
-			pageNo = Math.max(1,pageNo);
-			let totalPagingList = [...this.totalLocalPagingList];
-			let pageNoIndex = (pageNo - 1) * pageSize;
-			if (pageNoIndex + pageSize <= totalPagingList.length) {
-				this._localPagingQueryResult(callback, totalPagingList.splice(pageNoIndex, pageSize), localPagingLoadingTime);
-			} else if (pageNoIndex < totalPagingList.length) {
-				this._localPagingQueryResult(callback, totalPagingList.splice(pageNoIndex, totalPagingList.length - pageNoIndex), localPagingLoadingTime);
-			} else {
-				this._localPagingQueryResult(callback, [], localPagingLoadingTime);
-			}
-		},
-		//本地分页请求回调
-		_localPagingQueryResult(callback, arg, localPagingLoadingTime) {
-			setTimeout(() => {
-				callback(arg);
-			}, localPagingLoadingTime)
+			pageNo = Math.max(1, pageNo);
+			pageSize = Math.max(1, pageSize);
+			const totalPagingList = [...this.totalLocalPagingList];
+			const pageNoIndex = (pageNo - 1) * pageSize;
+			const finalPageNoIndex = Math.min(totalPagingList.length, pageNoIndex + pageSize);
+			const resultPagingList = totalPagingList.splice(pageNoIndex, finalPageNoIndex - pageNoIndex);
+			setTimeout(() => callback(resultPagingList), localPagingLoadingTime)
 		},
 		//存储列表缓存数据
 		_saveLocalCache(data) {

@@ -70,9 +70,9 @@
 		},
 		computed: {
 			finalSwiperStyle() {
-				let swiperStyle = this.swiperStyle;
+				const swiperStyle = this.swiperStyle;
 				if (!this.systemInfo) return swiperStyle;
-				let windowTop = this.systemInfo.windowTop;
+				const windowTop = this.systemInfo.windowTop;
 				//暂时修复vue3中隐藏系统导航栏后windowTop获取不正确的问题，具体bug详见https://ask.dcloud.net.cn/question/141634
 				//感谢litangyu！！https://github.com/SmileZXLee/uni-z-paging/issues/25
 				// #ifdef VUE3 && H5
@@ -97,9 +97,7 @@
 				return swiperStyle;
 			},
 			safeAreaBottom() {
-				if(!this.systemInfo){
-					return 0;
-				}
+				if (!this.systemInfo) return 0;
 				let safeAreaBottom = 0;
 				// #ifdef APP-PLUS
 				safeAreaBottom = this.systemInfo.safeAreaInsets.bottom || 0;
@@ -151,12 +149,11 @@
 					// #endif
 					setTimeout(() => {
 						const query = uni.createSelectorQuery().in(this);
-						query.select('.zp-swiper-left').boundingClientRect(res => {
-							this.$set(this.swiperContentStyle,'left',res ? res.width + 'px' : '0px');
-						}).exec();
-						query.select('.zp-swiper-right').boundingClientRect(res => {
-							this.$set(this.swiperContentStyle,'right',res ? res.width + 'px' : '0px');
-						}).exec();
+						['left','right'].map(position => {
+							query.select(`.zp-swiper-${position}`).boundingClientRect(res => {
+								this.$set(this.swiperContentStyle, position, res ? res.width + 'px' : '0px');
+							}).exec();
+						})
 					}, delayTime)
 				})
 			}

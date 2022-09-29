@@ -211,15 +211,11 @@ const ZPLoadMore = {
 		},
 		//触发加载更多时调用,from:0-滑动到底部触发；1-点击加载更多触发
 		_onLoadingMore(from = 'click') {
-			if (from === 'toBottom') {
-				if (!this.scrollToBottomBounceEnabled) {
-					if (this.scrollEnable) {
-						this.scrollEnable = false;
-						this.$nextTick(() => {
-							this.scrollEnable = true;
-						})
-					}
-				}
+			if (from === 'toBottom' && !this.scrollToBottomBounceEnabled && this.scrollEnable) {
+				this.scrollEnable = false;
+				this.$nextTick(() => {
+					this.scrollEnable = true;
+				})
 			}
 			this.$emit('scrolltolower', from);
 			if (from === 'toBottom' && (!this.toBottomLoadingMoreEnabled || this.useChatRecordMode)) return;
@@ -238,7 +234,7 @@ const ZPLoadMore = {
 		//处理开始加载更多
 		_doLoadingMore() {
 			if (this.pageNo >= this.defaultPageNo && this.loadingStatus !== Enum.More.NoMore) {
-				this.pageNo++;
+				this.pageNo ++;
 				this._startLoading(false);
 				if (this.isLocalPaging) {
 					this._localPagingQueryList(this.pageNo, this.defaultPageSize, this.localPagingLoadingTime, (res) => {

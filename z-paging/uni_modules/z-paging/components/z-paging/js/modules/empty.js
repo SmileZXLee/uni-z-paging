@@ -81,16 +81,12 @@ const ZPEmptyView = {
 		//空数据图片是否铺满z-paging，默认为是。若设置为否，则为填充满z-paging的剩余部分
 		emptyViewFixed: {
 			type: Boolean,
-			default: function() {
-				return u.gc('emptyViewFixed', false)
-			}
+			default: u.gc('emptyViewFixed', false)
 		},
 		//空数据图片是否垂直居中，默认为是。emptyViewFixed为false时有效
 		emptyViewCenter: {
 			type: Boolean,
-			default: function() {
-				return u.gc('emptyViewCenter', true)
-			}
+			default: u.gc('emptyViewCenter', true)
 		},
 		//加载中时是否自动隐藏空数据图，默认为是
 		autoHideEmptyViewWhenLoading: {
@@ -119,9 +115,7 @@ const ZPEmptyView = {
 			if (this.refresherOnly || this.hideEmptyView || this.totalData.length) return false;
 			if (this.autoHideEmptyViewWhenLoading) {
 				if (this.isAddedData && !this.firstPageLoaded && !this.loading) return true;
-			} else {
-				return true;
-			}
+			} else return true;
 			if (!this.autoHideEmptyViewWhenPull && !this.isUserReload) return true;
 			return false;
 		},
