@@ -321,9 +321,7 @@ const ZPData = {
 		//重新设置列表数据，调用此方法不会影响pageNo和pageSize，也不会触发请求。适用场景：当需要删除列表中某一项时，将删除对应项后的数组通过此方法传递给z-paging。(当出现类似的需要修改列表数组的场景时，请使用此方法，请勿直接修改page中:list.sync绑定的数组)
 		resetTotalData(data) {
 			if (data == undefined) {
-				if (this.showConsoleError) {
-					u.consoleErr('方法resetTotalData参数缺失！');
-				}
+				u.consoleErr('方法resetTotalData参数缺失！');
 				return;
 			}
 			this.isTotalChangeFromAddData = true;
@@ -739,9 +737,7 @@ const ZPData = {
 			} else if (dataType !== '[object Array]') {
 				data = [];
 				if (dataType !== '[object Undefined]') {
-					if (this.showConsoleError) {
-						u.consoleErr(`${isLocal ? 'setLocalPaging' : 'complete'}参数类型不正确，第一个参数类型必须为Array!`);
-					}
+					u.consoleErr(`${isLocal ? 'setLocalPaging' : 'complete'}参数类型不正确，第一个参数类型必须为Array!`);
 				}
 			}
 			return {data,success};

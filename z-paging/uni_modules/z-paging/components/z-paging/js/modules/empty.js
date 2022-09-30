@@ -115,7 +115,9 @@ const ZPEmptyView = {
 			if (this.refresherOnly || this.hideEmptyView || this.totalData.length) return false;
 			if (this.autoHideEmptyViewWhenLoading) {
 				if (this.isAddedData && !this.firstPageLoaded && !this.loading) return true;
-			} else return true;
+			} else {
+				return true;
+			}
 			if (!this.autoHideEmptyViewWhenPull && !this.isUserReload) return true;
 			return false;
 		},

@@ -37,15 +37,6 @@ function gc(key, defaultValue) {
 	return value === undefined ? defaultValue : value;
 }
 
-//判断两个数组是否相等
-function arrayIsEqual(arr1, arr2) {
-	if (arr1 === arr2) return true;
-	if (arr1.length !== arr2.length) return false;
-	for (let i = 0; i < arr1.length; i++) {
-		if (arr1[i] !== arr2[i]) return false;
-	}
-	return true;
-}
 
 //获取最终的touch位置
 function getTouch(e) {
@@ -81,7 +72,9 @@ function getTouchFromZPaging(target) {
 		} else {
 			return getTouchFromZPaging(target.parentNode);
 		}
-	} else return {isFromZp: false};
+	} else {
+		return {isFromZp: false};
+	}
 }
 
 //获取z-paging所在的parent
@@ -94,11 +87,6 @@ function getParent(parent) {
 //打印错误信息
 function consoleErr(err) {
 	console.error(`[z-paging]${err}`);
-}
-
-//打印警告信息
-function consoleWarn(warn) {
-	console.warn(`[z-paging]${warn}`);
 }
 
 //设置下拉刷新时间
@@ -209,13 +197,11 @@ export default {
 	gc,
 	setRefesrherTime,
 	getRefesrherFormatTimeByKey,
-	arrayIsEqual,
 	getTouch,
 	getTouchFromZPaging,
 	getParent,
 	convertTextToPx,
 	getTime,
 	getInstanceId,
-	consoleErr,
-	consoleWarn
+	consoleErr
 };

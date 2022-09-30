@@ -8,9 +8,7 @@ const ZPRefresher = {
 		//下拉刷新的主题样式，支持black，white，默认black
 		refresherThemeStyle: {
 			type: String,
-			default: function() {
-				return u.gc('refresherThemeStyle', '');
-			}
+			default: u.gc('refresherThemeStyle', '')
 		},
 		//自定义下拉刷新中左侧图标的样式
 		refresherImgStyle: {
@@ -41,9 +39,7 @@ const ZPRefresher = {
 		//底部加载更多的主题样式，支持black，white，默认black
 		loadingMoreThemeStyle: {
 			type: String,
-			default: function() {
-				return u.gc('loadingMoreThemeStyle', '');
-			}
+			default: u.gc('loadingMoreThemeStyle', '')
 		},
 		//是否只使用下拉刷新，设置为true后将关闭mounted自动请求数据、关闭滚动到底部加载更多，强制隐藏空数据图。默认为否
 		refresherOnly: {
@@ -463,11 +459,6 @@ const ZPRefresher = {
 			// #endif
 			this.isTouchmovingTimeout && clearTimeout(this.isTouchmovingTimeout);
 			this.refresherReachMaxAngle = true;
-			if (moveDis < 0 && this.usePageScroll && this.loadingMoreEnabled && this.useCustomRefresher && this.pageScrollTop === -1) {
-				if (this.showConsoleError) {
-					u.consoleErr('usePageScroll为true并且自定义下拉刷新时必须引入mixin或在page滚动时通过调用z-paging组件的updatePageScrollTop方法设置当前的scrollTop');
-				}
-			}
 			this.isTouchEnded = true;
 			if (moveDis >= this.finalRefresherThreshold && this.refresherStatus === Enum.Refresher.ReleaseToRefresh) {
 				// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
@@ -649,9 +640,7 @@ const ZPRefresher = {
 			e.viewHeight = this.finalRefresherThreshold;
 			// #endif
 			e.rate = e.pullingDistance / e.viewHeight;
-			if(this.hasTouchmove){
-				this.$emit('refresherTouchmove',e);
-			}
+			this.hasTouchmove && this.$emit('refresherTouchmove',e);
 		},
 		//清除refresherCompleteTimeout
 		_cleanRefresherCompleteTimeout() {

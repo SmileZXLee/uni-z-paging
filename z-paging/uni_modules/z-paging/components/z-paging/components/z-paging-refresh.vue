@@ -10,7 +10,7 @@
 				<!-- #ifdef APP-NVUE -->
 				<view v-else :style="[{'margin-right':showUpdateTime?'18rpx':'12rpx'}]">
 					<loading-indicator :class="isIos?'zp-loading-image-ios':'zp-loading-image-android'" 
-					:style="[{color:isWhite?'white':'#777777'},imgStyle]" :animating="true" />
+					:style="[{color:theme.indicator[ts]},imgStyle]" :animating="true" />
 				</view>
 				<!-- #endif -->
 			</view>
@@ -34,30 +34,22 @@
 			return {
 				R: Enum.Refresher,
 				isIos: uni.getSystemInfoSync().platform === 'ios',
-				refresherTimeText: ''
+				refresherTimeText: '',
+				theme: {
+					title: { white: '#efefef', black: '#555555' },
+					arrow: { white: zStatic.base64ArrowWhite, black: zStatic.base64Arrow },
+					flower: { white: zStatic.base64FlowerWhite, black: zStatic.base64Flower },
+					success: { white: zStatic.base64SuccessWhite, black: zStatic.base64Success },
+					indicator: { white: '#eeeeee', black: '#777777' }
+				}
 			};
 		},
-		props: {
-			'status': { default: Enum.Refresher.Default },
-			'defaultThemeStyle': {},
-			'defaultText': '',
-			'pullingText': '',
-			'refreshingText': '',
-			'completeText': '',
-			'defaultImg': '',
-			'pullingImg': '',
-			'refreshingImg': '',
-			'completeImg': '',
-			'showUpdateTime': { default: false },
-			'updateTimeKey': '',
-			'imgStyle': { default: {} },
-			'titleStyle': { default: {} },
-			'updateTimeStyle': { default: {} },
-			'updateTimeTextMap': { default: {} },
-		},
+		props: ['status', 'defaultThemeStyle', 'defaultText', 'pullingText', 'refreshingText', 'completeText', 'defaultImg', 'pullingImg', 
+			'refreshingImg', 'completeImg', 'showUpdateTime', 'updateTimeKey', 'imgStyle', 'titleStyle', 'updateTimeStyle', 'updateTimeTextMap'
+		],
 		computed: {
-			isWhite() {
-				return this.defaultThemeStyle === 'white';
+			ts() {
+				return this.defaultThemeStyle;
 			},
 			statusTextArr() {
 				this.updateTime();
@@ -78,23 +70,19 @@
 			leftImageSrc() {
 				const R = this.R;
 				const status = this.status;
-				const isWhite = this.isWhite;
-				const arrowImg = isWhite ? zStatic.base64ArrowWhite : zStatic.base64Arrow;
-				const flowerImg = isWhite ? zStatic.base64FlowerWhite : zStatic.base64Flower;
-				const successImg = isWhite ? zStatic.base64SuccessWhite : zStatic.base64Success;
 				if (status === R.Default) {
 					if (!!this.defaultImg) return this.defaultImg;
-					return arrowImg;
+					return this.theme.arrow[this.ts];
 				} else if (status  === R.ReleaseToRefresh) {
 					if (!!this.pullingImg) return this.pullingImg;
 					if (!!this.defaultImg) return this.defaultImg;
-					return arrowImg;
+					return this.theme.arrow[this.ts];
 				} else if (status  === R.Loading) {
 					if (!!this.refreshingImg) return this.refreshingImg;
-					return flowerImg;
+					return this.theme.flower[this.ts];;
 				} else if (status  === R.Complete) {
 					if (!!this.completeImg) return this.completeImg;
-					return successImg;
+					return this.theme.success[this.ts];;
 				}
 				return '';
 			},
@@ -104,7 +92,7 @@
 				const textHeight = this.showUpdateTime ? '40rpx' : '80rpx';
 				stl = {'height': textHeight, 'line-height': textHeight}
 				// #endif
-				stl['color'] = this.isWhite ? '#efefef' : '#555555';
+				stl['color'] = this.theme.title[this.ts];
 				return stl;
 			}
 		},

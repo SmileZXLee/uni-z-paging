@@ -134,10 +134,8 @@ const ZPVirtualList = {
 		},
 		finalCellKeyName() {
 			// #ifdef APP-NVUE
-			if (this.finalUseVirtualList){
-				if (!this.cellKeyName.length){
-					u.consoleErr('在nvue中开启use-virtual-list必须设置cell-key-name，否则将可能导致列表渲染错误！');
-				}
+			if (this.finalUseVirtualList && !this.cellKeyName.length){
+				u.consoleErr('在nvue中开启use-virtual-list必须设置cell-key-name，否则将可能导致列表渲染错误！');
 			}
 			// #endif
 			return this.cellKeyName;
@@ -236,10 +234,7 @@ const ZPVirtualList = {
 							this._updateDynamicCellHeight(list);
 							break;
 						}
-						let lastHeightCache = null;
-						if (this.virtualHeightCacheList.length) {
-							lastHeightCache = this.virtualHeightCacheList.slice(-1)[0];
-						}
+						const lastHeightCache = this.virtualHeightCacheList.length ? this.virtualHeightCacheList.slice(-1)[0] : null;
 						const lastHeight = lastHeightCache ? lastHeightCache.totalHeight : 0;
 						this.virtualHeightCacheList.push({
 							height: currentHeight,
@@ -253,13 +248,10 @@ const ZPVirtualList = {
 		},
 		//设置cellItem的index
 		_setCellIndex(list, isFirstPage) {
-			let lastItem = null;
 			let lastItemIndex = 0;
 			if (!isFirstPage) {
 				lastItemIndex = this.realTotalData.length;
-				if (this.realTotalData.length) {
-					lastItem = this.realTotalData.slice(-1)[0];
-				}
+				const lastItem = this.realTotalData.length ? this.realTotalData.slice(-1)[0] : null;
 				if (lastItem && lastItem[c.listCellIndexKey] !== undefined) {
 					lastItemIndex = lastItem[c.listCellIndexKey] + 1;
 				}
@@ -285,7 +277,7 @@ const ZPVirtualList = {
 			if (scrollTop !== 0 && this.virtualScrollTimeStamp && currentTimeStamp - this.virtualScrollTimeStamp <= this.virtualScrollDisTimeStamp) {
 				return;
 			}
-			this.virtualScrollTimeStamp = Number(currentTimeStamp);
+			this.virtualScrollTimeStamp = currentTimeStamp;
 			
 			let scrollIndex = 0;
 			const cellHeightMode = this.cellHeightMode;

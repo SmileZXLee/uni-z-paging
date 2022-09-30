@@ -5,19 +5,14 @@ let getedStorage = false;
 const storageKey = 'Z-PAGING-CONFIG-STORAGE-KEY'
 
 function setConfig(value) {
-	try {
-		uni.setStorageSync(storageKey, value);
-	} catch (e) {}
+	uni.setStorageSync(storageKey, value);
 }
 
 function getConfig() {
-	try {
-		if (getedStorage) return config;
-		config = uni.getStorageSync(storageKey);
-		getedStorage = true;
-	} catch (e) {
-		return null;
-	}
+	if (getedStorage) return config;
+	config = uni.getStorageSync(storageKey);
+	getedStorage = true;
+	return config;
 }
 
 export default {

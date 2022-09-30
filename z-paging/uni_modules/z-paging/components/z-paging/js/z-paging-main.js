@@ -176,11 +176,6 @@ export default {
 			type: Boolean,
 			default: u.gc('watchTouchDirectionChange', false)
 		},
-		//是否将错误信息打印至控制台，默认为是
-		showConsoleError: {
-			type: Boolean,
-			default: u.gc('showConsoleError', true)
-		},
 	},
 	created(){
 		if (this.createdReload && !this.refresherOnly && (this.mountedAutoCallReload && this.auto)) {

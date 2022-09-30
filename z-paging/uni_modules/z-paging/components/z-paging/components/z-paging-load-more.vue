@@ -2,22 +2,22 @@
 <template>
 	<view class="zp-l-container" :style="[zConfig.customStyle]" @click="doClick">
 		<template v-if="!zConfig.hideContent">
-			<text v-if="zConfig.showNoMoreLine&&finalStatus===M.NoMore" class="zp-l-line" :style="[{backgroundColor:isWhite?'#efefef':'#eeeeee'},zConfig.noMoreLineCustomStyle]" />
+			<text v-if="zConfig.showNoMoreLine&&finalStatus===M.NoMore" class="zp-l-line" :style="[{backgroundColor:theme.line[ts]},zConfig.noMoreLineCustomStyle]" />
 			<!-- #ifndef APP-NVUE -->
 			<image v-if="finalStatus===M.Loading&&!!zConfig.loadingIconCustomImage"
 				:src="zConfig.loadingIconCustomImage" :style="[zConfig.iconCustomStyle]" :class="{'zp-l-line-loading-custom-image':true,'zp-l-line-loading-custom-image-animated':zConfig.loadingAnimated}" />
 			<image v-if="finalStatus===M.Loading&&zConfig.loadingIconType==='flower'&&!zConfig.loadingIconCustomImage.length"
-				class="zp-line-loading-image" :style="[zConfig.iconCustomStyle]" :src="isWhite?base64FlowerWhite:base64Flower" />
+				class="zp-line-loading-image" :style="[zConfig.iconCustomStyle]" :src="theme.flower[ts]" />
 			<!-- #endif -->
 			<!-- #ifdef APP-NVUE -->
 			<view>
-				<loading-indicator v-if="finalStatus===M.Loading&&zConfig.loadingIconType!=='circle'" class="zp-line-loading-image" :style="[{color:isWhite?'white':'#777777'}]" :animating="true" />
+				<loading-indicator v-if="finalStatus===M.Loading&&zConfig.loadingIconType!=='circle'" class="zp-line-loading-image" :style="[{color:theme.indicator[ts]}]" :animating="true" />
 			</view>
 			<!-- #endif -->
 			<text v-if="finalStatus===M.Loading&&zConfig.loadingIconType==='circle'&&!zConfig.loadingIconCustomImage.length"
-				class="zp-l-line-loading-view" :style="[{borderColor:isWhite?'#aaaaaa':'#c8c8c8',borderTopColor:isWhite?'#ffffff':'#444444'},zConfig.iconCustomStyle]" />
-			<text class="zp-l-text" :style="[{color:isWhite?'#efefef':'#a4a4a4'},zConfig.titleCustomStyle]">{{ownLoadingMoreText}}</text>
-			<text v-if="zConfig.showNoMoreLine&&finalStatus===M.NoMore" class="zp-l-line" :style="[{backgroundColor:isWhite?'#efefef':'#eeeeee'},zConfig.noMoreLineCustomStyle]" />
+				class="zp-l-line-loading-view" :style="[{borderColor:theme.circleBorder[ts],borderTopColor:theme.circleBorderTop[ts]},zConfig.iconCustomStyle]" />
+			<text class="zp-l-text" :style="[{color:theme.title[ts]},zConfig.titleCustomStyle]">{{ownLoadingMoreText}}</text>
+			<text v-if="zConfig.showNoMoreLine&&finalStatus===M.NoMore" class="zp-l-line" :style="[{backgroundColor:theme.line[ts]},zConfig.noMoreLineCustomStyle]" />
 		</template>
 	</view>
 </template>
@@ -29,14 +29,20 @@
 		data() {
 			return {
 				M: Enum.More,
-				base64Flower: zStatic.base64Flower,
-				base64FlowerWhite: zStatic.base64FlowerWhite,
+				theme: {
+					title: { white: '#efefef', black: '#a4a4a4' },
+					line: { white: '#efefef', black: '#eeeeee' },
+					circleBorder: { white: '#aaaaaa', black: '#c8c8c8' },
+					circleBorderTop: { white: '#ffffff', black: '#444444' },
+					flower: { white: zStatic.base64FlowerWhite, black: zStatic.base64Flower },
+					indicator: { white: '#eeeeee', black: '#777777' }
+				}
 			};
 		},
 		props: ['zConfig'],
 		computed: {
-			isWhite() {
-				return this.zConfig.defaultThemeStyle === 'white';
+			ts() {
+				return this.zConfig.defaultThemeStyle;
 			},
 			ownLoadingMoreText() {
 				const statusTextArr = [this.zConfig.defaultText,this.zConfig.loadingText,this.zConfig.noMoreText,this.zConfig.failText];
