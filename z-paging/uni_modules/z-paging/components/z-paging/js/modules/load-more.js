@@ -131,7 +131,7 @@ const ZPLoadMore = {
 		}
 	},
 	computed: {
-		zPagingLoadMoreConfig() {
+		zLoadMoreConfig() {
 			return {
 				status: this.loadingStatusAfterRender,
 				defaultAsLoading: this.loadingMoreDefaultAsLoading,

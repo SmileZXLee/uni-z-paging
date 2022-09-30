@@ -75,7 +75,9 @@ const ZPI18n = {
 			if (dataType === '[object Object]') {
 				const nextValue = value[this.finalLanguage];
 				if (nextValue) return nextValue;
-			} else if (dataType === '[object String]') return value;
+			} else if (dataType === '[object String]') {
+				return value;
+			}
 			return t(key);
 		},
 		//系统language转i18n local

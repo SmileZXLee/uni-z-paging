@@ -10,7 +10,7 @@ const ZPData = {
 		defaultPageNo: {
 			type: [Number, String],
 			default: u.gc('defaultPageNo', 1),
-			observer: function(newVal, oldVal) {
+			observer: function(newVal) {
 				this.pageNo = newVal;
 			},
 		},
