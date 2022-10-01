@@ -285,7 +285,6 @@ by ZXLee
 	 * @property {String} height z-paging的高度，优先级低于pagingStyle中设置的height，传字符串，如100px、100rpx、100%
 	 * @property {String} width z-paging的宽度，优先级低于pagingStyle中设置的width，传字符串，如100px、100rpx、100%
 	 * @property {String} bg-color z-paging的背景色，优先级低于pagingStyle中设置的background。传字符串，如"#ffffff"
-	 * @property {Boolean} refresher-only 是否只使用下拉刷新，设置为true后将关闭mounted自动请求数据、关闭滚动到底部加载更多，强制隐藏空数据图。默认为否
 	 * @property {Boolean} use-page-scroll 使用页面滚动，默认为否
 	 * @property {Boolean} use-virtual-list 是否使用虚拟列表，默认为否
 	 * @property {Boolean} fixed z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为是(当使用内置scroll-view滚动时有效)
@@ -296,7 +295,6 @@ by ZXLee
 	 * @property {String|Object} empty-view-text 空数据图描述文字，默认为“没有数据哦~”
 	 * @property {String} empty-view-img 空数据图图片，默认使用z-paging内置的图片
 	 * @property {Boolean} auto-show-back-to-top 自动显示点击返回顶部按钮，默认为否
-	 * @property {Boolean} refresher-enabled 是否开启自定义下拉刷新，默认为是
 	 * @property {Boolean} show-refresher-update-time 是否显示上次下拉刷新更新时间，默认为否
 	 * @property {Boolean} use-chat-record-mode 使用聊天记录模式，默认为否
 	 * @property {String} nvue-list-is nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list

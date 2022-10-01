@@ -178,7 +178,7 @@ export default {
 		},
 	},
 	created(){
-		if (this.createdReload && !this.refresherOnly && (this.mountedAutoCallReload && this.auto)) {
+		if (this.createdReload && !this.refresherOnly && this.auto) {
 			this._startLoading();
 			this._preReload();
 		}
@@ -186,7 +186,7 @@ export default {
 	mounted() {
 		this.wxsPropType = u.getTime().toString();
 		this.renderJsIgnore;
-		if (!this.createdReload && !this.refresherOnly && (this.mountedAutoCallReload && this.auto)) {
+		if (!this.createdReload && !this.refresherOnly && this.auto) {
 			this.$nextTick(() => {
 				this._preReload();
 			})
@@ -372,15 +372,15 @@ export default {
 				// #ifndef APP-NVUE
 				this.$nextTick(() => {
 					this._checkScrollViewShouldFullHeight((scrollViewNode, pagingContainerNode) => {
-						this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(totalData, scrollViewNode, pagingContainerNode)
+						this._preCheckShowNoMoreInside(totalData, scrollViewNode, pagingContainerNode)
 					});
 				})
 				// #endif
 				// #ifdef APP-NVUE
-				this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(totalData)
+				this._preCheckShowNoMoreInside(totalData)
 				// #endif
 			} else {
-				this._preCheckShowLoadingMoreWhenNoMoreAndInsideOfPaging(totalData)
+				this._preCheckShowNoMoreInside(totalData)
 			} 
 		},
 		//检测z-paging是否要全屏覆盖(当使用页面滚动并且不满全屏时，默认z-paging需要铺满全屏，避免数据过少时内部的empty-view无法正确展示)

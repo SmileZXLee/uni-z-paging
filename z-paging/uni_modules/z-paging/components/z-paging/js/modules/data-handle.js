@@ -55,11 +55,6 @@ const ZPData = {
 			type: String,
 			default: u.gc('autowireQueryName', '')
 		},
-		//z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是。请使用简便写法：auto
-		mountedAutoCallReload: {
-			type: Boolean,
-			default: u.gc('mountedAutoCallReload', true)
-		},
 		//z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
 		auto: {
 			type: Boolean,
