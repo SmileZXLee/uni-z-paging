@@ -1,4 +1,4 @@
-<!-- z-tabs v0.2.0 by-ZXLee -->
+<!-- z-tabs v0.2.1 by-ZXLee -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-tabs -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?name=z-tabs -->
 <!-- 反馈QQ群：790460711 -->
@@ -14,7 +14,10 @@
 					<view class="z-tabs-list" :style="[tabsListStyle, {marginTop: -finalBottomSpace+'px'}]">
 						<view :ref="`z-tabs-item-${index}`" :id="`z-tabs-item-${index}`" class="z-tabs-item" :style="[tabStyle]" v-for="(item,index) in list" :key="index" @click="tabsClick(index,item)">
 							<view class="z-tabs-item-title-container">
-								<text class="z-tabs-item-title" :style="[{color:currentIndex===index?activeColor:inactiveColor},currentIndex===index?activeStyle:inactiveStyle]">{{item[nameKey]||item}}</text>
+								<text :class="{'z-tabs-item-title':true,'z-tabs-item-title-disabled':item.disabled}" 
+									:style="[{color:item.disabled?disabledColor:(currentIndex===index?activeColor:inactiveColor)},item.disabled?disabledStyle:(currentIndex===index?activeStyle:inactiveStyle)]">
+									{{item[nameKey]||item}}
+								</text>
 								<text v-if="item.badge&&_formatCount(item.badge.count).length" class="z-tabs-item-badge" :style="[badgeStyle]">{{_formatCount(item.badge.count)}}</text>
 							</view>
 						</view>
@@ -79,8 +82,10 @@
 	 * @property {String} value-key list中item的value的key，默认为value
 	 * @property {String} active-color 激活状态tab的颜色
 	 * @property {String} inactive-color 未激活状态tab的颜色
+	 * @property {String} disabled-color 禁用状态tab的颜色
 	 * @property {Object} active-style 激活状态tab的样式
 	 * @property {Object} inactive-style 未激活状态tab的样式
+	 * @property {Object} disabled-style 禁用状态tab的样式
 	 * @property {Number|String} badge-max-count 徽标数最大数字限制，超过这个数字将变成badge-max-count+，默认为99
 	 * @property {Object} badge-style 徽标样式，例如可自定义背景色，字体等等
 	 * @property {String} bg-color z-tabs背景色
@@ -189,7 +194,12 @@
 			//未激活状态tab的颜色
 			inactiveColor: {
 				type: String,
-				default: _gc('inactiveColor','#888888')
+				default: _gc('inactiveColor','#666666')
+			},
+			//禁用状态tab的颜色
+			disabledColor: {
+				type: String,
+				default: _gc('disabledColor','#bbbbbb')
 			},
 			//激活状态tab的样式
 			activeStyle: {
@@ -203,6 +213,13 @@
 				type: Object,
 				default: function() {
 					return _gc('inactiveStyle',{});
+				}
+			},
+			//禁用状态tab的样式
+			disabledStyle: {
+				type: Object,
+				default: function() {
+					return _gc('disabledStyle',{});
 				}
 			},
 			//z-tabs背景色
@@ -404,6 +421,7 @@
 			},
 			//点击了tabs
 			tabsClick(index,item) {
+				if (item.disabled) return;
 				if (this.currentIndex != index) {
 					this.shouldSetDx = false;
 					this.$emit('change', index, item[this.valueKey]);
@@ -657,6 +675,12 @@
 	
 	.z-tabs-item-title{
 		font-size: 30rpx;
+	}
+	
+	.z-tabs-item-title-disabled{
+		/* #ifndef APP-NVUE */
+		cursor: not-allowed;
+		/* #endif */
 	}
 	
 	.z-tabs-item-badge{

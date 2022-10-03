@@ -1,6 +1,6 @@
 # z-tabs
 
-[![version](https://img.shields.io/badge/version-0.2.0-blue)](https://github.com/SmileZXLee/uni-z-tabs)
+[![version](https://img.shields.io/badge/version-0.2.1-blue)](https://github.com/SmileZXLee/uni-z-tabs)
 [![license](https://img.shields.io/github/license/SmileZXLee/uni-z-tabs)](https://en.wikipedia.org/wiki/MIT_License)
 
 ***
@@ -63,7 +63,9 @@ npm update @zxlee/z-tabs
 					badge: {
 						// 设置徽标数为6
 						count: 6
-					}
+					},
+					// 可以禁用某个item
+					disabled: true
 				});
             }
 			this.list = list;
@@ -82,17 +84,19 @@ npm update @zxlee/z-tabs
 | current             | 当前选中的index                                              | Number\|String | 0       | -      |
 | scroll-count        | list数组长度超过scrollCount时滚动显示(不自动铺满全屏)        | Number\|String | 5       | -      |
 | tab-width           | 自定义每个tab的宽度，默认为0，即代表根据内容自动撑开，单位rpx，支持传100、"100px"或"100rpx" | Number\|String | 0       | 0      |
-| bar-width           | 滑块宽度，单位rpx，支持传100、"100px"或"100rpx"               | Number\|String | 45rpx   | -      |
-| bar-height          | 滑块高度，单位rpx，支持传100、"100px"或"100rpx"               | Number\|String | 8rpx    | -      |
+| bar-width           | 滑块宽度，单位rpx，支持传100、"100px"或"100rpx"              | Number\|String | 45rpx   | -      |
+| bar-height          | 滑块高度，单位rpx，支持传100、"100px"或"100rpx"              | Number\|String | 8rpx    | -      |
 | bar-style           | 滑块样式，其中的`width`和`height`将被`bar-width`和`bar-height`覆盖 | Object         | {}      | -      |
-| bottom-space        | tabs与底部的间距，单位rpx，支持传100、"100px"或"100rpx"       | Number\|String | 8rpx    | -      |
+| bottom-space        | tabs与底部的间距，单位rpx，支持传100、"100px"或"100rpx"      | Number\|String | 8rpx    | -      |
 | bar-animate-mode    | 【v0.1.5起支持】切换tab时滑块动画模式，与`swiper`联动时有效，点击切换tab时无效，必须调用`setDx`。默认为`line`，即切换tab时滑块宽度保持不变，线性运动。可选值为`worm`，即为类似毛毛虫蠕动效果 | String         | line    | worm   |
 | name-key            | list中item的name(标题)的key                                  | String         | name    | -      |
 | value-key           | list中item的value的key                                       | String         | value   | -      |
 | active-color        | 激活状态tab的颜色                                            | String         | #007AFF | -      |
-| inactive-color      | 未激活状态tab的颜色                                          | String         | #888888 | -      |
+| inactive-color      | 未激活状态tab的颜色                                          | String         | #666666 | -      |
+| disabled-color      | 禁用状态tab的颜色                                            | String         | #bbbbbb | -      |
 | active-style        | 激活状态tab的样式                                            | Object         | {}      | -      |
 | inactive-style      | 未激活状态tab的样式                                          | Object         | {}      | -      |
+| disabled-style      | 禁用状态tab的样式                                            | Object         | {}      | -      |
 | badge-max-count     | 徽标数最大数字限制，超过这个数字将变成`badge-max-count`+     | Number\|String | 99      | -      |
 | badge-style         | 徽标样式，例如可自定义背景色，字体等等                       | Object         | {}      | -      |
 | bg-color            | z-tabs背景色                                                 | String         | white   | -      |
