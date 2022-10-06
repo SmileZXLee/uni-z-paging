@@ -1,23 +1,23 @@
 <!-- [z-paging]上拉加载更多view -->
 <template>
-	<view class="zp-l-container" :style="[zConfig.customStyle]" @click="doClick">
-		<template v-if="!zConfig.hideContent">
-			<text v-if="zConfig.showNoMoreLine&&finalStatus===M.NoMore" class="zp-l-line" :style="[{backgroundColor:theme.line[ts]},zConfig.noMoreLineCustomStyle]" />
+	<view class="zp-l-container" :style="[c.customStyle]" @click="doClick">
+		<template v-if="!c.hideContent">
+			<text v-if="c.showNoMoreLine&&finalStatus===M.NoMore" class="zp-l-line" :style="[{backgroundColor:theme.line[ts]},c.noMoreLineCustomStyle]" />
 			<!-- #ifndef APP-NVUE -->
-			<image v-if="finalStatus===M.Loading&&!!zConfig.loadingIconCustomImage"
-				:src="zConfig.loadingIconCustomImage" :style="[zConfig.iconCustomStyle]" :class="{'zp-l-line-loading-custom-image':true,'zp-l-line-loading-custom-image-animated':zConfig.loadingAnimated}" />
-			<image v-if="finalStatus===M.Loading&&zConfig.loadingIconType==='flower'&&!zConfig.loadingIconCustomImage.length"
-				class="zp-line-loading-image" :style="[zConfig.iconCustomStyle]" :src="theme.flower[ts]" />
+			<image v-if="finalStatus===M.Loading&&!!c.loadingIconCustomImage"
+				:src="c.loadingIconCustomImage" :style="[c.iconCustomStyle]" :class="{'zp-l-line-loading-custom-image':true,'zp-l-line-loading-custom-image-animated':c.loadingAnimated}" />
+			<image v-if="finalStatus===M.Loading&&finalLoadingIconType==='flower'&&!c.loadingIconCustomImage.length"
+				class="zp-line-loading-image" :style="[c.iconCustomStyle]" :src="theme.flower[ts]" />
 			<!-- #endif -->
 			<!-- #ifdef APP-NVUE -->
 			<view>
-				<loading-indicator v-if="finalStatus===M.Loading&&zConfig.loadingIconType!=='circle'" class="zp-line-loading-image" :style="[{color:theme.indicator[ts]}]" :animating="true" />
+				<loading-indicator v-if="finalStatus===M.Loading&&finalLoadingIconType!=='circle'" class="zp-line-loading-image" :style="[{color:theme.indicator[ts]}]" :animating="true" />
 			</view>
 			<!-- #endif -->
-			<text v-if="finalStatus===M.Loading&&zConfig.loadingIconType==='circle'&&!zConfig.loadingIconCustomImage.length"
-				class="zp-l-line-loading-view" :style="[{borderColor:theme.circleBorder[ts],borderTopColor:theme.circleBorderTop[ts]},zConfig.iconCustomStyle]" />
-			<text class="zp-l-text" :style="[{color:theme.title[ts]},zConfig.titleCustomStyle]">{{ownLoadingMoreText}}</text>
-			<text v-if="zConfig.showNoMoreLine&&finalStatus===M.NoMore" class="zp-l-line" :style="[{backgroundColor:theme.line[ts]},zConfig.noMoreLineCustomStyle]" />
+			<text v-if="finalStatus===M.Loading&&finalLoadingIconType==='circle'&&!c.loadingIconCustomImage.length"
+				class="zp-l-circle-loading-view" :style="[{borderColor:theme.circleBorder[ts],borderTopColor:theme.circleBorderTop[ts]},c.iconCustomStyle]" />
+			<text class="zp-l-text" :style="[{color:theme.title[ts]},c.titleCustomStyle]">{{ownLoadingMoreText}}</text>
+			<text v-if="c.showNoMoreLine&&finalStatus===M.NoMore" class="zp-l-line" :style="[{backgroundColor:theme.line[ts]},c.noMoreLineCustomStyle]" />
 		</template>
 	</view>
 </template>
@@ -39,18 +39,24 @@
 				}
 			};
 		},
-		props: ['zConfig'],
+		props: ['c'],
 		computed: {
 			ts() {
-				return this.zConfig.defaultThemeStyle;
+				return this.c.defaultThemeStyle;
 			},
 			ownLoadingMoreText() {
-				const statusTextArr = [this.zConfig.defaultText,this.zConfig.loadingText,this.zConfig.noMoreText,this.zConfig.failText];
+				const statusTextArr = [this.c.defaultText,this.c.loadingText,this.c.noMoreText,this.c.failText];
 				return statusTextArr[this.finalStatus];
 			},
 			finalStatus() {
-				if (this.zConfig.defaultAsLoading && this.zConfig.status === this.M.Default) return this.M.Loading;
-				return this.zConfig.status;
+				if (this.c.defaultAsLoading && this.c.status === this.M.Default) return this.M.Loading;
+				return this.c.status;
+			},
+			finalLoadingIconType() {
+				// #ifdef APP-NVUE
+				return 'flower';
+				// #endif
+				return this.c.loadingIconType;
 			}
 		},
 		methods: {
@@ -89,7 +95,7 @@
 		/* #endif */
 	}
 
-	.zp-l-line-loading-view {
+	.zp-l-circle-loading-view {
 		margin-right: 8rpx;
 		width: 23rpx;
 		height: 23rpx;
