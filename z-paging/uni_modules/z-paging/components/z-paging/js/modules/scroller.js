@@ -184,10 +184,6 @@ export default {
 		},
 		//当使用页面滚动并且自定义下拉刷新时，请在页面的onPageScroll中调用此方法，告知z-paging当前的pageScrollTop，否则会导致在任意位置都可以下拉刷新
 		updatePageScrollTop(value) {
-			if (value == undefined) {
-				u.consoleErr('updatePageScrollTop方法缺少参数，请将页面onPageScroll事件中的scrollTop传递给此方法');
-				return;
-			}
 			this.pageScrollTop = value;
 		},
 		//当使用页面滚动并且设置了slot="top"时，默认初次加载会自动获取其高度，并使内部容器下移，当slot="top"的view高度动态改变时，在其高度需要更新时调用此方法
@@ -231,10 +227,7 @@ export default {
 			const el = this.$refs['zp-n-list-top-tag'];
 			if (this.usePageScroll) {
 				this._getNodeClientRect('zp-page-scroll-top', false).then((node) => {
-					let nodeHeight = 0;
-					if (node) {
-						nodeHeight = node[0].height;
-					}
+					const nodeHeight = node ? node[0].height : 0;
 					weexDom.scrollToElement(el, {
 						offset: -nodeHeight,
 						animated: animate
@@ -243,10 +236,7 @@ export default {
 			} else {
 				if (!this.isIos && this.nvueListIs === 'scroller') {
 					this._getNodeClientRect('zp-n-refresh-container', false).then((node) => {
-						let nodeHeight = 0;
-						if (node) {
-							nodeHeight = node[0].height;
-						}
+						const nodeHeight = node ? node[0].height : 0;
 						weexDom.scrollToElement(el, {
 							offset: -nodeHeight,
 							animated: animate
@@ -302,16 +292,10 @@ export default {
 			}
 			try {
 				this.privateScrollWithAnimation = animate ? 1 : 0;
-				let pagingContainerH = 0;
-				let scrollViewH = 0;
 				const pagingContainerNode = await this._getNodeClientRect('.zp-paging-container');
 				const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
-				if (pagingContainerNode) {
-					pagingContainerH = pagingContainerNode[0].height;
-				}
-				if (scrollViewNode) {
-					scrollViewH = scrollViewNode[0].height;
-				}
+				const pagingContainerH = pagingContainerNode ? pagingContainerNode[0].height : 0;
+				const scrollViewH = scrollViewNode ? scrollViewNode[0].height : 0;
 				if (pagingContainerH > scrollViewH) {
 					this.scrollTop = this.oldScrollTop;
 					this.$nextTick(() => {
@@ -432,8 +416,7 @@ export default {
 							} else {
 								this.cacheTopHeight = pageScrollNodeHeight;
 							}
-							this.$set(this.scrollViewStyle, marginText,
-								`${pageScrollNodeHeight}px`);
+							this.$set(this.scrollViewStyle, marginText, `${pageScrollNodeHeight}px`);
 						} else if (safeAreaInsetBottomAdd) {
 							this.$set(this.scrollViewStyle, marginText, `${this.safeAreaBottom}px`);
 						}

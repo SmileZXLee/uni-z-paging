@@ -277,8 +277,8 @@ export default {
 					}
 				} else {
 					const pagingContainerNode = oldPagingContainerNode || await this._getNodeClientRect('.zp-paging-container-content');
-					const pagingContainerH = !!pagingContainerNode ? pagingContainerNode[0].height : 0;
-					const scrollViewH = !!scrollViewNode ? scrollViewNode[0].height : 0;
+					const pagingContainerH = pagingContainerNode ? pagingContainerNode[0].height : 0;
+					const scrollViewH = scrollViewNode ? scrollViewNode[0].height : 0;
 					this.insideOfPaging = pagingContainerH < scrollViewH;
 					if (this.hideNoMoreInside) {
 						this.showLoadingMore = !this.insideOfPaging;

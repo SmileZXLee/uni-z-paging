@@ -65,7 +65,7 @@
 					type: this.tabIndex + 1
 				}
 				this.$request.queryList(params).then(res => {
-					this.$refs.paging.complete(this.tabIndex===1?[]:res.data.list);
+					this.$refs.paging.complete(res.data.list);
 					this.hideEmptyView = false;
 					//请求结束，调用父组件的下拉刷新结束回调函数，使得父组件中的z-paging下拉刷新结束
 					if (this.completeFunc) {

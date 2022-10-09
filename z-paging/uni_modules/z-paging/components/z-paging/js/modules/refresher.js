@@ -615,7 +615,7 @@ export default {
 					diffDis = diffDis * (1 - this.finalRefresherOutRate);
 				}
 			}
-			diffDis = diffDis > 50 ? 0 : diffDis;
+			diffDis = diffDis > 100 ? diffDis / 100 : diffDis;
 			this.currentDis += diffDis;
 			this.currentDis = Math.max(0, this.currentDis);
 			return this.currentDis;
@@ -629,14 +629,8 @@ export default {
 		//更新自定义下拉刷新view高度
 		_updateCustomRefresherHeight() {
 			this._getNodeClientRect('.zp-custom-refresher-slot-view').then((res) => {
-				if (res) {
-					this.customRefresherHeight = res[0].height;
-					if (this.customRefresherHeight > 0) {
-						this.showCustomRefresher = true;
-					}
-				} else {
-					this.customRefresherHeight = 0;
-				}
+				this.customRefresherHeight = res ? res[0].height : 0;
+				this.showCustomRefresher = this.customRefresherHeight > 0;
 				if (this.doRefreshAnimateAfter) {
 					this.doRefreshAnimateAfter = false;
 					this._doRefresherRefreshAnimate();
