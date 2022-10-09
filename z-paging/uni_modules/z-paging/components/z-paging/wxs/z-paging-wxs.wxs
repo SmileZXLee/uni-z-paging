@@ -228,13 +228,9 @@ function _getMoveDis(e, ins) {
 			diffDis = diffDis * (1 - refresherOutRate);
 		}
 	}
-	if (diffDis > 200) {
-		currentDis = 0;
-		diffDis = 0;
-	} else {
-		currentDis += diffDis;
-		currentDis = Math.max(0, currentDis);
-	}
+	diffDis = diffDis > 50 ? 0 : diffDis;
+	currentDis += diffDis;
+	currentDis = Math.max(0, currentDis);
 	return {
 		currentDis: currentDis,
 		diffDis: diffDis,

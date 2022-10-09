@@ -139,7 +139,7 @@ function getTime() {
 
 //获取z-paging实例id
 function getInstanceId() {
-    let s = [];
+    const s = [];
     const hexDigits = "0123456789abcdef";
     for (let i = 0; i < 10; i++) {
         s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);

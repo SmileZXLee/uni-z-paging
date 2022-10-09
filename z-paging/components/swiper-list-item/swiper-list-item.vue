@@ -3,7 +3,7 @@
 	<view class="content">
 		<!-- 这里设置了z-paging加载时禁止自动调用reload方法，自行控制何时reload（懒加载）-->
 		<!--  :enable-back-to-top="currentIndex===tabIndex" 在微信小程序上可以多加这一句，因为默认是允许点击返回顶部的，但是这个页面有多个scroll-view，会全部返回顶部，所以需要控制是当前index才允许点击返回顶部 -->
-		<z-paging ref="paging" v-model="dataList" @query="queryList" :fixed="false" :auto="false">
+		<z-paging ref="paging" v-model="dataList" @query="queryList" :fixed="false" :auto="false" @listChange="listChange">
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
 				<view class="item-title">{{item.title}}</view>
@@ -55,6 +55,9 @@
 			},
 		},
 		methods: {
+			listChange(){
+				console.log('listChange')
+			},
 			queryList(pageNo, pageSize) {
 				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
 				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
@@ -66,7 +69,7 @@
 				}
 				this.$request.queryList(params).then(res => {
 					//将请求的结果数组传递给z-paging
-					this.$refs.paging.complete(res.data.list);
+					this.$refs.paging.complete(this.tabIndex===1?[]:res.data.list);
 					this.firstLoaded = true;
 				}).catch(res => {
 					//如果请求失败写this.$refs.paging.complete(false);

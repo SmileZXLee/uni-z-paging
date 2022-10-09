@@ -6,7 +6,7 @@ import Enum from '.././z-paging-enum'
 // #ifdef APP-NVUE
 const weexAnimation = weex.requireModule('animation');
 // #endif
-const ZPNvue = {
+export default {
 	props: {
 		// #ifdef APP-NVUE
 		//nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list
@@ -160,7 +160,7 @@ const ZPNvue = {
 			this.refresherStatus = pullingDis >= viewHeight ? Enum.Refresher.ReleaseToRefresh : Enum.Refresher.Default;
 		},
 		//下拉刷新结束
-		_nRefresherEnd(doEnd=true) {
+		_nRefresherEnd(doEnd = true) {
 			if (doEnd) {
 			   this._nDoRefresherEndAnimation(0, -this.nShowRefresherRevealHeight); 
 			   !this.usePageScroll && this.$refs['zp-n-list'].resetLoadmore();
@@ -245,5 +245,3 @@ const ZPNvue = {
 		// #endif
 	}
 }
-
-export default ZPNvue;

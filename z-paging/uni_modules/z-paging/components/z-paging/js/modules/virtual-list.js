@@ -3,7 +3,7 @@ import u from '.././z-paging-utils'
 import c from '.././z-paging-constant'
 import Enum from '.././z-paging-enum'
 
-const ZPVirtualList = {
+export default {
 	props: {
 		//是否使用虚拟列表，默认为否
 		useVirtualList: {
@@ -111,8 +111,8 @@ const ZPVirtualList = {
 						this._resetDynamicListState(!this.isUserPullDown);
 					}
 					this.getCellHeightRetryCount.fixed = 0;
-					this.finalUseVirtualList && newVal.length && this.cellHeightMode === Enum.CellHeightMode.Fixed && this.isFirstPage && this._updateFixedCellHeight();
-					this.finalUseVirtualList && this._updateVirtualScroll(this.oldScrollTop);
+					newVal.length && this.cellHeightMode === Enum.CellHeightMode.Fixed && this.isFirstPage && this._updateFixedCellHeight();
+					this._updateVirtualScroll(this.oldScrollTop);
 				})
 			}
 			// #endif
@@ -294,11 +294,9 @@ const ZPVirtualList = {
 				let virtualBottomRangeIndex = 0;
 				let virtualPlaceholderBottomHeight = 0;
 				let reachedLimitBottom = false;
-				let lastHeightCache = null;
 				const heightCacheList = this.virtualHeightCacheList;
-				if (heightCacheList.length) {
-					lastHeightCache = heightCacheList.slice(-1)[0];
-				}
+				const lastHeightCache = !!heightCacheList ? heightCacheList.slice(-1)[0] : null;
+				
 				let startTopRangeIndex = this.virtualTopRangeIndex;
 				if (scrollDirection === 'bottom') {
 					for (let i = startTopRangeIndex; i < heightCacheList.length;i++){
@@ -403,5 +401,3 @@ const ZPVirtualList = {
 		}
 	}
 }
-
-export default ZPVirtualList;

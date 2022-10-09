@@ -1,6 +1,6 @@
 // [z-paging]枚举
 
-const Enum = {
+export default {
 	//当前加载类型 0.下拉刷新 1.上拉加载更多
 	LoadingType: {
 		Refresher: 0,
@@ -42,5 +42,3 @@ const Enum = {
 		Always: 'always'
 	}
 }
-
-export default Enum;

@@ -5,7 +5,7 @@ import Enum from '.././z-paging-enum'
 // #ifdef APP-NVUE
 const weexDom = weex.requireModule('dom');
 // #endif
-const ZPScroller = {
+export default {
 	props: {
 		//使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
 		usePageScroll: {
@@ -62,10 +62,10 @@ const ZPScroller = {
 		}
 	},
 	watch: {
-		oldScrollTop(newVal, oldVal) {
+		oldScrollTop(newVal) {
 			!this.usePageScroll && this._scrollTopChange(newVal,false);
 		},
-		pageScrollTop(newVal, oldVal) {
+		pageScrollTop(newVal) {
 			this.usePageScroll && this._scrollTopChange(newVal,true);
 		},
 		usePageScroll: {
@@ -84,7 +84,7 @@ const ZPScroller = {
 			},
 			immediate: true
 		},
-		finalScrollTop(newVal, oldVal) {
+		finalScrollTop(newVal) {
 			if (!this.useChatRecordMode) {
 				this.renderPropScrollTop = newVal < 6 ? 0 : 10;
 			}
@@ -115,7 +115,7 @@ const ZPScroller = {
 	},
 	methods: {
 		//滚动到顶部，animate为是否展示滚动动画，默认为是
-		scrollToTop(animate,checkReverse = true) {
+		scrollToTop(animate, checkReverse = true) {
 			// #ifdef APP-NVUE
 			if (checkReverse && this.useChatRecordMode) {
 				if(!this.nIsFirstPageAndNoMore){
@@ -136,7 +136,7 @@ const ZPScroller = {
 			})
 		},
 		//滚动到底部，animate为是否展示滚动动画，默认为是
-		scrollToBottom(animate,checkReverse = true) {
+		scrollToBottom(animate, checkReverse = true) {
 			// #ifdef APP-NVUE
 			if (checkReverse && this.useChatRecordMode) {
 				if(!this.nIsFirstPageAndNoMore){
@@ -241,7 +241,7 @@ const ZPScroller = {
 					});
 				});
 			} else {
-				if(!this.isIos && this.nvueListIs === 'scroller'){
+				if (!this.isIos && this.nvueListIs === 'scroller') {
 					this._getNodeClientRect('zp-n-refresh-container', false).then((node) => {
 						let nodeHeight = 0;
 						if (node) {
@@ -252,7 +252,7 @@ const ZPScroller = {
 							animated: animate
 						});
 					});
-				}else{
+				} else {
 					weexDom.scrollToElement(el, {
 						offset: 0,
 						animated: animate
@@ -366,7 +366,7 @@ const ZPScroller = {
 		},
 		//通过nodeTop滚动到指定view
 		_scrollIntoViewByNodeTop(nodeTop, offset = 0, animate = false) {
-			this._scrollToY(nodeTop,offset,animate,true);
+			this._scrollToY(nodeTop, offset, animate, true);
 		},
 		//滚动到指定位置
 		_scrollToY(y, offset = 0, animate = false, addScrollTop = false) {
@@ -389,14 +389,14 @@ const ZPScroller = {
 			this.$emit('scroll', e);
 			const scrollTop = e.detail.scrollTop;
 			// #ifndef APP-NVUE
-			this.finalUseVirtualList && this._updateVirtualScroll(scrollTop,this.oldScrollTop - scrollTop);
+			this.finalUseVirtualList && this._updateVirtualScroll(scrollTop, this.oldScrollTop - scrollTop);
 			// #endif
 			this.oldScrollTop = scrollTop;
 			const scrollDiff = e.detail.scrollHeight - this.oldScrollTop;
 			!this.isIos && this._checkScrolledToBottom(scrollDiff);
 		},
 		//scrollTop改变时触发
-		_scrollTopChange(newVal,isPageScrollTop){
+		_scrollTopChange(newVal, isPageScrollTop){
 			this.$emit('scrollTopChange', newVal);
 			this.$emit('update:scrollTop', newVal);
 			this._checkShouldShowBackToTop(newVal);
@@ -460,5 +460,3 @@ const ZPScroller = {
 		}
 	}
 }
-
-export default ZPScroller;

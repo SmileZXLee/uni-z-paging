@@ -2,7 +2,7 @@
 import u from '.././z-paging-utils'
 import Enum from '.././z-paging-enum'
 
-const ZPLoading = {
+export default {
 	props: {
 		//第一次加载后自动隐藏loading slot，默认为是
 		autoHideLoadingAfterFirstLoaded: {
@@ -37,7 +37,7 @@ const ZPLoading = {
 		}
 	},
 	watch: {
-		loadingStatus(newVal, oldVal) {
+		loadingStatus(newVal) {
 			this.$emit('loadingStatusChange', newVal);
 			this.$nextTick(()=>{
 				this.loadingStatusAfterRender = newVal;
@@ -53,7 +53,7 @@ const ZPLoading = {
 			//  #endif
 		},
 		loading(newVal){
-			if(newVal){
+			if (newVal) {
 				this.loadingForNow = newVal;
 			}
 		},
@@ -91,5 +91,3 @@ const ZPLoading = {
 		}
 	}
 }
-
-export default ZPLoading;

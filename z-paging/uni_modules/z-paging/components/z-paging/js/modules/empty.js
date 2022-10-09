@@ -1,7 +1,7 @@
 // [z-paging]空数据图view模块
 import u from '.././z-paging-utils'
 
-const ZPEmptyView = {
+export default {
 	props: {
 		//是否强制隐藏空数据图，默认为否
 		hideEmptyView: {
@@ -126,7 +126,7 @@ const ZPEmptyView = {
 		//点击了空数据view重新加载按钮
 		_emptyViewReload() {
 			let callbacked = false;
-			this.$emit('emptyViewReload', (reload) => {
+			this.$emit('emptyViewReload', reload => {
 				if (reload === undefined || reload === true) {
 					this.fromEmptyViewReload = true;
 					this.reload();
@@ -146,5 +146,3 @@ const ZPEmptyView = {
 		},
 	}
 }
-
-export default ZPEmptyView;

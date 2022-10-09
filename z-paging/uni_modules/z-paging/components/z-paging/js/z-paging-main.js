@@ -244,10 +244,10 @@ export default {
 			},
 			immediate: true
 		},
-		autoHeight(newVal, oldVal) {
+		autoHeight(newVal) {
 			this.loaded && !this.usePageScroll && this._setAutoHeight(newVal);
 		},
-		autoHeightAddition(newVal, oldVal) {
+		autoHeightAddition(newVal) {
 			this.loaded && !this.usePageScroll && this.autoHeight && this._setAutoHeight(newVal);
 		},
 	},

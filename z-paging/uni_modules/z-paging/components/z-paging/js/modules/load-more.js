@@ -2,7 +2,7 @@
 import u from '.././z-paging-utils'
 import Enum from '.././z-paging-enum'
 
-const ZPLoadMore = {
+export default {
 	props: {
 		//自定义底部加载更多样式
 		loadingMoreCustomStyle: {
@@ -83,7 +83,7 @@ const ZPLoadMore = {
 		//当没有更多数据且分页数组长度少于这个值时，隐藏没有更多数据的view，默认为0，代表不限制。
 		hideNoMoreByLimit: {
 			type: Number,
-			default: u.gc('hideLoadingMoreWhenNoMoreByLimit', 0)
+			default: u.gc('hideNoMoreByLimit', 0)
 		},
 		//是否显示默认的加载更多text，默认为是
 		showDefaultLoadingMoreText: {
@@ -249,8 +249,8 @@ const ZPLoadMore = {
 		},
 		//(预处理)判断当没有更多数据且分页内容未超出z-paging时是否显示没有更多数据的view
 		_preCheckShowNoMoreInside(newVal, scrollViewNode, pagingContainerNode) {
-			if (this.loadingStatus === Enum.More.NoMore && this.hideLoadingMoreWhenNoMoreByLimit > 0 && newVal.length) {
-				this.showLoadingMore = newVal.length > this.hideLoadingMoreWhenNoMoreByLimit;
+			if (this.loadingStatus === Enum.More.NoMore && this.hideNoMoreByLimit > 0 && newVal.length) {
+				this.showLoadingMore = newVal.length > this.hideNoMoreByLimit;
 			} else if ((this.loadingStatus === Enum.More.NoMore && this.hideNoMoreInside && newVal.length) || (this.insideMore && this.insideOfPaging !== false && newVal.length)) {
 				this.$nextTick(() => {
 					this._checkShowNoMoreInside(newVal, scrollViewNode, pagingContainerNode);
@@ -276,15 +276,9 @@ const ZPLoadMore = {
 						this._updateInsideOfPaging();
 					}
 				} else {
-					let pagingContainerH = 0;
-					let scrollViewH = 0;
 					const pagingContainerNode = oldPagingContainerNode || await this._getNodeClientRect('.zp-paging-container-content');
-					if (pagingContainerNode) {
-						pagingContainerH = pagingContainerNode[0].height;
-					}
-					if (scrollViewNode) {
-						scrollViewH = scrollViewNode[0].height;
-					}
+					const pagingContainerH = !!pagingContainerNode ? pagingContainerNode[0].height : 0;
+					const scrollViewH = !!scrollViewNode ? scrollViewNode[0].height : 0;
 					this.insideOfPaging = pagingContainerH < scrollViewH;
 					if (this.hideNoMoreInside) {
 						this.showLoadingMore = !this.insideOfPaging;
@@ -322,5 +316,3 @@ const ZPLoadMore = {
 		},
 	}
 }
-
-export default ZPLoadMore;

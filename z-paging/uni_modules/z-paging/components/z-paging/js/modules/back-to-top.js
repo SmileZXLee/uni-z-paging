@@ -1,7 +1,7 @@
 // [z-paging]点击返回顶部view模块
 import u from '.././z-paging-utils'
 
-const ZPBackToTop = {
+export default {
 	props: {
 		//自动显示点击返回顶部按钮，默认为否
 		autoShowBackToTop: {
@@ -98,4 +98,3 @@ const ZPBackToTop = {
 	}
 }
 
-export default ZPBackToTop;

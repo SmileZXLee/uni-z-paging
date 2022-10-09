@@ -20,7 +20,6 @@
 			<!-- #ifndef APP-PLUS -->
 			<view class="demo-nvue-tip">- 将此demo运行至App上可体验nvue页面效果 -</view>
 			<!-- #endif -->
-			<!-- <view class="tip-bottom" slot="bottom">z-paging.com</view> -->
 		</z-paging>
 	</view>
 </template>
