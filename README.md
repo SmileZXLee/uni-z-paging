@@ -1,6 +1,6 @@
 # z-paging
 
-[![version](https://img.shields.io/github/v/release/SmileZXLee/uni-z-paging?style=flat)](https://github.com/SmileZXLee/uni-z-paging)
+[![release](https://img.shields.io/github/v/release/SmileZXLee/uni-z-paging?style=flat)](https://github.com/SmileZXLee/uni-z-paging/releases)
 [![download](https://img.shields.io/npm/dt/z-paging?style=flat)](https://www.npmjs.com/package/z-paging)
 [![license](https://img.shields.io/github/license/SmileZXLee/uni-z-paging?style=flat)](https://en.wikipedia.org/wiki/MIT_License)
 
