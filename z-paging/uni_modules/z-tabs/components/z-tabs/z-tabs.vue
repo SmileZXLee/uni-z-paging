@@ -1,4 +1,4 @@
-<!-- z-tabs v0.2.1 by-ZXLee -->
+<!-- z-tabs v0.2.2 by-ZXLee -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-tabs -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?name=z-tabs -->
 <!-- 反馈QQ群：790460711 -->
@@ -396,7 +396,7 @@
 				this.shouldSetDx = true;
 			},
 			//更新z-tabs内部布局
-			updateSubviewLayout() {
+			updateSubviewLayout(tryCount = 0) {
 				this.$nextTick(() => {
 					let delayTime = 10;
 					// #ifdef APP-NVUE || MP-BAIDU
@@ -404,7 +404,14 @@
 					// #endif
 					setTimeout(() => {
 						this._getNodeClientRect('.z-tabs-scroll-view-conatiner').then(res=>{
-							if(res && res.length && res[0].width){
+							if (res){ 
+								if (!res[0].width && tryCount < 10) {
+									setTimeout(() => {
+										tryCount ++;
+										this.updateSubviewLayout(tryCount);
+									}, 50);
+									return;
+								}
 								this.tabsWidth = res[0].width;
 								this.tabsHeight = res[0].height;
 								this.tabsLeft = res[0].left;
@@ -412,7 +419,7 @@
 							}
 						})
 						this._getNodeClientRect('.z-tabs-conatiner').then(res=>{
-							if(res && res.length && res[0].width){
+							if(res && res[0].width){
 								this.tabsSuperWidth = res[0].width;
 							}
 						})
@@ -463,7 +470,7 @@
 					let tabsContainerWidth = this.tabsContainerWidth;
 					if (JSON.stringify(this.activeStyle) !== '{}') {
 						const nodeRes = await this._getNodeClientRect(`#z-tabs-item-${index}`,true);
-						if (nodeRes && nodeRes.length){
+						if (nodeRes) {
 							node = nodeRes[0];
 							offset = this.currentScrollLeft;
 							this.tabsHeight = Math.max(node.height + uni.upx2px(28), this.tabsHeight);
@@ -506,7 +513,7 @@
 						setTimeout(async()=>{
 							for(let i = 0;i < newVal.length;i++){
 								const nodeRes = await this._getNodeClientRect(`#z-tabs-item-${i}`,true);
-								if(nodeRes && nodeRes.length){
+								if(nodeRes){
 									const node = nodeRes[0];
 									node.left += this.currentScrollLeft;
 									itemNodeInfos.push(node);
@@ -613,6 +620,7 @@
 		/* #ifndef APP-NVUE */
 		display: flex;
 		height: 100%;
+		width: 100%;
 		/* #endif */
 		flex-direction: row;
 	}

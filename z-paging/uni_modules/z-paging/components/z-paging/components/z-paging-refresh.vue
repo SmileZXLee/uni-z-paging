@@ -10,7 +10,7 @@
 				<!-- #ifdef APP-NVUE -->
 				<view v-else :style="[{'margin-right':showUpdateTime?'18rpx':'12rpx'}]">
 					<loading-indicator :class="isIos?'zp-loading-image-ios':'zp-loading-image-android'" 
-					:style="[{color:theme.indicator[ts]},imgStyle]" :animating="true" />
+					:style="[{color:zTheme.indicator[ts]},imgStyle]" :animating="true" />
 				</view>
 				<!-- #endif -->
 			</view>
@@ -35,7 +35,7 @@
 				R: Enum.Refresher,
 				isIos: uni.getSystemInfoSync().platform === 'ios',
 				refresherTimeText: '',
-				theme: {
+				zTheme: {
 					title: { white: '#efefef', black: '#555555' },
 					arrow: { white: zStatic.base64ArrowWhite, black: zStatic.base64Arrow },
 					flower: { white: zStatic.base64FlowerWhite, black: zStatic.base64Flower },
@@ -72,17 +72,17 @@
 				const status = this.status;
 				if (status === R.Default) {
 					if (!!this.defaultImg) return this.defaultImg;
-					return this.theme.arrow[this.ts];
+					return this.zTheme.arrow[this.ts];
 				} else if (status  === R.ReleaseToRefresh) {
 					if (!!this.pullingImg) return this.pullingImg;
 					if (!!this.defaultImg) return this.defaultImg;
-					return this.theme.arrow[this.ts];
+					return this.zTheme.arrow[this.ts];
 				} else if (status  === R.Loading) {
 					if (!!this.refreshingImg) return this.refreshingImg;
-					return this.theme.flower[this.ts];;
+					return this.zTheme.flower[this.ts];;
 				} else if (status  === R.Complete) {
 					if (!!this.completeImg) return this.completeImg;
-					return this.theme.success[this.ts];;
+					return this.zTheme.success[this.ts];;
 				}
 				return '';
 			},
@@ -92,7 +92,7 @@
 				const textHeight = this.showUpdateTime ? '40rpx' : '80rpx';
 				stl = {'height': textHeight, 'line-height': textHeight}
 				// #endif
-				stl['color'] = this.theme.title[this.ts];
+				stl['color'] = this.zTheme.title[this.ts];
 				return stl;
 			}
 		},

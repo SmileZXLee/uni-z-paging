@@ -2,22 +2,22 @@
 <template>
 	<view class="zp-l-container" :style="[c.customStyle]" @click="doClick">
 		<template v-if="!c.hideContent">
-			<text v-if="c.showNoMoreLine&&finalStatus===M.NoMore" class="zp-l-line" :style="[{backgroundColor:theme.line[ts]},c.noMoreLineCustomStyle]" />
+			<text v-if="c.showNoMoreLine&&finalStatus===M.NoMore" class="zp-l-line" :style="[{backgroundColor:zTheme.line[ts]},c.noMoreLineCustomStyle]" />
 			<!-- #ifndef APP-NVUE -->
 			<image v-if="finalStatus===M.Loading&&!!c.loadingIconCustomImage"
 				:src="c.loadingIconCustomImage" :style="[c.iconCustomStyle]" :class="{'zp-l-line-loading-custom-image':true,'zp-l-line-loading-custom-image-animated':c.loadingAnimated}" />
 			<image v-if="finalStatus===M.Loading&&finalLoadingIconType==='flower'&&!c.loadingIconCustomImage.length"
-				class="zp-line-loading-image" :style="[c.iconCustomStyle]" :src="theme.flower[ts]" />
+				class="zp-line-loading-image" :style="[c.iconCustomStyle]" :src="zTheme.flower[ts]" />
 			<!-- #endif -->
 			<!-- #ifdef APP-NVUE -->
 			<view>
-				<loading-indicator v-if="finalStatus===M.Loading&&finalLoadingIconType!=='circle'" class="zp-line-loading-image" :style="[{color:theme.indicator[ts]}]" :animating="true" />
+				<loading-indicator v-if="finalStatus===M.Loading&&finalLoadingIconType!=='circle'" class="zp-line-loading-image" :style="[{color:zTheme.indicator[ts]}]" :animating="true" />
 			</view>
 			<!-- #endif -->
 			<text v-if="finalStatus===M.Loading&&finalLoadingIconType==='circle'&&!c.loadingIconCustomImage.length"
-				class="zp-l-circle-loading-view" :style="[{borderColor:theme.circleBorder[ts],borderTopColor:theme.circleBorderTop[ts]},c.iconCustomStyle]" />
-			<text class="zp-l-text" :style="[{color:theme.title[ts]},c.titleCustomStyle]">{{ownLoadingMoreText}}</text>
-			<text v-if="c.showNoMoreLine&&finalStatus===M.NoMore" class="zp-l-line" :style="[{backgroundColor:theme.line[ts]},c.noMoreLineCustomStyle]" />
+				class="zp-l-circle-loading-view" :style="[{borderColor:zTheme.circleBorder[ts],borderTopColor:zTheme.circleBorderTop[ts]},c.iconCustomStyle]" />
+			<text class="zp-l-text" :style="[{color:zTheme.title[ts]},c.titleCustomStyle]">{{ownLoadingMoreText}}</text>
+			<text v-if="c.showNoMoreLine&&finalStatus===M.NoMore" class="zp-l-line" :style="[{backgroundColor:zTheme.line[ts]},c.noMoreLineCustomStyle]" />
 		</template>
 	</view>
 </template>
@@ -29,7 +29,7 @@
 		data() {
 			return {
 				M: Enum.More,
-				theme: {
+				zTheme: {
 					title: { white: '#efefef', black: '#a4a4a4' },
 					line: { white: '#efefef', black: '#eeeeee' },
 					circleBorder: { white: '#aaaaaa', black: '#c8c8c8' },
