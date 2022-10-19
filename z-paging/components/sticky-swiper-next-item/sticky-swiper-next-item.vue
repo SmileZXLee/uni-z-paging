@@ -92,7 +92,7 @@
 			//当列表高度改变时，通知页面的swiper同步更改高度
 			contentHeightChanged(height){
 				const finalHeight = this.dataList.length ? height : 0;
-				//限制内容最小高度为屏幕可见高度减z-tabs高度
+				//限制内容最小高度为屏幕可见高度减z-tabs高度。注意，页面中有使用slot="top"插入的view，则此处的minHeight还应该减去slot="top"插入的view的高度
 				const minHeight = uni.getSystemInfoSync().windowHeight - uni.upx2px(80);
 				this.$emit('heightChanged',Math.max(finalHeight, minHeight));
 			},
