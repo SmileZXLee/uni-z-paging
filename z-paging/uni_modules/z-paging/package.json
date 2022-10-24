@@ -2,7 +2,7 @@
   "id": "z-paging",
   "name": "z-paging",
   "displayName": "【z-paging下拉刷新、上拉加载】高性能，全平台兼容。支持虚拟列表，支持nvue、vue3",
-  "version": "2.4.5",
+  "version": "2.4.6",
   "description": "超简单、低耦合！使用wxs+renderjs实现。支持长列表优化，支持自定义下拉刷新、上拉加载更多，支持自动管理空数据图、点击返回顶部，支持聊天分页、本地分页，支持国际化等100+项配置",
   "keywords": [
     "下拉刷新",
