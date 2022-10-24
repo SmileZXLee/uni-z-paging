@@ -233,7 +233,7 @@ export default {
 		},
 		refresherStatus(newVal) {
 			newVal === Enum.Refresher.Loading && this._cleanRefresherEndTimeout();
-			newVal === Enum.Refresher.ReleaseToRefresh && this._doVibrateShort();
+			this.refresherVibrate && newVal === Enum.Refresher.ReleaseToRefresh && this._doVibrateShort();
 			this.$emit('refresherStatusChange', newVal);
 			this.$emit('update:refresherStatus', newVal);
 		}

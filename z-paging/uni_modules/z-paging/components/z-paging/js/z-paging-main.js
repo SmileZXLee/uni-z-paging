@@ -377,7 +377,7 @@ export default {
 					feedbackGenerator.selectionChanged();
 				},0)
 			} else {
-				plus.device.vibrate(12);
+				plus.device.vibrate(15);
 			}
 			// #endif
 			// #ifndef APP-PLUS

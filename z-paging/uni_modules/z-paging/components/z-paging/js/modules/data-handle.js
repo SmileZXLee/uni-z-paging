@@ -364,7 +364,10 @@ export default {
 				this.privateShowRefresherWhenReload = animate;
 				this.isUserPullDown = true;
 			}
-			this._preReload(animate, false);
+			this.listRendering = true;
+			this.$nextTick(() => {
+				this._preReload(animate, false);
+			})
 		},
 		//刷新列表数据，pageNo和pageSize不会重置，列表数据会重新从服务端获取。必须保证@query绑定的方法中的pageNo和pageSize和传给服务端的一致
 		refresh() {
