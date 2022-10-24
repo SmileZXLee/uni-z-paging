@@ -366,8 +366,26 @@ export default {
 				this.$refs['zp-n-list'].setSpecialEffects(args);
 			}
 		},
+		//使手机发生较短时间的振动（15ms）
+		_doVibrateShort() {
+			// #ifdef APP-PLUS
+			if (this.isIos) {
+				const UISelectionFeedbackGenerator = plus.ios.importClass('UISelectionFeedbackGenerator');
+				const feedbackGenerator = new UISelectionFeedbackGenerator();
+				feedbackGenerator.init();
+				setTimeout(() => {
+					feedbackGenerator.selectionChanged();
+				},0)
+			} else {
+				plus.device.vibrate(12);
+			}
+			// #endif
+			// #ifndef APP-PLUS
+			uni.vibrateShort();
+			// #endif
+		},
 		//检测scrollView是否要铺满屏幕
-		_doCheckScrollViewShouldFullHeight(totalData){
+		_doCheckScrollViewShouldFullHeight(totalData) {
 			if (this.autoFullHeight && this.usePageScroll && this.isTotalChangeFromAddData) {
 				// #ifndef APP-NVUE
 				this.$nextTick(() => {

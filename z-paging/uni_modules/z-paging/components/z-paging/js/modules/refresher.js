@@ -181,6 +181,11 @@ export default {
 			type: String,
 			default: u.gc('refresherUpdateTimeKey', 'default')
 		},
+		//下拉刷新时下拉到“松手立即刷新”状态时是否使手机短振动，默认为否（h5无效）
+		refresherVibrate: {
+			type: Boolean,
+			default: u.gc('refresherVibrate', false)
+		},
 	},
 	data() {
 		return {
@@ -228,6 +233,7 @@ export default {
 		},
 		refresherStatus(newVal) {
 			newVal === Enum.Refresher.Loading && this._cleanRefresherEndTimeout();
+			newVal === Enum.Refresher.ReleaseToRefresh && this._doVibrateShort();
 			this.$emit('refresherStatusChange', newVal);
 			this.$emit('update:refresherStatus', newVal);
 		}
