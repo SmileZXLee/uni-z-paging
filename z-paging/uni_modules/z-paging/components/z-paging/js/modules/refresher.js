@@ -344,11 +344,7 @@ export default {
 			this._startLoading(true);
 			this.refresherTriggered = true;
 			if(this.reloadWhenRefresh && isUserPullDown){
-				if (this.useChatRecordMode) {
-					this._onLoadingMore('click')
-				} else {
-					this._reload(false, false, isUserPullDown);
-				}
+				this.useChatRecordMode ? this._onLoadingMore('click') : this._reload(false, false, isUserPullDown);
 			}
 		},
 		//自定义下拉刷新被复位

@@ -116,6 +116,9 @@ export default {
 		nSafeAreaBottomHeight() {
 			return this.safeAreaInsetBottom ? this.safeAreaBottom : 0;
 		},
+		nChatRecordRotateStyle() {
+			return this.useChatRecordMode ? { transform: this.nIsFirstPageAndNoMore ? 'rotate(0deg)' : 'rotate(180deg)' } : {};
+		},
 		finalNvueListIs() {
 			if (this.usePageScroll) return 'view';
 			const nvueListIsLowerCase = this.nvueListIs.toLowerCase();
@@ -185,7 +188,7 @@ export default {
 			}
 			const stackCount = this.refresherRevealStackCount;
 			if (height === 0 && checkStack) {
-				this.refresherRevealStackCount--;
+				this.refresherRevealStackCount --;
 				if (stackCount > 1) return;
 				this.refresherEndTimeout = setTimeout(() => {
 					this.refresherStatus = Enum.Refresher.Default;
@@ -233,10 +236,7 @@ export default {
 				this.$nextTick(()=>{
 					this._getNodeClientRect('.zp-n-list').then(node => {
 						if (node) {
-							const nodeWidth = node[0].width;
-							if (nodeWidth) {
-								this.nRefresherWidth = nodeWidth;
-							}
+							this.nRefresherWidth = node[0].width ? node[0].width : this.nRefresherWidth;
 						}
 					})
 				})

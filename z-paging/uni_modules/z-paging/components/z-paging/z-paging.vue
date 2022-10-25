@@ -170,7 +170,7 @@ by ZXLee
 			<view v-if="$slots.left" class="zp-page-left">
 				<slot name="left" />
 			</view>
-			<component :is="finalNvueListIs" ref="zp-n-list" :id="nvueListId" :style="[{'flex': 1,'top':isIos?'0px':'-1px'},usePageScroll?scrollViewStyle:{},useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]" :alwaysScrollableVertical="true"
+			<component :is="finalNvueListIs" ref="zp-n-list" :id="nvueListId" :style="[{'flex': 1,'top':isIos?'0px':'-1px'},usePageScroll?scrollViewStyle:{},nChatRecordRotateStyle]" :alwaysScrollableVertical="true"
 				:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar&&!useChatRecordMode" :loadmoreoffset="finalLowerThreshold" :enable-back-to-top="enableBackToTop"
 				:scrollable="scrollable&&scrollEnable&&(refresherCompleteScrollable?true:refresherStatus!==R.Complete)" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 				:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap" :pagingEnabled="nvuePagingEnabled" :offset-accuracy="offsetAccuracy"
@@ -213,11 +213,11 @@ by ZXLee
 					<slot />
 				</template>
 				<!-- 全屏Loading -->
-				<component :is="nViewIs" v-if="showLoading&&$slots.loading&&!loadingFullFixed" :class="{'z-paging-content-fixed':usePageScroll}" style="flex: 1;" :style="[useChatRecordMode ? {transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]">
+				<component :is="nViewIs" v-if="showLoading&&$slots.loading&&!loadingFullFixed" :class="{'z-paging-content-fixed':usePageScroll}" style="flex: 1;" :style="[nChatRecordRotateStyle]">
 					<slot name="loading" />
 				</component>
 				<!-- 空数据图 -->
-				<component :is="nViewIs" v-if="showEmpty" :class="{'z-paging-content-fixed':usePageScroll}" :style="[{flex:emptyViewCenter?1:0},emptyViewSuperStyle,useChatRecordMode?{transform: nIsFirstPageAndNoMore?'rotate(0deg)':'rotate(180deg)'}:{}]">
+				<component :is="nViewIs" v-if="showEmpty" :class="{'z-paging-content-fixed':usePageScroll}" :style="[{flex:emptyViewCenter?1:0},emptyViewSuperStyle,nChatRecordRotateStyle]">
 					<view :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}">
 						<slot v-if="$slots.empty" name="empty" />
 						<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 

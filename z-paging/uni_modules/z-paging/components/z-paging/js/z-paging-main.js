@@ -474,11 +474,7 @@ export default {
 			return new Promise((resolve, reject) => {
 				if (ref) {
 					weexDom.getComponentRect(ref, option => {
-						if (option && option.result) {
-							resolve([option.size]);
-						} else {
-							resolve(false);
-						}
+						resolve(option && option.result ? [option.size] : false);
 					})
 				} else {
 					resolve(false);
@@ -490,11 +486,7 @@ export default {
 			inThis = false;
 			//#endif
 			let res = inThis ? uni.createSelectorQuery().in(this) : uni.createSelectorQuery();
-			if (scrollOffset) {
-				res.select(select).scrollOffset();
-			} else {
-				res.select(select).boundingClientRect();
-			}
+			scrollOffset ? res.select(select).scrollOffset() : res.select(select).boundingClientRect();
 			return new Promise((resolve, reject) => {
 				res.exec(data => {
 					resolve((data && data != '' && data != undefined && data.length) ? data : false);
