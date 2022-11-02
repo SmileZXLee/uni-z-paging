@@ -78,7 +78,9 @@ export default {
 	watch: {
 		nIsFirstPageAndNoMore: {
 			handler(newVal) {
-				this.$emit('update:cellStyle', !this.useChatRecordMode || newVal ? {} : {transform: 'rotate(180deg)'});
+				const cellStyle = !this.useChatRecordMode || newVal ? {} : {transform: 'rotate(180deg)'};
+				this.$emit('update:cellStyle', cellStyle);
+				this.$emit('cellStyleChange', cellStyle);
 			},
 			immediate: true
 		}
