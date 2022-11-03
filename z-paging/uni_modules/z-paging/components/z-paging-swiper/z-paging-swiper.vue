@@ -148,8 +148,8 @@
 					delayTime = 10;
 					// #endif
 					setTimeout(() => {
-						const query = uni.createSelectorQuery().in(this);
 						['left','right'].map(position => {
+							const query = uni.createSelectorQuery().in(this);
 							query.select(`.zp-swiper-${position}`).boundingClientRect(res => {
 								this.$set(this.swiperContentStyle, position, res ? res.width + 'px' : '0px');
 							}).exec();
