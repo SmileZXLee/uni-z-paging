@@ -112,14 +112,13 @@ export default {
 			return this.isLoadFailed ? this.showEmptyViewReloadWhenError : this.showEmptyViewReload;
 		},
 		showEmpty() {
-			if (this.refresherOnly || this.hideEmptyView || this.totalData.length) return false;
+			if (this.refresherOnly || this.hideEmptyView || this.realTotalData.length) return false;
 			if (this.autoHideEmptyViewWhenLoading) {
 				if (this.isAddedData && !this.firstPageLoaded && !this.loading) return true;
 			} else {
 				return true;
 			}
-			if (!this.autoHideEmptyViewWhenPull && !this.isUserReload) return true;
-			return false;
+			return !this.autoHideEmptyViewWhenPull && !this.isUserReload;
 		},
 	},
 	methods: {
