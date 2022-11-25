@@ -52,7 +52,6 @@ function touchmove(e, ownerIns) {
 	var refresherThreshold = dataset.refresherthreshold;
 	var isIos = _getIsTrue(dataset.isios);
 	var state = ins.getState();
-	var dataset = ins.getDataset();
 	var watchTouchDirectionChange = _getIsTrue(dataset.watchtouchdirectionchange);
 	var moveDisObj = {};
 	var moveDis = 0;

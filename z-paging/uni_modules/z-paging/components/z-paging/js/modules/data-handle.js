@@ -600,7 +600,7 @@ export default {
 			if (this.isFirstPage && this.finalConcat) {
 				this.totalData = [];
 			}
-			if (this.customNoMore !== -1 && (this.customNoMore === 0 || !newVal.length)) {
+			if (this.customNoMore !== -1) {
 				if (this.customNoMore === 0 || !newVal.length) {
 					this.loadingStatus = Enum.More.NoMore;
 				}
