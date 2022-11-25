@@ -135,6 +135,14 @@ export default {
 		},
 		// #endif
 	},
+	mounted(){
+		// #ifdef APP-NVUE
+		//旋转屏幕时更新宽度
+		uni.onWindowResize((res) => {
+			this._nUpdateRefresherWidth();
+		})
+		// #endif
+	},
 	methods: {
 		// #ifdef APP-NVUE
 		//列表滚动时触发
