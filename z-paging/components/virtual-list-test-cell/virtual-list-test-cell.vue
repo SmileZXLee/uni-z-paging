@@ -1,10 +1,10 @@
 <!-- 这个文件是虚拟列表中的实际cell -->
 <template>
-	<view class="item" @click="itemClick">
+	<view class="item">
 		<image class="item-image" mode="aspectFit" src="@/static/boji1.png"></image>
 		<view class="item-content">
 			<text class="item-title">第{{index + 1}}行</text>
-			<text style="color: red;margin-left: 10rpx;">虚拟列表展示</text>
+			<text style="color: red;margin-left: 10rpx;" @click.stop="titleClick(`第${index + 1}行 虚拟列表展示`)">虚拟列表展示</text>
 			<view class="item-detail">{{item.detail}}</view>
 		</view>
 		<view class="item-line"></view>
@@ -25,10 +25,10 @@
 			};
 		},
 		methods: {
-			itemClick(){
+			titleClick(title){
 				//如果要把点击事件传给页面，可以通过给extraData中添加对应的函数，然后在当前组件中触发这个函数，在页面中监听即可
-				if(this.extraData.clickFunc){
-					this.extraData.clickFunc(this.item, this.index);
+				if(this.extraData.titleClickedCallback){
+					this.extraData.titleClickedCallback(title);
 				}
 			}
 		}

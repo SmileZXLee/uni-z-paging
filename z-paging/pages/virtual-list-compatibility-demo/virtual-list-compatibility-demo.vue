@@ -31,6 +31,12 @@
 					//给这个页面的虚拟列表取一个名字，这样在zp-virtual-cell中可以根据这个名字来区分不同页面的cell
 					id: 'test1',
 					//这边可以附加其他的当前页面需要传给cell的值
+					
+					//这里示范了通过props传递方法回调来代替cell组件内部emit的场景，如果需要监听点击cell可以直接通过@innerCellClick监听
+					titleClickedCallback: (title) => {
+						//点击了标题
+						console.log('点击了标题' + title)
+					}
 				}
 			}
 		},
