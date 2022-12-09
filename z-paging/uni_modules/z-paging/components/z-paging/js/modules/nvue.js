@@ -139,7 +139,7 @@ export default {
 		// #ifdef APP-NVUE
 		//旋转屏幕时更新宽度
 		uni.onWindowResize((res) => {
-			this._nUpdateRefresherWidth();
+			// this._nUpdateRefresherWidth();
 		})
 		// #endif
 	},

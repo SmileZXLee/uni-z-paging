@@ -39,13 +39,13 @@
 				}
 			};
 		},
-		props: ['config'],
+		props: ['zConfig'],
 		computed: {
 			ts() {
 				return this.c.defaultThemeStyle;
 			},
 			c() {
-				return this.config;
+				return this.zConfig;
 			},
 			ownLoadingMoreText() {
 				const statusTextArr = [this.c.defaultText,this.c.loadingText,this.c.noMoreText,this.c.failText];

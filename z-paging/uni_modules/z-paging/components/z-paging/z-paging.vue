@@ -116,14 +116,14 @@ by ZXLee
 									<slot v-else-if="showLoadingMoreLoading" name="loadingMoreLoading" />
 									<slot v-else-if="showLoadingMoreNoMore" name="loadingMoreNoMore" />
 									<slot v-else-if="showLoadingMoreFail" name="loadingMoreFail" />
-									<z-paging-load-more @doClick="_onLoadingMore('click')" v-else-if="showLoadingMoreCustom" :config="zLoadMoreConfig" />
+									<z-paging-load-more @doClick="_onLoadingMore('click')" v-else-if="showLoadingMoreCustom" :zConfig="zLoadMoreConfig" />
 									<!-- #endif -->
 									<!-- #ifdef MP-ALIPAY -->
 									<slot v-if="loadingStatus===M.Default&&$slots.loadingMoreDefault&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreDefault" />
 									<slot v-else-if="loadingStatus===M.Loading&&$slots.loadingMoreLoading&&showLoadingMore&&loadingMoreEnabled" name="loadingMoreLoading" />
 									<slot v-else-if="loadingStatus===M.NoMore&&$slots.loadingMoreNoMore&&showLoadingMore&&showLoadingMoreNoMoreView&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreNoMore" />
 									<slot v-else-if="loadingStatus===M.Fail&&$slots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreFail" />
-									<z-paging-load-more @doClick="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===M.NoMore&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode" :config="zLoadMoreConfig" />
+									<z-paging-load-more @doClick="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===M.NoMore&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode" :zConfig="zLoadMoreConfig" />
 									<!-- #endif -->
 									<view v-if="safeAreaInsetBottom && useSafeAreaPlaceholder" class="zp-safe-area-placeholder" :style="[{height:safeAreaBottom+'px'}]" />
 								</view>
@@ -246,7 +246,7 @@ by ZXLee
 						<slot v-else-if="showLoadingMoreLoading" name="loadingMoreLoading" />
 						<slot v-else-if="showLoadingMoreNoMore" name="loadingMoreNoMore" />
 						<slot v-else-if="showLoadingMoreFail" name="loadingMoreFail" />
-						<z-paging-load-more @doClick="_onLoadingMore('click')" v-else-if="showLoadingMoreCustom" :config="zLoadMoreConfig" />
+						<z-paging-load-more @doClick="_onLoadingMore('click')" v-else-if="showLoadingMoreCustom" :zConfig="zLoadMoreConfig" />
 						<view v-if="safeAreaInsetBottom && useSafeAreaPlaceholder" class="zp-safe-area-placeholder" :style="[{height:safeAreaBottom+'px'}]" />
 					</view>
 				</component>

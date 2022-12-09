@@ -350,7 +350,7 @@ export default {
 	methods: {
 		//当前版本号
 		getVersion() {
-			return `z-paging v${zConstant.version}`;
+			return `z-paging v${c.version}`;
 		},
 		//设置nvue List的specialEffects
 		setSpecialEffects(args) {
