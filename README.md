@@ -21,6 +21,9 @@
 
 ### 反馈qq群(点击加群)：[790460711](https://jq.qq.com/?_wv=1027&k=vU2fKZZH)
 
+### 使用案例
+* [点击此处添加](https://github.com/SmileZXLee/uni-z-paging/issues/42)  
+
 ### 在线demo体验地址：
 
 * [https://demo.z-paging.zxlee.cn](https://demo.z-paging.zxlee.cn)
