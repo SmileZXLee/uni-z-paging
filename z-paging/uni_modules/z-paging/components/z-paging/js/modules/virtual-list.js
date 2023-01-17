@@ -360,7 +360,7 @@ export default {
 			if (shouldUpdateList) {
 				this.updateVirtualListFromDataChange = false;
 				this.lastVirtualTopRangeIndex =  this.virtualTopRangeIndex;
-				this.lastVirtualBottomRangeIndex =  this.virtualBottomRangeIndex;
+				this.lastVirtualBottomRangeIndex = this.virtualBottomRangeIndex;
 				this.virtualList = this.realTotalData.slice(this.virtualTopRangeIndex, this.virtualBottomRangeIndex + 1);
 			}
 		},

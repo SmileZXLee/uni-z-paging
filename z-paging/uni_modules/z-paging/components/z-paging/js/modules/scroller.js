@@ -340,9 +340,7 @@ export default {
 						if (node) {
 							let nodeTop = node[0].top;
 							this._scrollIntoViewByNodeTop(nodeTop, offset, animate);
-							if (finishCallback) {
-								finishCallback();
-							}
+							finishCallback && finishCallback();
 						}
 					});
 				});
@@ -378,6 +376,42 @@ export default {
 			this.oldScrollTop = scrollTop;
 			const scrollDiff = e.detail.scrollHeight - this.oldScrollTop;
 			!this.isIos && this._checkScrolledToBottom(scrollDiff);
+		},
+		//检测scrollView是否要铺满屏幕
+		_doCheckScrollViewShouldFullHeight(totalData) {
+			if (this.autoFullHeight && this.usePageScroll && this.isTotalChangeFromAddData) {
+				// #ifndef APP-NVUE
+				this.$nextTick(() => {
+					this._checkScrollViewShouldFullHeight((scrollViewNode, pagingContainerNode) => {
+						this._preCheckShowNoMoreInside(totalData, scrollViewNode, pagingContainerNode)
+					});
+				})
+				// #endif
+				// #ifdef APP-NVUE
+				this._preCheckShowNoMoreInside(totalData)
+				// #endif
+			} else {
+				this._preCheckShowNoMoreInside(totalData)
+			} 
+		},
+		//检测z-paging是否要全屏覆盖(当使用页面滚动并且不满全屏时，默认z-paging需要铺满全屏，避免数据过少时内部的empty-view无法正确展示)
+		async _checkScrollViewShouldFullHeight(callback) {
+			try {
+				const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
+				const pagingContainerNode = await this._getNodeClientRect('.zp-paging-container-content');
+				if (!scrollViewNode || !pagingContainerNode) return;
+				const scrollViewHeight = pagingContainerNode[0].height;
+				const scrollViewTop = scrollViewNode[0].top;
+				if (this.isAddedData && scrollViewHeight + scrollViewTop <= this.windowHeight) {
+					this._setAutoHeight(true, scrollViewNode);
+					callback(scrollViewNode, pagingContainerNode);
+				} else {
+					this._setAutoHeight(false);
+					callback(null, null);
+				}
+			} catch (e) {
+				callback(null, null);
+			}
 		},
 		//scrollTop改变时触发
 		_scrollTopChange(newVal, isPageScrollTop){
