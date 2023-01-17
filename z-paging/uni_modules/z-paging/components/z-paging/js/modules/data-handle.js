@@ -511,6 +511,7 @@ export default {
 			}, delayTime)
 			if (this.isFirstPage) {
 				this.isLoadFailed = !success;
+				this.$emit('isLoadFailedChange', this.isLoadFailed);
 				if (this.finalUseCache && success && (this.cacheMode === Enum.CacheMode.Always ? true : this.isSettingCacheList)) {
 					this._saveLocalCache(data);
 				}
