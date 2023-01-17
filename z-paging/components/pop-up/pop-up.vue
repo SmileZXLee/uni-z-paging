@@ -45,8 +45,6 @@
 	.pop-up-container {
 		position: relative;
 		background-color: white;
-		border-radius: 10rpx;
-		border-radius: 10rpx;
 	}
 	
 	.pop-up-close-container {

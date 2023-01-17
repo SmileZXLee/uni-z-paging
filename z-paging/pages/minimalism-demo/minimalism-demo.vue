@@ -5,13 +5,13 @@
 		<!-- autowire-list-name用于设置自动赋值list的名字，autowire-query-name用于设置自动调用query方法的方法名 -->
 		<z-paging ref="paging" autowire-list-name="zList" autowire-query-name="zQuery">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
-			<view slot="top">
+			<template #top>
 				<view class="notice">
 					<view>最大程度简化重复代码，具体写法和说明请查阅demo源码</view>
 				</view>
 				<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-				<z-tabs @change="tabChange" :list="tabList"></z-tabs>
-			</view>
+				<z-tabs :list="tabList" @change="tabChange" />
+			</template>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<view class="item" v-for="(item,index) in zList" :key="index" @click="itemClick(item)">
 				<view class="item-title">{{item.title}}</view>

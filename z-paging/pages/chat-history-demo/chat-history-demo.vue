@@ -8,7 +8,9 @@
 			</view>
 			
 			<!-- 底部聊天输入框 -->
-			<chat-input-bar slot="bottom" @send="doSend"></chat-input-bar>
+			<template #bottom>
+				<chat-input-bar @send="doSend" />
+			</template>
 		</z-paging>
 	</view>
 </template>

@@ -6,26 +6,16 @@
 		<!-- 如果页面中的cell高度是固定不变的，则不需要设置cell-height-mode，如果页面中高度是动态改变的，则设置cell-height-mode="dynamic" -->
 		<z-paging ref="paging" use-virtual-list :cell-height-mode="tabIndex===0?'fixed':'dynamic'" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
-			<template slot="top">
+			<template #top>
 				<view class="header">列表总数据量：10万条</view>
 				<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-				<z-tabs  @change="tabChange" :list="tabList"></z-tabs>
+				<z-tabs :list="tabList" @change="tabChange" />
 			</template>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内，放在所有cell上方的用slot="header"插入，放在所有cell下方的用slot="footer"插入 -->
 			
 			<!-- 通过slot="cell"插入列表for循环的cell，slot-scope中提供当前for循环的item和index -->
-			<view slot="cell" slot-scope="{item,index}" class="item" @click="itemClick(item,index)">
-				<image class="item-image" mode="aspectFit" src="@/static/boji1.png"></image>
-				<view class="item-content">
-					<text class="item-title">第{{index + 1}}行</text>
-					<text style="color: red;margin-left: 10rpx;">虚拟列表展示</text>
-					<view class="item-detail">{{item.detail}}</view>
-				</view>
-				<view class="item-line"></view>
-			</view>
-			
 			<!-- vue3中写法如下 -->
-			<!-- <template v-slot:cell="{item,index}">
+			<template #cell="{item,index}">
 				<view class="item" @click="itemClick(item,index)">
 					<image class="item-image" mode="aspectFit" src="@/static/boji1.png"></image>
 					<view class="item-content">
@@ -35,7 +25,7 @@
 					</view>
 					<view class="item-line"></view>
 				</view>
-			</template> -->
+			</template>
 			
 		</z-paging>
 	</view>

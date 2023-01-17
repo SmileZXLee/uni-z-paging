@@ -208,7 +208,7 @@ export default {
 				this.refresherStatus = Enum.Refresher.Loading;
 			}
 			
-			const duration = animate ? 180 : 0;
+			const duration = animate ? 200 : 0;
 			if (this.nOldShowRefresherRevealHeight !== height) {
 				if(height > 0){
 					this.nShowRefresherReveal = true;
@@ -218,7 +218,7 @@ export default {
 						height: `${height}px`,
 						transform: `translateY(${translateY}px)`,
 					},
-					duration: duration,
+					duration,
 					timingFunction: 'linear',
 					needLayout: true,
 					delay: 0
@@ -228,7 +228,7 @@ export default {
 				if (animate) {
 					this.nShowRefresherReveal = height > 0;
 				}
-			}, duration > 0 ? duration - 100 : 0);
+			}, duration > 0 ? duration - 60 : 0);
 			this.nOldShowRefresherRevealHeight = height;
 		},
 		//滚动到底部加载更多

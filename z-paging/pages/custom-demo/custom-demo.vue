@@ -4,14 +4,22 @@
 		<z-paging ref="paging" v-model="dataList" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-			<z-tabs slot="top" @change="tabChange" :list="tabList"></z-tabs>
+			<template #top>
+				<z-tabs :list="tabList" @change="tabChange" />
+			</template>
+			
 			<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
 
 			<!-- 注意注意注意！！字节跳动小程序中自定义下拉刷新不支持slot-scope，将导致custom-refresher无法显示 -->
 			<!-- 如果是字节跳动小程序，请参照sticky-demo.vue中的写法，此处使用slot-scope是为了减少data中无关变量声明，降低依赖 -->
-			<custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus" />
+			<template #refresher="{refresherStatus}">
+				<custom-refresher :status="refresherStatus" />
+			</template>
 			<!-- 自定义没有更多数据view -->
-			<custom-nomore slot="loadingMoreNoMore"></custom-nomore>
+			<template #loadingMoreNoMore>
+				<custom-nomore></custom-nomore>
+			</template>
+			
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
 				<view class="item-title">{{item.title}}</view>

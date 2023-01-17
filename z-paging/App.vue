@@ -6,13 +6,6 @@
 			let vueVersion = 'vue2';
 			// #ifdef VUE3
 			vueVersion = 'vue3';
-			const notice = '请注意，此demo写法是基于vue2的，因此在vue3上展示会有异常，尤其是slot="top"部分。z-paging插件本身支持vue3，从vue2迁移到vue3请查阅文档：https://z-paging.zxlee.cn/start/migration-to-vue3.html';
-			// #ifdef H5
-			console.log(notice);
-			// #endif
-			// #ifndef H5
-			console.warn(notice);
-			// #endif
 			// #endif
 			
 			// #ifdef APP-PLUS

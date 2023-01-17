@@ -20,11 +20,11 @@
 		<!-- 原先的v-model修改为:virtualList.sync以绑定处理后的虚拟列表 -->
 		<z-paging ref="paging" use-virtual-list :force-close-inner-list="true" :virtualList.sync="virtualList" :cell-height-mode="tabIndex===0?'fixed':'dynamic'" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
-			<view slot="top">
+			<template #top>
 				<view class="header">列表总数据量：10万条</view>
 				<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-				<z-tabs @change="tabChange" :list="tabList"></z-tabs>
-			</view>
+				<z-tabs :list="tabList" @change="tabChange" />
+			</template>
 			
 			<!-- :id="`zp-${item.zp_index}`" 必须写，必须写！！！！ -->
 			<!-- 这里for循环的index不是数组中真实的index了，请使用item.zp_index获取真实的index -->

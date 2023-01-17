@@ -9,19 +9,19 @@
 		<!-- #ifndef APP-PLUS -->
 		<view v-if="cssSafeAreaInsetBottom===-1" class="zp-safe-area-inset-bottom"></view>
 		<!-- #endif -->
-		<slot v-if="$slots.top" name="top" />
+		<slot v-if="zSlots.top" name="top" />
 		<view class="zp-swiper-super">
-			<view v-if="$slots.left" :class="{'zp-swiper-left':true,'zp-absoulte':isOldWebView}">
+			<view v-if="zSlots.left" :class="{'zp-swiper-left':true,'zp-absoulte':isOldWebView}">
 				<slot name="left" />
 			</view>
 			<view :class="{'zp-swiper':true,'zp-absoulte':isOldWebView}" :style="[swiperContentStyle]">
 				<slot />
 			</view>
-			<view v-if="$slots.right" :class="{'zp-swiper-right':true,'zp-absoulte zp-right':isOldWebView}">
+			<view v-if="zSlots.right" :class="{'zp-swiper-right':true,'zp-absoulte zp-right':isOldWebView}">
 				<slot name="right" />
 			</view>
 		</view>
-		<slot v-if="$slots.bottom" name="bottom" />
+		<slot v-if="zSlots.bottom" name="bottom" />
 	</view>
 </template>
 
@@ -121,6 +121,12 @@
 				}
 				// #endif
 				return false;
+			},
+			zSlots() {
+				// #ifdef VUE2
+				return this.$scopedSlots ? this.$scopedSlots : this.$slots;
+				// #endif
+				return this.$slots;
 			}
 		},
 		methods: {

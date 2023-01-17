@@ -3,14 +3,14 @@
 <template>
 	<view class="content">
 		<view class="top">
-			<z-tabs @change="tabChange" :list="tabList"></z-tabs>
+			<z-tabs :list="tabList" @change="tabChange" />
 		</view>
 		<view class="list">
 			<view class="item" v-for="(item,index) in dataList" :key="index">
 				<image class="item-image" mode="aspectFit" src="@/static/boji1.png"></image>
 				<view class="item-content">
 					<text class="item-title">第{{index + 1}}行</text>
-					<text style="color: red;margin-left: 10rpx;">虚拟列表展示</text>
+					<text style="color: red;margin-left: 10rpx;">传统列表展示</text>
 					<view class="item-detail">{{item.detail}}</view>
 				</view>
 				<view class="item-line"></view>

@@ -1,9 +1,12 @@
 <template>
 	<view class="content">
 		<z-paging ref="paging" refresher-only @onRefresh="onRefresh">
-			<view slot="refresher" style="height: 120rpx;display: flex;justify-content: center;align-items: center;">
-				<image style="width: 300rpx;height: 60rpx;" src="../../static/logo_loading.gif"></image>
-			</view>
+			<template #refresher>
+				<view style="height: 120rpx;display: flex;justify-content: center;align-items: center;">
+					<image style="width: 300rpx;height: 60rpx;" src="../../static/logo_loading.gif"></image>
+				</view>
+			</template>
+			
 			<view class="demo-list">
 				<view class="demo-item" v-for="(item,index) in list" :key="index" @click="itemClick(item)">
 					<view class="demo-item-main">

@@ -4,14 +4,14 @@
 		<!-- 这里就很整洁了，只要设置ref，绑定query事件，绑定list就可以了 -->
 		<my-paging ref="paging" v-model="dataList" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
-			<view slot="top">
+			<template #top>
 				<view class="notice">
 					<view>①此demo演示了基于z-paging封装个性化分页组件的流程</view>
 					<view>②可将重复的配置或者重复插入的slot封装在自定义的分页组件中</view>
 				</view>
 				<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-				<z-tabs @change="tabChange" :list="tabList"></z-tabs>
-			</view>
+				<z-tabs :list="tabList" @change="tabChange" />
+			</template>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
 				<view class="item-title">{{item.title}}</view>

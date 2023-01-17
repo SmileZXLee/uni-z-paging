@@ -4,15 +4,15 @@
 	<view class="content">
 		<z-paging ref="paging" v-model="dataList" @query="queryList">
 			<!-- 将不需要参与滚动的部分，放在slot="top"的view中，如果只有一个标签，可以直接在此标签上写slot="top"，将自定义的导航栏放到里面即可 -->
-			<view slot="top">
+			<template #top>
 				<u-navbar :background="{'background-color': '#007AFF'}">
 					<view class="slot-wrap" style="color: white;font-size: 26rpx;" @click="backClick">
 						这是一个自定义导航栏，点击返回上级页面
 					</view>
 				</u-navbar>
 				<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-				<z-tabs @change="tabChange" :list="tabList"></z-tabs>
-			</view>
+				<z-tabs :list="tabList" @change="tabChange" />
+			</template>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
 				<view class="item-title">{{item.title}}</view>

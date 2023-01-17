@@ -4,7 +4,9 @@
 	<z-paging-swiper>
 		<!-- 需要固定在顶部不滚动的view放在slot="top"的view中 -->
 		<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-		<z-tabs ref="tabs" slot="top" :list="tabList" :current="current" @change="tabsChange" ></z-tabs>
+		<template #top>
+			<z-tabs ref="tabs" :list="tabList" :current="current" @change="tabsChange" />
+		</template>
 		<!-- swiper必须设置height:100%，因为swiper有默认的高度，只有设置高度100%才可以铺满页面  -->
 		<swiper class="swiper" :current="current" @transition="swiperTransition" @animationfinish="swiperAnimationfinish">
 			<swiper-item class="swiper-item" v-for="(item, index) in tabList" :key="index">
