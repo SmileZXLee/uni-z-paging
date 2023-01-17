@@ -515,10 +515,7 @@ export default {
 		//下拉刷新结束
 		_refresherEnd(shouldEndLoadingDelay = true, fromAddData = false, isUserPullDown = false, setLoading = true) {
 			if (this.loadingType === Enum.LoadingType.Refresher) {
-				let refresherCompleteDelay = 0;
-				if(fromAddData && (isUserPullDown || this.showRefresherWhenReload)){
-					refresherCompleteDelay = this.refresherCompleteDuration > 700 ? 1 : this.refresherCompleteDelay;
-				}
+				const refresherCompleteDelay = (fromAddData && (isUserPullDown || this.showRefresherWhenReload)) ? this.refresherCompleteDelay : 0;
 				const refresherStatus = refresherCompleteDelay > 0 ? Enum.Refresher.Complete : Enum.Refresher.Default;
 				if (this.finalShowRefresherWhenReload) {
 					const stackCount = this.refresherRevealStackCount;
