@@ -15,9 +15,13 @@ export default {
 	},
 	computed: {
 		finalLanguage() {
-			const local = uni.getLocale();
-			const language = this.language;
-			return local === 'auto' ? interceptor._handleLanguage2Local(language, this._language2Local(language)) : local;
+			try {
+				const local = uni.getLocale();
+				const language = this.language;
+				return local === 'auto' ? interceptor._handleLanguage2Local(language, this._language2Local(language)) : local;
+			} catch (e) {
+				return 'zh-Hans';
+			}
 		},
 		finalRefresherDefaultText() {
 			return this._getI18nText('zp.refresher.default', this.refresherDefaultText);
