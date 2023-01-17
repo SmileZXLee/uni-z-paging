@@ -1,6 +1,6 @@
 # z-tabs
 
-[![version](https://img.shields.io/badge/version-0.2.2-blue)](https://github.com/SmileZXLee/uni-z-tabs)
+[![version](https://img.shields.io/badge/version-0.2.5-blue)](https://github.com/SmileZXLee/uni-z-tabs)
 [![license](https://img.shields.io/github/license/SmileZXLee/uni-z-tabs)](https://en.wikipedia.org/wiki/MIT_License)
 
 ***
@@ -106,9 +106,10 @@ npm update @zxlee/z-tabs
 
 ### events
 
-| 事件名  | 说明                 | 回调参数                                                     |
-| ------- | -------------------- | ------------------------------------------------------------ |
-| @change | tabs改变(点击)时触发 | `参数1`:index(当前切换到的index)；<br/>`参数2`:value(当前切换到的value) |
+| 事件名       | 说明                 | 回调参数                                                     |
+| ------------ | -------------------- | ------------------------------------------------------------ |
+| @change      | tabs改变(点击)时触发 | `参数1`:index(当前切换到的index)；<br/>`参数2`:value(当前切换到的value) |
+| @secondClick | tabs二次点击时触发   | `参数1`:index(当前切换到的index)；<br/>`参数2`:value(当前切换到的value) |
 
 ### methods
 

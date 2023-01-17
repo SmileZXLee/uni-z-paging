@@ -1,4 +1,4 @@
-<!-- z-tabs v0.2.2 by-ZXLee -->
+<!-- z-tabs v0.2.5 by-ZXLee -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-tabs -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?name=z-tabs -->
 <!-- 反馈QQ群：790460711 -->
@@ -116,7 +116,8 @@
 				itemNodeInfos: [],
 				isFirstLoaded: false,
 				currentScrollLeft: 0,
-				changeTriggerFailed: false
+				changeTriggerFailed: false,
+				currentChanged: false
 			};
 		},
 		props: {
@@ -243,7 +244,7 @@
 			initTriggerChange: {
 				type: Boolean,
 				default: _gc('initTriggerChange',false)
-			},
+			}
 		},
 		mounted() {
 			this.updateSubviewLayout();
@@ -251,6 +252,7 @@
 		watch: {
 			current: {
 				handler(newVal) {
+					this.currentChanged && this._lockDx();
 					this.currentIndex = newVal;
 					this._preUpdateDotPosition(this.currentIndex);
 					if (this.initTriggerChange) {
@@ -260,6 +262,7 @@
 							this.changeTriggerFailed = true;
 						}
 					}
+					this.currentChanged = true;
 				},
 				immediate: true
 			},
@@ -357,7 +360,10 @@
 				const barWidth = this.pxBarWidth;
 				if(this.currentSwiperIndex !== this.currentIndex){
 					dxRate = dxRate - (this.currentSwiperIndex - this.currentIndex);
-					this.bottomDotXForIndex = this._getBottomDotX(this.itemNodeInfos[this.currentSwiperIndex], barWidth);
+					const currentNode = this.itemNodeInfos[this.currentSwiperIndex];
+					if (!!currentNode){
+						this.bottomDotXForIndex = this._getBottomDotX(currentNode, barWidth);
+					}
 				}
 				const currentIndex = this.currentSwiperIndex;
 				let nextIndex = currentIndex + (isRight ? 1 : -1);
@@ -393,7 +399,9 @@
 			},
 			//在swiper的@animationfinish中通知z-tabs结束多setDx的锁定，若在父组件中调用了setDx，则必须调用unlockDx
 			unlockDx() {
-				this.shouldSetDx = true;
+				this.$nextTick(() => {
+					this.shouldSetDx = true;
+				})
 			},
 			//更新z-tabs内部布局
 			updateSubviewLayout(tryCount = 0) {
@@ -434,11 +442,17 @@
 					this.$emit('change', index, item[this.valueKey]);
 					this.currentIndex = index;
 					this._preUpdateDotPosition(index);
+				} else {
+					this.$emit('secondClick',index, item[this.valueKey]);
 				}
 			},
 			//scroll-view滚动
 			scroll(e){
 				this.currentScrollLeft = e.detail.scrollLeft;
+			},
+			//锁定dx，用于避免在swiper被动触发滚动时候执行setDx中的代码
+			_lockDx() {
+				this.shouldSetDx = false;
 			},
 			//更新底部dot位置之前的预处理
 			_preUpdateDotPosition(index) {

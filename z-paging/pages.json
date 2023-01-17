@@ -140,116 +140,100 @@
 				"enablePullDownRefresh": false
 			}
 
-		}
-	    ,{
-            "path" : "pages/minimalism-demo/minimalism-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "极简写法演示",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/swiper-simplify-demo/swiper-simplify-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "滑动切换选项卡演示(简化写法)",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/swiper-simplify-demo-n/swiper-simplify-demo-n",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "滑动切换选项卡演示(简化写法)(nvue)",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/custom-back-to-top-demo/custom-back-to-top-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "自定义返回顶部view演示(vue)",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/sticky-swiper-demo-n/sticky-swiper-demo-n",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "滑动切换选项卡+吸顶演示(nvue)",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/virtual-list-demo/virtual-list-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "虚拟列表演示(一般写法)",
-                "enablePullDownRefresh": false
-            }
-            
-        },
+		}, {
+			"path": "pages/minimalism-demo/minimalism-demo",
+			"style": {
+				"navigationBarTitleText": "极简写法演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/swiper-simplify-demo/swiper-simplify-demo",
+			"style": {
+				"navigationBarTitleText": "滑动切换选项卡演示(简化写法)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/swiper-simplify-demo-n/swiper-simplify-demo-n",
+			"style": {
+				"navigationBarTitleText": "滑动切换选项卡演示(简化写法)(nvue)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/custom-back-to-top-demo/custom-back-to-top-demo",
+			"style": {
+				"navigationBarTitleText": "自定义返回顶部view演示(vue)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/sticky-swiper-demo-n/sticky-swiper-demo-n",
+			"style": {
+				"navigationBarTitleText": "滑动切换选项卡+吸顶演示(nvue)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/virtual-list-demo/virtual-list-demo",
+			"style": {
+				"navigationBarTitleText": "虚拟列表演示(一般写法)",
+				"enablePullDownRefresh": false
+			}
+
+		},
 		{
-		    "path" : "pages/virtual-list-no-inner-demo/virtual-list-no-inner-demo",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "虚拟列表演示(不使用内置列表)",
-		        "enablePullDownRefresh": false
-		    }
-		    
+			"path": "pages/virtual-list-no-inner-demo/virtual-list-no-inner-demo",
+			"style": {
+				"navigationBarTitleText": "虚拟列表演示(不使用内置列表)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/inner-list-demo/inner-list-demo",
+			"style": {
+				"navigationBarTitleText": "内置列表模式演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/inner-list-demo-n/inner-list-demo-n",
+			"style": {
+				"navigationBarTitleText": "内置列表模式演示(nvue)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/traditional-long-list-demo/traditional-long-list-demo",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/virtual-list-compatibility-demo/virtual-list-compatibility-demo",
+			"style": {
+				"navigationBarTitleText": "虚拟列表演示(兼容写法)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/page-default-by-comp-demo/page-default-by-comp-demo",
+			"style": {
+				"navigationBarTitleText": "使用页面滚动且在子组件内使用z-paging示例",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/popup-demo/popup-demo",
+			"style": {
+				"navigationBarTitleText": "在弹窗内使用z-paging示例",
+				"enablePullDownRefresh": false
+			}
+
 		}
-        ,{
-            "path" : "pages/inner-list-demo/inner-list-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "内置列表模式演示",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/inner-list-demo-n/inner-list-demo-n",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "内置列表模式演示(nvue)",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/traditional-long-list-demo/traditional-long-list-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/virtual-list-compatibility-demo/virtual-list-compatibility-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "虚拟列表演示(兼容写法)",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/page-default-by-comp-demo/page-default-by-comp-demo",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "使用页面滚动且在子组件内使用z-paging示例",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "z-paging",
@@ -260,8 +244,8 @@
 			"allowsBounceVertical": "NO"
 		},
 		//在App中，取消下拉刷新灰色半弧形效果
-		"app-plus" : {
-			"bounce" : "none",
+		"app-plus": {
+			"bounce": "none",
 			"backgroundColor": "white"
 		}
 	}
