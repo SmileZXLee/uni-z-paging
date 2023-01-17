@@ -586,13 +586,17 @@ export default {
 		//当前数据改变时调用
 		_currentDataChange(newVal, oldVal) {
 			newVal = [...newVal];
-			this.listRendering = true;
-			this.listRenderingTimeout && clearTimeout(this.listRenderingTimeout);
-			this.$nextTick(() => {
-				this.listRenderingTimeout = setTimeout(() => {
-					this.listRendering = false;
-				},100)
-			})
+			if (!this.isFirstPage) {
+				this.listRendering = true;
+				this.listRenderingTimeout && clearTimeout(this.listRenderingTimeout);
+				this.$nextTick(() => {
+					this.listRenderingTimeout = setTimeout(() => {
+						this.listRendering = false;
+					}, 100)
+				})
+			} else {
+				this.listRendering = false;
+			}
 			// #ifndef APP-NVUE
 			this.finalUseVirtualList && this._setCellIndex(newVal,this.totalData.length === 0)
 			this.useChatRecordMode && newVal.reverse();
