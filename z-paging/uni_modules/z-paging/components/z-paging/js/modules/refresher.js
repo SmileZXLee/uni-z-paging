@@ -257,10 +257,10 @@ export default {
 				}
 			}
 			if (idDefault && this.customRefresherHeight > 0) return this.customRefresherHeight;
-			return u.convertTextToPx(refresherThreshold);
+			return u.convertToPx(refresherThreshold);
 		},
 		finalRefresherFixedBacHeight() {
-			return u.convertTextToPx(this.refresherFixedBacHeight);
+			return u.convertToPx(this.refresherFixedBacHeight);
 		},
 		finalRefresherThemeStyle() {
 			return this.refresherThemeStyle.length ? this.refresherThemeStyle : this.defaultThemeStyle;

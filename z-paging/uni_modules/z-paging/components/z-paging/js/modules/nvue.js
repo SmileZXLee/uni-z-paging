@@ -210,7 +210,7 @@ export default {
 			
 			const duration = animate ? 200 : 0;
 			if (this.nOldShowRefresherRevealHeight !== height) {
-				if(height > 0){
+				if (height > 0) {
 					this.nShowRefresherReveal = true;
 				}
 				weexAnimation.transition(this.$refs['zp-n-list-refresher-reveal'], {

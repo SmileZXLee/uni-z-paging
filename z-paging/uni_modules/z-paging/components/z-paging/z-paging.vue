@@ -7,7 +7,7 @@
 v2.4.8 (2022-11-03)
 by ZXLee
 -->
-<!-- API文档地址：https://z-paging.zxlee.cn -->
+<!-- 插件文档地址：https://z-paging.zxlee.cn -->
 <!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
 <!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
 <!-- 反馈QQ群：790460711 -->

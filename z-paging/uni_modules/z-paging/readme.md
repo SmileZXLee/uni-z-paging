@@ -3,7 +3,7 @@
 [![version](https://img.shields.io/badge/version-2.4.8-blue)](https://github.com/SmileZXLee/uni-z-paging)
 [![license](https://img.shields.io/github/license/SmileZXLee/uni-z-paging)](https://en.wikipedia.org/wiki/MIT_License)
 
-### API文档地址：[https://z-paging.zxlee.cn](https://z-paging.zxlee.cn)
+### 插件文档地址：[https://z-paging.zxlee.cn](https://z-paging.zxlee.cn)
 
 ***  
 ### 功能&特点

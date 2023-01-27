@@ -130,7 +130,7 @@ export default {
 			return this.useVirtualList && !this.usePageScroll;
 		},
 		finalUseInnerList() {
-			return this.useInnerList || (this.finalUseVirtualList && !this.forceCloseInnerList)
+			return this.useInnerList || (this.finalUseVirtualList && !this.forceCloseInnerList);
 		},
 		finalCellKeyName() {
 			// #ifdef APP-NVUE
@@ -142,7 +142,6 @@ export default {
 		},
 		finalVirtualPageHeight(){
 			return this.virtualPageHeight > 0 ? this.virtualPageHeight : this.windowHeight;
-			return virtualPageHeight * this.preloadPage;
 		},
 		virtualRangePageHeight(){
 			return this.finalVirtualPageHeight * this.preloadPage;
@@ -222,13 +221,13 @@ export default {
 				const updateDynamicCellHeightTimeout = setTimeout(async () => {
 					for (let i = 0; i < list.length; i++) {
 						let item = list[i];
-						const cellNode = await this._getNodeClientRect(`#zp-id-${item[c.listCellIndexKey]}`,this.finalUseInnerList);
+						const cellNode = await this._getNodeClientRect(`#zp-id-${item[c.listCellIndexKey]}`, this.finalUseInnerList);
 						const currentHeight = cellNode ? cellNode[0].height : 0;
 						if (!cellNode) {
 							clearTimeout(updateDynamicCellHeightTimeout);
 							this.virtualHeightCacheList = this.virtualHeightCacheList.slice(-i);
 							if (this.getCellHeightRetryCount.dynamic > 10) return;
-							this.getCellHeightRetryCount.dynamic++;
+							this.getCellHeightRetryCount.dynamic ++;
 							this._updateDynamicCellHeight(list);
 							break;
 						}
@@ -236,7 +235,7 @@ export default {
 						const lastHeight = lastHeightCache ? lastHeightCache.totalHeight : 0;
 						this.virtualHeightCacheList.push({
 							height: currentHeight,
-							lastHeight: lastHeight,
+							lastHeight,
 							totalHeight: lastHeight + currentHeight
 						});
 					}
@@ -297,7 +296,7 @@ export default {
 				
 				let startTopRangeIndex = this.virtualTopRangeIndex;
 				if (scrollDirection === 'bottom') {
-					for (let i = startTopRangeIndex; i < heightCacheList.length;i++){
+					for (let i = startTopRangeIndex; i < heightCacheList.length; i++){
 						const heightCacheItem = heightCacheList[i];
 						if (heightCacheItem && heightCacheItem.totalHeight > topRangePageOffset) {
 							this.virtualTopRangeIndex = i;

@@ -277,7 +277,7 @@ export default {
 			return pagingStyle;
 		},
 		finalLowerThreshold() {
-			return u.convertTextToPx(this.lowerThreshold);
+			return u.convertToPx(this.lowerThreshold);
 		},
 		finalPagingContentStyle() {
 			if (this.contentZIndex != 1) {
@@ -406,7 +406,7 @@ export default {
 						if(finalScrollBottomNode){
 							scrollViewHeight -= finalScrollBottomNode[0].height;
 						}
-						const additionHeight = u.convertTextToPx(this.autoHeightAddition);
+						const additionHeight = u.convertToPx(this.autoHeightAddition);
 						const finalHeight = scrollViewHeight + additionHeight - (this.insideMore ? 1 : 0) + 'px !important';
 						this.$set(this.scrollViewStyle, heightKey, finalHeight);
 						this.$set(this.scrollViewInStyle, heightKey, finalHeight);

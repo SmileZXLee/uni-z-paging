@@ -53,12 +53,12 @@ export default {
 			return this.usePageScroll ? false : this.enableBackToTop;
 		},
 		finalBackToTopThreshold() {
-			return u.convertTextToPx(this.backToTopThreshold);
+			return u.convertToPx(this.backToTopThreshold);
 		},
 		finalBackToTopStyle() {
 			const backToTopStyle = this.backToTopStyle;
 			if (!backToTopStyle.bottom) {
-				backToTopStyle.bottom = this.windowBottom + u.convertTextToPx(this.backToTopBottom) + 'px';
+				backToTopStyle.bottom = this.windowBottom + u.convertToPx(this.backToTopBottom) + 'px';
 			}
 			if(!backToTopStyle.position){
 				backToTopStyle.position = this.usePageScroll ? 'fixed': 'absolute';

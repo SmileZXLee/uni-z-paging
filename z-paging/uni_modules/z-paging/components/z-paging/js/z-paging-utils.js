@@ -115,7 +115,7 @@ function getRefesrherFormatTimeByKey(key, textMap) {
 }
 
 //将文本的px或者rpx转为px的值
-function convertTextToPx(text) {
+function convertToPx(text) {
 	const dataType = Object.prototype.toString.call(text);
 	if (dataType === '[object Number]') return text;
 	let isRpx = false;
@@ -200,7 +200,7 @@ export default {
 	getTouch,
 	getTouchFromZPaging,
 	getParent,
-	convertTextToPx,
+	convertToPx,
 	getTime,
 	getInstanceId,
 	consoleErr
