@@ -36,8 +36,8 @@ by ZXLee
 					:scroll-into-view="scrollIntoView" :lower-threshold="finalLowerThreshold" :upper-threshold="5"
 					:refresher-enabled="finalRefresherEnabled&&!useCustomRefresher" :refresher-threshold="finalRefresherThreshold"
 					:refresher-default-style="finalRefresherDefaultStyle" :refresher-background="refresherBackground"
-					:refresher-triggered="finalRefresherTriggered" @scroll="_scroll" @scrolltolower="_onLoadingMore('toBottom')"
-					@scrolltoupper="_scrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh(true)"
+					:refresher-triggered="finalRefresherTriggered" @scroll="_scroll" @scrolltolower="_onScrollToLower"
+					@scrolltoupper="_onScrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh(true)"
 					>	
 					<view class="zp-paging-touch-view"
 					<!-- #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5 -->
@@ -81,7 +81,7 @@ by ZXLee
 							<view class="zp-paging-container">
 								<slot v-if="useChatRecordMode&&zSlots.chatLoading&&loadingStatus!==M.NoMore&&realTotalData.length" name="chatLoading" />
 								<view v-else-if="useChatRecordMode&&loadingStatus!==M.NoMore&&realTotalData.length" class="zp-chat-record-loading-container">
-									<text v-if="loadingStatus!==M.Loading" @click="_scrollToUpper()"
+									<text v-if="loadingStatus!==M.Loading" @click="_onScrollToUpper"
 										:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
 									<image v-else :src="base64Flower" class="zp-chat-record-loading-custom-image" />
 								</view>
@@ -233,7 +233,7 @@ by ZXLee
 						<view v-if="loadingStatus!==M.NoMore&&realTotalData.length">
 							<slot v-if="zSlots.chatLoading" name="chatLoading" />
 							<view v-else class="zp-chat-record-loading-container">
-								<text v-if="loadingStatus!==M.Loading" @click="_scrollToUpper()"
+								<text v-if="loadingStatus!==M.Loading" @click="_onScrollToUpper"
 									:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
 								<view>
 									<loading-indicator v-if="loadingStatus===M.Loading" class="zp-line-loading-image" animating />

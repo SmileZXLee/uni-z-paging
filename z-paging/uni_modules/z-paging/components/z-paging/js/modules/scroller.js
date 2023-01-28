@@ -211,7 +211,7 @@ export default {
 		},
 		
 		//当滚动到顶部时
-		_scrollToUpper() {
+		_onScrollToUpper() {
 			this.$emit('scrolltoupper');
 			this.$emit('scrollTopChange', 0);
 			this.$nextTick(() => {
@@ -220,6 +220,10 @@ export default {
 			if (!this.useChatRecordMode) return;
 			if (this.loadingStatus === Enum.More.NoMore) return;
 			this._onLoadingMore('click');
+		},
+		//当滚动到底部时
+		_onScrollToLower(e) {
+			(!e.detail || !e.detail.direction || e.detail.direction === 'bottom') && this._onLoadingMore('toBottom')
 		},
 		//滚动到顶部
 		_scrollToTop(animate = true, isPrivate = true) {
