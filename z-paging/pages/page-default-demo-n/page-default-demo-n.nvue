@@ -1,4 +1,4 @@
-<!-- 使用页面滚动示例(nvue)(不建议，在nvue中，使用内置的list组件性能优于页面滚动，参见common-demo-n.nvue) -->
+<!-- 使用页面滚动演示(nvue)(不建议，在nvue中，使用内置的list组件性能优于页面滚动，参见common-demo-n.nvue) -->
 <!-- 注意，在nvue中使用页面滚动时，无法使用z-paging的下拉刷新(因为z-paging在nvue中的下拉刷新使用的是原生refresh组件，它只能在scroller和list中使用) -->
 <!-- 若使用页面滚动时需要下拉刷新功能，请在pages.json中设置"enablePullDownRefresh": true开启页面下拉刷新功能 -->
 <template>

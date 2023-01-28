@@ -295,7 +295,7 @@ export default {
 					this.$nextTick(()=>{
 						this._updateCustomRefresherHeight();
 					})
-				}, 100)
+				}, c.delayTime)
 			}
 			// #endif
 			return showRefresher;

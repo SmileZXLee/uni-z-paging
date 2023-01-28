@@ -28,7 +28,7 @@
 		}, {
 			"path": "pages/page-default-demo/page-default-demo",
 			"style": {
-				"navigationBarTitleText": "使用页面滚动示例",
+				"navigationBarTitleText": "使用页面滚动演示",
 				"enablePullDownRefresh": false
 
 			}
@@ -129,7 +129,7 @@
 		}, {
 			"path": "pages/page-default-demo-n/page-default-demo-n",
 			"style": {
-				"navigationBarTitleText": "使用页面滚动示例(nvue)",
+				"navigationBarTitleText": "使用页面滚动演示(nvue)",
 				"enablePullDownRefresh": true
 			}
 
@@ -221,14 +221,14 @@
 		}, {
 			"path": "pages/page-default-by-comp-demo/page-default-by-comp-demo",
 			"style": {
-				"navigationBarTitleText": "使用页面滚动且在子组件内使用z-paging示例",
+				"navigationBarTitleText": "使用页面滚动且在子组件内使用z-paging演示",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
 			"path": "pages/popup-demo/popup-demo",
 			"style": {
-				"navigationBarTitleText": "在弹窗内使用z-paging示例",
+				"navigationBarTitleText": "在弹窗内使用z-paging演示",
 				"enablePullDownRefresh": false
 			}
 

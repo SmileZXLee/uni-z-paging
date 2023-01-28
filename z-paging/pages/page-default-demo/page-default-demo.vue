@@ -1,4 +1,4 @@
-<!-- 使用页面滚动示例(vue) -->
+<!-- 使用页面滚动演示(vue) -->
 <template>
 	<view class="content">
 		<!-- 此时使用了页面的滚动，z-paging不需要有确定的高度，use-page-scroll需要设置为true -->

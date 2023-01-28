@@ -1,4 +1,4 @@
-<!-- 在弹窗内使用z-paging示例(vue) -->
+<!-- 在弹窗内使用z-paging演示(vue) -->
 <template>
 	<view class="content">
 		<button size="mini" type="primary" @click="open">打开弹窗</button>

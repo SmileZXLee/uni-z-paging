@@ -61,7 +61,7 @@
 				const params = {
 					pageNo: pageNo,
 					pageSize: pageSize,
-					type: this.tabIndex + 1
+					type: this.current + 1
 				}
 				this.$request.queryList(params).then(res => {
 					//将请求的结果数组传递给z-paging

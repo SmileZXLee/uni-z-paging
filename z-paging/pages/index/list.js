@@ -20,17 +20,17 @@ export default {
 			subTitle: ''
 		},
 		{
-			title: '使用页面滚动示例',
+			title: '使用页面滚动演示',
 			file: 'page-default-demo',
 			subTitle: ''
 		},
 		{
-			title: '使用页面滚动且在子组件内使用z-paging示例',
+			title: '使用页面滚动且在子组件内使用z-paging演示',
 			file: 'page-default-by-comp-demo',
 			subTitle: ''
 		},
 		{
-			title: '在弹窗内使用z-paging示例',
+			title: '在弹窗内使用z-paging演示',
 			file: 'popup-demo',
 			subTitle: 'z-paging的局部滚动'
 		},
@@ -126,7 +126,7 @@ export default {
 			subTitle: ''
 		},
 		{
-			title: '使用页面滚动示例(nvue)',
+			title: '使用页面滚动演示(nvue)',
 			file: 'page-default-demo-n',
 			subTitle: ''
 		},

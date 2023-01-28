@@ -11,13 +11,13 @@
 			:preloadPage="preloadPage" :cellHeightMode="cellHeightMode" :virtualScrollFps="virtualScrollFps" :virtualListCol="virtualListCol"
 			@query="_queryList" @listChange="_updateList" :mounted-auto-call-reload="false" style="height: 100%;">
 			<slot />
-			<template v-slot:header>
+			<template #header>
 				<slot name="header"/>
 			</template>
-			<template v-slot:cell="{item,index}">
+			<template #cell="{item,index}">
 				<slot name="cell" :item="item" :index="index"/>
 			</template>
-			<template v-slot:footer>
+			<template #footer>
 				<slot name="footer"/>
 			</template>
 		</z-paging>
