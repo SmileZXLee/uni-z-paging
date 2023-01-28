@@ -8,29 +8,32 @@
 		:loading-more-loading-text="{'en':'英文的加载中','zh-cn':'中文的加载中','zh-hant-cn':'繁体的加载中'}">
 		
 		<!-- 这里插入一个view到z-paging中，并且这个view会被z-paging标记为top固定在顶部 -->
-		<!-- vue3中用v-slot:top -->
-		<template slot="top">
+		<template #top>
 			<!-- 这里接收页面传进来的slot，这样相当于将页面传进来的slot传给z-paging的slot="top"了 -->
-			<slot name="top"></slot>
+			<slot name="top" />
 		</template>
 		
 		<!-- 这里插入一个view到z-paging中，并且这个view会被z-paging标记为bottom固定在顶部 -->
 		<!-- vue3中用v-slot:bottom -->
-		<template slot="bottom">
+		<template #bottom>
 			<!-- 这里接收页面传进来的slot，这样相当于将页面传进来的slot传给z-paging的slot="bottom"了 -->
-			<slot name="bottom"></slot>
+			<slot name="bottom" />
 		</template>
 		
-		<!-- vue3中用v-slot:cell="{item,index}" -->
-		<template slot="cell" slot-scope="{item,index}">
+		<!-- 这个是插入虚拟列表/内置列表的cell -->
+		<template #cell="{item,index}">
 			<slot name="cell" :item="item" :index="index"/>
 		</template>
 
-		<!-- 这里通过slot自定义了下拉刷新view和没有更多数据view，页面那边就不用再写下面两行了 -->
+		<!-- 这里通过slot统一自定义了下拉刷新view和没有更多数据view，页面那边就不用再写下面两行了 -->
 		<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
-		<custom-refresher slot="refresher" slot-scope="{refresherStatus}" :status="refresherStatus"></custom-refresher>
+		<template #refresher="{refresherStatus}">
+			<custom-refresher :status="refresherStatus" />
+		</template>
 		<!-- 自定义没有更多数据view -->
-		<custom-nomore slot="loadingMoreNoMore"></custom-nomore>
+		<template #loadingMoreNoMore>
+			<custom-nomore></custom-nomore>
+		</template>
 
 		<!-- 这里接收页面传进来的普通slot，如列表数据等 -->
 		<slot />

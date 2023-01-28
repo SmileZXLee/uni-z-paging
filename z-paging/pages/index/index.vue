@@ -41,8 +41,12 @@
 			this.list = this.list.concat(indexList.listNvue);
 			// #endif
 			
+			let vueVersion = 'vue2';
+			// #ifdef VUE3
+			vueVersion = 'vue3';
+			// #endif
 			uni.setNavigationBarTitle({
-				title: `z-paging(v${version})`
+				title: `z-paging(v${version}) in ${vueVersion}`
 			})
 		},
 		methods: {
