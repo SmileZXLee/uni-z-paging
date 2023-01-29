@@ -1,7 +1,7 @@
 # z-paging
 
 <p align="center">
-    <img alt="logo" src="https://z-paging.zxlee.cn/img/title-logo.png" height="120" style="margin-bottom: 50px;">
+    <img alt="logo" src="https://z-paging.zxlee.cn/img/title-logo.png" height="100" style="margin-bottom: 50px;">
 </p>
 
 [![release](https://img.shields.io/github/v/release/SmileZXLee/uni-z-paging?style=flat)](https://github.com/SmileZXLee/uni-z-paging/releases)
