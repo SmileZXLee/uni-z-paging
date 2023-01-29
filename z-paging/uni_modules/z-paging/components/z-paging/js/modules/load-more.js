@@ -237,8 +237,8 @@ export default {
 				this.pageNo ++;
 				this._startLoading(false);
 				if (this.isLocalPaging) {
-					this._localPagingQueryList(this.pageNo, this.defaultPageSize, this.localPagingLoadingTime, (res) => {
-						this.addData(res);
+					this._localPagingQueryList(this.pageNo, this.defaultPageSize, this.localPagingLoadingTime, res => {
+						this.completeByTotal(res, this.totalLocalPagingList.length);
 					})
 				} else {
 					this._emitQuery(this.pageNo, this.defaultPageSize, Enum.QueryFrom.LoadingMore);

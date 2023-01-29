@@ -422,7 +422,7 @@ export default {
 				}
 				this.disabledBounce = true;
 			}
-			this._emitTouchmove({pullingDistance:moveDis,dy:this.moveDis - this.oldMoveDis});
+			this._emitTouchmove({pullingDistance:moveDis, dy:this.moveDis - this.oldMoveDis});
 		},
 		// #endif
 		//进一步处理拖拽中结果

@@ -288,7 +288,7 @@ export default {
 			const disTime = currentTimeStamp - this.requestTimeStamp;
 			let minDelay = this.minDelay;
 			if(this.isFirstPage && this.finalShowRefresherWhenReload){
-				minDelay = Math.max(400,minDelay);
+				minDelay = Math.max(400, minDelay);
 			}
 			if(this.requestTimeStamp > 0 && disTime < minDelay){
 				addDataDalay = minDelay - disTime;
@@ -492,7 +492,7 @@ export default {
 				u.setRefesrherTime(u.getTime(), this.refresherUpdateTimeKey);
 				this.$refs.refresh && this.$refs.refresh.updateTime();
 			}
-			if (tempIsUserPullDown && this.isFirstPage) {
+			if (!isLocal && tempIsUserPullDown && this.isFirstPage) {
 				this.isUserPullDown = false;
 			}
 			let dataTypeRes = this._checkDataType(data, success, isLocal);
@@ -506,7 +506,7 @@ export default {
 			setTimeout(() => {
 				this.pagingLoaded = true;
 				this.$nextTick(()=>{
-					this._refresherEnd(delayTime > 0, true, tempIsUserPullDown);
+					!isLocal && this._refresherEnd(delayTime > 0, true, tempIsUserPullDown);
 				})
 			}, delayTime)
 			if (this.isFirstPage) {
@@ -525,8 +525,8 @@ export default {
 					this.totalLocalPagingList = data;
 					const localPageNo = this.defaultPageNo;
 					const localPageSize = this.queryFrom !== Enum.QueryFrom.Refresh ? this.defaultPageSize : this.currentRefreshPageSize;
-					this._localPagingQueryList(localPageNo, localPageSize, 0, (res) => {
-						this.complete(res);
+					this._localPagingQueryList(localPageNo, localPageSize, 0, res => {
+						this.completeByTotal(res, this.totalLocalPagingList.length);
 					})
 				} else {
 					let dataChangeDelayTime = 0;
