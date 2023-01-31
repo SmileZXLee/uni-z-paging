@@ -1,10 +1,12 @@
 # z-paging
 
+<p align="center">
+    <img alt="logo" src="https://z-paging.zxlee.cn/img/title-logo.png" height="100" style="margin-bottom: 50px;">
+</p>
+
 [![release](https://img.shields.io/github/v/release/SmileZXLee/uni-z-paging?style=flat)](https://github.com/SmileZXLee/uni-z-paging/releases)
 [![download](https://img.shields.io/npm/dt/z-paging?style=flat)](https://www.npmjs.com/package/z-paging)
 [![license](https://img.shields.io/github/license/SmileZXLee/uni-z-paging?style=flat)](https://en.wikipedia.org/wiki/MIT_License)
-
-> 【支持nvue、vue3，使用wxs+renderjs实现】高性能，全平台兼容。支持虚拟列表，支持自定义下拉刷新、上拉加载更多，支持自动管理空数据图、点击返回顶部，支持聊天分页、本地分页，支持国际化等100+项配置
 
 ## 插件文档地址：[https://z-paging.zxlee.cn](https://z-paging.zxlee.cn) 
 
