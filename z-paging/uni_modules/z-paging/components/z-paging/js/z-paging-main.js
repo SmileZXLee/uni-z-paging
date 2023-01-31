@@ -437,7 +437,7 @@ export default {
 			}
 		},
 		//获取节点尺寸
-		_getNodeClientRect(select, inThis = true, scrollOffset = false) {
+		_getNodeClientRect(select, inDom = true, scrollOffset = false) {
 			// #ifdef APP-NVUE
 			select = select.replace('.', '').replace('#', '');
 			const ref = this.$refs[select];
@@ -453,9 +453,9 @@ export default {
 			return;
 			// #endif
 			//#ifdef MP-ALIPAY
-			inThis = false;
+			inDom = false;
 			//#endif
-			let res = inThis ? uni.createSelectorQuery().in(this) : uni.createSelectorQuery();
+			let res = !!inDom ? uni.createSelectorQuery().in(inDom === true ? this : inDom) : uni.createSelectorQuery();
 			scrollOffset ? res.select(select).scrollOffset() : res.select(select).boundingClientRect();
 			return new Promise((resolve, reject) => {
 				res.exec(data => {

@@ -337,10 +337,7 @@ export default {
 					}
 					return;
 					// #endif
-					if (sel.indexOf('#') != -1) {
-						sel = sel.replace('#', '');
-					}
-					this._getNodeClientRect('#' + sel, false).then((node) => {
+					this._getNodeClientRect('#' + sel.replace('#', ''), this.$parent).then((node) => {
 						if (node) {
 							let nodeTop = node[0].top;
 							this._scrollIntoViewByNodeTop(nodeTop, offset, animate);
