@@ -12,6 +12,8 @@
 
 ## 在DCloud插件市场中访问：[https://ext.dcloud.net.cn/plugin?name=z-paging](https://ext.dcloud.net.cn/plugin?name=z-paging)
 
+### 更新插件前，请注意[版本差异](https://z-paging.zxlee.cn/start/upgrade-guide.html)
+
 ### 功能&特点
 
 * 【配置简单】仅需两步（绑定网络请求方法、绑定分页结果数组）轻松完成完整下拉刷新，上拉加载更多功能。
