@@ -306,7 +306,7 @@ export default {
 					}
 				} else {
 					let topRangeMatched = false;
-					for (let i = startTopRangeIndex; i >= 0;i--){
+					for (let i = startTopRangeIndex; i >= 0; i--){
 						const heightCacheItem = heightCacheList[i];
 						if (heightCacheItem && heightCacheItem.totalHeight < topRangePageOffset) {
 							this.virtualTopRangeIndex = i;
@@ -317,7 +317,7 @@ export default {
 					}
 					!topRangeMatched && this._resetTopRange();
 				}
-				for (let i = this.virtualTopRangeIndex; i < heightCacheList.length;i++){
+				for (let i = this.virtualTopRangeIndex; i < heightCacheList.length; i++){
 					const heightCacheItem = heightCacheList[i];
 					if (heightCacheItem && heightCacheItem.totalHeight > bottomRangePageOffset) {
 						virtualBottomRangeIndex = i;

@@ -593,7 +593,7 @@ export default {
 				this.$nextTick(() => {
 					this.listRenderingTimeout = setTimeout(() => {
 						this.listRendering = false;
-					}, 100)
+					}, c.delayTime)
 				})
 			} else {
 				this.listRendering = false;
