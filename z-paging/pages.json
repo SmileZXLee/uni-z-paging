@@ -3,7 +3,8 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "z-paging"
+				"navigationBarTitleText": "z-paging",
+				"navigationStyle": "custom"
 			}
 		}, {
 			"path": "pages/common-demo/common-demo",

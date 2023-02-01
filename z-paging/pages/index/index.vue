@@ -1,6 +1,13 @@
 <template>
 	<view class="content">
 		<z-paging ref="paging" refresher-only @onRefresh="onRefresh">
+			
+			<!-- 自定义导航栏 -->
+			<template #top>
+				<index-nav />
+			</template>
+			
+			<!-- 自定义下拉刷新view -->
 			<template #refresher>
 				<view style="height: 120rpx;display: flex;justify-content: center;align-items: center;">
 					<image style="width: 300rpx;height: 60rpx;" src="../../static/logo_loading.gif"></image>
@@ -28,7 +35,6 @@
 </template>
 
 <script>
-	import { version } from '@/uni_modules/z-paging/package.json'
 	import indexList from './list'
 	export default {
 		data() {
@@ -40,10 +46,6 @@
 			// #ifdef APP-PLUS
 			this.list = this.list.concat(indexList.listNvue);
 			// #endif
-			
-			uni.setNavigationBarTitle({
-				title: `z-paging(v${version})`
-			})
 		},
 		methods: {
 			//下拉刷新被触发
@@ -58,7 +60,6 @@
 				uni.navigateTo({
 					url: `../${item.file}/${item.file}`
 				})
-
 			}
 		}
 	}

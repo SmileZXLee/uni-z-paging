@@ -1,9 +1,15 @@
 # z-paging
 
-[![version](https://img.shields.io/badge/version-2.5.0-blue)](https://github.com/SmileZXLee/uni-z-paging)
+<p align="center">
+    <img alt="logo" src="https://z-paging.zxlee.cn/img/title-logo.png" height="100" style="margin-bottom: 50px;">
+</p>
+
+[![version](https://img.shields.io/badge/version-2.5.1-blue)](https://github.com/SmileZXLee/uni-z-paging)
 [![license](https://img.shields.io/github/license/SmileZXLee/uni-z-paging)](https://en.wikipedia.org/wiki/MIT_License)
 
 ### 插件文档地址：[https://z-paging.zxlee.cn](https://z-paging.zxlee.cn)
+
+### 更新插件前，请注意[版本差异](https://z-paging.zxlee.cn/start/upgrade-guide.html)
 
 ***  
 ### 功能&特点

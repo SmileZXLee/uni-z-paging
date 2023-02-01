@@ -13,7 +13,7 @@
 			</template>
 			
 			<!-- 以下内容极为重要！！！！！！！！ -->
-			<!-- cell中的内容必须写在zp-public-virtual-cell组件中，必须在项目的components目录下创建名为zp-public-virtual-cell的组件 -->
+			<!-- cell中的内容必须写在zp-public-virtual-cell.vue文件中，必须在项目的components目录下创建名为zp-public-virtual-cell的组件 -->
 			
 			
 			<!-- 放在所有cell上方的用slot="header"插入，放在所有cell下方的用slot="footer"插入 -->
