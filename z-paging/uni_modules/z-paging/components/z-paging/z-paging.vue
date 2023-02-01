@@ -8,8 +8,8 @@ v2.5.1 (2023-02-01)
 by ZXLee
 -->
 <!-- 插件文档地址：https://z-paging.zxlee.cn -->
-<!-- github地址:https://github.com/SmileZXLee/uni-z-paging -->
-<!-- dcloud地址:https://ext.dcloud.net.cn/plugin?id=3935 -->
+<!-- github地址：https://github.com/SmileZXLee/uni-z-paging -->
+<!-- dcloud地址：https://ext.dcloud.net.cn/plugin?id=3935 -->
 <!-- 反馈QQ群：790460711 -->
 
 <template name="z-paging">
