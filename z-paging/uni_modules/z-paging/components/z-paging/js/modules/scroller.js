@@ -70,7 +70,7 @@ export default {
 		},
 		usePageScroll: {
 			handler(newVal) {
-				this.loaded && this.autoHeight && this._setAutoHeight(!newVal)
+				this.loaded && this.autoHeight && this._setAutoHeight(!newVal);
 				// #ifdef H5
 				if (newVal) {
 					this.$nextTick(()=>{
@@ -230,7 +230,7 @@ export default {
 			// #ifdef APP-NVUE
 			const el = this.$refs['zp-n-list-top-tag'];
 			if (this.usePageScroll) {
-				this._getNodeClientRect('zp-page-scroll-top', false).then((node) => {
+				this._getNodeClientRect('zp-page-scroll-top', false).then(node => {
 					const nodeHeight = node ? node[0].height : 0;
 					weexDom.scrollToElement(el, {
 						offset: -nodeHeight,
@@ -239,7 +239,7 @@ export default {
 				});
 			} else {
 				if (!this.isIos && this.nvueListIs === 'scroller') {
-					this._getNodeClientRect('zp-n-refresh-container', false).then((node) => {
+					this._getNodeClientRect('zp-n-refresh-container', false).then(node => {
 						const nodeHeight = node ? node[0].height : 0;
 						weexDom.scrollToElement(el, {
 							offset: -nodeHeight,

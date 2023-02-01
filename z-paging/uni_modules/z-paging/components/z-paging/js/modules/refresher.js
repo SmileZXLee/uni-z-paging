@@ -219,7 +219,8 @@ export default {
 			currentDis: 0,
 			oldCurrentMoveDis: 0,
 			oldRefresherTouchmoveY: 0,
-			oldTouchDirection: ''
+			oldTouchDirection: '',
+			oldPullingDistance: -1
 		}
 	},
 	watch: {
@@ -417,12 +418,12 @@ export default {
 			if (!this.disabledBounce) {
 				if(this.isIos){
 					// #ifndef MP-LARK
-					this._handleScrollViewDisableBounce({bounce: false});
+					this._handleScrollViewDisableBounce({ bounce: false });
 					// #endif
 				}
 				this.disabledBounce = true;
 			}
-			this._emitTouchmove({pullingDistance:moveDis, dy:this.moveDis - this.oldMoveDis});
+			this._emitTouchmove({ pullingDistance: moveDis, dy: this.moveDis - this.oldMoveDis });
 		},
 		// #endif
 		//进一步处理拖拽中结果
@@ -460,12 +461,16 @@ export default {
 			this.isTouchmovingTimeout && clearTimeout(this.isTouchmovingTimeout);
 			this.refresherReachMaxAngle = true;
 			this.isTouchEnded = true;
-			if (moveDis >= this.finalRefresherThreshold && this.refresherStatus === Enum.Refresher.ReleaseToRefresh) {
+			const refresherThreshold = this.finalRefresherThreshold;
+			if (moveDis >= refresherThreshold && this.refresherStatus === Enum.Refresher.ReleaseToRefresh) {
 				// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
-				this.refresherTransform = `translateY(${this.finalRefresherThreshold}px)`;
+				this.refresherTransform = `translateY(${refresherThreshold}px)`;
 				this.refresherTransition = 'transform .1s linear';
 				// #endif
-				this.moveDis = this.finalRefresherThreshold;
+				setTimeout(() => {
+					this._emitTouchmove({ pullingDistance: refresherThreshold, dy: this.moveDis - refresherThreshold });
+				}, 0.1);
+				this.moveDis = refresherThreshold;
 				this.refresherStatus = Enum.Refresher.Loading;
 				this._doRefresherLoad();
 			} else {
@@ -502,7 +507,7 @@ export default {
 		},
 		//wxs正在下拉处理
 		_handleWxsPullingDown({ moveDis, diffDis }){
-			this._emitTouchmove({pullingDistance:moveDis,dy:diffDis});
+			this._emitTouchmove({ pullingDistance: moveDis,dy: diffDis });
 		},
 		//wxs触摸方向改变
 		_handleTouchDirectionChange({ direction }) {
@@ -565,6 +570,7 @@ export default {
 						}, animateDuration * 800);
 					}
 					// #endif
+					this._emitTouchmove({ pullingDistance: 0, dy: this.moveDis });
 				}, refresherCompleteDelay);
 			}
 			if (setLoading) {
@@ -637,12 +643,13 @@ export default {
 			});
 		},
 		//发射pullingDown事件
-		_emitTouchmove(e){
+		_emitTouchmove(e) {
 			// #ifndef APP-NVUE
 			e.viewHeight = this.finalRefresherThreshold;
 			// #endif
-			e.rate = e.pullingDistance / e.viewHeight;
-			this.hasTouchmove && this.$emit('refresherTouchmove',e);
+			e.rate = e.viewHeight > 0 ? e.pullingDistance / e.viewHeight : 0;
+			this.hasTouchmove && this.oldPullingDistance !== e.pullingDistance && this.$emit('refresherTouchmove', e);
+			this.oldPullingDistance = e.pullingDistance;
 		},
 		//清除refresherCompleteTimeout
 		_cleanRefresherCompleteTimeout() {

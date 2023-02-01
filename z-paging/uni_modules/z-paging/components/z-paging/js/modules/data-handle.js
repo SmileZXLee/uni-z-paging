@@ -204,10 +204,6 @@ export default {
 			this.customNoMore = -1;
 			this.addData(data, success);
 		},
-		//简写，与complete完全相同
-		end(data, success = true) {
-			this.complete(data, success);
-		},
 		//【保证数据一致】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为dataKey，需与:data-key绑定的一致，第三个参数为是否成功(默认为是）
 		completeByKey(data, dataKey = null, success = true) {
 			if (dataKey !== null && this.dataKey !== null && dataKey !== this.dataKey) {
@@ -219,19 +215,15 @@ export default {
 			this.customNoMore = -1;
 			this.addData(data, success);
 		},
-		//简写，与completeByKey完全相同
-		endByKey(data, dataKey = null, success = true) {
-			this.completeByKey(data, dataKey, success);
-		},
-		//【通过totalCount判断是否有更多数据】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为totalCount(列表总数)，第三个参数为是否成功(默认为是）
-		completeByTotalCount(data, totalCount, success = true) {
-			if (totalCount == 'undefined') {
+		//【通过total判断是否有更多数据】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为total(列表总数)，第三个参数为是否成功(默认为是）
+		completeByTotal(data, total, success = true) {
+			if (total == 'undefined') {
 				this.customNoMore = -1;
 			} else {
 				const dataTypeRes = this._checkDataType(data, success, false);
 				data = dataTypeRes.data;
 				success = dataTypeRes.success;
-				if (totalCount >= 0 && success) {
+				if (total >= 0 && success) {
 					this.$nextTick(() => {
 						let hasMore = true;
 						let realTotalDataCount = this.realTotalData.length;
@@ -239,7 +231,7 @@ export default {
 							realTotalDataCount = 0;
 						}
 						const dataLength = this.privateConcat ? data.length : 0;
-						let exceedCount = realTotalDataCount + dataLength - totalCount;
+						let exceedCount = realTotalDataCount + dataLength - total;
 						if (exceedCount >= 0) {
 							hasMore = false;
 							exceedCount = this.defaultPageSize - exceedCount;
@@ -254,28 +246,12 @@ export default {
 			}
 			this.addData(data, success);
 		},
-		//简写，与completeByTotalCount完全相同
-		completeByTotal(data, totalCount, success = true) {
-			this.completeByTotalCount(data, totalCount, success);
-		},
-		//简写，与completeByTotalCount完全相同
-		endByTotalCount(data, totalCount, success = true) {
-			this.completeByTotalCount(data, totalCount, success);
-		},
-		//简写，与completeByTotalCount完全相同
-		endByTotal(data, totalCount, success = true) {
-			this.completeByTotalCount(data, totalCount, success);
-		},
 		//【自行判断是否有更多数据】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否有更多数据，第三个参数为是否成功(默认是是）
 		completeByNoMore(data, nomore, success = true) {
 			if (nomore != 'undefined') {
 				this.customNoMore = nomore == true ? 1 : 0;
 			}
 			this.addData(data, success);
-		},
-		//简写，与completeByNoMore完全相同
-		endByNoMore(data, nomore, success = true) {
-			this.completeByNoMore(data, nomore, success);
 		},
 		//与上方complete方法功能一致，新版本中设置服务端回调数组请使用complete方法
 		addData(data, success = true) {
@@ -284,20 +260,16 @@ export default {
 				this.fromCompleteEmit = false;
 			}
 			const currentTimeStamp = u.getTime();
-			let addDataDalay = 0;
 			const disTime = currentTimeStamp - this.requestTimeStamp;
 			let minDelay = this.minDelay;
 			if(this.isFirstPage && this.finalShowRefresherWhenReload){
 				minDelay = Math.max(400, minDelay);
 			}
-			if(this.requestTimeStamp > 0 && disTime < minDelay){
-				addDataDalay = minDelay - disTime;
-			}
+			const addDataDalay = (this.requestTimeStamp > 0 && disTime < minDelay) ? minDelay - disTime : 0;
 			this.$nextTick(() => {
-				let delay = this.delay > 0 ? this.delay : addDataDalay;
 				setTimeout(() => {
 					this._addData(data, success, false);
-				}, delay)
+				}, this.delay > 0 ? this.delay : addDataDalay)
 			})
 		},
 		//从顶部添加数据，不会影响分页的pageNo和pageSize
@@ -371,7 +343,7 @@ export default {
 		},
 		//刷新列表数据，pageNo和pageSize不会重置，列表数据会重新从服务端获取。必须保证@query绑定的方法中的pageNo和pageSize和传给服务端的一致
 		refresh() {
-			if(!this.realTotalData.length){
+			if (!this.realTotalData.length) {
 				this.reload();
 				return;
 			}
@@ -419,7 +391,7 @@ export default {
 				// #endif
 				// #ifdef APP-NVUE
 				this.refresherStatus = Enum.Refresher.Loading;
-				this.refresherRevealStackCount++;
+				this.refresherRevealStackCount ++;
 				setTimeout(() => {
 					this._getNodeClientRect('zp-n-refresh-container', false).then((node) => {
 						if (node) {
@@ -570,7 +542,7 @@ export default {
 			this.isTotalChangeFromAddData = false;
 			this.$nextTick(() => {
 				setTimeout(()=>{
-					this._getNodeClientRect('.zp-paging-container-content').then((res) => {
+					this._getNodeClientRect('.zp-paging-container-content').then(res => {
 						if (res) {
 							this.$emit('contentHeightChanged', res[0].height);
 						}
@@ -599,14 +571,14 @@ export default {
 				this.listRendering = false;
 			}
 			// #ifndef APP-NVUE
-			this.finalUseVirtualList && this._setCellIndex(newVal,this.totalData.length === 0)
+			this.finalUseVirtualList && this._setCellIndex(newVal, this.totalData.length === 0)
 			this.useChatRecordMode && newVal.reverse();
 			// #endif
 			if (this.isFirstPage && this.finalConcat) {
 				this.totalData = [];
 			}
 			if (this.customNoMore !== -1) {
-				if (this.customNoMore === 0 || !newVal.length) {
+				if (this.customNoMore === 1 || !newVal.length) {
 					this.loadingStatus = Enum.More.NoMore;
 				}
 			} else {
@@ -617,7 +589,7 @@ export default {
 			if (!this.totalData.length) {
 				if (this.finalConcat) {
 					// #ifdef APP-NVUE
-					if(this.useChatRecordMode && this.isFirstPage && this.loadingStatus === Enum.More.NoMore){
+					if (this.useChatRecordMode && this.isFirstPage && this.loadingStatus === Enum.More.NoMore) {
 						newVal.reverse();
 					}
 					// #endif

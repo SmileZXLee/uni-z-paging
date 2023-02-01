@@ -78,7 +78,7 @@ export default {
 	watch: {
 		nIsFirstPageAndNoMore: {
 			handler(newVal) {
-				const cellStyle = !this.useChatRecordMode || newVal ? {} : {transform: 'rotate(180deg)'};
+				const cellStyle = !this.useChatRecordMode || newVal ? {} : { transform: 'rotate(180deg)' };
 				this.$emit('update:cellStyle', cellStyle);
 				this.$emit('cellStyleChange', cellStyle);
 			},
@@ -153,10 +153,6 @@ export default {
 			this.nListIsDragging = e.isDragging;
 			this._checkShouldShowBackToTop(contentOffsetY, contentOffsetY - 1);
 		},
-		//列表开始触摸
-		_nTouchstart() {
-			this._handleListTouchstart();
-		},
 		//下拉刷新刷新中
 		_nOnRrefresh() {
 			if (this.nShowRefresherReveal) return;
@@ -168,9 +164,8 @@ export default {
 		_nOnPullingdown(e) {
 			if (this.refresherStatus === Enum.Refresher.Loading || (this.isIos && !this.nListIsDragging)) return;
 			this._emitTouchmove(e);
-			const viewHeight = e.viewHeight;
-			const pullingDis = e.pullingDistance;
-			this.refresherStatus = pullingDis >= viewHeight ? Enum.Refresher.ReleaseToRefresh : Enum.Refresher.Default;
+			const { viewHeight, pullingDistance } = e;
+			this.refresherStatus = pullingDistance >= viewHeight ? Enum.Refresher.ReleaseToRefresh : Enum.Refresher.Default;
 		},
 		//下拉刷新结束
 		_nRefresherEnd(doEnd = true) {
