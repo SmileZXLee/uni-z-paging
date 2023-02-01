@@ -8,7 +8,7 @@
 [![download](https://img.shields.io/npm/dt/z-paging?style=flat)](https://www.npmjs.com/package/z-paging)
 [![license](https://img.shields.io/github/license/SmileZXLee/uni-z-paging?style=flat)](https://en.wikipedia.org/wiki/MIT_License)
 
-## 组件文档地址：[https://z-paging.zxlee.cn](https://z-paging.zxlee.cn) 
+## 文档地址：[https://z-paging.zxlee.cn](https://z-paging.zxlee.cn) 
 
 ## 在DCloud插件市场中访问：[https://ext.dcloud.net.cn/plugin?name=z-paging](https://ext.dcloud.net.cn/plugin?name=z-paging)
 
