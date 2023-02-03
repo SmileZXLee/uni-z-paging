@@ -1,7 +1,7 @@
 // [z-paging]常量
 
 export default {
-	version: '2.5.1',
+	version: '2.5.2',
 	delayTime: 100,
 	errorUpdateKey: 'z-paging-error-emit',
 	completeUpdateKey: 'z-paging-complete-emit',

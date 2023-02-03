@@ -1,7 +1,7 @@
 <template>
 	<u-navbar :background="{'background-color': 'rgb(248, 248, 248)'}" :isBack="false">
 		<view style="display: flex;align-items: flex-end;justify-content: center;width: 100%;" @click="navClick">
-			<image style="width: 180px;height: 28px;" src="https://z-paging.zxlee.cn/img/title-logo.png"></image>
+			<image style="width: 180px;height: 28px;" src="/static/title-logo.png"></image>
 			<view style="display: flex;">
 				<view class="version-tag version-text">v{{version}}</view>
 				<!-- #ifdef VUE2 -->

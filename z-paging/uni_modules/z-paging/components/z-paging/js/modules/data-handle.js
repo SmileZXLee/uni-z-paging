@@ -225,7 +225,7 @@ export default {
 				success = dataTypeRes.success;
 				if (total >= 0 && success) {
 					this.$nextTick(() => {
-						let hasMore = true;
+						let nomore = false;
 						let realTotalDataCount = this.realTotalData.length;
 						if (this.pageNo == this.defaultPageNo) {
 							realTotalDataCount = 0;
@@ -233,13 +233,13 @@ export default {
 						const dataLength = this.privateConcat ? data.length : 0;
 						let exceedCount = realTotalDataCount + dataLength - total;
 						if (exceedCount >= 0) {
-							hasMore = false;
+							nomore = true;
 							exceedCount = this.defaultPageSize - exceedCount;
 							if (exceedCount > 0 && exceedCount < data.length && this.privateConcat) {
 								data = data.splice(0, exceedCount);
 							}
 						}
-						this.completeByNoMore(data, hasMore, success);
+						this.completeByNoMore(data, nomore, success);
 					})
 					return;
 				}
