@@ -348,8 +348,14 @@ export default {
 		},
 		zSlots() {
 			// #ifdef VUE2
+			
+			// #ifdef MP-ALIPAY
+			return this.$slots;
+			// #endif
+			
 			return this.$scopedSlots ? this.$scopedSlots : this.$slots;
 			// #endif
+			
 			return this.$slots;
 		}
 	},
