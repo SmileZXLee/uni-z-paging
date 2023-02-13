@@ -132,6 +132,10 @@ export default {
 			totalData: [],
 			realTotalData: [],
 			totalLocalPagingList: [],
+			dataPromiseResultMap: {
+				reload: null,
+				complete: null
+			},
 			isSettingCacheList: false,
 			pageNo: 1,
 			currentRefreshPageSize: 0,
@@ -202,7 +206,7 @@ export default {
 		//请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认是是）
 		complete(data, success = true) {
 			this.customNoMore = -1;
-			this.addData(data, success);
+			return this.addData(data, success);
 		},
 		//【保证数据一致】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为dataKey，需与:data-key绑定的一致，第三个参数为是否成功(默认为是）
 		completeByKey(data, dataKey = null, success = true) {
@@ -210,10 +214,10 @@ export default {
 				if (this.isFirstPage) {
 					this.endRefresh();
 				}
-				return;
+				return new Promise(resolve => resolve());
 			}
 			this.customNoMore = -1;
-			this.addData(data, success);
+			return this.addData(data, success);
 		},
 		//【通过total判断是否有更多数据】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为total(列表总数)，第三个参数为是否成功(默认为是）
 		completeByTotal(data, total, success = true) {
@@ -224,34 +228,35 @@ export default {
 				data = dataTypeRes.data;
 				success = dataTypeRes.success;
 				if (total >= 0 && success) {
-					this.$nextTick(() => {
-						let nomore = false;
-						let realTotalDataCount = this.realTotalData.length;
-						if (this.pageNo == this.defaultPageNo) {
-							realTotalDataCount = 0;
-						}
-						const dataLength = this.privateConcat ? data.length : 0;
-						let exceedCount = realTotalDataCount + dataLength - total;
-						if (exceedCount >= 0) {
-							nomore = true;
-							exceedCount = this.defaultPageSize - exceedCount;
-							if (exceedCount > 0 && exceedCount < data.length && this.privateConcat) {
-								data = data.splice(0, exceedCount);
+					return new Promise((resolve, reject) => {
+						this.$nextTick(() => {
+							let nomore = false;
+							let realTotalDataCount = this.realTotalData.length;
+							if (this.pageNo == this.defaultPageNo) {
+								realTotalDataCount = 0;
 							}
-						}
-						this.completeByNoMore(data, nomore, success);
-					})
-					return;
+							const dataLength = this.privateConcat ? data.length : 0;
+							let exceedCount = realTotalDataCount + dataLength - total;
+							if (exceedCount >= 0) {
+								nomore = true;
+								exceedCount = this.defaultPageSize - exceedCount;
+								if (exceedCount > 0 && exceedCount < data.length && this.privateConcat) {
+									data = data.splice(0, exceedCount);
+								}
+							}
+							this.completeByNoMore(data, nomore, success).then(res => resolve(res)).catch(() => reject());
+						})
+					});
 				}
 			}
-			this.addData(data, success);
+			return this.addData(data, success);
 		},
 		//【自行判断是否有更多数据】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否有更多数据，第三个参数为是否成功(默认是是）
 		completeByNoMore(data, nomore, success = true) {
 			if (nomore != 'undefined') {
 				this.customNoMore = nomore == true ? 1 : 0;
 			}
-			this.addData(data, success);
+			return this.addData(data, success);
 		},
 		//与上方complete方法功能一致，新版本中设置服务端回调数组请使用complete方法
 		addData(data, success = true) {
@@ -262,7 +267,7 @@ export default {
 			const currentTimeStamp = u.getTime();
 			const disTime = currentTimeStamp - this.requestTimeStamp;
 			let minDelay = this.minDelay;
-			if(this.isFirstPage && this.finalShowRefresherWhenReload){
+			if (this.isFirstPage && this.finalShowRefresherWhenReload) {
 				minDelay = Math.max(400, minDelay);
 			}
 			const addDataDalay = (this.requestTimeStamp > 0 && disTime < minDelay) ? minDelay - disTime : 0;
@@ -271,6 +276,10 @@ export default {
 					this._addData(data, success, false);
 				}, this.delay > 0 ? this.delay : addDataDalay)
 			})
+			
+			return new Promise((resolve, reject) => {
+				this.dataPromiseResultMap.complete = { resolve, reject };
+			});
 		},
 		//从顶部添加数据，不会影响分页的pageNo和pageSize
 		addDataFromTop(data, toTop = true, toTopWithAnimate = true) {
@@ -340,12 +349,14 @@ export default {
 			this.$nextTick(() => {
 				this._preReload(animate, false);
 			})
+			return new Promise((resolve, reject) => {
+				this.dataPromiseResultMap.reload = { resolve, reject };
+			});
 		},
 		//刷新列表数据，pageNo和pageSize不会重置，列表数据会重新从服务端获取。必须保证@query绑定的方法中的pageNo和pageSize和传给服务端的一致
 		refresh() {
 			if (!this.realTotalData.length) {
-				this.reload();
-				return;
+				return this.reload();
 			}
 			const disPageNo = this.pageNo - this.defaultPageNo + 1;
 			if (disPageNo >= 1) {
@@ -356,6 +367,9 @@ export default {
 				this._emitQuery(this.defaultPageNo, totalPageSize, Enum.QueryFrom.Refresh);
 				this._callMyParentQuery(this.defaultPageNo, totalPageSize);
 			}
+			return new Promise((resolve, reject) => {
+				this.dataPromiseResultMap.reload = { resolve, reject };
+			});
 		},
 		//手动更新列表缓存数据，将自动截取v-model绑定的list中的前pageSize条覆盖缓存，请确保在list数据更新到预期结果后再调用此方法
 		updateCache() {
@@ -508,11 +522,13 @@ export default {
 					}
 					// #endif
 					setTimeout(() => {
-						this._currentDataChange(data, this.currentData);					
+						this._currentDataChange(data, this.currentData);
+						this._callDataPromise(true, this.totalData);
 					}, dataChangeDelayTime)
 				}
 			} else {
 				this._currentDataChange(data, this.currentData);
+				this._callDataPromise(false);
 				this.loadingStatus = Enum.More.Fail;
 				if (this.loadingType === Enum.LoadingType.LoadingMore) {
 					this.pageNo --;
@@ -696,6 +712,13 @@ export default {
 			this.queryFrom = from;
 			this.requestTimeStamp = u.getTime();
 			this.$emit('query', ...interceptor._handleQuery(pageNo, pageSize, from));
+		},
+		//触发数据改变promise
+		_callDataPromise(success, totalList) {
+			for (const key in this.dataPromiseResultMap) {
+				const obj = this.dataPromiseResultMap[key];
+				success ? (!!obj && obj.resolve({ totalList, noMore: this.loadingStatus === Enum.More.NoMore })) : (!!obj && obj.reject());
+			}
 		},
 		//检查complete data的类型
 		_checkDataType(data, success, isLocal) {
