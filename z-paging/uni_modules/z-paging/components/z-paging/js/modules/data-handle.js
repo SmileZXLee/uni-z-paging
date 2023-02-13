@@ -134,7 +134,8 @@ export default {
 			totalLocalPagingList: [],
 			dataPromiseResultMap: {
 				reload: null,
-				complete: null
+				complete: null,
+				localPaging: null
 			},
 			isSettingCacheList: false,
 			pageNo: 1,
@@ -338,6 +339,9 @@ export default {
 			this.$nextTick(() => {
 				this._addData(data, success, true);
 			})
+			return new Promise((resolve, reject) => {
+				this.dataPromiseResultMap.localPaging = { resolve, reject };
+			});
 		},
 		//重新加载分页数据，pageNo会恢复为默认值，相当于下拉刷新的效果(animate为true时会展示下拉刷新动画，默认为false)
 		reload(animate = this.showRefresherWhenReload) {
