@@ -112,7 +112,7 @@
 				try {
 					const systemInfos = uni.getSystemInfoSync().system.split(' ');
 					const deviceType = systemInfos[0];
-					const version = parseInt(systemInfos[1].slice(0,1));
+					const version = parseInt(systemInfos[1]);
 					if ((deviceType === 'iOS' && version <= 10) || (deviceType === 'Android' && version <= 6)) {
 						return true;
 					}
@@ -124,14 +124,14 @@
 			},
 			zSlots() {
 				// #ifdef VUE2
-				
+
 				// #ifdef MP-ALIPAY
 				return this.$slots;
 				// #endif
-				
+
 				return this.$scopedSlots ? this.$scopedSlots : this.$slots;
 				// #endif
-				
+
 				return this.$slots;
 			}
 		},
@@ -193,7 +193,7 @@
 		bottom: 0;
 		right: 0;
 	}
-	
+
 	.zp-safe-area-inset-bottom {
 		position: absolute;
 		/* #ifndef APP-PLUS */
@@ -209,7 +209,7 @@
 		/* #endif */
 		flex-direction: row;
 	}
-	
+
 	.zp-swiper-left,.zp-swiper-right{
 		/* #ifndef APP-NVUE */
 		height: 100%;
@@ -223,7 +223,7 @@
 		width: 100%;
 		/* #endif */
 	}
-	
+
 	.zp-absoulte {
 		/* #ifndef APP-NVUE */
 		position: absolute;
@@ -231,11 +231,11 @@
 		width: auto;
 		/* #endif */
 	}
-	
+
 	.zp-right{
 		right: 0;
 	}
-	
+
 	.zp-swiper-item {
 		height: 100%;
 	}
