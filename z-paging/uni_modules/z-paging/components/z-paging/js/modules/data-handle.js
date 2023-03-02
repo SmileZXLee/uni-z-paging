@@ -344,7 +344,9 @@ export default {
 				this.privateShowRefresherWhenReload = animate;
 				this.isUserPullDown = true;
 			}
-			this.listRendering = true;
+			if (!this.showLoadingMoreWhenReload) {
+				this.listRendering = true;
+			}
 			this.$nextTick(() => {
 				this._preReload(animate, false);
 			})
