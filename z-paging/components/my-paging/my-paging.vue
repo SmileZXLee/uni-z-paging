@@ -21,7 +21,7 @@
 		</template>
 		
 		<template #empty v-if="$slots.empty" >
-			<!-- 这里接收页面传进来的slot，这样相当于将页面传进来的slot传给z-paging的slot="bottom"了 -->
+			<!-- 这里接收页面传进来的slot，这样相当于将页面传进来的slot传给z-paging的slot="empty"了 -->
 			<slot name="empty" />
 		</template>
 		
