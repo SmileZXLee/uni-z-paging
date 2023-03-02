@@ -105,7 +105,7 @@
 			//设置子组件嵌套list父容器支持swiper-list吸顶滚动效果的方法
 			setListSpecialEffects() {
 				this.$nextTick(() => {
-					this.$refs.swiperItem[this.current].setSpecialEffects(this.headerHeight);
+					this.$refs.swiperItem && this.$refs.swiperItem[this.current].setSpecialEffects(this.headerHeight);
 				})
 			}
 		}

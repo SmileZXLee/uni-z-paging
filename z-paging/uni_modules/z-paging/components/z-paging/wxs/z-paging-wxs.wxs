@@ -104,7 +104,7 @@ function touchmove(e, ownerIns) {
 		state.isTouchEnded = false;
 	}
 	if (hasTouchmove) {
-		ownerIns.callMethod('_handleWxsPullingDown', {moveDis:moveDis, diffDis:moveDisObj.diffDis});
+		ownerIns.callMethod('_handleWxsPullingDown', { moveDis:moveDis, diffDis:moveDisObj.diffDis });
 	}
 	if (oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus || oldIsTouchmoving != isTouchmoving) {
 		ownerIns.callMethod('_handleRefresherTouchmove', moveDis, touch);
@@ -123,7 +123,6 @@ function touchend(e, ownerIns) {
 	state.hitReachMaxAngleCount = 0;
 	state.disabledBounce = false;
 	state.fixedIsTopHitCount = 0;
-	//ownerIns.callMethod('_handleScrollViewDisableBounce', {bounce:true});
 	if (!state.isTouchmoving) return;
 	var oldRefresherStatus = state.refresherStatus;
 	var oldMoveDis = state.moveDis;
@@ -169,8 +168,7 @@ function mousedown(e, ins) {
 }
 
 function mousemove(e, ins) {
-	if (!isPC()) return;
-	if (!movable) return;
+	if (!isPC() || !movable) return;
 	touchmove(e, ins);
 }
 
@@ -195,9 +193,7 @@ function _setTransformValue(value, ins, state, animate) {
 }
 
 function _setTransform(transform, ins, animate, transition) {
-	if (transform == 'translateY(0px)') {
-		transform = 'none';
-	}
+	transform = transform == 'translateY(0px)' ? 'none' : transform;
 	ins.requestAnimationFrame(function() {
 		var stl = { 'transform': transform };
 		if (animate) {

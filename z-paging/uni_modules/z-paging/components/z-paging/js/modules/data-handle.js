@@ -169,8 +169,7 @@ export default {
 			return this.useCache && !!this.cacheKey;
 		},
 		finalCacheKey() {
-			if (!this.cacheKey) return null;
-			return `${c.cachePrefixKey}-${this.cacheKey}`; 
+			return this.cacheKey ? `${c.cachePrefixKey}-${this.cacheKey}` : null; 
 		},
 		isFirstPage() {
 			return this.pageNo === this.defaultPageNo;
@@ -212,9 +211,7 @@ export default {
 		//【保证数据一致】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为dataKey，需与:data-key绑定的一致，第三个参数为是否成功(默认为是）
 		completeByKey(data, dataKey = null, success = true) {
 			if (dataKey !== null && this.dataKey !== null && dataKey !== this.dataKey) {
-				if (this.isFirstPage) {
-					this.endRefresh();
-				}
+				this.isFirstPage && this.endRefresh();
 				return new Promise(resolve => resolve());
 			}
 			this.customNoMore = -1;
@@ -298,16 +295,14 @@ export default {
 		//重新设置列表数据，调用此方法不会影响pageNo和pageSize，也不会触发请求。适用场景：当需要删除列表中某一项时，将删除对应项后的数组通过此方法传递给z-paging。(当出现类似的需要修改列表数组的场景时，请使用此方法，请勿直接修改page中:list.sync绑定的数组)
 		resetTotalData(data) {
 			this.isTotalChangeFromAddData = true;
-			let dataType = Object.prototype.toString.call(data);
-			if (dataType !== '[object Array]') {
+			if (Object.prototype.toString.call(data) !== '[object Array]') {
 				data = [data];
 			}
 			this.totalData = data;
 		},
 		//添加聊天记录
 		addChatRecordData(data, toBottom = true, toBottomWithAnimate = true) {
-			let dataType = Object.prototype.toString.call(data);
-			if (dataType !== '[object Array]') {
+			if (Object.prototype.toString.call(data) !== '[object Array]') {
 				data = [data];
 			}
 			if (!this.useChatRecordMode) return;
@@ -359,9 +354,7 @@ export default {
 		},
 		//刷新列表数据，pageNo和pageSize不会重置，列表数据会重新从服务端获取。必须保证@query绑定的方法中的pageNo和pageSize和传给服务端的一致
 		refresh() {
-			if (!this.realTotalData.length) {
-				return this.reload();
-			}
+			if (!this.realTotalData.length) return this.reload();
 			const disPageNo = this.pageNo - this.defaultPageNo + 1;
 			if (disPageNo >= 1) {
 				this.loading = true;
