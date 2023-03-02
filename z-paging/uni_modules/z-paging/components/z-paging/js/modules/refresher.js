@@ -237,6 +237,9 @@ export default {
 			this.refresherVibrate && newVal === Enum.Refresher.ReleaseToRefresh && this._doVibrateShort();
 			this.$emit('refresherStatusChange', newVal);
 			this.$emit('update:refresherStatus', newVal);
+		},
+		refresherEnabled(newVal) {
+			!newVal && this.endRefresh();
 		}
 	},
 	computed: {
@@ -320,6 +323,7 @@ export default {
 			this.totalData = this.realTotalData;
 			this._refresherEnd();
 			this._endSystemLoadingAndRefresh();
+			this._handleScrollViewDisableBounce({bounce: true});
 		},
 		handleRefresherStatusChanged(func) {
 			this.refresherStatusChangedFunc = func;
