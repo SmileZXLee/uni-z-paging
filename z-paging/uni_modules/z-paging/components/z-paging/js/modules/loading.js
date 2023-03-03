@@ -39,7 +39,7 @@ export default {
 	watch: {
 		loadingStatus(newVal) {
 			this.$emit('loadingStatusChange', newVal);
-			this.$nextTick(()=>{
+			this.$nextTick(() => {
 				this.loadingStatusAfterRender = newVal;
 			})
 			// #ifdef APP-NVUE

@@ -221,9 +221,7 @@ export default {
 		// #endif
 		// #ifndef APP-PLUS
 		this.$nextTick(() => {
-			setTimeout(() => {
-				this._getCssSafeAreaInsetBottom();
-			},delay)
+			setTimeout(this._getCssSafeAreaInsetBottom, delay)
 		})
 		// #endif
 	},
@@ -290,10 +288,10 @@ export default {
 			if (!this.systemInfo) return 0;
 			let safeAreaBottom = 0;
 			// #ifdef APP-PLUS
-			safeAreaBottom = this.systemInfo.safeAreaInsets.bottom || 0;
+			safeAreaBottom = this.systemInfo?.safeAreaInsets?.bottom || 0;
 			// #endif
 			// #ifndef APP-PLUS
-			safeAreaBottom = this.cssSafeAreaInsetBottom === -1 ? 0 : this.cssSafeAreaInsetBottom;
+			safeAreaBottom = Math.max(this.cssSafeAreaInsetBottom, 0);
 			// #endif
 			return safeAreaBottom;
 		},
@@ -306,7 +304,7 @@ export default {
 			return 0;
 		},
 		windowHeight() {
-			return !this.systemInfo ? 0 : this.systemInfo.windowHeight || 0;
+			return this.systemInfo?.windowHeight || 0;
 		},
 		windowTop() {
 			//暂时修复vue3中隐藏系统导航栏后windowTop获取不正确的问题，具体bug详见https://ask.dcloud.net.cn/question/141634
@@ -315,11 +313,11 @@ export default {
 			const pageHeadNode = document.getElementsByTagName("uni-page-head");
 			if (!pageHeadNode.length) return 0;
 			// #endif
-			return !this.systemInfo ? 0 : this.systemInfo.windowTop || 0;
+			return this.systemInfo?.windowTop || 0;
 		},
 		windowBottom() {
 			if (!this.systemInfo) return 0;
-			let windowBottom = this.systemInfo.windowBottom || 0;
+			let windowBottom = this.systemInfo?.windowBottom || 0;
 			if (this.safeAreaInsetBottom && !this.useSafeAreaPlaceholder) {
 				windowBottom += this.safeAreaBottom;
 			}
@@ -334,7 +332,7 @@ export default {
 				if ((deviceType === 'iOS' && version <= 10) || (deviceType === 'Android' && version <= 6)) {
 					return true;
 				}
-			} catch(e){
+			} catch(e) {
 				return false;
 			}
 			// #endif
@@ -404,12 +402,12 @@ export default {
 			// #endif
 			try {
 				if (shouldFullHeight) {
-					let finalScrollViewNode = scrollViewNode ? scrollViewNode : await this._getNodeClientRect('.zp-scroll-view');
+					let finalScrollViewNode = scrollViewNode || await this._getNodeClientRect('.zp-scroll-view');
 					let finalScrollBottomNode = await this._getNodeClientRect('.zp-page-bottom');
 					if (finalScrollViewNode) {
 						const scrollViewTop = finalScrollViewNode[0].top;
 						let scrollViewHeight = this.windowHeight - scrollViewTop;
-						if(finalScrollBottomNode){
+						if (finalScrollBottomNode) {
 							scrollViewHeight -= finalScrollBottomNode[0].height;
 						}
 						const additionHeight = u.convertToPx(this.autoHeightAddition);
@@ -428,24 +426,18 @@ export default {
 			this._getNodeClientRect('.zp-safe-area-inset-bottom').then((res) => {
 				if (res) {
 					this.cssSafeAreaInsetBottom = res[0].height;
-					if (this.safeAreaInsetBottom) {
-						this.updatePageScrollBottomHeight();
-					}
+					this.safeAreaInsetBottom && this.updatePageScrollBottomHeight();
 				}
 			});
 		},
 		//触发更新是否超出页面状态
 		_updateInsideOfPaging() {
-			if (this.insideMore && this.insideOfPaging === true) {
-				setTimeout(() => {
-					this.doLoadMore();
-				}, 200)
-			}
+			this.insideMore && this.insideOfPaging === true && setTimeout(this.doLoadMore, 200)
 		},
 		//获取节点尺寸
 		_getNodeClientRect(select, inDom = true, scrollOffset = false) {
 			// #ifdef APP-NVUE
-			select = select.replace('.', '').replace('#', '');
+			select = select.replace(/[*|#]/g, '');
 			const ref = this.$refs[select];
 			return new Promise((resolve, reject) => {
 				if (ref) {

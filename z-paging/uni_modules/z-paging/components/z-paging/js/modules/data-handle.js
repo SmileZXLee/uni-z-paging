@@ -19,7 +19,7 @@ export default {
 			type: [Number, String],
 			default: u.gc('defaultPageSize', 10),
 			validator: (value) => {
-				if(value <= 0) u.consoleErr('default-page-size必须大于0！');
+				if (value <= 0) u.consoleErr('default-page-size必须大于0！');
 				return value > 0;
 			}
 		},
@@ -229,16 +229,13 @@ export default {
 					return new Promise((resolve, reject) => {
 						this.$nextTick(() => {
 							let nomore = false;
-							let realTotalDataCount = this.realTotalData.length;
-							if (this.pageNo == this.defaultPageNo) {
-								realTotalDataCount = 0;
-							}
+							const realTotalDataCount = this.pageNo == this.defaultPageNo ? 0 : this.realTotalData.length;
 							const dataLength = this.privateConcat ? data.length : 0;
 							let exceedCount = realTotalDataCount + dataLength - total;
 							if (exceedCount >= 0) {
 								nomore = true;
 								exceedCount = this.defaultPageSize - exceedCount;
-								if (exceedCount > 0 && exceedCount < data.length && this.privateConcat) {
+								if (this.privateConcat && exceedCount > 0 && exceedCount < data.length) {
 									data = data.splice(0, exceedCount);
 								}
 							}
@@ -281,10 +278,7 @@ export default {
 		},
 		//从顶部添加数据，不会影响分页的pageNo和pageSize
 		addDataFromTop(data, toTop = true, toTopWithAnimate = true) {
-			let dataType = Object.prototype.toString.call(data);
-			if (dataType !== '[object Array]') {
-				data = [data];
-			}
+			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data;
 			this.totalData = [...data, ...this.totalData];
 			if (toTop) {
 				setTimeout(() => {
@@ -295,16 +289,12 @@ export default {
 		//重新设置列表数据，调用此方法不会影响pageNo和pageSize，也不会触发请求。适用场景：当需要删除列表中某一项时，将删除对应项后的数组通过此方法传递给z-paging。(当出现类似的需要修改列表数组的场景时，请使用此方法，请勿直接修改page中:list.sync绑定的数组)
 		resetTotalData(data) {
 			this.isTotalChangeFromAddData = true;
-			if (Object.prototype.toString.call(data) !== '[object Array]') {
-				data = [data];
-			}
+			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data;
 			this.totalData = data;
 		},
 		//添加聊天记录
 		addChatRecordData(data, toBottom = true, toBottomWithAnimate = true) {
-			if (Object.prototype.toString.call(data) !== '[object Array]') {
-				data = [data];
-			}
+			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data;
 			if (!this.useChatRecordMode) return;
 			this.isTotalChangeFromAddData = true;
 			//#ifndef APP-NVUE
@@ -319,11 +309,7 @@ export default {
 					this._scrollToBottom(toBottomWithAnimate);
 					//#endif
 					//#ifdef APP-NVUE
-					if (this.nIsFirstPageAndNoMore) {
-						this._scrollToBottom(toBottomWithAnimate);
-					} else {
-						this._scrollToTop(toBottomWithAnimate);
-					}
+					this.nIsFirstPageAndNoMore ? this._scrollToBottom(toBottomWithAnimate) : this._scrollToTop(toBottomWithAnimate);
 					//#endif
 				}, c.delayTime)
 			}
@@ -448,9 +434,7 @@ export default {
 				// #ifdef MP-TOUTIAO
 				delay = 5;
 				// #endif
-				setTimeout(() => {
-					this._callMyParentQuery();
-				}, delay)
+				setTimeout(this._callMyParentQuery, delay);
 				if (!isFromMounted && this.autoScrollToTopWhenReload) {
 					let checkedNRefresherLoading = true;
 					// #ifdef APP-NVUE
@@ -698,11 +682,7 @@ export default {
 					}
 				} 
 				if (this.myParentQuery !== -1) {
-					if (customPageSize > 0) {
-						this.myParentQuery(customPageNo, customPageSize);
-					} else {
-						this.myParentQuery(this.pageNo, this.defaultPageSize);
-					}
+					customPageSize > 0 ? this.myParentQuery(customPageNo, customPageSize) : this.myParentQuery(this.pageNo, this.defaultPageSize);
 				}
 			}
 		},
@@ -733,7 +713,7 @@ export default {
 					u.consoleErr(`${isLocal ? 'setLocalPaging' : 'complete'}参数类型不正确，第一个参数类型必须为Array!`);
 				}
 			}
-			return {data,success};
+			return { data, success };
 		},
 	}
 }

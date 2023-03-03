@@ -196,9 +196,7 @@ export default {
 		},
 		//更新slot="left"和slot="right"宽度，当slot="left"或slot="right"宽度动态改变时调用
 		updateLeftAndRightWidth() {
-			this.$nextTick(() => {
-				this._updateLeftAndRightWidth();
-			})
+			this.$nextTick(this._updateLeftAndRightWidth)
 		},
 		//更新z-paging内置scroll-view的scrollTop
 		updateScrollViewScrollTop(scrollTop, animate = true) {
@@ -469,7 +467,7 @@ export default {
 				// #endif
 				setTimeout(() => {
 					['left','right'].map(position => {
-						this._getNodeClientRect(`.zp-page-${position}`).then((res) => {
+						this._getNodeClientRect(`.zp-page-${position}`).then(res => {
 							this.$set(this.scrollViewContainerStyle, position, res ? res[0].width + 'px' : '0px');
 						});
 					})

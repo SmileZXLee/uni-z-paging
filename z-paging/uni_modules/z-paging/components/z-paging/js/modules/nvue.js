@@ -241,11 +241,11 @@ export default {
 				this.$nextTick(()=>{
 					this._getNodeClientRect('.zp-n-list').then(node => {
 						if (node) {
-							this.nRefresherWidth = node[0].width ? node[0].width : this.nRefresherWidth;
+							this.nRefresherWidth = node[0].width || this.nRefresherWidth;
 						}
 					})
 				})
-			},c.delayTime)	
+			}, c.delayTime)	
 		}
 		// #endif
 	}
