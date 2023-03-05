@@ -86,7 +86,7 @@
 					if (!swiperStyle.bottom) {
 						let bottom = windowBottom || 0;
 						bottom += this.safeAreaInsetBottom ? this.safeAreaBottom : 0;
-						if(bottom > 0){
+						if (bottom > 0) {
 							swiperStyle.bottom = bottom + 'px';
 						}
 					}

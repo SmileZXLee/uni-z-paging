@@ -371,7 +371,7 @@
 				nextIndex = Math.min(nextIndex, this.itemNodeInfos.length - 1);
 				const currentNodeInfo = this.itemNodeInfos[currentIndex];
 				const nextNodeInfo = this.itemNodeInfos[nextIndex];
-				const nextBottomX = this._getBottomDotX(nextNodeInfo, barWidth);
+				const nextBottomX = nextNodeInfo ? this._getBottomDotX(nextNodeInfo, barWidth) : 0;
 				if (isLineMode){
 					this.bottomDotX = this.bottomDotXForIndex + (nextBottomX - this.bottomDotXForIndex) * Math.abs(dxRate);
 				} else if (isWormMode) {
