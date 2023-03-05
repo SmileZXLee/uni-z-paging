@@ -630,7 +630,7 @@ export default {
 						// #ifdef MP-WEIXIN
 						if (!this.isIos && !this.refresherOnly && !this.usePageScroll && newVal.length) {
 							this.loadingMoreTimeStamp = u.getTime();
-							this.$nextTick(()=>{
+							this.$nextTick(() => {
 								this.scrollToY(currentScrollTop);
 							})
 						}
