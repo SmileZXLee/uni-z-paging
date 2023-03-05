@@ -9,6 +9,7 @@ import zPagingLoadMore from '../components/z-paging-load-more'
 import zPagingEmptyView from '../../z-paging-empty-view/z-paging-empty-view'
 
 // modules
+import commonLayoutModule from './modules/common-layout'
 import dataHandleModule from './modules/data-handle'
 import i18nModule from './modules/i18n'
 import nvueModule from './modules/nvue'
@@ -36,6 +37,7 @@ export default {
 		zPagingEmptyView
 	},
 	mixins: [
+		commonLayoutModule,
 		dataHandleModule,
 		i18nModule,
 		nvueModule,
@@ -62,8 +64,6 @@ export default {
 			wxsPropType: '',
 			renderPropScrollTop: -1,
 			checkScrolledToBottomTimeOut: null,
-			systemInfo: null,
-			cssSafeAreaInsetBottom: -1,
 			cacheTopHeight: -1,
 
 			//--------------状态&判断---------------
@@ -187,9 +187,7 @@ export default {
 		this.wxsPropType = u.getTime().toString();
 		this.renderJsIgnore;
 		if (!this.createdReload && !this.refresherOnly && this.auto) {
-			this.$nextTick(() => {
-				this._preReload();
-			})
+			this.$nextTick(this._preReload);
 		}
 		this.finalUseCache && this._setListByLocalCache();
 		let delay = 0;
@@ -203,7 +201,7 @@ export default {
 		})
 		this.updatePageScrollTopHeight();
 		this.updatePageScrollBottomHeight();
-		this._updateLeftAndRightWidth();
+		this.updateLeftAndRightWidth();
 		if (this.finalRefresherEnabled && this.useCustomRefresher) {
 			this.$nextTick(() => {
 				this.isTouchmoving = true;
@@ -221,7 +219,9 @@ export default {
 		// #endif
 		// #ifndef APP-PLUS
 		this.$nextTick(() => {
-			setTimeout(this._getCssSafeAreaInsetBottom, delay)
+			setTimeout(() => {
+				this._getCssSafeAreaInsetBottom(() => this.safeAreaInsetBottom && this.updatePageScrollBottomHeight());
+			}, delay)
 		})
 		// #endif
 	},
@@ -253,8 +253,7 @@ export default {
 		finalPagingStyle() {
 			const pagingStyle = this.pagingStyle;
 			if (!this.systemInfo) return pagingStyle;
-			const windowTop = this.windowTop;
-			const windowBottom = this.windowBottom;
+			const { windowTop, windowBottom } = this;
 			if (!this.usePageScroll && this.fixed) {
 				if (windowTop && !pagingStyle.top) {
 					pagingStyle.top = windowTop + 'px';
@@ -284,17 +283,6 @@ export default {
 			}
 			return this.pagingContentStyle;
 		},
-		safeAreaBottom() {
-			if (!this.systemInfo) return 0;
-			let safeAreaBottom = 0;
-			// #ifdef APP-PLUS
-			safeAreaBottom = this.systemInfo?.safeAreaInsets?.bottom || 0;
-			// #endif
-			// #ifndef APP-PLUS
-			safeAreaBottom = Math.max(this.cssSafeAreaInsetBottom, 0);
-			// #endif
-			return safeAreaBottom;
-		},
 		renderJsIgnore() {
 			if ((this.usePageScroll && this.useChatRecordMode) || !this.refresherEnabled || !this.useCustomRefresher) {
 				this.$nextTick(() => {
@@ -306,15 +294,6 @@ export default {
 		windowHeight() {
 			return this.systemInfo?.windowHeight || 0;
 		},
-		windowTop() {
-			//暂时修复vue3中隐藏系统导航栏后windowTop获取不正确的问题，具体bug详见https://ask.dcloud.net.cn/question/141634
-			//感谢litangyu！！https://github.com/SmileZXLee/uni-z-paging/issues/25
-			// #ifdef VUE3 && H5
-			const pageHeadNode = document.getElementsByTagName("uni-page-head");
-			if (!pageHeadNode.length) return 0;
-			// #endif
-			return this.systemInfo?.windowTop || 0;
-		},
 		windowBottom() {
 			if (!this.systemInfo) return 0;
 			let windowBottom = this.systemInfo?.windowBottom || 0;
@@ -323,38 +302,11 @@ export default {
 			}
 			return windowBottom;
 		},
-		isOldWebView() {
-			// #ifndef APP-NVUE || MP-KUAISHOU
-			try {
-				const systemInfos = systemInfo.system.split(' ');
-				const deviceType = systemInfos[0];
-				const version = parseInt(systemInfos[1].slice(0,1));
-				if ((deviceType === 'iOS' && version <= 10) || (deviceType === 'Android' && version <= 6)) {
-					return true;
-				}
-			} catch(e) {
-				return false;
-			}
-			// #endif
-			return false;
-		},
 		isIosAndH5() {
 			// #ifndef H5
 			return false;
 			// #endif
 			return this.isIos;
-		},
-		zSlots() {
-			// #ifdef VUE2
-			
-			// #ifdef MP-ALIPAY
-			return this.$slots;
-			// #endif
-			
-			return this.$scopedSlots ? this.$scopedSlots : this.$slots;
-			// #endif
-			
-			return this.$slots;
 		}
 	},
 	methods: {
@@ -372,9 +324,7 @@ export default {
 			if (this.isIos) {
 				this.privateRefresherEnabled = 0;
 			}
-			if (!this.usePageScroll) {
-				this.$refs['zp-n-list'].setSpecialEffects(args);
-			}
+			!this.usePageScroll && this.$refs['zp-n-list'].setSpecialEffects(args);
 		},
 		//使手机发生较短时间的振动（15ms）
 		_doVibrateShort() {
@@ -385,7 +335,7 @@ export default {
 				feedbackGenerator.init();
 				setTimeout(() => {
 					feedbackGenerator.selectionChanged();
-				},0)
+				}, 0)
 			} else {
 				plus.device.vibrate(15);
 			}
@@ -407,9 +357,7 @@ export default {
 					if (finalScrollViewNode) {
 						const scrollViewTop = finalScrollViewNode[0].top;
 						let scrollViewHeight = this.windowHeight - scrollViewTop;
-						if (finalScrollBottomNode) {
-							scrollViewHeight -= finalScrollBottomNode[0].height;
-						}
+						scrollViewHeight -= finalScrollBottomNode ? finalScrollBottomNode[0].height : 0;
 						const additionHeight = u.convertToPx(this.autoHeightAddition);
 						const finalHeight = scrollViewHeight + additionHeight - (this.insideMore ? 1 : 0) + 'px !important';
 						this.$set(this.scrollViewStyle, heightKey, finalHeight);
@@ -421,45 +369,9 @@ export default {
 				}
 			} catch (e) {}
 		},
-		//通过获取css设置的底部安全区域占位view高度设置bottom距离
-		_getCssSafeAreaInsetBottom(){
-			this._getNodeClientRect('.zp-safe-area-inset-bottom').then((res) => {
-				if (res) {
-					this.cssSafeAreaInsetBottom = res[0].height;
-					this.safeAreaInsetBottom && this.updatePageScrollBottomHeight();
-				}
-			});
-		},
 		//触发更新是否超出页面状态
 		_updateInsideOfPaging() {
 			this.insideMore && this.insideOfPaging === true && setTimeout(this.doLoadMore, 200)
-		},
-		//获取节点尺寸
-		_getNodeClientRect(select, inDom = true, scrollOffset = false) {
-			// #ifdef APP-NVUE
-			select = select.replace(/[*|#]/g, '');
-			const ref = this.$refs[select];
-			return new Promise((resolve, reject) => {
-				if (ref) {
-					weexDom.getComponentRect(ref, option => {
-						resolve(option && option.result ? [option.size] : false);
-					})
-				} else {
-					resolve(false);
-				}
-			});
-			return;
-			// #endif
-			//#ifdef MP-ALIPAY
-			inDom = false;
-			//#endif
-			let res = !!inDom ? uni.createSelectorQuery().in(inDom === true ? this : inDom) : uni.createSelectorQuery();
-			scrollOffset ? res.select(select).scrollOffset() : res.select(select).boundingClientRect();
-			return new Promise((resolve, reject) => {
-				res.exec(data => {
-					resolve((data && data != '' && data != undefined && data.length) ? data : false);
-				});
-			});
 		},
 		//清除timeout
 		_cleanTimeout(timeout) {
@@ -472,9 +384,7 @@ export default {
 		//添加全局emit监听
 		_onEmit() {
 			uni.$on(c.errorUpdateKey, () => {
-				if (this.loading) {
-					this.complete(false);
-				}
+				this.loading && this.complete(false);
 			})
 			uni.$on(c.completeUpdateKey, (data) => {
 				setTimeout(() => {

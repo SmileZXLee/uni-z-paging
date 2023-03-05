@@ -8,9 +8,7 @@ export default {
 	onPageScroll(e) {
 		if (this.isPagingRefNotFound()) return;
 		this.$refs.paging.updatePageScrollTop(e.scrollTop);
-		if (e.scrollTop < 10) {
-			this.$refs.paging.doChatRecordLoadMore();
-		}
+		e.scrollTop < 10 && this.$refs.paging.doChatRecordLoadMore();
 	},
 	onReachBottom() {
 		if (this.isPagingRefNotFound()) return;

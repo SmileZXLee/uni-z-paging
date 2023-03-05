@@ -542,9 +542,7 @@ export default {
 			this.$nextTick(() => {
 				setTimeout(()=>{
 					this._getNodeClientRect('.zp-paging-container-content').then(res => {
-						if (res) {
-							this.$emit('contentHeightChanged', res[0].height);
-						}
+						res && this.$emit('contentHeightChanged', res[0].height);
 					});
 				},this.isIos ? 100 : 300)
 				// #ifdef APP-NVUE
