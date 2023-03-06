@@ -196,9 +196,8 @@ export default {
 		},
 		//更新slot="left"和slot="right"宽度，当slot="left"或slot="right"宽度动态改变时调用
 		updateLeftAndRightWidth() {
-			this.$nextTick(() => {
-				this._updateLeftAndRightWidth();
-			})
+			if (!this.finalIsOldWebView) return;
+			this.$nextTick(() => this._updateLeftAndRightWidth(this.scrollViewContainerStyle, 'zp-page'));
 		},
 		//更新z-paging内置scroll-view的scrollTop
 		updateScrollViewScrollTop(scrollTop, animate = true) {
@@ -217,8 +216,7 @@ export default {
 			this.$nextTick(() => {
 				this.oldScrollTop = 0;
 			})
-			if (!this.useChatRecordMode) return;
-			if (this.loadingStatus === Enum.More.NoMore) return;
+			if (!this.useChatRecordMode || this.loadingStatus === Enum.More.NoMore) return;
 			this._onLoadingMore('click');
 		},
 		//当滚动到底部时
@@ -459,22 +457,5 @@ export default {
 				}, delayTime)
 			})
 		},
-		//获取slot="left"和slot="right"宽度并且更新布局
-		_updateLeftAndRightWidth(){
-			if (!this.finalIsOldWebView) return;
-			this.$nextTick(() => {
-				let delayTime = 0;
-				// #ifdef MP-BAIDU
-				delayTime = 10;
-				// #endif
-				setTimeout(() => {
-					['left','right'].map(position => {
-						this._getNodeClientRect(`.zp-page-${position}`).then((res) => {
-							this.$set(this.scrollViewContainerStyle, position, res ? res[0].width + 'px' : '0px');
-						});
-					})
-				}, delayTime)
-			})
-		}
 	}
 }

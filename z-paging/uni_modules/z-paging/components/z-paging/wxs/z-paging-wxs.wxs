@@ -34,7 +34,7 @@ function touchstart(e, ownerIns) {
 	var isTouchEnded = state.isTouchEnded;
 	state.oldMoveDis = 0;
 	var touch = _getTouch(e);
-	var loading = _getIsTrue(dataset.loading);
+	var loading = _isTrue(dataset.loading);
 	state.startY = touch.touchY;
 	startY = state.startY;
 	state.lastTouch = touch;
@@ -50,9 +50,9 @@ function touchmove(e, ownerIns) {
 	var ins = _getIns(ownerIns);
 	var dataset = ins.getDataset();
 	var refresherThreshold = dataset.refresherthreshold;
-	var isIos = _getIsTrue(dataset.isios);
+	var isIos = _isTrue(dataset.isios);
 	var state = ins.getState();
-	var watchTouchDirectionChange = _getIsTrue(dataset.watchtouchdirectionchange);
+	var watchTouchDirectionChange = _isTrue(dataset.watchtouchdirectionchange);
 	var moveDisObj = {};
 	var moveDis = 0;
 	var prevent = false;
@@ -92,8 +92,8 @@ function touchmove(e, ownerIns) {
 	}
 	_setTransformValue(moveDis, ins, state, false);
 	var oldRefresherStatus = state.refresherStatus;
-	var oldIsTouchmoving = _getIsTrue(dataset.oldistouchmoving);
-	var hasTouchmove = _getIsTrue(dataset.hastouchmove);
+	var oldIsTouchmoving = _isTrue(dataset.oldistouchmoving);
+	var hasTouchmove = _isTrue(dataset.hastouchmove);
 	var isTouchmoving = state.isTouchmoving;
 	state.refresherStatus = moveDis >= refresherThreshold ? 1 : 0;
 	if (!isTouchmoving) {
@@ -104,7 +104,7 @@ function touchmove(e, ownerIns) {
 		state.isTouchEnded = false;
 	}
 	if (hasTouchmove) {
-		ownerIns.callMethod('_handleWxsPullingDown', {moveDis:moveDis, diffDis:moveDisObj.diffDis});
+		ownerIns.callMethod('_handleWxsPullingDown', { moveDis:moveDis, diffDis:moveDisObj.diffDis });
 	}
 	if (oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus || oldIsTouchmoving != isTouchmoving) {
 		ownerIns.callMethod('_handleRefresherTouchmove', moveDis, touch);
@@ -123,7 +123,6 @@ function touchend(e, ownerIns) {
 	state.hitReachMaxAngleCount = 0;
 	state.disabledBounce = false;
 	state.fixedIsTopHitCount = 0;
-	//ownerIns.callMethod('_handleScrollViewDisableBounce', {bounce:true});
 	if (!state.isTouchmoving) return;
 	var oldRefresherStatus = state.refresherStatus;
 	var oldMoveDis = state.moveDis;
@@ -147,16 +146,8 @@ function touchend(e, ownerIns) {
 function isPC() {
 	if (!navigator) return false;
 	if (isPCFlag != -1) return isPCFlag;
-	var userAgentInfo = navigator.userAgent;
-	var Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
-	var flag = true;
-	for (var i = 0; i < Agents.length; i++) {
-		if (userAgentInfo.indexOf(Agents[i]) > 0) {
-			flag = false;
-			break;
-		}
-	}
-	isPCFlag = flag;
+	var agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+	isPCFlag = agents.every(function(item) { return navigator.userAgent.indexOf(item) < 0 });
 	return isPCFlag;
 }
 
@@ -169,8 +160,7 @@ function mousedown(e, ins) {
 }
 
 function mousemove(e, ins) {
-	if (!isPC()) return;
-	if (!movable) return;
+	if (!isPC() || !movable) return;
 	touchmove(e, ins);
 }
 
@@ -195,9 +185,7 @@ function _setTransformValue(value, ins, state, animate) {
 }
 
 function _setTransform(transform, ins, animate, transition) {
-	if (transform == 'translateY(0px)') {
-		transform = 'none';
-	}
+	transform = transform == 'translateY(0px)' ? 'none' : transform;
 	ins.requestAnimationFrame(function() {
 		var stl = { 'transform': transform };
 		if (animate) {
@@ -263,16 +251,16 @@ function _getIns(ownerIns) {
 function _touchDisabled(e, ins, processTag) {
 	var dataset = ins.getDataset();
 	var state = ins.getState();
-	var loading = _getIsTrue(dataset.loading);
-	var useChatRecordMode = _getIsTrue(dataset.usechatrecordmode);
-	var refresherEnabled = _getIsTrue(dataset.refresherenabled);
-	var useCustomRefresher = _getIsTrue(dataset.usecustomrefresher);
-	var usePageScroll = _getIsTrue(dataset.usepagescroll);
+	var loading = _isTrue(dataset.loading);
+	var useChatRecordMode = _isTrue(dataset.usechatrecordmode);
+	var refresherEnabled = _isTrue(dataset.refresherenabled);
+	var useCustomRefresher = _isTrue(dataset.usecustomrefresher);
+	var usePageScroll = _isTrue(dataset.usepagescroll);
 	var pageScrollTop = parseFloat(dataset.pagescrolltop);
 	var scrollTop = parseFloat(dataset.scrolltop);
 	var finalScrollTop = usePageScroll ? pageScrollTop : scrollTop;
 	var fixedIsTop = false;
-	var isIos = _getIsTrue(dataset.isios);
+	var isIos = _isTrue(dataset.isios);
 	if (!isIos && finalScrollTop == (state.startScrollTop || 0) && finalScrollTop <= 105) {
 		fixedIsTop = true;
 	}
@@ -299,7 +287,7 @@ function _touchDisabled(e, ins, processTag) {
 
 function _getAngleIsInRange(e, touch, state, dataset) {
 	var maxAngle = dataset.refreshermaxangle;
-	var refresherAecc = _getIsTrue(dataset.refresheraecc);
+	var refresherAecc = _isTrue(dataset.refresheraecc);
 	var lastTouch = state.lastTouch;
 	var reachMaxAngle = state.reachMaxAngle;
 	var moveDis = state.oldMoveDis;
@@ -334,7 +322,7 @@ function _handlePullingDown(state, ins, onPullingDown) {
 	state.onPullingDown = onPullingDown;
 }
 
-function _getIsTrue(value) {
+function _isTrue(value) {
 	value = (typeof(value) === 'string' ? JSON.parse(value) : value) || false;
 	return value == true || value == 'true';
 }

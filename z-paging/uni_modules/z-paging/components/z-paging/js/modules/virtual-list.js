@@ -107,10 +107,8 @@ export default {
 			if (this.finalUseVirtualList) {
 				this.updateVirtualListFromDataChange = true;
 				this.$nextTick(() => {
-					if (!newVal.length) {
-						this._resetDynamicListState(!this.isUserPullDown);
-					}
 					this.getCellHeightRetryCount.fixed = 0;
+					!newVal.length && this._resetDynamicListState(!this.isUserPullDown);
 					newVal.length && this.cellHeightMode === Enum.CellHeightMode.Fixed && this.isFirstPage && this._updateFixedCellHeight();
 					this._updateVirtualScroll(this.oldScrollTop);
 				})
@@ -155,7 +153,7 @@ export default {
 		didUpdateVirtualListCell(index) {
 			if (this.cellHeightMode !== Enum.CellHeightMode.Dynamic) return;
 			const currentNode = this.virtualHeightCacheList[index];
-			this._getNodeClientRect(`#zp-id-${index}`,this.finalUseInnerList).then(cellNode => {
+			this._getNodeClientRect(`#zp-id-${index}`, this.finalUseInnerList).then(cellNode => {
 				const cellNodeHeight = cellNode ? cellNode[0].height : 0;
 				
 				const heightDis = cellNodeHeight - currentNode.height;
@@ -258,7 +256,7 @@ export default {
 			for (let i = 0; i < list.length; i++) {
 				let item = list[i];
 				if (!item || Object.prototype.toString.call(item) !== '[object Object]') {
-					item = {item};
+					item = { item };
 				}
 				item[c.listCellIndexKey] = lastItemIndex + i;
 				item[c.listCellIndexUniqueKey] = `${this.virtualListKey}-${item[c.listCellIndexKey]}`;

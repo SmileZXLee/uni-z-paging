@@ -19,7 +19,7 @@ export default {
 			type: [Number, String],
 			default: u.gc('defaultPageSize', 10),
 			validator: (value) => {
-				if(value <= 0) u.consoleErr('default-page-size必须大于0！');
+				if (value <= 0) u.consoleErr('default-page-size必须大于0！');
 				return value > 0;
 			}
 		},
@@ -169,8 +169,7 @@ export default {
 			return this.useCache && !!this.cacheKey;
 		},
 		finalCacheKey() {
-			if (!this.cacheKey) return null;
-			return `${c.cachePrefixKey}-${this.cacheKey}`; 
+			return this.cacheKey ? `${c.cachePrefixKey}-${this.cacheKey}` : null; 
 		},
 		isFirstPage() {
 			return this.pageNo === this.defaultPageNo;
@@ -212,9 +211,7 @@ export default {
 		//【保证数据一致】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为dataKey，需与:data-key绑定的一致，第三个参数为是否成功(默认为是）
 		completeByKey(data, dataKey = null, success = true) {
 			if (dataKey !== null && this.dataKey !== null && dataKey !== this.dataKey) {
-				if (this.isFirstPage) {
-					this.endRefresh();
-				}
+				this.isFirstPage && this.endRefresh();
 				return new Promise(resolve => resolve());
 			}
 			this.customNoMore = -1;
@@ -232,16 +229,13 @@ export default {
 					return new Promise((resolve, reject) => {
 						this.$nextTick(() => {
 							let nomore = false;
-							let realTotalDataCount = this.realTotalData.length;
-							if (this.pageNo == this.defaultPageNo) {
-								realTotalDataCount = 0;
-							}
+							const realTotalDataCount = this.pageNo == this.defaultPageNo ? 0 : this.realTotalData.length;
 							const dataLength = this.privateConcat ? data.length : 0;
 							let exceedCount = realTotalDataCount + dataLength - total;
 							if (exceedCount >= 0) {
 								nomore = true;
 								exceedCount = this.defaultPageSize - exceedCount;
-								if (exceedCount > 0 && exceedCount < data.length && this.privateConcat) {
+								if (this.privateConcat && exceedCount > 0 && exceedCount < data.length) {
 									data = data.splice(0, exceedCount);
 								}
 							}
@@ -284,10 +278,7 @@ export default {
 		},
 		//从顶部添加数据，不会影响分页的pageNo和pageSize
 		addDataFromTop(data, toTop = true, toTopWithAnimate = true) {
-			let dataType = Object.prototype.toString.call(data);
-			if (dataType !== '[object Array]') {
-				data = [data];
-			}
+			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data;
 			this.totalData = [...data, ...this.totalData];
 			if (toTop) {
 				setTimeout(() => {
@@ -298,18 +289,12 @@ export default {
 		//重新设置列表数据，调用此方法不会影响pageNo和pageSize，也不会触发请求。适用场景：当需要删除列表中某一项时，将删除对应项后的数组通过此方法传递给z-paging。(当出现类似的需要修改列表数组的场景时，请使用此方法，请勿直接修改page中:list.sync绑定的数组)
 		resetTotalData(data) {
 			this.isTotalChangeFromAddData = true;
-			let dataType = Object.prototype.toString.call(data);
-			if (dataType !== '[object Array]') {
-				data = [data];
-			}
+			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data;
 			this.totalData = data;
 		},
 		//添加聊天记录
 		addChatRecordData(data, toBottom = true, toBottomWithAnimate = true) {
-			let dataType = Object.prototype.toString.call(data);
-			if (dataType !== '[object Array]') {
-				data = [data];
-			}
+			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data;
 			if (!this.useChatRecordMode) return;
 			this.isTotalChangeFromAddData = true;
 			//#ifndef APP-NVUE
@@ -324,11 +309,7 @@ export default {
 					this._scrollToBottom(toBottomWithAnimate);
 					//#endif
 					//#ifdef APP-NVUE
-					if (this.nIsFirstPageAndNoMore) {
-						this._scrollToBottom(toBottomWithAnimate);
-					} else {
-						this._scrollToTop(toBottomWithAnimate);
-					}
+					this.nIsFirstPageAndNoMore ? this._scrollToBottom(toBottomWithAnimate) : this._scrollToTop(toBottomWithAnimate);
 					//#endif
 				}, c.delayTime)
 			}
@@ -349,7 +330,9 @@ export default {
 				this.privateShowRefresherWhenReload = animate;
 				this.isUserPullDown = true;
 			}
-			this.listRendering = true;
+			if (!this.showLoadingMoreWhenReload) {
+				this.listRendering = true;
+			}
 			this.$nextTick(() => {
 				this._preReload(animate, false);
 			})
@@ -359,9 +342,7 @@ export default {
 		},
 		//刷新列表数据，pageNo和pageSize不会重置，列表数据会重新从服务端获取。必须保证@query绑定的方法中的pageNo和pageSize和传给服务端的一致
 		refresh() {
-			if (!this.realTotalData.length) {
-				return this.reload();
-			}
+			if (!this.realTotalData.length) return this.reload();
 			const disPageNo = this.pageNo - this.defaultPageNo + 1;
 			if (disPageNo >= 1) {
 				this.loading = true;
@@ -453,9 +434,7 @@ export default {
 				// #ifdef MP-TOUTIAO
 				delay = 5;
 				// #endif
-				setTimeout(() => {
-					this._callMyParentQuery();
-				}, delay)
+				setTimeout(this._callMyParentQuery, delay);
 				if (!isFromMounted && this.autoScrollToTopWhenReload) {
 					let checkedNRefresherLoading = true;
 					// #ifdef APP-NVUE
@@ -563,9 +542,7 @@ export default {
 			this.$nextTick(() => {
 				setTimeout(()=>{
 					this._getNodeClientRect('.zp-paging-container-content').then(res => {
-						if (res) {
-							this.$emit('contentHeightChanged', res[0].height);
-						}
+						res && this.$emit('contentHeightChanged', res[0].height);
 					});
 				},this.isIos ? 100 : 300)
 				// #ifdef APP-NVUE
@@ -653,7 +630,7 @@ export default {
 						// #ifdef MP-WEIXIN
 						if (!this.isIos && !this.refresherOnly && !this.usePageScroll && newVal.length) {
 							this.loadingMoreTimeStamp = u.getTime();
-							this.$nextTick(()=>{
+							this.$nextTick(() => {
 								this.scrollToY(currentScrollTop);
 							})
 						}
@@ -703,11 +680,7 @@ export default {
 					}
 				} 
 				if (this.myParentQuery !== -1) {
-					if (customPageSize > 0) {
-						this.myParentQuery(customPageNo, customPageSize);
-					} else {
-						this.myParentQuery(this.pageNo, this.defaultPageSize);
-					}
+					customPageSize > 0 ? this.myParentQuery(customPageNo, customPageSize) : this.myParentQuery(this.pageNo, this.defaultPageSize);
 				}
 			}
 		},
@@ -738,7 +711,7 @@ export default {
 					u.consoleErr(`${isLocal ? 'setLocalPaging' : 'complete'}参数类型不正确，第一个参数类型必须为Array!`);
 				}
 			}
-			return {data,success};
+			return { data, success };
 		},
 	}
 }

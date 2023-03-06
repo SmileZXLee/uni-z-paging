@@ -73,7 +73,7 @@ function getTouchFromZPaging(target) {
 			return getTouchFromZPaging(target.parentNode);
 		}
 	} else {
-		return {isFromZp: false};
+		return { isFromZp: false };
 	}
 }
 

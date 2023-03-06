@@ -237,6 +237,9 @@ export default {
 			this.refresherVibrate && newVal === Enum.Refresher.ReleaseToRefresh && this._doVibrateShort();
 			this.$emit('refresherStatusChange', newVal);
 			this.$emit('update:refresherStatus', newVal);
+		},
+		refresherEnabled(newVal) {
+			!newVal && this.endRefresh();
 		}
 	},
 	computed: {
@@ -320,6 +323,7 @@ export default {
 			this.totalData = this.realTotalData;
 			this._refresherEnd();
 			this._endSystemLoadingAndRefresh();
+			this._handleScrollViewDisableBounce({ bounce: true });
 		},
 		handleRefresherStatusChanged(func) {
 			this.refresherStatusChangedFunc = func;
@@ -331,9 +335,7 @@ export default {
 			this.$emit('Refresh');
 			// #ifdef APP-NVUE
 			if (this.loading) {
-				setTimeout(()=>{
-					this._nRefresherEnd();
-				},500)
+				setTimeout(this._nRefresherEnd, 500)
 				return;
 			}
 			// #endif
@@ -359,8 +361,7 @@ export default {
 		_refresherTouchstart(e) {
 			this._handleListTouchstart();
 			if (this._touchDisabled()) return;
-			const touch = u.getTouch(e);
-			this._handleRefresherTouchstart(touch);
+			this._handleRefresherTouchstart(u.getTouch(e));
 		},
 		// #endif
 		//进一步处理拖拽开始结果

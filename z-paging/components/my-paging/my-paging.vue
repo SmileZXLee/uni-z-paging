@@ -20,6 +20,11 @@
 			<slot name="bottom" />
 		</template>
 		
+		<template #empty v-if="$slots.empty" >
+			<!-- 这里接收页面传进来的slot，这样相当于将页面传进来的slot传给z-paging的slot="empty"了 -->
+			<slot name="empty" />
+		</template>
+		
 		<!-- 这个是插入虚拟列表/内置列表的cell -->
 		<template #cell="{item,index}">
 			<slot name="cell" :item="item" :index="index"/>
