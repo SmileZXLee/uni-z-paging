@@ -25,10 +25,6 @@ import Enum from './z-paging-enum'
 
 const systemInfo = uni.getSystemInfoSync();
 
-// #ifdef APP-NVUE
-const weexDom = weex.requireModule('dom');
-// #endif
-
 export default {
 	name: "z-paging",
 	components: {

@@ -1,5 +1,9 @@
 // [z-paging]通用布局相关模块
 
+// #ifdef APP-NVUE
+const weexDom = weex.requireModule('dom');
+// #endif
+
 export default {
 	data() {
 		return {
@@ -60,7 +64,7 @@ export default {
 		//获取节点尺寸
 		_getNodeClientRect(select, inDom = true, scrollOffset = false) {
 			// #ifdef APP-NVUE
-			select = select.replace(/[*|#]/g, '');
+			select = select.replace(/[.|#]/g, '');
 			const ref = this.$refs[select];
 			return new Promise((resolve, reject) => {
 				if (ref) {

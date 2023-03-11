@@ -188,7 +188,7 @@ export default {
 			if (this.cacheScrollNodeHeight === -1) {
 				this._getNodeClientRect('.zp-scroll-view').then((res) => {
 					if (res) {
-						let pageScrollNodeHeight = res[0].height;
+						const pageScrollNodeHeight = res[0].height;
 						this.cacheScrollNodeHeight = pageScrollNodeHeight;
 						if (scrollDiff - pageScrollNodeHeight <= this.finalLowerThreshold) {
 							this._onLoadingMore('toBottom');
