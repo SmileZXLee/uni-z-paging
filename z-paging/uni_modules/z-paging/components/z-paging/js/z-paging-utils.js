@@ -26,9 +26,9 @@ function gc(key, defaultValue) {
 		if (zLocalConfig && Object.keys(zLocalConfig).length) {
 			config = zLocalConfig;
 		} else {
-			const temConfig = zConfig.getConfig();
-			if (zConfig && temConfig) {
-				config = temConfig;
+			const tempConfig = zConfig.getConfig();
+			if (zConfig && tempConfig) {
+				config = tempConfig;
 			}
 		}
 	}

@@ -119,7 +119,7 @@ export default {
 		scrollToTop(animate, checkReverse = true) {
 			// #ifdef APP-NVUE
 			if (checkReverse && this.useChatRecordMode) {
-				if(!this.nIsFirstPageAndNoMore){
+				if (!this.nIsFirstPageAndNoMore) {
 					this.scrollToBottom(animate, false);
 					return;
 				}
@@ -140,7 +140,7 @@ export default {
 		scrollToBottom(animate, checkReverse = true) {
 			// #ifdef APP-NVUE
 			if (checkReverse && this.useChatRecordMode) {
-				if(!this.nIsFirstPageAndNoMore){
+				if (!this.nIsFirstPageAndNoMore) {
 					this.scrollToTop(animate, false);
 					return;
 				}
