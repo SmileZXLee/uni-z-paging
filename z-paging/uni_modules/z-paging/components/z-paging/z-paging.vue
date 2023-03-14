@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-v2.5.5 (2023-03-14)
+v2.5.6 (2023-03-14)
 by ZXLee
 -->
 <!-- 文档地址：https://z-paging.zxlee.cn -->
@@ -213,11 +213,11 @@ by ZXLee
 					<slot />
 				</template>
 				<!-- 全屏Loading -->
-				<component :is="nViewIs" v-if="showLoading&&zSlots.loading&&!loadingFullFixed" :class="{'z-paging-content-fixed':usePageScroll}" style="flex: 1;" :style="[nChatRecordRotateStyle]">
+				<component :is="nViewIs" v-if="showLoading&&zSlots.loading&&!loadingFullFixed" :class="{'z-paging-content-fixed':usePageScroll}" style="flex:1" :style="[nChatRecordRotateStyle]">
 					<slot name="loading" />
 				</component>
 				<!-- 空数据图 -->
-				<component :is="nViewIs" v-if="showEmpty" :class="{'z-paging-content-fixed':usePageScroll}" :style="[{flex:isIos?0:1},emptyViewSuperStyle,nChatRecordRotateStyle]">
+				<component :is="nViewIs" v-if="showEmpty" :class="{'z-paging-content-fixed':usePageScroll}" style="flex:1" :style="[emptyViewSuperStyle,nChatRecordRotateStyle]">
 					<view :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}">
 						<slot v-if="zSlots.empty" name="empty" :isLoadFailed="isLoadFailed" />
 						<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
