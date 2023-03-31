@@ -1,5 +1,7 @@
 # z-paging
 
+## 开发中，非稳定版，请勿使用
+
 <p align="center">
     <img alt="logo" src="https://z-paging.zxlee.cn/img/title-logo.png" height="100" style="margin-bottom: 50px;">
 </p>
