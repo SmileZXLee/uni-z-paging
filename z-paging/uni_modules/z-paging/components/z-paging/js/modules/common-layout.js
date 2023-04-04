@@ -54,7 +54,7 @@ export default {
 			return this.$slots;
 			// #endif
 			
-			return this.$scopedSlots ? this.$scopedSlots : this.$slots;
+			return this.$scopedSlots || this.$slots;
 			// #endif
 			
 			return this.$slots;
