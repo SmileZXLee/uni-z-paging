@@ -225,6 +225,7 @@ export default {
 			oldCurrentMoveDis: 0,
 			oldRefresherTouchmoveY: 0,
 			oldTouchDirection: '',
+			oldEmitedTouchDirection: '',
 			oldPullingDistance: -1
 		}
 	},
@@ -394,7 +395,10 @@ export default {
 				touch = u.getTouch(e);
 				refresherTouchmoveY = touch.touchY;
 				const direction  = refresherTouchmoveY > this.oldRefresherTouchmoveY ? 'top' : 'bottom';
-				direction === this.oldTouchDirection && this._handleTouchDirectionChange({direction});
+				if (direction === this.oldTouchDirection && direction !== this.oldEmitedTouchDirection) {
+					this._handleTouchDirectionChange({ direction });
+					this.oldEmitedTouchDirection = direction;
+				}
 				this.oldTouchDirection = direction;
 				this.oldRefresherTouchmoveY = refresherTouchmoveY;
 			}
