@@ -29,13 +29,13 @@
 
 ***
 
-|                 自定义下拉刷新效果+分页演示                  |                      吸顶效果+分页演示                       |
+|                 自定义下拉刷新效果演示                  |                      滑动切换选项卡+吸顶演示                       |
 | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| ![](https://z-paging.zxlee.cn/public/img/uni-z-paging.gif) | ![](https://z-paging.zxlee.cn/public/img/uni-z-paging2.gif) |
+| ![](https://z-paging.zxlee.cn/public/img/z-paging-demo5.gif) | ![](https://z-paging.zxlee.cn/public/img/z-paging-demo6.gif) |
 
-|                   滑动切换选项卡+分页演示                    |                    聊天记录模式+分页演示                     |
+|                   聊天记录模式演示                    |                    虚拟列表(流畅渲染1万+条)演示                     |
 | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| ![](https://z-paging.zxlee.cn/public/img/z-paging-demo3.gif) | ![](https://z-paging.zxlee.cn/public/img/z-paging-demo4.gif) |
+| ![](https://z-paging.zxlee.cn/public/img/z-paging-demo7.gif) | ![](https://z-paging.zxlee.cn/public/img/z-paging-demo8.gif) |
 
 ### 在线demo体验地址：
 

@@ -61,6 +61,7 @@
 			//swiper滑动结束
 			swiperAnimationfinish(e) {
 				this._setCurrent(e.detail.current);
+				this.$refs.tabs.unlockDx();
 			},
 			//设置swiper的高度
 			heightChanged(height){

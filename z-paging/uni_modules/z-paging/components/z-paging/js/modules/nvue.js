@@ -76,6 +76,7 @@ export default {
 		}
 	},
 	watch: {
+		// #ifdef APP-NVUE
 		nIsFirstPageAndNoMore: {
 			handler(newVal) {
 				const cellStyle = !this.useChatRecordMode || newVal ? {} : { transform: 'rotate(180deg)' };
@@ -83,7 +84,8 @@ export default {
 				this.$emit('cellStyleChange', cellStyle);
 			},
 			immediate: true
-		}
+		},
+		// #endif
 	},
 	computed: {
 		// #ifdef APP-NVUE
@@ -174,11 +176,6 @@ export default {
 			   !this.usePageScroll && this.$refs['zp-n-list'].resetLoadmore();
 			   this.nRefresherLoading = false;
 			}
-			this.$nextTick(() => {
-				setTimeout(()=> {
-					this.nShowBottom = true;
-				}, 10);
-			})
 		},
 		//执行主动触发下拉刷新动画
 		_nDoRefresherEndAnimation(height, translateY, animate = true, checkStack = true) {

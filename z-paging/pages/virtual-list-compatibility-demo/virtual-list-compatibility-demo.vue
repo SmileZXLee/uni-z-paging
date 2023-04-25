@@ -25,7 +25,7 @@
 	export default {
 		data() {
 			return {
-				tabList: ['cell高度固定','cell高度动态'],
+				tabList: ['cell高度相同','cell高度不同'],
 				tabIndex: 0,
 				extraData: {
 					//给这个页面的虚拟列表取一个名字，这样在zp-virtual-cell中可以根据这个名字来区分不同页面的cell

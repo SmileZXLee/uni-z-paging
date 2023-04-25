@@ -13,19 +13,20 @@ export default {
 	},
 	computed: {
 		windowTop() {
+			if (!this.systemInfo) return 0;
 			//暂时修复vue3中隐藏系统导航栏后windowTop获取不正确的问题，具体bug详见https://ask.dcloud.net.cn/question/141634
 			//感谢litangyu！！https://github.com/SmileZXLee/uni-z-paging/issues/25
 			// #ifdef VUE3 && H5
 			const pageHeadNode = document.getElementsByTagName("uni-page-head");
 			if (!pageHeadNode.length) return 0;
 			// #endif
-			return this.systemInfo?.windowTop || 0;
+			return this.systemInfo.windowTop || 0;
 		},
 		safeAreaBottom() {
 			if (!this.systemInfo) return 0;
 			let safeAreaBottom = 0;
 			// #ifdef APP-PLUS
-			safeAreaBottom = this.systemInfo?.safeAreaInsets?.bottom || 0;
+			safeAreaBottom = this.systemInfo.safeAreaInsets.bottom || 0 ;
 			// #endif
 			// #ifndef APP-PLUS
 			safeAreaBottom = Math.max(this.cssSafeAreaInsetBottom, 0);

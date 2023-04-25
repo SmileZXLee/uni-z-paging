@@ -185,6 +185,8 @@ function _setTransformValue(value, ins, state, animate) {
 }
 
 function _setTransform(transform, ins, animate, transition) {
+	var dataset = ins.getDataset();
+	if (_isTrue(dataset.refreshernotransform)) return;
 	transform = transform == 'translateY(0px)' ? 'none' : transform;
 	ins.requestAnimationFrame(function() {
 		var stl = { 'transform': transform };

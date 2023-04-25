@@ -186,6 +186,11 @@ export default {
 			type: Boolean,
 			default: u.gc('refresherVibrate', false)
 		},
+		//下拉刷新时是否禁止下拉刷新view跟随用户触摸竖直移动，默认为否。注意此属性只是禁止下拉刷新view移动，其他下拉刷新逻辑依然会正常触发
+		refresherNoTransform: {
+			type: Boolean,
+			default: u.gc('refresherNoTransform', false)
+		},
 	},
 	data() {
 		return {
@@ -281,7 +286,7 @@ export default {
 			return rate;
 		},
 		finalRefresherTransform() {
-			if (this.refresherTransform === 'translateY(0px)') return 'none';
+			if (this.refresherNoTransform || this.refresherTransform === 'translateY(0px)') return 'none';
 			return this.refresherTransform;
 		},
 		finalShowRefresherWhenReload() {
