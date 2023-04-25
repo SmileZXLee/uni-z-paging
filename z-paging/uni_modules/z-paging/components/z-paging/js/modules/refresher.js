@@ -126,6 +126,11 @@ export default {
 			type: String,
 			default: u.gc('refresherCompleteImg', null)
 		},
+		//自定义下拉刷新刷新中状态下是否展示旋转动画
+		refresherRefreshingAnimated: {
+			type: Boolean,
+			default: u.gc('refresherRefreshingAnimated', true)
+		},
 		//是否开启自定义下拉刷新刷新结束回弹效果，默认为是
 		refresherEndBounceEnabled: {
 			type: Boolean,
