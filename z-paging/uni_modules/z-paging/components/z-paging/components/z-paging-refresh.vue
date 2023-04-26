@@ -5,7 +5,7 @@
 			<view class="zp-r-left">
 				<image v-if="status!==R.Loading" :class="leftImageClass" :style="[leftImageStyle,imgStyle]" :src="leftImageSrc" />
 				<!-- #ifndef APP-NVUE -->
-				<image v-else class="zp-line-loading-image zp-r-left-image" :style="[leftImageStyle,imgStyle]" :src="leftImageSrc" />
+				<image v-else :class="{'zp-line-loading-image':refreshingAnimated,'zp-r-left-image':true}" :style="[leftImageStyle,imgStyle]" :src="leftImageSrc" />
 				<!-- #endif -->
 				<!-- #ifdef APP-NVUE -->
 				<view v-else :style="[{'margin-right':showUpdateTime?'18rpx':'12rpx'}]">
@@ -45,7 +45,7 @@
 			};
 		},
 		props: ['status', 'defaultThemeStyle', 'defaultText', 'pullingText', 'refreshingText', 'completeText', 'defaultImg', 'pullingImg', 
-			'refreshingImg', 'completeImg', 'showUpdateTime', 'updateTimeKey', 'imgStyle', 'titleStyle', 'updateTimeStyle', 'updateTimeTextMap'
+			'refreshingImg', 'completeImg', 'refreshingAnimated', 'showUpdateTime', 'updateTimeKey', 'imgStyle', 'titleStyle', 'updateTimeStyle', 'updateTimeTextMap'
 		],
 		computed: {
 			ts() {

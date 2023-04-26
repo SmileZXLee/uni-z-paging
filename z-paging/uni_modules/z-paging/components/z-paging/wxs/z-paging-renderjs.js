@@ -26,12 +26,8 @@ export default {
 		_handleTouch() {
 			if (window && !window.$zPagingRenderJsInited) {
 				window.$zPagingRenderJsInited = true;
-				window.addEventListener('touchstart', this._handleTouchstart, {
-					passive: true
-				})
-				window.addEventListener('touchmove', this._handleTouchmove, {
-					passive: false
-				})
+				window.addEventListener('touchstart', this._handleTouchstart, { passive: true })
+				window.addEventListener('touchmove', this._handleTouchmove, { passive: false })
 			}
 		},
 		_handleTouchstart(e) {

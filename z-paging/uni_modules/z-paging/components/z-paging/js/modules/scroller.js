@@ -5,6 +5,7 @@ import Enum from '.././z-paging-enum'
 // #ifdef APP-NVUE
 const weexDom = weex.requireModule('dom');
 // #endif
+
 export default {
 	props: {
 		//使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
@@ -73,7 +74,7 @@ export default {
 				this.loaded && this.autoHeight && this._setAutoHeight(!newVal);
 				// #ifdef H5
 				if (newVal) {
-					this.$nextTick(()=>{
+					this.$nextTick(() => {
 						const mainScrollRef = this.$refs['zp-scroll-view'].$refs.main;
 						if (mainScrollRef) {
 							mainScrollRef.style = {};
@@ -118,7 +119,7 @@ export default {
 		scrollToTop(animate, checkReverse = true) {
 			// #ifdef APP-NVUE
 			if (checkReverse && this.useChatRecordMode) {
-				if(!this.nIsFirstPageAndNoMore){
+				if (!this.nIsFirstPageAndNoMore) {
 					this.scrollToBottom(animate, false);
 					return;
 				}
@@ -139,7 +140,7 @@ export default {
 		scrollToBottom(animate, checkReverse = true) {
 			// #ifdef APP-NVUE
 			if (checkReverse && this.useChatRecordMode) {
-				if(!this.nIsFirstPageAndNoMore){
+				if (!this.nIsFirstPageAndNoMore) {
 					this.scrollToTop(animate, false);
 					return;
 				}

@@ -443,11 +443,11 @@ export default {
 					checkedNRefresherLoading && this._scrollToTop(false);
 				}
 			}
+			// #ifdef APP-NVUE
 			this.$nextTick(() => {
-				// #ifdef APP-NVUE
 				this.nShowBottom = this.realTotalData.length > 0;
-				// #endif
 			})
+			// #endif
 		},
 		//处理服务端返回的数组
 		_addData(data, success, isLocal) {
@@ -544,12 +544,15 @@ export default {
 					this._getNodeClientRect('.zp-paging-container-content').then(res => {
 						res && this.$emit('contentHeightChanged', res[0].height);
 					});
-				},this.isIos ? 100 : 300)
+				}, c.delayTime * (this.isIos ? 1 : 3))
 				// #ifdef APP-NVUE
 				if (this.useChatRecordMode && this.nIsFirstPageAndNoMore && this.isFirstPage && !this.nFirstPageAndNoMoreChecked) {
 					this.nFirstPageAndNoMoreChecked = true;
 					this._scrollToBottom(false);
 				}
+				setTimeout(()=> {
+					this.nShowBottom = true;
+				}, c.delayTime * 3);
 				// #endif
 			})
 		},
@@ -611,11 +614,11 @@ export default {
 					if (this.pageNo !== this.defaultPageNo) {
 						this.privateScrollWithAnimation = 0;
 						this.$emit('update:chatIndex', idIndex);
-						setTimeout(() => {
+						this.$nextTick(() => {
 							this._scrollIntoView(idIndexStr, 30 + Math.max(0, this.cacheTopHeight), false, () => {
 								this.$emit('update:chatIndex', 0);
 							});
-						}, this.usePageScroll ? this.isIos ? 50 : 100 : 200)
+						})
 					} else {
 						this.$nextTick(() => {
 							this._scrollToBottom(false);

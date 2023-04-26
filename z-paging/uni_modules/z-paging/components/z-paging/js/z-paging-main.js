@@ -25,10 +25,6 @@ import Enum from './z-paging-enum'
 
 const systemInfo = uni.getSystemInfoSync();
 
-// #ifdef APP-NVUE
-const weexDom = weex.requireModule('dom');
-// #endif
-
 export default {
 	name: "z-paging",
 	components: {
@@ -292,11 +288,12 @@ export default {
 			return 0;
 		},
 		windowHeight() {
-			return this.systemInfo?.windowHeight || 0;
+			if (!this.systemInfo) return 0;
+			return this.systemInfo.windowHeight || 0;
 		},
 		windowBottom() {
 			if (!this.systemInfo) return 0;
-			let windowBottom = this.systemInfo?.windowBottom || 0;
+			let windowBottom = this.systemInfo.windowBottom || 0;
 			if (this.safeAreaInsetBottom && !this.useSafeAreaPlaceholder) {
 				windowBottom += this.safeAreaBottom;
 			}

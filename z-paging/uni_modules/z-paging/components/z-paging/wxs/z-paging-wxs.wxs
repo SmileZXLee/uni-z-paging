@@ -60,11 +60,12 @@ function touchmove(e, ownerIns) {
 		moveDisObj = _getMoveDis(e, ins);
 		moveDis = moveDisObj.currentDis;
 		prevent = moveDisObj.isDown;
-		if(state.oldAcceptedIsDown == prevent){
-			ownerIns.callMethod('_handleTouchDirectionChange', {direction: prevent ? 'top' : 'bottom'}); 
-			state.oldIsDown = prevent;
+		var direction = prevent ? 'top' : 'bottom';
+		if (prevent == state.oldTouchDirection && prevent != state.oldEmitedTouchDirection) {
+			ownerIns.callMethod('_handleTouchDirectionChange', { direction: direction }); 
+			state.oldEmitedTouchDirection = prevent;
 		}
-		state.oldAcceptedIsDown = prevent;
+		state.oldTouchDirection = prevent;
 	}
 	if (_touchDisabled(e, ins, 1)) {
 		_handlePullingDown(state, ownerIns, false);
@@ -185,6 +186,8 @@ function _setTransformValue(value, ins, state, animate) {
 }
 
 function _setTransform(transform, ins, animate, transition) {
+	var dataset = ins.getDataset();
+	if (_isTrue(dataset.refreshernotransform)) return;
 	transform = transform == 'translateY(0px)' ? 'none' : transform;
 	ins.requestAnimationFrame(function() {
 		var stl = { 'transform': transform };

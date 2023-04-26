@@ -78,12 +78,12 @@ export default {
 				return u.gc('emptyViewReloadStyle', {});
 			}
 		},
-		//空数据图片是否铺满z-paging，默认为是。若设置为否，则为填充满z-paging的剩余部分
+		//空数据图片是否铺满z-paging，默认为否，即填充满z-paging内列表(滚动区域)部分。若设置为否，则为填铺满整个z-paging
 		emptyViewFixed: {
 			type: Boolean,
 			default: u.gc('emptyViewFixed', false)
 		},
-		//空数据图片是否垂直居中，默认为是。emptyViewFixed为false时有效
+		//空数据图片是否垂直居中，默认为是，若设置为否即为从空数据容器顶部开始显示。emptyViewFixed为false时有效
 		emptyViewCenter: {
 			type: Boolean,
 			default: u.gc('emptyViewCenter', true)

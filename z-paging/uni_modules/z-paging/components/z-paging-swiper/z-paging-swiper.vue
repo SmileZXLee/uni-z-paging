@@ -28,10 +28,6 @@
 <script>
 	import commonLayoutModule from '../z-paging/js/modules/common-layout'
 	
-	// #ifdef APP-NVUE
-	const weexDom = weex.requireModule('dom');
-	// #endif
-	
 	export default {
 		name: "z-paging-swiper",
 		mixins: [commonLayoutModule],

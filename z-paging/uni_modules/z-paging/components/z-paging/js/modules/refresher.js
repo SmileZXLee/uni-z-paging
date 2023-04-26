@@ -126,6 +126,11 @@ export default {
 			type: String,
 			default: u.gc('refresherCompleteImg', null)
 		},
+		//自定义下拉刷新刷新中状态下是否展示旋转动画
+		refresherRefreshingAnimated: {
+			type: Boolean,
+			default: u.gc('refresherRefreshingAnimated', true)
+		},
 		//是否开启自定义下拉刷新刷新结束回弹效果，默认为是
 		refresherEndBounceEnabled: {
 			type: Boolean,
@@ -186,6 +191,11 @@ export default {
 			type: Boolean,
 			default: u.gc('refresherVibrate', false)
 		},
+		//下拉刷新时是否禁止下拉刷新view跟随用户触摸竖直移动，默认为否。注意此属性只是禁止下拉刷新view移动，其他下拉刷新逻辑依然会正常触发
+		refresherNoTransform: {
+			type: Boolean,
+			default: u.gc('refresherNoTransform', false)
+		},
 	},
 	data() {
 		return {
@@ -220,6 +230,7 @@ export default {
 			oldCurrentMoveDis: 0,
 			oldRefresherTouchmoveY: 0,
 			oldTouchDirection: '',
+			oldEmitedTouchDirection: '',
 			oldPullingDistance: -1
 		}
 	},
@@ -281,7 +292,7 @@ export default {
 			return rate;
 		},
 		finalRefresherTransform() {
-			if (this.refresherTransform === 'translateY(0px)') return 'none';
+			if (this.refresherNoTransform || this.refresherTransform === 'translateY(0px)') return 'none';
 			return this.refresherTransform;
 		},
 		finalShowRefresherWhenReload() {
@@ -389,7 +400,10 @@ export default {
 				touch = u.getTouch(e);
 				refresherTouchmoveY = touch.touchY;
 				const direction  = refresherTouchmoveY > this.oldRefresherTouchmoveY ? 'top' : 'bottom';
-				direction === this.oldTouchDirection && this._handleTouchDirectionChange({direction});
+				if (direction === this.oldTouchDirection && direction !== this.oldEmitedTouchDirection) {
+					this._handleTouchDirectionChange({ direction });
+					this.oldEmitedTouchDirection = direction;
+				}
 				this.oldTouchDirection = direction;
 				this.oldRefresherTouchmoveY = refresherTouchmoveY;
 			}

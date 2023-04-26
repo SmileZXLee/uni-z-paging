@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-v2.5.4 (2023-03-05)
+v2.5.7 (2023-03-14)
 by ZXLee
 -->
 <!-- 文档地址：https://z-paging.zxlee.cn -->
@@ -55,7 +55,7 @@ by ZXLee
 						:data-refresherThreshold="finalRefresherThreshold" :data-isIos="isIos"
 						:data-loading="loading||isRefresherInComplete" :data-useChatRecordMode="useChatRecordMode" 
 						:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="wxsPageScrollTop"
-						:data-scrollTop="wxsScrollTop" :data-refresherMaxAngle="refresherMaxAngle" 
+						:data-scrollTop="wxsScrollTop" :data-refresherMaxAngle="refresherMaxAngle" :data-refresherNoTransform="refresherNoTransform"
 						:data-refresherAecc="refresherAngleEnableChangeContinued" :data-usePageScroll="usePageScroll" :data-watchTouchDirectionChange="watchTouchDirectionChange"
 						:data-oldIsTouchmoving="isTouchmoving" :data-refresherOutRate="finalRefresherOutRate" :data-refresherPullRate="finalRefresherPullRate" :data-hasTouchmove="hasTouchmove"
 						<!-- #endif -->
@@ -73,7 +73,7 @@ by ZXLee
 									<z-paging-refresh ref="refresh" v-else-if="!showCustomRefresher" :style="[{'height': `${finalRefresherThreshold}px`}]" :status="refresherStatus"
 										:defaultThemeStyle="finalRefresherThemeStyle" :defaultText="finalRefresherDefaultText"
 										:pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText"
-										:defaultImg="refresherDefaultImg" :pullingImg="refresherPullingImg" :refreshingImg="refresherRefreshingImg" :completeImg="refresherCompleteImg"
+										:defaultImg="refresherDefaultImg" :pullingImg="refresherPullingImg" :refreshingImg="refresherRefreshingImg" :completeImg="refresherCompleteImg" :refreshingAnimated="refresherRefreshingAnimated"
 										:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey" :updateTimeTextMap="finalRefresherUpdateTimeTextMap"
 										:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle" />
 								</view>
@@ -182,7 +182,7 @@ by ZXLee
 						<slot v-else-if="(nScopedSlots?nScopedSlots:zSlots).refresher" :refresherStatus="refresherStatus" name="refresher" />
 						<z-paging-refresh ref="refresh" v-else :status="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
 							:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText"
-							:defaultImg="refresherDefaultImg" :pullingImg="refresherPullingImg" :refreshingImg="refresherRefreshingImg" :completeImg="refresherCompleteImg"
+							:defaultImg="refresherDefaultImg" :pullingImg="refresherPullingImg" :refreshingImg="refresherRefreshingImg" :completeImg="refresherCompleteImg" :refreshingAnimated="refresherRefreshingAnimated"
 							:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey" :updateTimeTextMap="finalRefresherUpdateTimeTextMap"
 							:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle" />
 					</view>
@@ -194,7 +194,7 @@ by ZXLee
 					<slot v-else-if="(nScopedSlots?nScopedSlots:$slots).refresher" :refresherStatus="R.Loading" name="refresher" />
 					<z-paging-refresh ref="refresh" v-else :status="R.Loading" :defaultThemeStyle="finalRefresherThemeStyle"
 						:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText" 
-						:defaultImg="refresherDefaultImg" :pullingImg="refresherPullingImg" :refreshingImg="refresherRefreshingImg" :completeImg="refresherCompleteImg"
+						:defaultImg="refresherDefaultImg" :pullingImg="refresherPullingImg" :refreshingImg="refresherRefreshingImg" :completeImg="refresherCompleteImg" :refreshingAnimated="refresherRefreshingAnimated"
 						:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey" :updateTimeTextMap="finalRefresherUpdateTimeTextMap"
 						:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle" />
 				</component>
@@ -213,11 +213,11 @@ by ZXLee
 					<slot />
 				</template>
 				<!-- 全屏Loading -->
-				<component :is="nViewIs" v-if="showLoading&&zSlots.loading&&!loadingFullFixed" :class="{'z-paging-content-fixed':usePageScroll}" style="flex: 1;" :style="[nChatRecordRotateStyle]">
+				<component :is="nViewIs" v-if="showLoading&&zSlots.loading&&!loadingFullFixed" :class="{'z-paging-content-fixed':usePageScroll}" style="flex:1" :style="[nChatRecordRotateStyle]">
 					<slot name="loading" />
 				</component>
 				<!-- 空数据图 -->
-				<component :is="nViewIs" v-if="showEmpty" :class="{'z-paging-content-fixed':usePageScroll}" :style="[{flex:emptyViewCenter?1:0},emptyViewSuperStyle,nChatRecordRotateStyle]">
+				<component :is="nViewIs" v-if="showEmpty" :class="{'z-paging-content-fixed':usePageScroll}" style="flex:1" :style="[emptyViewSuperStyle,nChatRecordRotateStyle]">
 					<view :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}">
 						<slot v-if="zSlots.empty" name="empty" :isLoadFailed="isLoadFailed" />
 						<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
@@ -247,7 +247,7 @@ by ZXLee
 						<slot v-else-if="showLoadingMoreNoMore" name="loadingMoreNoMore" />
 						<slot v-else-if="showLoadingMoreFail" name="loadingMoreFail" />
 						<z-paging-load-more @doClick="_onLoadingMore('click')" v-else-if="showLoadingMoreCustom" :zConfig="zLoadMoreConfig" />
-						<view v-if="safeAreaInsetBottom && useSafeAreaPlaceholder" class="zp-safe-area-placeholder" :style="[{height:safeAreaBottom+'px'}]" />
+						<view v-if="safeAreaInsetBottom&&useSafeAreaPlaceholder" class="zp-safe-area-placeholder" :style="[{height:safeAreaBottom+'px'}]" />
 					</view>
 				</component>
 			</component>

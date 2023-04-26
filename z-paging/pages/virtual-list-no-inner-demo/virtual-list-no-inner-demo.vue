@@ -47,7 +47,7 @@
 			return {
 				//虚拟列表数组，请使用:virtualList.sync绑定而非v-model绑定
 				virtualList: [],
-				tabList: ['cell高度固定','cell高度动态'],
+				tabList: ['cell高度相同','cell高度不同'],
 				tabIndex: 0
 			}
 		},

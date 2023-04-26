@@ -1,5 +1,3 @@
-## 2.5.4（2023-03-05）
-1.`修复` `show-loading-more-when-reload`设置为true时，调用reload不显示`正在加载...`的问题。  
-2.`修复`  `isOldWebView`中的系统版本号解析错误导致部分系统中首次加载内容出现延迟的问题。  
-3.`优化` `refresher-enabled`被动态设置为false时，强制关闭当前下拉刷新。  
-4.`优化` 整合`z-paging`与`z-paging-swiper`共用代码并精简代码写法。  
+## 2.5.7（2023-03-14）
+1.`修复` 在nvue+安卓中，设置`empty-view-center`为false后空数据图被切割未能完整显示的问题。  
+2.`修复` 由`2.5.4`引出的在nvue中，使用`slot="top"`后下拉刷新失效的问题。  

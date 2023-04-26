@@ -35,7 +35,7 @@
 	export default {
 		data() {
 			return {
-				tabList: ['cell高度固定','cell高度动态'],
+				tabList: ['cell高度相同','cell高度不同'],
 				tabIndex: 0
 			}
 		},
