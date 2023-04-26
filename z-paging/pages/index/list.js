@@ -30,6 +30,11 @@ export default {
 			subTitle: ''
 		},
 		{
+			title: '使用页面滚动演示(使用setup+hooks)',
+			file: 'page-default-hooks-demo',
+			subTitle: ''
+		},
+		{
 			title: '在弹窗内使用z-paging演示',
 			file: 'popup-demo',
 			subTitle: 'z-paging的局部滚动'

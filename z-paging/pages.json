@@ -234,7 +234,16 @@
 			}
 
 		}
-	],
+	    ,{
+            "path" : "pages/page-default-hooks-demo/page-default-hooks-demo",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "z-paging",
