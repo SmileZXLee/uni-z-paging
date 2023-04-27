@@ -26,12 +26,7 @@ export default {
 		},
 		{
 			title: '使用页面滚动且在子组件内使用z-paging演示',
-			file: 'page-default-by-comp-demo',
-			subTitle: ''
-		},
-		{
-			title: '使用页面滚动演示(使用setup+hooks)',
-			file: 'page-default-hooks-demo',
+			file: 'page-default-comp-demo',
 			subTitle: ''
 		},
 		{
@@ -153,5 +148,22 @@ export default {
 			file: 'inner-list-demo-n',
 			subTitle: '使用内置for循环渲染list，无需书写v-for，也无需v-model绑定list'
 		}
+	],
+	listVue3: [
+		{
+			title: '普通模式演示(vue3+setup)',
+			file: 'common-demo-vue3',
+			subTitle: ''
+		},
+		{
+			title: '使用页面滚动演示(vue3+setup)',
+			file: 'page-default-demo-vue3',
+			subTitle: ''
+		},
+		{
+			title: '使用页面滚动且在子组件内使用z-paging演示(vue3+setup)',
+			file: 'page-default-comp-demo-vue3',
+			subTitle: ''
+		},
 	]
 }

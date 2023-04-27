@@ -20,8 +20,9 @@
 						<view class="demo-item-title">{{item.title}}</view>
 						<view class="demo-item-subtitle" v-if="item.subTitle.length">{{item.subTitle}}</view>
 						<view class="demo-item-file">
-							<text v-if="item.title.indexOf('nvue')===-1">{{item.file + '.vue'}}</text>
-							<text v-else style="background-color: #01c301;">{{item.file + '.nvue'}}</text>
+							<text v-if="item.title.indexOf('nvue')!==-1" style="background-color: #01c301;">{{item.file + '.nvue'}}</text>
+							<text v-else-if="item.title.indexOf('vue3')!==-1" style="background-color: #f96027;">{{item.file + '.vue'}}</text>
+							<text v-else>{{item.file + '.vue'}}</text>
 						</view>
 					</view>
 					<image class="demo-item-more-img" src="../../static/more_icon.png"></image>
@@ -45,6 +46,10 @@
 		mounted() {
 			// #ifdef APP-PLUS
 			this.list = this.list.concat(indexList.listNvue);
+			// #endif
+			
+			// #ifdef VUE3
+			this.list = this.list.concat(indexList.listVue3);
 			// #endif
 		},
 		methods: {
