@@ -691,7 +691,8 @@ export default {
 		_emitQuery(pageNo, pageSize, from){
 			this.queryFrom = from;
 			this.requestTimeStamp = u.getTime();
-			this.$emit('query', ...interceptor._handleQuery(pageNo, pageSize, from));
+			const [lastItem] = this.realTotalData.slice(-1);
+			this.$emit('query', ...interceptor._handleQuery(pageNo, pageSize, from, lastItem || null));
 		},
 		//触发数据改变promise
 		_callDataPromise(success, totalList) {
