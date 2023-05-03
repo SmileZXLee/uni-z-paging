@@ -463,6 +463,16 @@ export default {
 			if (!isLocal && tempIsUserPullDown && this.isFirstPage) {
 				this.isUserPullDown = false;
 			}
+			if (!this.isFirstPage) {
+				this.listRendering = true;
+				this.$nextTick(() => {
+					u.delay(() => {
+						this.listRendering = false;
+					})
+				})
+			} else {
+				this.listRendering = false;
+			}
 			let dataTypeRes = this._checkDataType(data, success, isLocal);
 			data = dataTypeRes.data;
 			success = dataTypeRes.success;
@@ -558,16 +568,6 @@ export default {
 		//当前数据改变时调用
 		_currentDataChange(newVal, oldVal) {
 			newVal = [...newVal];
-			if (!this.isFirstPage) {
-				this.listRendering = true;
-				this.$nextTick(() => {
-					u.delay(() => {
-						this.listRendering = false;
-					}, c.delayTime)
-				})
-			} else {
-				this.listRendering = false;
-			}
 			// #ifndef APP-NVUE
 			this.finalUseVirtualList && this._setCellIndex(newVal, this.totalData.length === 0)
 			this.useChatRecordMode && newVal.reverse();
