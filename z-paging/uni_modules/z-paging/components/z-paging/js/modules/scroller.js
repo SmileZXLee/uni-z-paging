@@ -129,9 +129,9 @@ export default {
 				this._scrollToTop(animate, false);
 				// #ifdef APP-NVUE
 				if (this.nvueFastScroll && animate) {
-					setTimeout(() => {
+					u.delay(() => {
 						this._scrollToTop(false, false);
-					}, 150);
+					});
 				}
 				// #endif
 			})
@@ -150,9 +150,9 @@ export default {
 				this._scrollToBottom(animate);
 				// #ifdef APP-NVUE
 				if (this.nvueFastScroll && animate) {
-					setTimeout(() => {
+					u.delay(() => {
 						this._scrollToBottom(false);
-					}, 150);
+					});
 				}
 				// #endif
 			})
@@ -439,7 +439,7 @@ export default {
 				// #ifdef MP-BAIDU || APP-NVUE
 				delayTime = 50;
 				// #endif
-				setTimeout(() => {
+				u.delay(() => {
 					this._getNodeClientRect(node).then((res) => {
 						if (res) {
 							let pageScrollNodeHeight = res[0].height;

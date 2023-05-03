@@ -6,5 +6,4 @@ npm-debug.log.*
 yarn.lock
 thumbs.db
 !.gitkeep
-unpackage/*
-/z-paging/unpackage
+/**/unpackage/*

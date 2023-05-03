@@ -234,34 +234,7 @@
 			}
 
 		}
-	    ,{
-            "path" : "pages/page-default-demo-vue3/page-default-demo-vue3",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "使用页面滚动演示(vue3+setup)",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/common-demo-vue3/common-demo-vue3",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "普通模式演示(vue3+setup)",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/page-default-comp-demo-vue3/page-default-comp-demo-vue3",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "使用页面滚动且在子组件内使用z-paging演示(vue3+setup)",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "z-paging",

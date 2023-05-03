@@ -1,3 +1,5 @@
+// [z-paging]useZPaging hooks
+
 import { onPageScroll, onReachBottom, onPullDownRefresh } from '@dcloudio/uni-app';
 
 function useZPaging(paging) {

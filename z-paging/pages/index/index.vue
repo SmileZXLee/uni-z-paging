@@ -47,10 +47,6 @@
 			// #ifdef APP-PLUS
 			this.list = this.list.concat(indexList.listNvue);
 			// #endif
-			
-			// #ifdef VUE3
-			this.list = this.list.concat(indexList.listVue3);
-			// #endif
 		},
 		methods: {
 			//下拉刷新被触发

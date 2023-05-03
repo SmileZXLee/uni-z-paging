@@ -183,7 +183,7 @@ export default {
 			this._cleanRefresherEndTimeout();
 			
 			if (!this.finalShowRefresherWhenReload) {
-				this.refresherEndTimeout = setTimeout(() => {
+				this.refresherEndTimeout = u.delay(() => {
 					this.refresherStatus = Enum.Refresher.Default;
 				}, this.refresherCompleteDuration);
 				return;
@@ -192,7 +192,7 @@ export default {
 			if (height === 0 && checkStack) {
 				this.refresherRevealStackCount --;
 				if (stackCount > 1) return;
-				this.refresherEndTimeout = setTimeout(() => {
+				this.refresherEndTimeout = u.delay(() => {
 					this.refresherStatus = Enum.Refresher.Default;
 				}, this.refresherCompleteDuration);
 			}
@@ -216,7 +216,7 @@ export default {
 					delay: 0
 				})
 			}
-			setTimeout(() => {
+			u.delay(() => {
 				if (animate) {
 					this.nShowRefresherReveal = height > 0;
 				}
@@ -234,7 +234,7 @@ export default {
 		},
 		//更新nvue 下拉刷新view容器的宽度
 		_nUpdateRefresherWidth() {
-			setTimeout(() => {
+			u.delay(() => {
 				this.$nextTick(()=>{
 					this._getNodeClientRect('.zp-n-list').then(node => {
 						if (node) {
@@ -242,7 +242,7 @@ export default {
 						}
 					})
 				})
-			}, c.delayTime)	
+			})	
 		}
 		// #endif
 	}

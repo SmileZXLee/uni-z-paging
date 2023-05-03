@@ -1,15 +1,24 @@
+// [z-paging]useZPagingComp hooks
+
 function useZPagingComp(paging) {
+	
+	const cPaging = !!paging ? paging.value || paging : null;
+	
 	const reload = () => {
-		paging.value.reload();
+		if (!cPaging) return;
+		cPaging.value.reload();
 	}
 	const updatePageScrollTop = scrollTop => {
-		paging.value.updatePageScrollTop(scrollTop);
+		if (!cPaging) return;
+		cPaging.value.updatePageScrollTop(scrollTop);
 	}
 	const doChatRecordLoadMore = () => {
-		paging.value.doChatRecordLoadMore();
+		if (!cPaging) return;
+		cPaging.value.doChatRecordLoadMore();
 	}
 	const pageReachBottom = () => {
-		paging.value.pageReachBottom();
+		if (!cPaging) return;
+		cPaging.value.pageReachBottom();
 	}
 	return { reload, updatePageScrollTop, doChatRecordLoadMore, pageReachBottom };
 }
