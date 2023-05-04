@@ -10,9 +10,9 @@ function handleQuery(callback) {
 }
 
 //拦截&处理@query事件(私有，请勿调用)
-function _handleQuery(pageNo, pageSize, from){
+function _handleQuery(pageNo, pageSize, from, lastItem){
 	const callback = _getApp().globalData.zp_handleQueryCallback;
-	return callback ? callback(pageNo, pageSize, from) : [pageNo, pageSize, from];
+	return callback ? callback(pageNo, pageSize, from, lastItem) : [pageNo, pageSize, from];
 }
 
 //拦截&处理系统language转i18n local

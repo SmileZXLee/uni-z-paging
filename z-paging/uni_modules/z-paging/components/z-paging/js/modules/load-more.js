@@ -181,10 +181,6 @@ export default {
 		},
 		//通过@scroll事件检测是否滚动到了底部
 		_checkScrolledToBottom(scrollDiff, checked = false) {
-			if (this.checkScrolledToBottomTimeOut) {
-				clearTimeout(this.checkScrolledToBottomTimeOut);
-				this.checkScrolledToBottomTimeOut = null;
-			}
 			if (this.cacheScrollNodeHeight === -1) {
 				this._getNodeClientRect('.zp-scroll-view').then((res) => {
 					if (res) {
@@ -199,13 +195,13 @@ export default {
 				if (scrollDiff - this.cacheScrollNodeHeight <= this.finalLowerThreshold) {
 					this._onLoadingMore('toBottom');
 				} else if (scrollDiff - this.cacheScrollNodeHeight <= 500 && !checked) {
-					this.checkScrolledToBottomTimeOut = setTimeout(() => {
+					u.delay(() => {
 						this._getNodeClientRect('.zp-scroll-view', true, true).then((res) => {
 							this.oldScrollTop = res[0].scrollTop;
 							const newScrollDiff = res[0].scrollHeight - this.oldScrollTop;
 							this._checkScrolledToBottom(newScrollDiff, true);
 						})
-					}, 150)
+					}, 150, 'checkScrolledToBottomDelay')
 				}
 			}
 		},

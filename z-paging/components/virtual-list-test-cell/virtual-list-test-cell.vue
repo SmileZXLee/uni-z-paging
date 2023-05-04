@@ -27,6 +27,7 @@
 		methods: {
 			titleClick(title){
 				//如果要把点击事件传给页面，可以通过给extraData中添加对应的函数，然后在当前组件中触发这个函数，在页面中监听即可
+				//注意，微信小程序中无法通过props传递事件，在微信小程序中可以使用uni.$emit、uni.$on代替
 				if(this.extraData.titleClickedCallback){
 					this.extraData.titleClickedCallback(title);
 				}

@@ -306,11 +306,11 @@ export default {
 			const showRefresher = this.finalRefresherEnabled && this.useCustomRefresher;
 			// #ifndef APP-NVUE
 			if (this.customRefresherHeight === -1 && showRefresher) {
-				setTimeout(() => {
+				u.delay(() => {
 					this.$nextTick(()=>{
 						this._updateCustomRefresherHeight();
 					})
-				}, c.delayTime)
+				})
 			}
 			// #endif
 			return showRefresher;
@@ -346,7 +346,7 @@ export default {
 			this.$emit('Refresh');
 			// #ifdef APP-NVUE
 			if (this.loading) {
-				setTimeout(this._nRefresherEnd, 500)
+				u.delay(this._nRefresherEnd, 500)
 				return;
 			}
 			// #endif
@@ -482,7 +482,7 @@ export default {
 				this.refresherTransform = `translateY(${refresherThreshold}px)`;
 				this.refresherTransition = 'transform .1s linear';
 				// #endif
-				setTimeout(() => {
+				u.delay(() => {
 					this._emitTouchmove({ pullingDistance: refresherThreshold, dy: this.moveDis - refresherThreshold });
 				}, 0.1);
 				this.moveDis = refresherThreshold;
@@ -490,7 +490,7 @@ export default {
 				this._doRefresherLoad();
 			} else {
 				this._refresherEnd();
-				this.isTouchmovingTimeout = setTimeout(() => {
+				this.isTouchmovingTimeout = u.delay(() => {
 					this.isTouchmoving = false;
 				}, this.refresherDefaultDuration);
 			}
@@ -543,7 +543,7 @@ export default {
 					if (stackCount > 1) return;
 				}
 				this._cleanRefresherEndTimeout();
-				this.refresherEndTimeout = setTimeout(() => {
+				this.refresherEndTimeout = u.delay(() => {
 					this.refresherStatus = refresherStatus;
 				}, this.refresherStatus !== Enum.Refresher.Default && refresherStatus === Enum.Refresher.Default ? this.refresherCompleteDuration : 0);
 				
@@ -553,7 +553,7 @@ export default {
 				}
 				// #endif
 				this._cleanRefresherCompleteTimeout();
-				this.refresherCompleteTimeout = setTimeout(() => {
+				this.refresherCompleteTimeout = u.delay(() => {
 					let animateDuration = 1;
 					const animateType = this.refresherEndBounceEnabled && fromAddData ? 'cubic-bezier(0.19,1.64,0.42,0.72)' : 'linear';
 					if (fromAddData) {
@@ -577,7 +577,7 @@ export default {
 							clearTimeout(this.refresherCompleteSubTimeout);
 							this.refresherCompleteSubTimeout = null;
 						}
-						this.refresherCompleteSubTimeout = setTimeout(() => {
+						this.refresherCompleteSubTimeout = u.delay(() => {
 							this.$nextTick(() => {
 								this.refresherStatus = Enum.Refresher.Default;
 								this.isRefresherInComplete = false;
@@ -589,7 +589,7 @@ export default {
 				}, refresherCompleteDelay);
 			}
 			if (setLoading) {
-				setTimeout(() => {
+				u.delay(() => {
 					this.loading = false;
 				}, shouldEndLoadingDelay ? c.delayTime : 0);
 				isUserPullDown && this._onRestore();

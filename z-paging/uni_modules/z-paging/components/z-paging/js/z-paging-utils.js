@@ -2,9 +2,11 @@
 
 import zConfig from './z-paging-config'
 import zLocalConfig from '../config/index'
+import c from './z-paging-constant'
 
-const storageKey = 'Z-PAGING-REFRESHER-TIME-STORAGE-KEY'
+const storageKey = 'Z-PAGING-REFRESHER-TIME-STORAGE-KEY';
 let config = null;
+const timeoutMap = {};
 
 /*
 当z-paging未使用uni_modules管理时，控制台会有警告：WARNING: Module not found: Error: Can't resolve '@/uni_modules/z-paging'...
@@ -87,6 +89,16 @@ function getParent(parent) {
 //打印错误信息
 function consoleErr(err) {
 	console.error(`[z-paging]${err}`);
+}
+
+//延时操作，如果key存在，调用时根据key停止之前的延时操作
+function delay(callback, ms = c.delayTime, key) {
+	const timeout = setTimeout(callback, ms);;
+	if (!!key) {
+		timeoutMap[key] && clearTimeout(timeoutMap[key]);
+		timeoutMap[key] = timeout;
+	}
+	return timeout;
 }
 
 //设置下拉刷新时间
@@ -203,5 +215,6 @@ export default {
 	convertToPx,
 	getTime,
 	getInstanceId,
-	consoleErr
+	consoleErr,
+	delay
 };

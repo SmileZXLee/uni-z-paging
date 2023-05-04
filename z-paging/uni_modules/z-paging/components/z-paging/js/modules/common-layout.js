@@ -91,7 +91,6 @@ export default {
 		},
 		//获取slot="left"和slot="right"宽度并且更新布局
 		_updateLeftAndRightWidth(targetStyle, parentNodePrefix) {
-			console.log('_updateLeftAndRightWidth')
 			this.$nextTick(() => {
 				let delayTime = 0;
 				// #ifdef MP-BAIDU

@@ -152,7 +152,6 @@ export default {
 			fromEmptyViewReload: false,
 			queryFrom: '',
 			listRendering: false,
-			listRenderingTimeout: null
 		}
 	},
 	computed: {
@@ -267,7 +266,7 @@ export default {
 			}
 			const addDataDalay = (this.requestTimeStamp > 0 && disTime < minDelay) ? minDelay - disTime : 0;
 			this.$nextTick(() => {
-				setTimeout(() => {
+				u.delay(() => {
 					this._addData(data, success, false);
 				}, this.delay > 0 ? this.delay : addDataDalay)
 			})
@@ -281,9 +280,9 @@ export default {
 			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data;
 			this.totalData = [...data, ...this.totalData];
 			if (toTop) {
-				setTimeout(() => {
+				u.delay(() => {
 					this._scrollToTop(toTopWithAnimate);
-				}, c.delayTime)
+				})
 			}
 		},
 		//重新设置列表数据，调用此方法不会影响pageNo和pageSize，也不会触发请求。适用场景：当需要删除列表中某一项时，将删除对应项后的数组通过此方法传递给z-paging。(当出现类似的需要修改列表数组的场景时，请使用此方法，请勿直接修改page中:list.sync绑定的数组)
@@ -304,14 +303,14 @@ export default {
 			this.totalData = this.nIsFirstPageAndNoMore ? [...this.totalData, ...data] : [...data, ...this.totalData];
 			//#endif
 			if (toBottom) {
-				setTimeout(() => {
+				u.delay(() => {
 					//#ifndef APP-NVUE
 					this._scrollToBottom(toBottomWithAnimate);
 					//#endif
 					//#ifdef APP-NVUE
 					this.nIsFirstPageAndNoMore ? this._scrollToBottom(toBottomWithAnimate) : this._scrollToTop(toBottomWithAnimate);
 					//#endif
-				}, c.delayTime)
+				})
 			}
 		},
 		//设置本地分页数据，请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging作分页处理（若调用了此方法，则上拉加载更多时内部会自动分页，不会触发@query所绑定的事件）
@@ -391,15 +390,15 @@ export default {
 				// #ifdef APP-NVUE
 				this.refresherStatus = Enum.Refresher.Loading;
 				this.refresherRevealStackCount ++;
-				setTimeout(() => {
+				u.delay(() => {
 					this._getNodeClientRect('zp-n-refresh-container', false).then((node) => {
 						if (node) {
 							let nodeHeight = node[0].height;
 							this.nShowRefresherReveal = true;
 							this.nShowRefresherRevealHeight = nodeHeight;
-							setTimeout(() => {
+							u.delay(() => {
 								this._nDoRefresherEndAnimation(0, -nodeHeight, false, false);
-								setTimeout(() => {
+								u.delay(() => {
 									this._nDoRefresherEndAnimation(nodeHeight, 0);
 								}, 10)
 							}, 10)
@@ -434,7 +433,7 @@ export default {
 				// #ifdef MP-TOUTIAO
 				delay = 5;
 				// #endif
-				setTimeout(this._callMyParentQuery, delay);
+				u.delay(this._callMyParentQuery, delay);
 				if (!isFromMounted && this.autoScrollToTopWhenReload) {
 					let checkedNRefresherLoading = true;
 					// #ifdef APP-NVUE
@@ -464,6 +463,16 @@ export default {
 			if (!isLocal && tempIsUserPullDown && this.isFirstPage) {
 				this.isUserPullDown = false;
 			}
+			if (!this.isFirstPage) {
+				this.listRendering = true;
+				this.$nextTick(() => {
+					u.delay(() => {
+						this.listRendering = false;
+					})
+				})
+			} else {
+				this.listRendering = false;
+			}
 			let dataTypeRes = this._checkDataType(data, success, isLocal);
 			data = dataTypeRes.data;
 			success = dataTypeRes.success;
@@ -472,12 +481,12 @@ export default {
 			if (this.useChatRecordMode) delayTime = 0;
 			// #endif
 			this.loadingForNow = false;
-			setTimeout(() => {
+			u.delay(() => {
 				this.pagingLoaded = true;
 				this.$nextTick(()=>{
 					!isLocal && this._refresherEnd(delayTime > 0, true, tempIsUserPullDown);
 				})
-			}, delayTime)
+			})
 			if (this.isFirstPage) {
 				this.isLoadFailed = !success;
 				this.$emit('isLoadFailedChange', this.isLoadFailed);
@@ -504,7 +513,7 @@ export default {
 						dataChangeDelayTime = 150;
 					}
 					// #endif
-					setTimeout(() => {
+					u.delay(() => {
 						this._currentDataChange(data, this.currentData);
 						this._callDataPromise(true, this.totalData);
 					}, dataChangeDelayTime)
@@ -540,7 +549,7 @@ export default {
 			this.firstPageLoaded = false;
 			this.isTotalChangeFromAddData = false;
 			this.$nextTick(() => {
-				setTimeout(()=>{
+				u.delay(()=>{
 					this._getNodeClientRect('.zp-paging-container-content').then(res => {
 						res && this.$emit('contentHeightChanged', res[0].height);
 					});
@@ -550,26 +559,15 @@ export default {
 					this.nFirstPageAndNoMoreChecked = true;
 					this._scrollToBottom(false);
 				}
-				setTimeout(()=> {
+				u.delay(() => {
 					this.nShowBottom = true;
-				}, c.delayTime * 3);
+				}, c.delayTime * 6, 'nShowBottomDelay');
 				// #endif
 			})
 		},
 		//当前数据改变时调用
 		_currentDataChange(newVal, oldVal) {
 			newVal = [...newVal];
-			if (!this.isFirstPage) {
-				this.listRendering = true;
-				this.listRenderingTimeout && clearTimeout(this.listRenderingTimeout);
-				this.$nextTick(() => {
-					this.listRenderingTimeout = setTimeout(() => {
-						this.listRendering = false;
-					}, c.delayTime)
-				})
-			} else {
-				this.listRendering = false;
-			}
 			// #ifndef APP-NVUE
 			this.finalUseVirtualList && this._setCellIndex(newVal, this.totalData.length === 0)
 			this.useChatRecordMode && newVal.reverse();
@@ -653,7 +651,7 @@ export default {
 			const pageNoIndex = (pageNo - 1) * pageSize;
 			const finalPageNoIndex = Math.min(totalPagingList.length, pageNoIndex + pageSize);
 			const resultPagingList = totalPagingList.splice(pageNoIndex, finalPageNoIndex - pageNoIndex);
-			setTimeout(() => callback(resultPagingList), localPagingLoadingTime)
+			u.delay(() => callback(resultPagingList), localPagingLoadingTime)
 		},
 		//存储列表缓存数据
 		_saveLocalCache(data) {
@@ -691,7 +689,8 @@ export default {
 		_emitQuery(pageNo, pageSize, from){
 			this.queryFrom = from;
 			this.requestTimeStamp = u.getTime();
-			this.$emit('query', ...interceptor._handleQuery(pageNo, pageSize, from));
+			const [lastItem] = this.realTotalData.slice(-1);
+			this.$emit('query', ...interceptor._handleQuery(pageNo, pageSize, from, lastItem || null));
 		},
 		//触发数据改变promise
 		_callDataPromise(success, totalList) {
@@ -706,11 +705,9 @@ export default {
 			if (dataType === '[object Boolean]') {
 				success = data;
 				data = [];
-			} else if (dataType === '[object Null]') {
-				data = [];
 			} else if (dataType !== '[object Array]') {
 				data = [];
-				if (dataType !== '[object Undefined]') {
+				if (dataType !== '[object Undefined]' && dataType !== '[object Null]') {
 					u.consoleErr(`${isLocal ? 'setLocalPaging' : 'complete'}参数类型不正确，第一个参数类型必须为Array!`);
 				}
 			}

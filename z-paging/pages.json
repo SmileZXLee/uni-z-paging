@@ -220,7 +220,7 @@
 			}
 
 		}, {
-			"path": "pages/page-default-by-comp-demo/page-default-by-comp-demo",
+			"path": "pages/page-default-comp-demo/page-default-comp-demo",
 			"style": {
 				"navigationBarTitleText": "使用页面滚动且在子组件内使用z-paging演示",
 				"enablePullDownRefresh": false

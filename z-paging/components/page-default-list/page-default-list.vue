@@ -1,5 +1,4 @@
 <!-- 在使用页面滚动时，在子组件内使用z-paging写法演示 -->
-<!-- 使用页面滚动演示(vue) -->
 <template>
 	<view class="content">
 		<!-- 此时使用了页面的滚动，z-paging不需要有确定的高度，use-page-scroll需要设置为true -->
@@ -22,7 +21,6 @@
 
 <script>
 	export default {
-		
 		name:"page-default-list",
 		data() {
 			return {

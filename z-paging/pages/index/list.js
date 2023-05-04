@@ -26,7 +26,7 @@ export default {
 		},
 		{
 			title: '使用页面滚动且在子组件内使用z-paging演示',
-			file: 'page-default-by-comp-demo',
+			file: 'page-default-comp-demo',
 			subTitle: ''
 		},
 		{

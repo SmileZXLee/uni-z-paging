@@ -82,14 +82,14 @@ export default {
 				if (!this.showBackToTopClass) {
 					this.showBackToTopClass = true;
 					this.lastBackToTopShowTime = new Date().getTime();
-					setTimeout(() => {
+					u.delay(() => {
 						this.backToTopClass = 'zp-back-to-top zp-back-to-top-show';
 					}, 300)
 				}
 			} else {
 				if (this.showBackToTopClass) {
 					this.backToTopClass = 'zp-back-to-top zp-back-to-top-hide';
-					setTimeout(() => {
+					u.delay(() => {
 						this.showBackToTopClass = false;
 					}, new Date().getTime() - this.lastBackToTopShowTime < 500 ? 0 : 300)
 				}
