@@ -1,0 +1,253 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "z-paging",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/common-demo/common-demo",
+			"style": {
+				"navigationBarTitleText": "普通模式演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/custom-demo/custom-demo",
+			"style": {
+				"navigationBarTitleText": "自定义下拉刷新与上拉加载演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/swiper-demo/swiper-demo",
+			"style": {
+				"navigationBarTitleText": "滑动切换选项卡演示(标准写法)",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/page-default-demo/page-default-demo",
+			"style": {
+				"navigationBarTitleText": "使用页面滚动演示",
+				"enablePullDownRefresh": false
+
+			}
+
+		}, {
+			"path": "pages/sticky-demo/sticky-demo",
+			"style": {
+				"navigationBarTitleText": "滚动吸附效果演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/chat-history-demo/chat-history-demo",
+			"style": {
+				"navigationBarTitleText": "聊天记录模式演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/swiper-demo-n/swiper-demo-n",
+			"style": {
+				"navigationBarTitleText": "滑动切换选项卡演示(标准写法)(nvue)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/sticky-swiper-demo/sticky-swiper-demo",
+			"style": {
+				"navigationBarTitleText": "滑动切换选项卡+吸顶演示1",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/sticky-swiper-next-demo/sticky-swiper-next-demo",
+			"style": {
+				"navigationBarTitleText": "滑动切换选项卡+吸顶演示2",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/custom-nav-demo/custom-nav-demo",
+			"style": {
+				"navigationBarTitleText": "自定义导航栏演示",
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/common-demo-n/common-demo-n",
+			"style": {
+				"navigationBarTitleText": "普通模式演示(nvue)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/custom-demo-n/custom-demo-n",
+			"style": {
+				"navigationBarTitleText": "自定义下拉刷新与上拉加载演示(nvue)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/sticky-demo-n/sticky-demo-n",
+			"style": {
+				"navigationBarTitleText": "滚动吸附效果演示(nvue)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/chat-history-demo-n/chat-history-demo-n",
+			"style": {
+				"navigationBarTitleText": "聊天记录模式演示(nvue)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/consistency-demo/consistency-demo",
+			"style": {
+				"navigationBarTitleText": "保证数据一致性演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/i18n-demo/i18n-demo",
+			"style": {
+				"navigationBarTitleText": "i18n国际化演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/show-update-time-demo/show-update-time-demo",
+			"style": {
+				"navigationBarTitleText": "下拉显示最后更新时间演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/page-default-demo-n/page-default-demo-n",
+			"style": {
+				"navigationBarTitleText": "使用页面滚动演示(nvue)",
+				"enablePullDownRefresh": true
+			}
+
+		}, {
+			"path": "pages/my-paging-demo/my-paging-demo",
+			"style": {
+				"navigationBarTitleText": "基于z-paging封装个性化分页组件演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/minimalism-demo/minimalism-demo",
+			"style": {
+				"navigationBarTitleText": "极简写法演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/swiper-simplify-demo/swiper-simplify-demo",
+			"style": {
+				"navigationBarTitleText": "滑动切换选项卡演示(简化写法)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/swiper-simplify-demo-n/swiper-simplify-demo-n",
+			"style": {
+				"navigationBarTitleText": "滑动切换选项卡演示(简化写法)(nvue)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/custom-back-to-top-demo/custom-back-to-top-demo",
+			"style": {
+				"navigationBarTitleText": "自定义返回顶部view演示(vue)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/sticky-swiper-demo-n/sticky-swiper-demo-n",
+			"style": {
+				"navigationBarTitleText": "滑动切换选项卡+吸顶演示(nvue)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/virtual-list-demo/virtual-list-demo",
+			"style": {
+				"navigationBarTitleText": "虚拟列表演示(一般写法)",
+				"enablePullDownRefresh": false
+			}
+
+		},
+		{
+			"path": "pages/virtual-list-no-inner-demo/virtual-list-no-inner-demo",
+			"style": {
+				"navigationBarTitleText": "虚拟列表演示(不使用内置列表)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/inner-list-demo/inner-list-demo",
+			"style": {
+				"navigationBarTitleText": "内置列表模式演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/inner-list-demo-n/inner-list-demo-n",
+			"style": {
+				"navigationBarTitleText": "内置列表模式演示(nvue)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/traditional-long-list-demo/traditional-long-list-demo",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/virtual-list-compatibility-demo/virtual-list-compatibility-demo",
+			"style": {
+				"navigationBarTitleText": "虚拟列表演示(兼容写法)",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/page-default-comp-demo/page-default-comp-demo",
+			"style": {
+				"navigationBarTitleText": "使用页面滚动且在子组件内使用z-paging演示",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/popup-demo/popup-demo",
+			"style": {
+				"navigationBarTitleText": "在弹窗内使用z-paging演示",
+				"enablePullDownRefresh": false
+			}
+
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "z-paging",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8",
+		//支付宝和钉钉小程序需要取消回弹效果
+		"mp-alipay": {
+			"allowsBounceVertical": "NO"
+		},
+		//在App中，取消下拉刷新灰色半弧形效果
+		"app-plus": {
+			"bounce": "none",
+			"backgroundColor": "white"
+		}
+	}
+}

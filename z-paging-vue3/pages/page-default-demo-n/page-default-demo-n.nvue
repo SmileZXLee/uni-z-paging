@@ -1,0 +1,98 @@
+<!-- 使用页面滚动演示(nvue)(不建议，在nvue中，使用内置的list组件性能优于页面滚动，参见common-demo-n.nvue) -->
+<!-- 注意，在nvue中使用页面滚动时，无法使用z-paging的下拉刷新(因为z-paging在nvue中的下拉刷新使用的是原生refresh组件，它只能在scroller和list中使用) -->
+<!-- 若使用页面滚动时需要下拉刷新功能，请在pages.json中设置"enablePullDownRefresh": true开启页面下拉刷新功能 -->
+<template>
+	<view class="content">
+		<z-paging ref="paging" v-model="dataList" use-page-scroll @query="queryList">
+			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
+			<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
+			<template #top>
+				<z-tabs :list="tabList" @change="tabChange" />
+			</template>
+			<view class="item" v-for="(item,index) in dataList" :key="item.title" @click="itemClick(item)">
+				<text class="item-title">{{item.title}}</text>
+				<text class="item-detail">{{item.detail}}</text>
+				<view class="item-line"></view>
+			</view>
+		</z-paging>
+	</view>
+</template>
+
+<script>
+	import request from '../../http/request.js'
+	//使用页面滚动时引入此mixin，用于监听和处理onPullDownRefresh等页面生命周期方法(如果全局引入了，就不要这一步，全局引入示例见main.js)
+	import ZPMixin from '@/uni_modules/z-paging/components/z-paging/js/z-paging-mixin'
+	export default {
+		//注意这一步不要漏掉，必须注册mixins(如果全局引入了，就不要这一步，全局引入示例见main.js)
+		mixins: [ZPMixin],
+		data() {
+			return {
+				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
+				dataList: [],
+				tabList: ['测试1','测试2','测试3','测试4'],
+				tabIndex: 0
+			}
+		},
+		methods: {
+			tabChange(index) {
+				this.tabIndex = index;
+				//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
+				this.$refs.paging.reload();
+			},
+			queryList(pageNo, pageSize) {
+				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
+				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
+				//模拟请求服务器获取分页数据，请替换成自己的网络请求
+				const params = {
+					pageNo: pageNo,
+					pageSize: pageSize,
+					type: this.tabIndex + 1
+				}
+				request.queryList(params).then(res => {
+					//将请求的结果数组传递给z-paging
+					this.$refs.paging.complete(res.data.list);
+				}).catch(res => {
+					//如果请求失败写this.$refs.paging.complete(false);
+					//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
+					//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
+					this.$refs.paging.complete(false);
+				})
+			},
+			itemClick(item) {
+				console.log('点击了', item.title);
+			}
+		}
+	}
+</script>
+
+<style>
+	.content {
+		background-color: white;
+	}
+
+	.item {
+		flex-direction: row;
+		position: relative;
+		height: 150rpx;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0rpx 30rpx;
+	}
+
+	.item-detail {
+		padding: 5rpx 15rpx;
+		border-radius: 10rpx;
+		font-size: 28rpx;
+		color: white;
+		background-color: #007AFF;
+	}
+
+	.item-line {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 1px;
+		background-color: #eeeeee;
+	}
+</style>

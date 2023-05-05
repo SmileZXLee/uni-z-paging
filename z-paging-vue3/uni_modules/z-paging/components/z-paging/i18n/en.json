@@ -1,0 +1,22 @@
+{	
+	"zp.refresher.default": "Pull down to refresh",
+	"zp.refresher.pulling": "Release to refresh",
+	"zp.refresher.refreshing": "Refreshing...",
+	"zp.refresher.complete": "Refresh succeeded",
+	
+	"zp.loadingMore.default": "Click to load more",
+	"zp.loadingMore.loading": "Loading...",
+	"zp.loadingMore.noMore": "No more data",
+	"zp.loadingMore.fail": "Load failed,click to reload",
+	
+	"zp.emptyView.title": "No data",
+	"zp.emptyView.reload": "Reload",
+	"zp.emptyView.error": "Sorry,load failed",
+	
+	"zp.refresherUpdateTime.title": "Last update: ",
+	"zp.refresherUpdateTime.none": "None",
+	"zp.refresherUpdateTime.today": "Today",
+	"zp.refresherUpdateTime.yesterday": "Yesterday",
+	
+	"zp.systemLoading.title": "Loading..."
+}
