@@ -47,7 +47,9 @@
 			//下拉刷新时，通知当前显示的列表进行reload操作
 			onRefresh(){
 				this.$refs.swiperList[this.current].reload(() => {
-					this.$refs.paging.complete([]);
+					setTimeout(() => {
+						this.$refs.paging.endRefresh();
+					}, 1000)
 				});
 			},
 			//当滚动到底部时，通知当前显示的列表加载更多

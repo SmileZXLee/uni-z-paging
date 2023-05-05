@@ -53,15 +53,17 @@
 					if (newVal === this.tabIndex) {
 						//懒加载，当滑动到当前的item时，才去加载
 						if(!this.firstLoaded){
-							setTimeout(() => {
-								this.$refs.paging.reload();
-								setTimeout(()=> {
-									//首次切换到当前tab时，如果当前是吸顶状态，则设置当前列表允许滚动
-									if(this.stickyed){
-										this.scrollable = true;
-									}
+							this.$nextTick(() => {
+								setTimeout(() => {
+									this.$refs.paging.reload();
+									setTimeout(()=> {
+										//首次切换到当前tab时，如果当前是吸顶状态，则设置当前列表允许滚动
+										if(this.stickyed){
+											this.scrollable = true;
+										}
+									}, 100);
 								}, 100);
-							}, 100);
+							})
 						}
 						//非首次切换到当前tab时，如果scrollTop=0，则页面list允许滚动
 						if(this.scrollTop === 0 && this.firstLoaded){
