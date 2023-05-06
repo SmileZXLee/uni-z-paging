@@ -51,6 +51,41 @@
 	}
 </script>
 
+<script setup>
+	import { ref } from 'vue';
+	import request from '/http/request.js'
+	
+    const paging = ref(null);
+	const tabs = ref(null);
+	
+	let current = ref(0);
+	const tabList = ref(['测试1','测试2','测试3','测试4']);
+	
+	//swiper change时触发
+	const swiperChange = (e) => {
+		// #ifndef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
+		let current = e.target.current || e.detail.current;
+		tabsChange(current);
+		// #endif
+	}
+	
+	//tabs通知swiper切换
+	const tabChange = (index) => {
+		current.value = index;
+	}
+	
+	//swiper滑动中
+	const swiperTransition = (e) => {
+		tabs.value.setDx(e.detail.dx);
+	}
+	
+	//swiper滑动结束
+	const swiperAnimationfinish = (e) => {
+		current.value = e.detail.current;
+		tabs.value.unlockDx();
+	}
+</script>
+
 <style scoped>
 	.swiper {
 		flex: 1;

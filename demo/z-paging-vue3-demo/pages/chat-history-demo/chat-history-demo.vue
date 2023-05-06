@@ -21,8 +21,6 @@
 	import request from '/http/request.js';
 	
     const paging = ref(null);
-	let tabIndex = ref(0);
-	const tabList = ref(['测试1','测试2','测试3','测试4']);
 	//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
     let dataList = ref([]);
 	
@@ -33,11 +31,6 @@
 		}
 	})
 	
-	const tabChange = (index) => {
-		tabIndex.value = index;
-		//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
-		paging.value.reload();
-	}
 	
 	// @query所绑定的方法不要自己调用！！需要刷新列表数据时，只需要调用paging.reload()即可
     const queryList = (pageNo, pageSize) => {

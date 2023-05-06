@@ -1,4 +1,4 @@
-<!-- 在使用页面滚动时，在子组件内使用z-paging写法演示 -->
+<!-- 在使用页面滚动时，在子组件内使用z-paging写法演示(vue3+setup) -->
 <template>
 	<view class="content">
 		<!-- 此时使用了页面的滚动，z-paging不需要有确定的高度，use-page-scroll需要设置为true -->
@@ -10,7 +10,7 @@
 				<z-tabs @change="tabChange" :list="tabList"></z-tabs>
 			</template>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
-			<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
+			<view class="item" v-for="(item,index) in dataList" :key="index">
 				<view class="item-title">{{item.title}}</view>
 				<view class="item-detail">{{item.detail}}</view>
 				<view class="item-line"></view>
@@ -19,62 +19,46 @@
 	</view>
 </template>
 
-<script>
-	export default {
-		name:"page-default-list",
-		data() {
-			return {
-				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
-				dataList: [],
-				tabList: ['测试1','测试2','测试3','测试4'],
-				tabIndex: 0
-			}
-		},
-		methods: {
-			tabChange(index) {
-				this.tabIndex = index;
-				//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
-				this.$refs.paging.reload();
-			},
-			queryList(pageNo, pageSize) {
-				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
-				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
-				//模拟请求服务器获取分页数据，请替换成自己的网络请求
-				const params = {
-					pageNo: pageNo,
-					pageSize: pageSize,
-					type: this.tabIndex + 1
-				}
-				this.$request.queryList(params).then(res => {
-					//将请求的结果数组传递给z-paging
-					this.$refs.paging.complete(res.data.list);
-				}).catch(res => {
-					//如果请求失败写this.$refs.paging.complete(false);
-					//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
-					//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
-					this.$refs.paging.complete(false);
-				})
-			},
-			itemClick(item) {
-				console.log('点击了', item.title);
-			},
-			
-			// ---------------- 子组件内实现z-paging的mixin内的相应方法，并转发给z-paging组件 -------------------
-			// 以下四个方法内的代码是固定不变的
-			reload() {
-				this.$refs.paging.reload();
-			},
-			updatePageScrollTop(scrollTop) {
-				this.$refs.paging.updatePageScrollTop(scrollTop);
-			},
-			doChatRecordLoadMore() {
-				this.$refs.paging.doChatRecordLoadMore();
-			},
-			pageReachBottom() {
-				this.$refs.paging.pageReachBottom();
-			},
-		}
+<script setup>
+	import { ref } from 'vue';
+	import useZPagingComp from "@/uni_modules/z-paging/components/z-paging/js/hooks/useZPagingComp.js";
+	import request from '../../http/request.js'
+	
+    const paging = ref(null)
+	let tabIndex = ref(0)
+	const tabList = ref(['测试1','测试2','测试3','测试4'])
+	//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
+    let dataList = ref([])
+	
+	const tabChange = (index) => {
+		tabIndex.value = index;
+		//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
+		paging.value.reload();
 	}
+	
+	// @query所绑定的方法不要自己调用！！需要刷新列表数据时，只需要调用paging.reload()即可
+    const queryList = (pageNo, pageSize) => {
+		//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
+		//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
+		//模拟请求服务器获取分页数据，请替换成自己的网络请求
+		const params = {
+			pageNo: pageNo,
+			pageSize: pageSize,
+			type: tabIndex.value + 1
+		}
+		request.queryList(params).then(res => {
+			//将请求的结果数组传递给z-paging
+			paging.value.complete(res.data.list);
+		}).catch(res => {
+			//如果请求失败写paging.value.complete(false);
+			//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
+			//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
+			paging.value.complete(false);
+		})
+    }
+	
+	//子组件内使用useZPagingComp
+	defineExpose({ ...useZPagingComp(paging) })
 </script>
 
 <style>

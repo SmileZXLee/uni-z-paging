@@ -2,8 +2,8 @@
 <template>
 	<view class="content">
 		
-		<!-- 子组件中必须实现mixins中的相应方法，具体代码请看page-default-list-vue3组件代码 -->
-		<page-default-list-vue3 ref="paging"/>
+		<!-- 子组件中必须实现mixins中的相应方法，具体代码请看page-default-list组件代码 -->
+		<page-default-list ref="paging"/>
 	</view>
 </template>
 

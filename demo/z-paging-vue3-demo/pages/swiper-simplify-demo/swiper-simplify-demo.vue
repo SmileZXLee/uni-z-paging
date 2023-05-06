@@ -75,10 +75,10 @@
 			//将请求的结果数组传递给z-paging
 			swiperItem.value[current.value].complete(res.data.list);
 		}).catch(res => {
-			//如果请求失败写paging.value.complete(false);
+			//如果请求失败写swiperItem.value[current.value].complete(false);
 			//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
 			//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
-			paging.value.complete(false);
+			swiperItem.value[current.value].complete(false);
 		})
 	}
 	

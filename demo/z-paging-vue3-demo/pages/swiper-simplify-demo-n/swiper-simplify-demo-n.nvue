@@ -7,12 +7,12 @@
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中 -->
 			<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
 			<template #top>
-				<z-tabs ref="tabs" :list="tabList" :current="current" @change="tabChange" />
+				<z-tabs ref="tabs" :list="tabList" :current="current" @change="tabsChange" />
 			</template>
 			<!-- 因swiper与swiper-item无法封装在不同组件中，因此这边依然需要设置swiper包裹swiper-item -->
 			<swiper style="flex: 1;" :current="current" @change="swiperChange" @transition="swiperTransition" @animationfinish="swiperAnimationfinish">
 				<swiper-item v-for="(item,index) in tabList" :key="index">
-					<z-paging-swiper-item ref="swiperItem" :tabIndex="index" :currentIndex="current" @query="queryList"
+					<z-paging-swiper-item :ref="el => swiperItems[index] = el" :tabIndex="index" :currentIndex="current" @query="queryList"
 						@updateList="updateList">
 						<cell class="item" v-for="(subItem,subIndex) in dataList[index]" :key="subItem.title">
 							<text class="item-title">{{subItem.title}}</text>
@@ -26,58 +26,69 @@
 	</view>
 </template>
 
-<script>
-	import request from '../../http/request.js'
-	export default {
-		data() {
-			return {
-				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
-				dataList: [],
-				tabList: ['测试1', '测试2', '测试3', '测试4'],
-				current: 0, // tabs组件的current值，表示当前活动的tab选项
-			}
-		},
-		methods: {
-			// tabs通知swiper切换
-			tabChange(index) {
-				this.current = index;
-			},
-			//swiper change时触发
-			swiperChange(e) {
-				// #ifndef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
-				let current = e.target.current || e.detail.current;
-				this.tabsChange(current);
-				// #endif
-			},
-			//swiper滑动中
-			swiperTransition(e) {
-				this.$refs.tabs.setDx(e.detail.dx);
-			},
-			//swiper滑动结束
-			swiperAnimationfinish(e) {
-				this.current = e.detail.current;
-				this.$refs.tabs.unlockDx();
-			},
-			queryList(pageNo, pageSize) {
-				//这里的网络请求请替换成自己的网络请求
-				//this.current代表当前下拉刷新/上拉加载更多对应的是第几个
-				const params = {
-					pageNo: pageNo,
-					pageSize: pageSize,
-					type: this.tabIndex + 1
-				}
-				request.queryList(params).then(res => {
-					//将请求的结果数组传递给z-paging
-					this.$refs.swiperItem[this.current].complete(res.data.list);
-				})
-			},
-			updateList(data) {
-				//更新当前对应tab的数据，注意这里请用$set而非this.dataList[this.current]=data，因为需要触发列表渲染
-				this.$set(this.dataList, this.current, data);
-			}
+<script setup>
+	import { ref } from 'vue';
+	import request from '/http/request.js'
+	
+    const swiperItems = ref([]);
+	const tabs = ref(null);
+	
+	//注意，这个数组是一个二维数组，数组里面包含的是所有tabs的list数组
+	const dataList = ref([])
+	let current = ref(0);
+	const tabList = ref(['测试1','测试2','测试3','测试4']);
+	
+	//swiper change时触发
+	const swiperChange = (e) => {
+		// #ifndef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
+		let current = e.target.current || e.detail.current;
+		tabsChange(current);
+		// #endif
+	}
+	
+	//tabs通知swiper切换
+	const tabsChange = (index) => {
+		current.value = index;
+	}
+	
+	//swiper滑动中
+	const swiperTransition = (e) => {
+		tabs.value.setDx(e.detail.dx);
+	}
+	
+	//swiper滑动结束
+	const swiperAnimationfinish = (e) => {
+		current.value = e.detail.current;
+		tabs.value.unlockDx();
+	}
+	
+	// @query所绑定的方法不要自己调用！！需要刷新列表数据时，只需要调用paging.reload()即可
+	const queryList = (pageNo, pageSize) => {
+		//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
+		//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
+		//模拟请求服务器获取分页数据，请替换成自己的网络请求
+		const params = {
+			pageNo: pageNo,
+			pageSize: pageSize,
+			type: current.value + 1
 		}
+		request.queryList(params).then(res => {
+			//将请求的结果数组传递给z-paging
+			swiperItems.value[current.value].complete(res.data.list);
+		}).catch(res => {
+			//如果请求失败写swiperItems.value[current.value].complete(false);
+			//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
+			//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
+			swiperItems.value[current.value].complete(false);
+		})
+	}
+	
+	//更新当前对应tab的数据
+	const updateList = (data) => {
+		dataList.value[current.value] = data;
 	}
 </script>
+
 
 <style>
 	.content {

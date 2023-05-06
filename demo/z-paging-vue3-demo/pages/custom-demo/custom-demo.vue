@@ -21,7 +21,7 @@
 			</template>
 			
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
-			<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item)">
+			<view class="item" v-for="(item,index) in dataList" :key="index">
 				<view class="item-title">{{item.title}}</view>
 				<view class="item-detail">{{item.detail}}</view>
 				<view class="item-line"></view>
