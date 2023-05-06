@@ -51,10 +51,10 @@ export default {
 				return u.gc('innerCellStyle', {});
 			}
 		},
-		//预加载的列表可视范围(列表高度)页数，默认为7，即预加载当前页及上下各7页的cell。此数值越大，则虚拟列表中加载的dom越多，内存消耗越大(会维持在一个稳定值)，但增加预加载页面数量可缓解快速滚动短暂白屏问题
+		//预加载的列表可视范围(列表高度)页数，默认为12，即预加载当前页及上下各12页的cell。此数值越大，则虚拟列表中加载的dom越多，内存消耗越大(会维持在一个稳定值)，但增加预加载页面数量可缓解快速滚动短暂白屏问题
 		preloadPage: {
 			type: [Number, String],
-			default: u.gc('preloadPage', 20),
+			default: u.gc('preloadPage', 12),
 			validator: (value) => {
 				if (value <= 0) u.consoleErr('preload-page必须大于0！');
 				return value > 0;
