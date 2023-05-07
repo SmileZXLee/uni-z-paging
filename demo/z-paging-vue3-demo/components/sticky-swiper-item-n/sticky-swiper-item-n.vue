@@ -98,7 +98,6 @@
 	}
 	
 	defineExpose({ reload, setSpecialEffects });
-	
 </script>
 
 <style scoped>

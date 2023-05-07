@@ -16,6 +16,7 @@
 	import { ref } from 'vue';
 	
 	const emits = defineEmits(['send']);
+	
 	const msg = ref('');
 
 	const sendClick = () => {

@@ -6,9 +6,9 @@
 <!-- 如果在App中，推荐使用nvue写法，滚动和过渡更流畅，参照sticky-swiper-demo-n -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" @scroll="scroll" refresher-only :scrollable="scrollable" :refresher-status.sync="refresherStatus" @query="queryList">
+		<z-paging ref="paging" @scroll="scroll" refresher-only :scrollable="scrollable" @query="queryList">
 			<!-- 自定义下拉刷新view -->
-			<template #refresher>
+			<template #refresher="{refresherStatus}">
 				<custom-refresher :status="refresherStatus" />
 			</template>
 			<view class="banner-view" style="height: 250rpx;">
@@ -37,8 +37,6 @@
 	export default {
 		data() {
 			return {
-				refresherStatus: 0,
-				scrollTopMap: {},
 				// 页面高度
 				pageHeight: 0,
 				// header高度

@@ -86,7 +86,6 @@
 		}
 		current.value = tempCurrent;
 	}
-	
 </script>
 
 <style>
