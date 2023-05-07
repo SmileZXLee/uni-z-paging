@@ -20,16 +20,18 @@
 
 <script setup>
 	import { ref } from 'vue';
-	import request from '/http/request.js'
+	import request from '/http/request.js';
+	
 	
     const paging = ref(null);
 	const tabs = ref(null);
 	
-	let current = ref(0);
+	const current = ref(0);
 	const tabList = ref(['测试1','测试2','测试3','测试4']);
 	
+	
 	//tabs通知swiper切换
-	const tabChange = (index) => {
+	const tabsChange = (index) => {
 		current.value = index;
 	}
 	

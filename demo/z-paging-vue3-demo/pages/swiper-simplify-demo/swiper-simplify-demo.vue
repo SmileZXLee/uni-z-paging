@@ -14,7 +14,7 @@
 		<!-- 需要固定在顶部不滚动的view放在slot="top"的view中 -->
 		<template #top>
 			<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-			<z-tabs ref="tabs" :list="tabList" :current="current" @change="tabChange" />
+			<z-tabs ref="tabs" :list="tabList" :current="current" @change="tabsChange" />
 		</template>
 		<!-- 因swiper与swiper-item无法封装在不同组件中，因此这边依然需要设置swiper包裹swiper-item -->
 		<swiper style="height: 100%;" :current="current" @transition="swiperTransition" @animationfinish="swiperAnimationfinish">
@@ -36,17 +36,18 @@
 	import { ref } from 'vue';
 	import request from '/http/request.js'
 	
+	
     const swiperItem = ref(null);
 	const tabs = ref(null);
 	
 	//注意，这个数组是一个二维数组，数组里面包含的是所有tabs的list数组
 	const dataList = ref([])
-	let current = ref(0);
+	const current = ref(0);
 	const tabList = ref(['测试1','测试2','测试3','测试4']);
 	
 	
 	//tabs通知swiper切换
-	const tabChange = (index) => {
+	const tabsChange = (index) => {
 		current.value = index;
 	}
 	

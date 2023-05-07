@@ -39,8 +39,11 @@
 	import { onMounted, ref } from 'vue';
 	import indexList from './list'
 	
-    const paging = ref(null)
-	const list = ref(indexList.list)
+	
+    const paging = ref(null);
+	
+	const list = ref(indexList.list);
+	
 	
 	onMounted(() => {
 		// #ifdef APP-PLUS
@@ -98,7 +101,7 @@
 	}
 
 	.demo-item-file>text {
-		background-color: #007AFF;
+		background-color: #f96027;
 		color: white;
 		font-size: 24rpx;
 		padding: 5rpx 10rpx;

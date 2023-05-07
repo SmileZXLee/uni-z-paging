@@ -5,7 +5,7 @@
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
 			<template #top>
-				<z-tabs :list="tabList" @change="tabChange" />
+				<z-tabs :list="tabList" @change="tabsChange" />
 			</template>
 			<!-- 自定义返回顶部view -->
 			<template #backToTop>
@@ -34,7 +34,7 @@
 	let current = ref(0);
 	let total = ref(0);
 	
-	const tabChange = (index) => {
+	const tabsChange = (index) => {
 		tabIndex.value = index;
 		//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
 		paging.value.reload();

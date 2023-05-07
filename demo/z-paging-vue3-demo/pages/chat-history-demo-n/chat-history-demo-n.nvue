@@ -26,10 +26,13 @@
 	import { onPageScroll } from '@dcloudio/uni-app';
 	import request from '/http/request.js';
 	
+	
     const paging = ref(null);
+	
 	//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
-    let dataList = ref([]);
-	let cellStyle = ref({});
+    const dataList = ref([]);
+	const cellStyle = ref({});
+	
 	
 	onPageScroll((e) => {
 		//如果滚动到顶部，触发加载更多聊天记录
@@ -37,6 +40,7 @@
 			paging.value.doChatRecordLoadMore();
 		}
 	})
+	
 	
 	// @query所绑定的方法不要自己调用！！需要刷新列表数据时，只需要调用paging.reload()即可
     const queryList = (pageNo, pageSize) => {

@@ -40,7 +40,7 @@
 			if (!firstLoaded.value) {
 				setTimeout(() => {
 					paging.value.reload();
-				}, 100);
+				}, 100)
 			}
 		}
 	}, {

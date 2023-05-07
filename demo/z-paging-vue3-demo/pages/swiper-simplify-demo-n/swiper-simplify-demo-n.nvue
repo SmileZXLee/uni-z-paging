@@ -28,21 +28,23 @@
 
 <script setup>
 	import { ref } from 'vue';
-	import request from '/http/request.js'
+	import request from '/http/request.js';
+	
 	
     const swiperItems = ref([]);
 	const tabs = ref(null);
 	
 	//注意，这个数组是一个二维数组，数组里面包含的是所有tabs的list数组
 	const dataList = ref([])
-	let current = ref(0);
+	const current = ref(0);
 	const tabList = ref(['测试1','测试2','测试3','测试4']);
+	
 	
 	//swiper change时触发
 	const swiperChange = (e) => {
 		// #ifndef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
-		let current = e.target.current || e.detail.current;
-		tabsChange(current);
+		let tempCurrent = e.target.current || e.detail.current;
+		tabsChange(tempCurrent);
 		// #endif
 	}
 	

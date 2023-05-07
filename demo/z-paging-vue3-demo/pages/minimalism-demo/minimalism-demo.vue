@@ -10,7 +10,7 @@
 					<view>最大程度简化重复代码，具体写法和说明请查阅demo源码</view>
 				</view>
 				<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-				<z-tabs :list="tabList" @change="tabChange" />
+				<z-tabs :list="tabList" @change="tabsChange" />
 			</template>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<view class="item" v-for="(item,index) in zList" :key="index">
@@ -26,12 +26,15 @@
 	import { ref } from 'vue';
 	import request from '/http/request.js';
 	
+	
     const paging = ref(null);
-    let zList = ref([]);
-	let tabIndex = ref(0);
+	
+    const zList = ref([]);
+	const tabIndex = ref(0);
 	const tabList = ref(['测试1','测试2','测试3','测试4']);
 	
-	const tabChange = (index) => {
+	
+	const tabsChange = (index) => {
 		tabIndex.value = index;
 		//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
 		paging.value.reload();

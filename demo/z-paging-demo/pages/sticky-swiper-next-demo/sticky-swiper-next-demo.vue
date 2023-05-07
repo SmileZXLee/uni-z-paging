@@ -1,7 +1,7 @@
 <!-- 滑动切换选项卡+吸顶演示(上一个tab数据不保留，滚动流畅) -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" refresher-only @onRefresh="onRefresh" :refresher-status.sync="refresherStatus" @scrolltolower="scrolltolower">
+		<z-paging ref="paging" refresher-only @onRefresh="onRefresh" @scrolltolower="scrolltolower">
 			<!-- 自定义下拉刷新view -->
 			<template #refresher="{refresherStatus}">
 				<custom-refresher :status="refresherStatus" />
@@ -33,7 +33,6 @@
 	export default {
 		data() {
 			return {
-				refresherStatus: 0,
 				swiperHeight: 0,
 				tabList: ['测试1', '测试2', '测试3', '测试4'],
 				current: 0, // tabs组件的current值，表示当前活动的tab选项

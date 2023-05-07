@@ -22,7 +22,7 @@
 	
     const paging = ref(null);
 	//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
-    let dataList = ref([]);
+    const dataList = ref([]);
 	
 	onPageScroll((e) => {
 		//如果滚动到顶部，触发加载更多聊天记录

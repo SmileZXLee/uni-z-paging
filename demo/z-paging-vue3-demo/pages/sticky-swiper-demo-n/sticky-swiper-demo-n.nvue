@@ -20,13 +20,13 @@
 			<view :style="'height:' + pageHeight + 'px'">
 				<!-- 吸顶view -->
 				<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-				<z-tabs ref="tabs" :list="tabList" :current="current" @change="tabChange" />
+				<z-tabs ref="tabs" :list="tabList" :current="current" @change="tabsChange" />
 				<!-- swiper -->
 				<swiper class="swiper" :current="current" @change="swiperChange" @transition="swiperTransition" @animationfinish="swiperAnimationfinish">
 					<swiper-item class="swiper-item" v-for="(item, index) in tabList" :key="index">
 						<!-- 这里的sticky-swiper-item-n为demo中为演示用定义的组件，列表及分页代码在sticky-swiper-item-n组件内 -->
 						<!-- 请注意，sticky-swiper-item-n非z-paging内置组件，在自己的项目中必须自己创建，若未创建则会报组件不存在的错误 -->
-						<sticky-swiper-item-n ref="swiperItem" :tabIndex="index" :currentIndex="current">
+						<sticky-swiper-item-n :ref="el => swiperItems[index] = el" :tabIndex="index" :currentIndex="current">
 						</sticky-swiper-item-n>
 					</swiper-item>
 				</swiper>
@@ -35,81 +35,90 @@
 	</z-paging>
 </template>
 
-<script>
+<script setup>
+	import { ref, watch, nextTick } from 'vue';
+	import { onLoad } from '@dcloudio/uni-app';
+	import request from '/http/request.js';
+	
+	
 	// #ifdef APP-NVUE
 	const dom = weex.requireModule('dom')
 	// #endif
-	export default {
-		data() {
-			return {
-				tabList: ['测试1', '测试2', '测试3', '测试4'],
-				// 页面高度
-				pageHeight: 0,
-				// header高度
-				headerHeight: 0,
-				current: 0, // tabs组件的current值，表示当前活动的tab选项
-			}
-		},
-		onLoad() {
-			// 获取页面可见高度，除去header以外的高度必须等于页面可见高度！
-			this.pageHeight = uni.getSystemInfoSync().windowHeight;
-			this.$nextTick(() => {
-				// 获取header的高度
-				dom.getComponentRect(this.$refs.header, option => {
-					if (option && option.result) {
-						this.headerHeight = option.size.height;
-					}
-				})
+	
+    const swiperItems = ref([]);
+	const paging = ref(null);
+	const tabs = ref(null);
+	const header = ref(null);
+	
+	//页面高度
+	const pageHeight = ref(0);
+	//header高度
+	const headerHeight = ref(0);
+	//tabs组件的current值，表示当前活动的tab选项
+	const current = ref(0);
+	const tabList = ref(['测试1','测试2','测试3','测试4']);
+	
+	
+	onLoad(() => {
+		// 获取页面可见高度，除去header以外的高度必须等于页面可见高度！
+		pageHeight.value = uni.getSystemInfoSync().windowHeight;
+		nextTick(() => {
+			// 获取header的高度
+			dom.getComponentRect(header.value, option => {
+				if (option && option.result) {
+					headerHeight.value = option.size.height;
+				}
 			})
-		},
-		watch: {
-			//当current或者headerHeight改变的时候，调用子组件的设置嵌套list父容器支持swiper-list吸顶滚动效果的方法
-			current: {
-                handler() {
-                    this.setListSpecialEffects();
-                },
-				immediate: true
-			},
-			//当current或者headerHeight改变的时候，调用子组件的设置嵌套list父容器支持swiper-list吸顶滚动效果的方法
-			headerHeight() {
-				this.setListSpecialEffects();
-			}
-		},
-		methods: {
-			onRefresh() {
-				//触发了下拉刷新，通知当前tabIndex对应子组件的下拉刷新
-				this.$refs.swiperItem[this.current].reload(() => {
-					this.$refs.paging.complete();
-				});
-			},
-			// tabs通知swiper切换
-			tabChange(index) {
-				this.current = index;
-			},
-			//swiper change时触发
-			swiperChange(e) {
-				// #ifndef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
-				let current = e.target.current || e.detail.current;
-				this.tabsChange(current);
-				// #endif
-			},
-			//swiper滑动中
-			swiperTransition(e) {
-				this.$refs.tabs.setDx(e.detail.dx);
-			},
-			//swiper滑动结束
-			swiperAnimationfinish(e) {
-				this.current = e.detail.current;
-				this.$refs.tabs.unlockDx();
-			},
-			//设置子组件嵌套list父容器支持swiper-list吸顶滚动效果的方法
-			setListSpecialEffects() {
-				this.$nextTick(() => {
-					this.$refs.swiperItem && this.$refs.swiperItem[this.current].setSpecialEffects(this.headerHeight);
-				})
-			}
-		}
+		})
+	})
+	
+	
+	const onRefresh = () => {
+		//触发了下拉刷新，通知当前tabIndex对应子组件的下拉刷新
+		swiperItems.value[current.value].reload(() => {
+			paging.value.complete();
+		});
 	}
+	
+	//swiper change时触发
+	const swiperChange = (e) => {
+		// #ifndef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
+		let tempCurrent = e.target.current || e.detail.current;
+		tabsChange(tempCurrent);
+		// #endif
+	}
+	
+	// tabs通知swiper切换
+	const tabsChange = (index) => {
+		current.value = index;
+	}
+	
+	//swiper滑动中
+	const swiperTransition = (e) => {
+		tabs.value.setDx(e.detail.dx);
+	}
+	
+	//swiper滑动结束
+	const swiperAnimationfinish = (e) => {
+		current.value = e.detail.current;
+		tabs.value.unlockDx();
+	}
+	
+	//设置子组件嵌套list父容器支持swiper-list吸顶滚动效果的方法
+	const setListSpecialEffects = () => {
+		nextTick(() => {
+			swiperItems.value[current.value].setSpecialEffects(headerHeight.value);
+		})
+	}
+	
+	
+	watch(() => current.value, () => {
+		setListSpecialEffects();
+	}, { immediate: true });
+	
+	watch(() => headerHeight.value, () => {
+		setListSpecialEffects();
+	});
 </script>
 
 <style>

@@ -5,7 +5,7 @@
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
 			<template #top>
-				<z-tabs :list="tabList" @change="tabChange" />
+				<z-tabs :list="tabList" @change="tabsChange" />
 			</template>
 			
 			<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
@@ -13,10 +13,12 @@
 			<!-- 注意注意注意！！字节跳动小程序中自定义下拉刷新不支持slot-scope，将导致custom-refresher无法显示 -->
 			<!-- 如果是字节跳动小程序，请参照sticky-demo.vue中的写法，此处使用slot-scope是为了减少data中无关变量声明，降低依赖 -->
 			<template #refresher="{refresherStatus}">
+				<!-- 此处的custom-refresh为demo中自定义的组件，非z-paging的内置组件，请在实际项目中自行创建。这里插入什么view，下拉刷新就显示什么view -->
 				<custom-refresher :status="refresherStatus" />
 			</template>
 			<!-- 自定义没有更多数据view -->
 			<template #loadingMoreNoMore>
+				<!-- 此处的custom-nomore为demo中自定义的组件，非z-paging的内置组件，请在实际项目中自行创建。这里插入什么view，没有更多数据就显示什么view -->
 				<custom-nomore></custom-nomore>
 			</template>
 			
@@ -32,16 +34,18 @@
 
 <script setup>
 	import { ref } from 'vue';
+	import request from '/http/request.js';
 	
-	import request from '../../http/request.js'
 	
-    const paging = ref(null)
-	let tabIndex = ref(0)
-	const tabList = ref(['测试1','测试2','测试3','测试4'])
+    const paging = ref(null);
+	
+	const tabIndex = ref(0);
+	const tabList = ref(['测试1','测试2','测试3','测试4']);
 	//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
-    let dataList = ref([])
+    const dataList = ref([]);
 	
-	const tabChange = (index) => {
+	
+	const tabsChange = (index) => {
 		tabIndex.value = index;
 		//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
 		paging.value.reload();

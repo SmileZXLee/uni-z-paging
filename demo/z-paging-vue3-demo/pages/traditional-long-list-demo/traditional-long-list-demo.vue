@@ -3,7 +3,7 @@
 <template>
 	<view class="content">
 		<view class="top">
-			<z-tabs :list="tabList" @change="tabChange" />
+			<z-tabs :list="tabList" @change="tabsChange" />
 		</view>
 		<view class="list">
 			<view class="item" v-for="(item,index) in dataList" :key="index">
@@ -36,11 +36,11 @@
 			this.queryList();
 		},
 		onReachBottom() {
-			this.pageNo++;
+			this.pageNo ++;
 			this.queryList();
 		},
 		methods: {
-			tabChange(index) {
+			tabsChange(index) {
 				this.tabIndex = index;
 				this.pageNo = 1;
 				this.queryList();

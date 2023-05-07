@@ -9,7 +9,7 @@
 			<template #top>
 				<view class="header">列表总数据量：10万条</view>
 				<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-				<z-tabs :list="tabList" @change="tabChange" />
+				<z-tabs :list="tabList" @change="tabsChange" />
 			</template>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内，放在所有cell上方的用slot="header"插入，放在所有cell下方的用slot="footer"插入 -->
 			
@@ -32,14 +32,16 @@
 
 <script setup>
 	import { ref } from 'vue';
+	import request from '/http/request.js';
 	
-	import request from '/http/request.js'
 	
-    const paging = ref(null)
-	let tabIndex = ref(0)
-	const tabList = ref(['cell高度相同','cell高度不同'])
+    const paging = ref(null);
 	
-	const tabChange = (index) => {
+	const tabIndex = ref(0);
+	const tabList = ref(['cell高度相同','cell高度不同']);
+	
+	
+	const tabsChange = (index) => {
 		tabIndex.value = index;
 		//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
 		paging.value.reload();

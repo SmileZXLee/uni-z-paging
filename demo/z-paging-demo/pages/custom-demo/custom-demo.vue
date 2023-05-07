@@ -13,10 +13,12 @@
 			<!-- 注意注意注意！！字节跳动小程序中自定义下拉刷新不支持slot-scope，将导致custom-refresher无法显示 -->
 			<!-- 如果是字节跳动小程序，请参照sticky-demo.vue中的写法，此处使用slot-scope是为了减少data中无关变量声明，降低依赖 -->
 			<template #refresher="{refresherStatus}">
+				<!-- 此处的custom-refresh为demo中自定义的组件，非z-paging的内置组件，请在实际项目中自行创建。这里插入什么view，下拉刷新就显示什么view -->
 				<custom-refresher :status="refresherStatus" />
 			</template>
 			<!-- 自定义没有更多数据view -->
 			<template #loadingMoreNoMore>
+				<!-- 此处的custom-nomore为demo中自定义的组件，非z-paging的内置组件，请在实际项目中自行创建。这里插入什么view，没有更多数据就显示什么view -->
 				<custom-nomore></custom-nomore>
 			</template>
 			
