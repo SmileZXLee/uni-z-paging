@@ -17,7 +17,7 @@
 </template>
 
 <script>
-	import request from '/http/request.js'
+	import request from '../../http/request.js'
 	export default {
 		data() {
 			return {

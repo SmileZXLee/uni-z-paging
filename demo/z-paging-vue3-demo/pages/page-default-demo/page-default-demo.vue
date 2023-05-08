@@ -23,7 +23,7 @@
 	import { onPageScroll, onReachBottom } from '@dcloudio/uni-app';
 	import useZPaging from "@/uni_modules/z-paging/components/z-paging/js/hooks/useZPaging.js";
 	
-	import request from '../../http/request.js';
+	import request from '/http/request.js';
 	
 	
     const paging = ref(null);
