@@ -113,26 +113,31 @@
 		emits('query', pageNo, pageSize);
     }
 	
-	//接收页面传递过来的reload事件，传给z-paging
+	//接收页面触发的reload方法，传给z-paging
 	const reload = (data) => {
 		paging.value.reload(data);
 	}
 	
-	//接收页面传递过来的complete事件，传给z-paging
+	//接收页面触发的complete方法，传给z-paging
 	const complete = (data) => {
 		paging.value.complete(data);
 	}
 	
 	/*
-	//如果是使用页面滚动，则需要添加以下两行，注意页面那边要引入mixins，与使用页面滚动示例写法相同。
-	//接收页面传递过来的updatePageScrollTop事件，传给z-paging
+	//如果是使用页面滚动，则需要添加以下三个方法，注意页面那边要引入hooks，与使用页面滚动示例写法相同。
+	//接收页面触发的updatePageScrollTop方法，传给z-paging
 	const updatePageScrollTop = (data) => {
 		paging.value.updatePageScrollTop(data);
 	}
 	
-	//接收页面传递过来的doLoadMore事件，传给z-paging
-	const doLoadMore = () => {
-		paging.value.doLoadMore();
+	//接收页面触发的pageReachBottom方法，传给z-paging
+	const pageReachBottom = () => {
+		paging.value.pageReachBottom();
+	}
+	
+	//接收页面触发的doChatRecordLoadMore方法，传给z-paging
+	const doChatRecordLoadMore = () => {
+		paging.value.doChatRecordLoadMore();
 	}
 	*/
    

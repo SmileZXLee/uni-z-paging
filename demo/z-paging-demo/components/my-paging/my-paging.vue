@@ -111,27 +111,31 @@
 			}
 		},
 		methods: {
-			//监听z-paging的@query事件，通过emit传递给页面
+			//监听z-paging的@query方法，通过emit传递给页面
 			queryList(pageNo, pageSize) {
 				this.$emit('query', pageNo, pageSize);
 			},
-			//接收页面传递过来的reload事件，传给z-paging
+			//接收页面触发的reload方法，传给z-paging
 			reload(data) {
 				this.$refs.paging.reload(data);
 			},
-			//接收页面传递过来的complete事件，传给z-paging
+			//接收页面触发的complete方法，传给z-paging
 			complete(data) {
 				this.$refs.paging.complete(data);
 			},
 			/*
-			//如果是使用页面滚动，则需要添加以下两行，注意页面那边要引入mixins，与使用页面滚动示例写法相同。
-			//接收页面传递过来的updatePageScrollTop事件，传给z-paging
+			//如果是使用页面滚动，则需要添加以下三行，注意页面那边要引入mixins，与使用页面滚动示例写法相同。
+			//接收页面触发的updatePageScrollTop方法，传给z-paging
 			updatePageScrollTop(data){
 				this.$refs.paging.updatePageScrollTop(data);
 			},
-			//接收页面传递过来的doLoadMore事件，传给z-paging
-			doLoadMore(){
-				this.$refs.paging.doLoadMore();
+			//接收页面触发的pageReachBottom方法，传给z-paging
+			pageReachBottom(){
+				this.$refs.paging.pageReachBottom();
+			},
+			//接收页面触发的doChatRecordLoadMore方法，传给z-paging
+			doChatRecordLoadMore() {
+				this.$refs.paging.doChatRecordLoadMore();
 			}
 			*/
 		}
