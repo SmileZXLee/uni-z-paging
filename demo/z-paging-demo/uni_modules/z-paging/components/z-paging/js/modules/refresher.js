@@ -335,6 +335,9 @@ export default {
 			this._refresherEnd();
 			this._endSystemLoadingAndRefresh();
 			this._handleScrollViewDisableBounce({ bounce: true });
+			this.$nextTick(() => {
+				this.refresherTriggered = false;
+			})
 		},
 		handleRefresherStatusChanged(func) {
 			this.refresherStatusChangedFunc = func;
