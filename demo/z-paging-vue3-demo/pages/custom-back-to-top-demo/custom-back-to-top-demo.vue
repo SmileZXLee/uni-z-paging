@@ -46,7 +46,7 @@
 		}
 	}
 	
-	// @query所绑定的方法不要自己调用！！需要刷新列表数据时，只需要调用paging.reload()即可
+	// @query所绑定的方法不要自己调用！！需要刷新列表数据时，只需要调用paging.value.reload()即可
     const queryList = (pageNo, pageSize) => {
 		current.value = pageNo;
 		//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用

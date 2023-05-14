@@ -128,14 +128,14 @@ export default {
 			this.$emit('emptyViewReload', reload => {
 				if (reload === undefined || reload === true) {
 					this.fromEmptyViewReload = true;
-					this.reload();
+					this.reload().catch(() => {});
 				}
 				callbacked = true;
 			});
 			this.$nextTick(() => {
 				if (!callbacked) {
 					this.fromEmptyViewReload = true;
-					this.reload();
+					this.reload().catch(() => {});
 				}
 			})
 		},

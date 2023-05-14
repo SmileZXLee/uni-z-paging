@@ -7,7 +7,7 @@ function useZPaging(paging) {
 	
 	onPullDownRefresh(() => {
 		if (!cPaging) return;
-		cPaging.value.reload();
+		cPaging.value.reload().catch(() => {});
 	})
 	
 	onPageScroll(e => {

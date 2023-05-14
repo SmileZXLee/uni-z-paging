@@ -104,7 +104,7 @@
 								delay = 100;
 								// #endif
 								setTimeout(() => {
-									this.$refs.paging.reload();
+									this.$refs.paging.reload().catch(() => {});
 								}, delay);
 							})
 						}
@@ -115,11 +115,11 @@
 		},
 		methods: {
 			reload(data) {
-				this.$refs.paging.reload(data);
+				return this.$refs.paging.reload(data);
 			},
 			complete(data) {
 				this.firstLoaded = true;
-				this.$refs.paging.complete(data);
+				return this.$refs.paging.complete(data);
 			},
 			_queryList(pageNo, pageSize, from) {
 				this.$emit('query', pageNo, pageSize, from);

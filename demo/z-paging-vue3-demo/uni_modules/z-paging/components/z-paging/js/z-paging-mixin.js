@@ -3,7 +3,7 @@
 export default {
 	onPullDownRefresh() {
 		if (this.isPagingRefNotFound()) return;
-		this.$refs.paging.reload();
+		this.$refs.paging.reload().catch(() => {});
 	},
 	onPageScroll(e) {
 		if (this.isPagingRefNotFound()) return;

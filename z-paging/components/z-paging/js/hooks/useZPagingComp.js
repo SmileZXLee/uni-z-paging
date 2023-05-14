@@ -6,7 +6,7 @@ function useZPagingComp(paging) {
 	
 	const reload = () => {
 		if (!cPaging) return;
-		cPaging.value.reload();
+		cPaging.value.reload().catch(() => {});
 	}
 	const updatePageScrollTop = scrollTop => {
 		if (!cPaging) return;

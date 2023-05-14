@@ -696,7 +696,8 @@ export default {
 		_callDataPromise(success, totalList) {
 			for (const key in this.dataPromiseResultMap) {
 				const obj = this.dataPromiseResultMap[key];
-				success ? (!!obj && obj.resolve({ totalList, noMore: this.loadingStatus === Enum.More.NoMore })) : (!!obj && obj.reject());
+				if (!obj) break;
+				success ? obj.resolve({ totalList, noMore: this.loadingStatus === Enum.More.NoMore }) : obj.reject(`z-paging-${key}-error`);
 			}
 		},
 		//检查complete data的类型
