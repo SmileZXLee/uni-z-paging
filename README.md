@@ -24,9 +24,9 @@
 * 【高性能】在app-vue、h5、微信小程序、QQ小程序上使用wxs+renderjs从视图层实现下拉刷新；支持虚拟列表，轻松渲染万级数据！
 
 ### 反馈qq群
-* 官方1群(3000人群`已满`)：[790460711](https://jq.qq.com/?_wv=1027&k=vU2fKZZH)
+* 官方1群`已满`：[790460711](https://jq.qq.com/?_wv=1027&k=vU2fKZZH)
 
-* 官方2群(1000人群)：[371624008](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=avPmibADf2TNi4LxkIwjCE5vbfXpa-r1&authKey=dQ%2FVDAR87ONxI4b32Py%2BvmXbhnopjHN7%2FJPtdsqJdsCPFZB6zDQ17L06Uh0kITUZ&noverify=0&group_code=371624008)
+* 官方2群：[371624008](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=avPmibADf2TNi4LxkIwjCE5vbfXpa-r1&authKey=dQ%2FVDAR87ONxI4b32Py%2BvmXbhnopjHN7%2FJPtdsqJdsCPFZB6zDQ17L06Uh0kITUZ&noverify=0&group_code=371624008)
 
 ### 使用案例
 * [点击此处添加](https://github.com/SmileZXLee/uni-z-paging/issues/42)  
