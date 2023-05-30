@@ -1,7 +1,7 @@
 <!-- 滑动切换选项卡+吸顶演示(上一个tab数据不保留，滚动流畅) -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" refresher-only @onRefresh="onRefresh" @scrolltolower="scrolltolower">
+		<z-paging ref="pagePaging" refresher-only @onRefresh="onRefresh" @scrolltolower="scrolltolower">
 			<!-- 自定义下拉刷新view -->
 			<template #refresher="{refresherStatus}">
 				<custom-refresher :status="refresherStatus" />
@@ -35,7 +35,7 @@
 	
 	const swiperItems = ref([]);
 	const tabs = ref(null);
-	const paging = ref(null);
+	const pagePaging = ref(null);
 		
     const swiperHeight = ref(0);
 	let tabIndex = ref(0);
@@ -50,7 +50,8 @@
 	//下拉刷新时，通知当前显示的列表进行reload操作
 	const onRefresh = () => {
 		swiperItems.value[current.value].reload(() => {
-			paging.value.complete([]);
+			//当当前显示的列表刷新结束，结束当前页面的刷新状态
+			pagePaging.value.complete([]);
 		});
 	}
 	

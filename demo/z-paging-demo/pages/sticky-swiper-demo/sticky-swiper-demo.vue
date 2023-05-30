@@ -6,7 +6,7 @@
 <!-- 如果在App中，推荐使用nvue写法，滚动和过渡更流畅，参照sticky-swiper-demo-n -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" @scroll="scroll" refresher-only :scrollable="scrollable" @query="queryList">
+		<z-paging ref="pagePaging" @scroll="scroll" refresher-only :scrollable="scrollable" @query="queryList">
 			<!-- 自定义下拉刷新view -->
 			<template #refresher="{refresherStatus}">
 				<custom-refresher :status="refresherStatus" />
@@ -61,7 +61,8 @@
 			queryList() {
 				//触发了下拉刷新，通过当前tabIndex对应的列表下拉刷新
 				this.$refs.swiperItem[this.current].reload(() => {
-					this.$refs.paging.complete([]);
+					//当当前显示的列表刷新结束，结束当前页面的刷新状态
+					this.$refs.pagePaging.endRefresh();
 				});
 			},
 			scroll(e) {
@@ -86,7 +87,7 @@
 			//子组件设置当前页面进入吸顶状态并禁止滚动
 			setStickyed() {
 				this.scrollable = false;
-				this.$refs.paging.scrollToY(this.headerHeight);
+				this.$refs.pagePaging.scrollToY(this.headerHeight);
 			},
 			// tabs通知swiper切换
 			tabChange(index) {

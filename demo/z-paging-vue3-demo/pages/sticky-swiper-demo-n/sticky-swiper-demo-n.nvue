@@ -3,7 +3,7 @@
 	<!-- refresher-only为true代表只使用下拉刷新功能 -->
 	<!-- hide-nvue-bottom-tag必须设置为true，因为在安卓设备中，插入的swiper cell下面，不能有其他的view -->
 	<!-- @onRefresh代表监听下拉刷新事件 -->
-	<z-paging ref="paging" nvue-list-id="z-paging-nlist" refresher-only hide-nvue-bottom-tag @onRefresh="onRefresh">
+	<z-paging ref="pagePaging" nvue-list-id="z-paging-nlist" refresher-only hide-nvue-bottom-tag @onRefresh="onRefresh">
 		<!-- 自定义下拉刷新view(如果use-custom-refresher为true且不设置下面的slot="refresher"，此时不用获取refresherStatus，会自动使用z-paging自带的下拉刷新view) -->
 		<template #refresher="{refresherStatus}">
 			<custom-refresher :status="refresherStatus" />
@@ -46,7 +46,7 @@
 	// #endif
 	
     const swiperItems = ref([]);
-	const paging = ref(null);
+	const pagePaging = ref(null);
 	const tabs = ref(null);
 	const header = ref(null);
 	
@@ -76,7 +76,8 @@
 	const onRefresh = () => {
 		//触发了下拉刷新，通知当前tabIndex对应子组件的下拉刷新
 		swiperItems.value[current.value].reload(() => {
-			paging.value.complete();
+			//当当前显示的列表刷新结束，结束当前页面的刷新状态
+			pagePaging.value.endRefresh();
 		});
 	}
 	

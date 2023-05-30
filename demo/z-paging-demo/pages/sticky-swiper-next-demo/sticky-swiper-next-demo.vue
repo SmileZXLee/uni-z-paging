@@ -1,13 +1,13 @@
 <!-- 滑动切换选项卡+吸顶演示(上一个tab数据不保留，滚动流畅) -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" refresher-only @onRefresh="onRefresh" @scrolltolower="scrolltolower">
+		<z-paging ref="pagePaging" refresher-only @onRefresh="onRefresh" @scrolltolower="scrolltolower">
 			<!-- 自定义下拉刷新view -->
 			<template #refresher="{refresherStatus}">
 				<custom-refresher :status="refresherStatus" />
 			</template>
 			<view class="banner-view" style="height: 250rpx;">
-				<view style="font-size: 40rpx;font-weight: 700;">这是一个banner</view>
+				<view style="font-size: 40rpx;font-weight: 700;">这是一个banner11</view>
 				<view style="font-size: 24rpx;margin-top: 5rpx;">下方tab滚动时可吸附在顶部</view>
 			</view>
 			<view>
@@ -46,9 +46,8 @@
 			//下拉刷新时，通知当前显示的列表进行reload操作
 			onRefresh(){
 				this.$refs.swiperList[this.current].reload(() => {
-					setTimeout(() => {
-						this.$refs.paging.endRefresh();
-					}, 1000)
+					//当当前显示的列表刷新结束，结束当前页面的刷新状态
+					this.$refs.pagePaging.endRefresh();
 				});
 			},
 			//当滚动到底部时，通知当前显示的列表加载更多
