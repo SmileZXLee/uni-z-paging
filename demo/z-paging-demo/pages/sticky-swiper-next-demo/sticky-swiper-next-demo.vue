@@ -7,7 +7,7 @@
 				<custom-refresher :status="refresherStatus" />
 			</template>
 			<view class="banner-view" style="height: 250rpx;">
-				<view style="font-size: 40rpx;font-weight: 700;">这是一个banner11</view>
+				<view style="font-size: 40rpx;font-weight: 700;">这是一个banner</view>
 				<view style="font-size: 24rpx;margin-top: 5rpx;">下方tab滚动时可吸附在顶部</view>
 			</view>
 			<view>
