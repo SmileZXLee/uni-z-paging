@@ -45,7 +45,7 @@
 				return this.c.defaultThemeStyle;
 			},
 			c() {
-				return this.zConfig;
+				return this.zConfig || {};
 			},
 			ownLoadingMoreText() {
 				const statusTextArr = [this.c.defaultText,this.c.loadingText,this.c.noMoreText,this.c.failText];
