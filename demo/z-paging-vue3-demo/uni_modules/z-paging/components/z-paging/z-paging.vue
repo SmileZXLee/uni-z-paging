@@ -20,7 +20,7 @@ by ZXLee
 		<!-- #endif -->
 		<!-- 顶部固定的slot -->
 		<slot v-if="!usePageScroll&&zSlots.top" name="top" />
-		<view class="zp-page-top" v-else-if="usePageScroll&&zSlots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
+		<view class="zp-page-top" @touchmove.stop.prevent v-else-if="usePageScroll&&zSlots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
 			<slot name="top" />
 		</view>
 		<view :class="{'zp-view-super':true,'zp-scroll-view-super':!usePageScroll}" :style="[finalScrollViewStyle]">
@@ -146,7 +146,7 @@ by ZXLee
 		</view>
 		<!-- 底部固定的slot -->
 		<slot v-if="!usePageScroll&&zSlots.bottom" name="bottom" />
-		<view class="zp-page-bottom" v-else-if="usePageScroll&&zSlots.bottom" :style="[{'bottom': `${windowBottom}px`}]">
+		<view class="zp-page-bottom" @touchmove.stop.prevent v-else-if="usePageScroll&&zSlots.bottom" :style="[{'bottom': `${windowBottom}px`}]">
 			<slot name="bottom" />
 		</view>
 		<!-- 点击返回顶部view -->
@@ -228,7 +228,7 @@ by ZXLee
 				</component>
 				<component is="header" v-if="!hideNvueBottomTag" ref="zp-n-list-bottom-tag" class="zp-n-list-bottom-tag"></component>
 				<!-- 上拉加载更多view -->
-				<component :is="nViewIs" v-if="!refresherOnly&&loadingMoreEnabled">
+				<component :is="nViewIs" v-if="!refresherOnly&&loadingMoreEnabled&&!showEmpty">
 					<view v-if="useChatRecordMode">
 						<view v-if="loadingStatus!==M.NoMore&&realTotalData.length">
 							<slot v-if="zSlots.chatLoading" name="chatLoading" />
