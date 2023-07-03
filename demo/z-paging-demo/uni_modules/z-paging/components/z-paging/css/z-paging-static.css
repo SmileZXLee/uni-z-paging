@@ -1,0 +1,35 @@
+/* [z-paging]公用的静态css资源 */
+
+.zp-line-loading-image {
+	margin-right: 8rpx;
+	width: 28rpx;
+	height: 28rpx;
+	/* #ifndef APP-NVUE */
+	animation: loading-flower 1s steps(12) infinite;
+	/* #endif */
+	color: #666666;
+}
+
+.zp-loading-image-ios{
+	width: 20px;
+	height: 20px;
+}
+
+.zp-loading-image-android{
+	width: 32rpx;
+	height: 32rpx;
+}
+
+/* #ifndef APP-NVUE */
+@keyframes loading-flower {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+	to {
+		-webkit-transform: rotate(1turn);
+		transform: rotate(1turn);
+	}
+}
+/* #endif */
+

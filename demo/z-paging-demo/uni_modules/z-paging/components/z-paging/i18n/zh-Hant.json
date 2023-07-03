@@ -1,0 +1,22 @@
+{	
+	"zp.refresher.default": "繼續下拉重繪",
+	"zp.refresher.pulling": "鬆開立即重繪",
+	"zp.refresher.refreshing": "正在重繪...",
+	"zp.refresher.complete": "重繪成功",
+	
+	"zp.loadingMore.default": "點擊加載更多",
+	"zp.loadingMore.loading": "正在加載...",
+	"zp.loadingMore.noMore": "沒有更多了",
+	"zp.loadingMore.fail": "加載失敗，點擊重新加載",
+	
+	"zp.emptyView.title": "沒有數據哦~",
+	"zp.emptyView.reload": "重新加載",
+	"zp.emptyView.error": "很抱歉，加載失敗",
+	
+	"zp.refresherUpdateTime.title": "最後更新：",
+	"zp.refresherUpdateTime.none": "無",
+	"zp.refresherUpdateTime.today": "今天",
+	"zp.refresherUpdateTime.yesterday": "昨天",
+	
+	"zp.systemLoading.title": "加載中..."
+}
