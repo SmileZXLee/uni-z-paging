@@ -41,6 +41,7 @@
 
 .zp-scroll-view-super {
 	flex: 1;
+	overflow: hidden;
 	position: relative;
 }
 
