@@ -205,7 +205,7 @@ export default {
 				}
 			}
 		},
-		//触发加载更多时调用,from:0-滑动到底部触发；1-点击加载更多触发
+		//触发加载更多时调用,from:toBottom-滑动到底部触发；1、click-点击加载更多触发
 		_onLoadingMore(from = 'click') {
 			if (from === 'toBottom' && !this.scrollToBottomBounceEnabled && this.scrollEnable) {
 				this.scrollEnable = false;

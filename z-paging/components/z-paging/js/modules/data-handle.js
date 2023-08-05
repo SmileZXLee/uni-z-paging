@@ -277,7 +277,10 @@ export default {
 		},
 		//从顶部添加数据，不会影响分页的pageNo和pageSize
 		addDataFromTop(data, toTop = true, toTopWithAnimate = true) {
-			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data;
+			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data.reverse();
+			// #ifndef APP-NVUE
+			this.finalUseVirtualList && this._setCellIndex(data, 'top')
+			// #endif
 			this.totalData = [...data, ...this.totalData];
 			if (toTop) {
 				u.delay(() => {
@@ -569,7 +572,7 @@ export default {
 		_currentDataChange(newVal, oldVal) {
 			newVal = [...newVal];
 			// #ifndef APP-NVUE
-			this.finalUseVirtualList && this._setCellIndex(newVal, this.totalData.length === 0)
+			this.finalUseVirtualList && this._setCellIndex(newVal, 'bottom');
 			this.useChatRecordMode && newVal.reverse();
 			// #endif
 			if (this.isFirstPage && this.finalConcat) {

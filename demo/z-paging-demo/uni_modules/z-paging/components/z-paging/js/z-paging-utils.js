@@ -159,6 +159,13 @@ function getInstanceId() {
     return s.join('') + getTime();
 }
 
+// 等待一段时间
+function wait(ms) {
+	return new Promise(resolve => {
+		setTimeout(resolve, ms);
+	});
+}
+
 //------------------ 私有方法 ------------------------
 //时间格式化
 function _timeFormat(time, textMap) {
@@ -216,5 +223,6 @@ export default {
 	getTime,
 	getInstanceId,
 	consoleErr,
-	delay
+	delay,
+	wait
 };
