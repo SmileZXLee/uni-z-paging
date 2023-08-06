@@ -9,23 +9,20 @@
 	</view>
 </template>
 
-<script>
-	export default {
-		name:"pop-up",
-		data() {
-			return {
-				show: false
-			};
-		},
-		methods: {
-			open() {
-				this.show = true;
-			},
-			close() {
-				this.show = false;
-			}
-		}
+<script setup>
+	import { ref } from 'vue';
+	
+    const show = ref(false)
+	
+	const open = () => {
+		show.value = true;
 	}
+	
+	const close = () => {
+		show.value = false;
+	}
+	
+	defineExpose({ open, close });
 </script>
 
 <style>
