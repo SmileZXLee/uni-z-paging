@@ -403,7 +403,7 @@ export default {
 		},
 		//更新fixedCell模式下topRangeIndex&placeholderTopHeight
 		_updateFixedTopRangeIndex(scrollIndex) {
-			let virtualTopRangeIndex = this.virtualCellHeight === 0 ? 0 : scrollIndex - parseInt(this.finalVirtualPageHeight / this.virtualCellHeight) * this.preloadPage;
+			let virtualTopRangeIndex = this.virtualCellHeight === 0 ? 0 : scrollIndex - (parseInt(this.finalVirtualPageHeight / this.virtualCellHeight) || 1) * this.preloadPage;
 			virtualTopRangeIndex *= this.virtualListCol;
 			virtualTopRangeIndex = Math.max(0, virtualTopRangeIndex);
 			this.virtualTopRangeIndex = virtualTopRangeIndex;
@@ -411,7 +411,7 @@ export default {
 		},
 		//更新fixedCell模式下bottomRangeIndex&placeholderBottomHeight
 		_updateFixedBottomRangeIndex(scrollIndex) {
-			let virtualBottomRangeIndex = this.virtualCellHeight === 0 ? this.pageSize : scrollIndex + parseInt(this.finalVirtualPageHeight / this.virtualCellHeight) * (this.preloadPage + 1);
+			let virtualBottomRangeIndex = this.virtualCellHeight === 0 ? this.pageSize : scrollIndex + (parseInt(this.finalVirtualPageHeight / this.virtualCellHeight) || 1) * (this.preloadPage + 1);
 			virtualBottomRangeIndex *= this.virtualListCol;
 			virtualBottomRangeIndex = Math.min(this.realTotalData.length, virtualBottomRangeIndex);
 			this.virtualBottomRangeIndex = virtualBottomRangeIndex;

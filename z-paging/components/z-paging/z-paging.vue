@@ -216,17 +216,6 @@ by ZXLee
 				<component :is="nViewIs" v-if="showLoading&&zSlots.loading&&!loadingFullFixed" :class="{'z-paging-content-fixed':usePageScroll}" style="flex:1" :style="[nChatRecordRotateStyle]">
 					<slot name="loading" />
 				</component>
-				<!-- 空数据图 -->
-				<component :is="nViewIs" v-if="showEmpty" :class="{'z-paging-content-fixed':usePageScroll}" style="flex:1" :style="[emptyViewSuperStyle,nChatRecordRotateStyle]">
-					<view :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}">
-						<slot v-if="zSlots.empty" name="empty" :isLoadFailed="isLoadFailed" />
-						<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
-						:emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" 
-						:emptyViewImgStyle="emptyViewImgStyle" :emptyViewReloadStyle="emptyViewReloadStyle" :emptyViewZIndex="emptyViewZIndex" :emptyViewFixed="emptyViewFixed" 
-						@reload="_emptyViewReload" @viewClick="_emptyViewClick" />
-					</view>
-				</component>
-				<component is="header" v-if="!hideNvueBottomTag" ref="zp-n-list-bottom-tag" class="zp-n-list-bottom-tag"></component>
 				<!-- 上拉加载更多view -->
 				<component :is="nViewIs" v-if="!refresherOnly&&loadingMoreEnabled&&!showEmpty">
 					<view v-if="useChatRecordMode">
@@ -250,6 +239,17 @@ by ZXLee
 						<view v-if="safeAreaInsetBottom&&useSafeAreaPlaceholder" class="zp-safe-area-placeholder" :style="[{height:safeAreaBottom+'px'}]" />
 					</view>
 				</component>
+				<!-- 空数据图 -->
+				<component :is="nViewIs" v-if="showEmpty" :class="{'z-paging-content-fixed':usePageScroll}" :style="[{flex:emptyViewCenter?1:0},emptyViewSuperStyle,nChatRecordRotateStyle]">
+					<view :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}">
+						<slot v-if="zSlots.empty" name="empty" :isLoadFailed="isLoadFailed" />
+						<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
+						:emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" 
+						:emptyViewImgStyle="emptyViewImgStyle" :emptyViewReloadStyle="emptyViewReloadStyle" :emptyViewZIndex="emptyViewZIndex" :emptyViewFixed="emptyViewFixed" 
+						@reload="_emptyViewReload" @viewClick="_emptyViewClick" />
+					</view>
+				</component>
+				<component is="header" v-if="!hideNvueBottomTag" ref="zp-n-list-bottom-tag" class="zp-n-list-bottom-tag"></component>
 			</component>
 			<view v-if="zSlots.right" class="zp-page-right">
 				<slot name="right" />
