@@ -305,13 +305,7 @@ export default {
 		showRefresher() {
 			const showRefresher = this.finalRefresherEnabled && this.useCustomRefresher;
 			// #ifndef APP-NVUE
-			if (this.customRefresherHeight === -1 && showRefresher) {
-				u.delay(() => {
-					this.$nextTick(()=>{
-						this._updateCustomRefresherHeight();
-					})
-				})
-			}
+			this.customRefresherHeight === -1 && showRefresher && u.delay(() => this.$nextTick(this._updateCustomRefresherHeight));
 			// #endif
 			return showRefresher;
 		},
@@ -592,9 +586,7 @@ export default {
 				}, refresherCompleteDelay);
 			}
 			if (setLoading) {
-				u.delay(() => {
-					this.loading = false;
-				}, shouldEndLoadingDelay ? c.delayTime : 0);
+				u.delay(() => this.loading = false, shouldEndLoadingDelay ? c.delayTime : 0);
 				isUserPullDown && this._onRestore();
 			}
 		},

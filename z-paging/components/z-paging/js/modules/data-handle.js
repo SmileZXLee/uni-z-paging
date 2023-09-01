@@ -283,9 +283,7 @@ export default {
 			// #endif
 			this.totalData = [...data, ...this.totalData];
 			if (toTop) {
-				u.delay(() => {
-					this._scrollToTop(toTopWithAnimate);
-				})
+				u.delay(() => this._scrollToTop(toTopWithAnimate));
 			}
 		},
 		//重新设置列表数据，调用此方法不会影响pageNo和pageSize，也不会触发请求。适用场景：当需要删除列表中某一项时，将删除对应项后的数组通过此方法传递给z-paging。(当出现类似的需要修改列表数组的场景时，请使用此方法，请勿直接修改page中:list.sync绑定的数组)
@@ -379,6 +377,13 @@ export default {
 		},
 		//reload之前的一些处理
 		_preReload(animate = this.showRefresherWhenReload, isFromMounted = true) {
+			const showRefresher = this.finalRefresherEnabled && this.useCustomRefresher;
+			// #ifndef APP-NVUE
+			if (this.customRefresherHeight === -1 && showRefresher) {
+				u.delay(() => this._preReload(animate, isFromMounted), c.delayTime / 2);
+				return;
+			}
+			// #endif
 			this.isUserReload = true;
 			this.loadingType = Enum.LoadingType.Refresher;
 			if (animate) {
@@ -469,9 +474,7 @@ export default {
 			if (!this.isFirstPage) {
 				this.listRendering = true;
 				this.$nextTick(() => {
-					u.delay(() => {
-						this.listRendering = false;
-					})
+					u.delay(() => this.listRendering = false);
 				})
 			} else {
 				this.listRendering = false;

@@ -176,7 +176,7 @@ export default {
 	created(){
 		if (this.createdReload && !this.refresherOnly && this.auto) {
 			this._startLoading();
-			this._preReload();
+			this.$nextTick(this._preReload);
 		}
 	},
 	mounted() {
@@ -188,7 +188,7 @@ export default {
 		this.finalUseCache && this._setListByLocalCache();
 		let delay = 0;
 		// #ifdef H5 || MP
-		delay = 100;
+		delay = c.delayTime;
 		// #endif
 		this.$nextTick(() => {
 			this.systemInfo = uni.getSystemInfoSync();
