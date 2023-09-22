@@ -199,21 +199,20 @@ export default {
 		didUpdateVirtualListCell(index) {
 			if (this.cellHeightMode !== Enum.CellHeightMode.Dynamic) return;
 			const currentNode = this.virtualHeightCacheList[index];
-			this._getNodeClientRect(`#zp-id-${index}`, this.finalUseInnerList).then(cellNode => {
-				const cellNodeHeight = cellNode ? cellNode[0].height : 0;
-				
-				const heightDis = cellNodeHeight - currentNode.height;
-				currentNode.height = cellNodeHeight;
-				currentNode.totalHeight = currentNode.lastTotalHeight + cellNodeHeight;
-				
-				for (let i = index + 1; i < this.virtualHeightCacheList.length; i++) {
-					const thisNode = this.virtualHeightCacheList[i];
-					if (i === index + 1) {
-						thisNode.lastTotalHeight = cellNodeHeight;
+			this.$nextTick(() => {
+				this._getNodeClientRect(`#zp-id-${index}`, this.finalUseInnerList).then(cellNode => {
+					const cellNodeHeight = cellNode ? cellNode[0].height : 0;				
+					const heightDis = cellNodeHeight - currentNode.height;
+					currentNode.height = cellNodeHeight;
+					currentNode.totalHeight = currentNode.lastTotalHeight + cellNodeHeight;
+					
+					for (let i = index + 1; i < this.virtualHeightCacheList.length; i++) {
+						const thisNode = this.virtualHeightCacheList[i];
+						thisNode.totalHeight += heightDis;
+						thisNode.lastTotalHeight += heightDis;
 					}
-					thisNode.totalHeight += heightDis;
-				}
-			});
+				});
+			})
 		},
 		//在使用动态高度虚拟列表时，若删除了列表数组中的某个item，需要调用此方法以更新高度缓存数组；index:删除的cell在列表中的位置，从0开始
 		didDeleteVirtualListCell(index) {
@@ -221,10 +220,8 @@ export default {
 			const currentNode = this.virtualHeightCacheList[index];
 			for (let i = index + 1; i < this.virtualHeightCacheList.length; i++) {
 				const thisNode = this.virtualHeightCacheList[i];
-				if (i === index + 1) {
-					thisNode.lastTotalHeight = currentNode.lastTotalHeight;
-				}
 				thisNode.totalHeight -= currentNode.height;
+				thisNode.lastTotalHeight -= currentNode.height;
 			}
 			this.virtualHeightCacheList.splice(index, 1);
 		},
