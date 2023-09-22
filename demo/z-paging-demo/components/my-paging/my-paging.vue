@@ -104,10 +104,18 @@
 			value(newVal) {
 				this.list = newVal;
 			},
+			// #ifdef VUE3
+			modelValue(newVal) {
+				this.list = newVal;
+			},
+			// #endif
 			//监听z-paging给当前组件的值，同时传给页面
 			list(newVal) {
 				//通过emit input修改页面中v-model绑定的值
 				this.$emit('input', newVal);
+				// #ifdef VUE3
+				this.$emit('update:modelValue', newVal);
+				// #endif
 			}
 		},
 		methods: {

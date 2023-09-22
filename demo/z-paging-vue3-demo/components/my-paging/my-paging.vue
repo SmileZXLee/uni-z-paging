@@ -103,9 +103,17 @@
 	watch(() => props.value, (newVal) => {
 		list.value = newVal;
 	})
+	// #ifdef VUE3
+	watch(() => props.modelValue, (newVal) => {
+		list.value = newVal;
+	})
+	// #endif
 	
 	watch(() => list.value, (newVal) => {
 		emits('input', newVal);
+		// #ifdef VUE3
+		emits('update:modelValue', newVal);
+		// #endif
 	})
 	
 	//监听z-paging的@query事件，通过emit传递给页面
