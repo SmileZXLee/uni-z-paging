@@ -201,7 +201,7 @@ export default {
 			const currentNode = this.virtualHeightCacheList[index];
 			this.$nextTick(() => {
 				this._getNodeClientRect(`#zp-id-${index}`, this.finalUseInnerList).then(cellNode => {
-					const cellNodeHeight = cellNode ? cellNode[0].height : 0;				
+					const cellNodeHeight = cellNode ? cellNode[0].height : 0;
 					const heightDis = cellNodeHeight - currentNode.height;
 					currentNode.height = cellNodeHeight;
 					currentNode.totalHeight = currentNode.lastTotalHeight + cellNodeHeight;
