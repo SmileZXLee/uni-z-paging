@@ -6,15 +6,17 @@ const data = {
 	isTouchFromZPaging: false,
 	isUsePageScroll: false,
 	isReachedTop: true,
-	isIosAndH5: false
+	isIosAndH5: false,
+	appLaunched: false
 }
 
 export default {
 	mounted() {
 		this._handleTouch();
 		// #ifdef APP-VUE
-		this.$ownerInstance && this.$ownerInstance.callMethod('_checkVirtualListScroll');
+		data.appLaunched && this.$ownerInstance && this.$ownerInstance.callMethod('_handleAppReLaunch');
 		// #endif
+		data.appLaunched = true;
 	},
 	methods: {
 		//接收逻辑层发送的数据

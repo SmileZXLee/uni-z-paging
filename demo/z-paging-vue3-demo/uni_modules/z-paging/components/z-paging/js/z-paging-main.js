@@ -323,6 +323,18 @@ export default {
 			}
 			!this.usePageScroll && this.$refs['zp-n-list'].setSpecialEffects(args);
 		},
+		//当app长时间进入后台后进入前台，因系统内存管理导致app重新加载时，进行一些适配处理
+		_handleAppReLaunch() {
+			// 解决在vue3+ios中，app ReLaunch时顶部下拉刷新展示位置向下偏移的问题
+			// #ifdef VUE3
+			this.refresherThresholdUpdateTag = 1;
+			this.$nextTick(() => {
+				this.refresherThresholdUpdateTag = 0;
+			})
+			// #endif
+			// 解决使用虚拟列表时，app ReLaunch时白屏问题
+			this._checkVirtualListScroll();
+		},
 		//使手机发生较短时间的振动（15ms）
 		_doVibrateShort() {
 			// #ifdef APP-PLUS

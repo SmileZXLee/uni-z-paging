@@ -217,8 +217,7 @@ export default {
 			this.$nextTick(() => {
 				this.oldScrollTop = 0;
 			})
-			if (!this.useChatRecordMode || this.loadingStatus === Enum.More.NoMore) return;
-			this._onLoadingMore('click');
+			this.useChatRecordMode && this.loadingStatus !== Enum.More.NoMore && this._onLoadingMore('click');
 		},
 		//当滚动到底部时
 		_onScrollToLower(e) {
@@ -418,10 +417,10 @@ export default {
 			this.$emit('scrollTopChange', newVal);
 			this.$emit('update:scrollTop', newVal);
 			this._checkShouldShowBackToTop(newVal);
-			const scrollTop = this.isIos ? (newVal > 5 ? 6 : 0) : newVal;
-			if (isPageScrollTop) {
+			const scrollTop = newVal > 5 ? 6 : 0;
+			if (isPageScrollTop && this.wxsPageScrollTop !== scrollTop) {
 				this.wxsPageScrollTop = scrollTop;
-			} else {
+			} else if (!isPageScrollTop && this.wxsScrollTop !== scrollTop) {
 				this.wxsScrollTop = scrollTop;
 			}
 		},

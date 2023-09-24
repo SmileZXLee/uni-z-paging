@@ -231,7 +231,8 @@ export default {
 			oldRefresherTouchmoveY: 0,
 			oldTouchDirection: '',
 			oldEmitedTouchDirection: '',
-			oldPullingDistance: -1
+			oldPullingDistance: -1,
+			refresherThresholdUpdateTag: 0
 		}
 	},
 	watch: {
@@ -324,7 +325,7 @@ export default {
 	},
 	methods: {
 		//终止下拉刷新状态
-		endRefresh(){
+		endRefresh() {
 			this.totalData = this.realTotalData;
 			this._refresherEnd();
 			this._endSystemLoadingAndRefresh();

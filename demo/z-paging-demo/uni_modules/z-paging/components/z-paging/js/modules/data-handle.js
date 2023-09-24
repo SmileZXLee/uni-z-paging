@@ -152,6 +152,7 @@ export default {
 			fromEmptyViewReload: false,
 			queryFrom: '',
 			listRendering: false,
+			isHandlingRefreshToPage: false
 		}
 	},
 	computed: {
@@ -342,19 +343,12 @@ export default {
 		},
 		//刷新列表数据，pageNo和pageSize不会重置，列表数据会重新从服务端获取。必须保证@query绑定的方法中的pageNo和pageSize和传给服务端的一致
 		refresh() {
-			if (!this.realTotalData.length) return this.reload();
-			const disPageNo = this.pageNo - this.defaultPageNo + 1;
-			if (disPageNo >= 1) {
-				this.loading = true;
-				this.privateConcat = false;
-				const totalPageSize = disPageNo * this.pageSize;
-				this.currentRefreshPageSize = totalPageSize;
-				this._emitQuery(this.defaultPageNo, totalPageSize, Enum.QueryFrom.Refresh);
-				this._callMyParentQuery(this.defaultPageNo, totalPageSize);
-			}
-			return new Promise((resolve, reject) => {
-				this.dataPromiseResultMap.reload = { resolve, reject };
-			});
+			return this._handleRefreshWithDisPageNo(this.pageNo - this.defaultPageNo + 1);
+		},
+		//刷新列表数据至指定页，例如pageNo=5时则代表刷新列表至第5页，此时pageNo会变为5，列表会展示前5页的数据。必须保证@query绑定的方法中的pageNo和pageSize和传给服务端的一致
+		refreshToPage(pageNo) {
+			this.isHandlingRefreshToPage = true;
+			return this._handleRefreshWithDisPageNo(pageNo + this.defaultPageNo - 1);
 		},
 		//手动更新列表缓存数据，将自动截取v-model绑定的list中的前pageSize条覆盖缓存，请确保在list数据更新到预期结果后再调用此方法
 		updateCache() {
@@ -524,10 +518,18 @@ export default {
 						this._callDataPromise(true, this.totalData);
 					}, dataChangeDelayTime)
 				}
+				if (this.isHandlingRefreshToPage) {
+					this.isHandlingRefreshToPage = false;
+					this.pageNo = this.defaultPageNo + Math.ceil(data.length / this.pageSize) - 1;
+					if (data.length % this.pageSize !== 0) {
+						this.customNoMore = 1;
+					}
+				}
 			} else {
 				this._currentDataChange(data, this.currentData);
 				this._callDataPromise(false);
 				this.loadingStatus = Enum.More.Fail;
+				this.isHandlingRefreshToPage = false;
 				if (this.loadingType === Enum.LoadingType.LoadingMore) {
 					this.pageNo --;
 				}
@@ -648,6 +650,21 @@ export default {
 				}
 			}
 			this.privateConcat = true;
+		},
+		//根据pageNo处理refresh操作
+		_handleRefreshWithDisPageNo(pageNo) {
+			if (!this.realTotalData.length) return this.reload();
+			if (pageNo >= 1) {
+				this.loading = true;
+				this.privateConcat = false;
+				const totalPageSize = pageNo * this.pageSize;
+				this.currentRefreshPageSize = totalPageSize;
+				this._emitQuery(this.defaultPageNo, totalPageSize, Enum.QueryFrom.Refresh);
+				this._callMyParentQuery(this.defaultPageNo, totalPageSize);
+			}
+			return new Promise((resolve, reject) => {
+				this.dataPromiseResultMap.reload = { resolve, reject };
+			});
 		},
 		//本地分页请求
 		_localPagingQueryList(pageNo, pageSize, localPagingLoadingTime, callback) {
