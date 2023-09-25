@@ -12,11 +12,12 @@ const data = {
 
 export default {
 	mounted() {
-		this._handleTouch();
-		// #ifdef APP-VUE
-		data.appLaunched && this.$ownerInstance && this.$ownerInstance.callMethod('_handleAppReLaunch');
-		// #endif
-		data.appLaunched = true;
+		if (window) {
+			this._handleTouch();
+			// #ifdef APP-VUE
+			this.$ownerInstance.callMethod('_handlePageLaunch');
+			// #endif
+		}
 	},
 	methods: {
 		//接收逻辑层发送的数据
@@ -26,7 +27,7 @@ export default {
 		},
 		//拦截处理touch事件
 		_handleTouch() {
-			if (window && !window.$zPagingRenderJsInited) {
+			if (!window.$zPagingRenderJsInited) {
 				window.$zPagingRenderJsInited = true;
 				window.addEventListener('touchstart', this._handleTouchstart, { passive: true })
 				window.addEventListener('touchmove', this._handleTouchmove, { passive: false })
