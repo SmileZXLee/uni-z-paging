@@ -47,3 +47,7 @@
 | 扫码体验                                                     |
 | ------------------------------------------------------------ |
 | ![](https://z-paging.zxlee.cn/public/img/code.png) |
+
+### demo下载
+* 支持vue2&vue3的`选项式api`写法demo下载，请点击页面右上角的【使用HBuilderX导入示例项目】或【下载示例项目ZIP】。
+* 支持vue3的`组合式api`写法demo下载，请访问[github](https://github.com/SmileZXLee/uni-z-paging)。
