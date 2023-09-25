@@ -1,12 +1,22 @@
-## 2.5.8（2023-05-03）
-1.`新增` props：`refresher-no-transform`，支持控制下拉刷新时是否禁止下拉刷新view跟随用户触摸竖直移动。  
-2.`新增` props：`refresher-refreshing-animated`，支持控制下拉刷新刷新中状态下是否展示旋转动画。  
-3.`新增` vue3中页面滚动hooks。  
-4.`新增` 全局拦截器-`@query`拦截器中回调函数添加当前列表最后一个item数据。  
-5.`修复` 在vue3+内置浏览器中，报错`SyntaxError: Unexpected token . at xxx`的问题。  
-6.`修复` 滑动切换选项卡简化写法queryList触发多次的问题。  
-7.`优化`  底部加载更多展示逻辑，在各个平台中过渡更加自然。  
-8.`优化` `@touchDirectionChange`触发逻辑，仅在值改变时触发，优化性能。  
-## 2.5.7（2023-03-14）
-1.`修复` 在nvue+安卓中，设置`empty-view-center`为false后空数据图被切割未能完整显示的问题。  
-2.`修复` 由`2.5.4`引出的在nvue中，使用`slot="top"`后下拉刷新失效的问题。  
+## 2.5.9（2023-09-25）
+1.`新增` `doInsertVirtualListItem`方法，支持在非固定高度虚拟列表新插入数据。  
+2.`新增` `refreshToPage`方法，支持刷新列表数据至指定页。  
+3.`新增` 请求失败Promise在reject时添加具体错误信息，组件内部调用reload时添加catch处理。  
+4.`修复` 滑动切换选项卡+吸顶模式在抖音小程序中下拉刷新状态无法结束的问题。  
+5.`修复` `slot="left"`&`slot="right"`可能出现的高度过高超出页面的问题。  
+6.`修复` nvue中可能出现的切换空数据图后切换回列表数据时底部加载更多在列表顶部的问题。  
+7.`修复` 虚拟列表固定高度cell超出屏幕高度时，底部有异常空白的问题。  
+8.`修复` i18n国际化可能导致的下拉刷新view未能正常显示的问题。  
+9.`修复` 设置`show-refresher-when-reload`和`refresher-threshold`且自定义插入下拉刷新view后可能出现的闪现旧的view的问题。  
+10.`修复` 基于z-paging封装个性化分页组件demo在vue3中列表不展示的问题。  
+11.`修复` `didUpdateVirtualListCell`和`didDeleteVirtualListCell`高度缓存计算不正确的问题。  
+12.`修复` `empty-view-super-style`无效的问题。  
+13.`修复` vue3+ios中长时间进入后台打开后可能出现的下拉刷新展示位置向下偏移的问题。  
+14.`修复` 在安卓+nvue中，z-paging高度比较低时，空数据图被裁剪的问题。  
+15.`优化` `endRefresh`触发时，也终止系统默认下拉刷新状态。  
+16.`优化` slot插入的上下view禁止touchmove事件冒泡。  
+17.`优化` `addDataFromTop`方法传入的数组倒序处理。  
+18.`优化` 列表滚动性能，减少js层和wxs层信息交互次数。  
+19.`优化` 从列表滚动过渡到下拉刷新时的细节处理以解决由此可能引发的下拉刷新抖动问题。  
+20.`优化` 聊天记录模式demo细节。  
+
