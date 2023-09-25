@@ -344,6 +344,8 @@ export default {
 		// #endif
 		//使手机发生较短时间的振动（15ms）
 		_doVibrateShort() {
+			// #ifndef H5
+			
 			// #ifdef APP-PLUS
 			if (this.isIos) {
 				const UISelectionFeedbackGenerator = plus.ios.importClass('UISelectionFeedbackGenerator');
@@ -358,6 +360,8 @@ export default {
 			// #endif
 			// #ifndef APP-PLUS
 			uni.vibrateShort();
+			// #endif
+			
 			// #endif
 		},
 		//设置z-paging高度
