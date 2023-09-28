@@ -417,7 +417,7 @@ export default {
 			this.$emit('scrollTopChange', newVal);
 			this.$emit('update:scrollTop', newVal);
 			this._checkShouldShowBackToTop(newVal);
-			const scrollTop = newVal > 5 ? 6 : 0;
+			const scrollTop = this.isIos ? (newVal > 5 ? 6 : 0) : newVal > 105 ? 106 : newVal > 5 ? 6 : 0;
 			if (isPageScrollTop && this.wxsPageScrollTop !== scrollTop) {
 				this.wxsPageScrollTop = scrollTop;
 			} else if (!isPageScrollTop && this.wxsScrollTop !== scrollTop) {

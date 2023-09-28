@@ -121,6 +121,7 @@ function touchend(e, ownerIns) {
 	state.reachMaxAngle = true;
 	state.hitReachMaxAngleCount = 0;
 	state.disabledBounce = false;
+	state.fixedIsTopHitCount = 0;
 	if (!state.isTouchmoving) return;
 	var oldRefresherStatus = state.refresherStatus;
 	var oldMoveDis = state.moveDis;
@@ -258,9 +259,31 @@ function _touchDisabled(e, ins, processTag) {
 	var usePageScroll = _isTrue(dataset.usepagescroll);
 	var pageScrollTop = parseFloat(dataset.pagescrolltop);
 	var scrollTop = parseFloat(dataset.scrolltop);
+	var finalScrollTop = usePageScroll ? pageScrollTop : scrollTop;
+	var fixedIsTop = false;
+	var isIos = _isTrue(dataset.isios);
+	if (!isIos && finalScrollTop == (state.startScrollTop || 0) && finalScrollTop <= 105) {
+		fixedIsTop = true;
+	}
+	var fixedIsTopHitCount = state.fixedIsTopHitCount || 0;
+	if (fixedIsTop) {
+		fixedIsTopHitCount ++;
+		if (fixedIsTopHitCount <= 3) {
+			fixedIsTop = false;
+		}
+		state.fixedIsTopHitCount = fixedIsTopHitCount;
+	} else {
+		state.fixedIsTopHitCount = 0;
+	}
+	if (!isIos && processTag === 0) {
+		state.startScrollTop = finalScrollTop || 0;
+	}
+	if (!isIos && processTag === 2) {
+		fixedIsTop = true;
+	}
 	return loading || useChatRecordMode || !refresherEnabled || !useCustomRefresher || 
-	(usePageScroll && useCustomRefresher && pageScrollTop > 5) || 
-	(!usePageScroll && useCustomRefresher && scrollTop > 5);
+	((usePageScroll && useCustomRefresher && pageScrollTop > 5) && !fixedIsTop) || 
+	((!usePageScroll && useCustomRefresher && scrollTop > 5) && !fixedIsTop);
 }
 
 function _getAngleIsInRange(e, touch, state, dataset) {
