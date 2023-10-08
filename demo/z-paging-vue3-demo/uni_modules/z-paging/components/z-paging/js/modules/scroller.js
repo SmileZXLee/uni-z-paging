@@ -417,11 +417,14 @@ export default {
 			this.$emit('scrollTopChange', newVal);
 			this.$emit('update:scrollTop', newVal);
 			this._checkShouldShowBackToTop(newVal);
-			const scrollTop = this.isIos ? (newVal > 5 ? 6 : 0) : newVal > 105 ? 106 : newVal > 5 ? 6 : 0;
+			const scrollTop = this.isIos ? (newVal > 5 ? 6 : 0) : (newVal > 105 ? 106 : (newVal > 5 ? 6 : 0));
 			if (isPageScrollTop && this.wxsPageScrollTop !== scrollTop) {
 				this.wxsPageScrollTop = scrollTop;
 			} else if (!isPageScrollTop && this.wxsScrollTop !== scrollTop) {
 				this.wxsScrollTop = scrollTop;
+				if (scrollTop > 6) {
+					this.scrollEnable = true;
+				}
 			}
 		},
 		//更新使用页面滚动时slot="top"或"bottom"插入view的高度

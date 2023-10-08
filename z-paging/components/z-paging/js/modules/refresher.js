@@ -504,7 +504,7 @@ export default {
 		},
 		//处理scroll-view bounce是否生效
 		_handleScrollViewDisableBounce({ bounce }) {
-			if (!this.usePageScroll && !this.scrollToTopBounceEnabled) {
+			if (!this.usePageScroll && !this.scrollToTopBounceEnabled && this.wxsScrollTop <= 5) {
 				// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
 				this.refresherTransition = '';
 				// #endif
