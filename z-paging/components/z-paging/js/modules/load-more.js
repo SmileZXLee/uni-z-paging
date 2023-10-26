@@ -215,7 +215,7 @@ export default {
 			}
 			this.$emit('scrolltolower', from);
 			if (from === 'toBottom' && (!this.toBottomLoadingMoreEnabled || this.useChatRecordMode)) return;
-			if (this.refresherOnly || !this.loadingMoreEnabled || !(this.loadingStatus === Enum.More.Default || this.loadingStatus === Enum.More.Fail) || this.loading) return;
+			if (this.refresherOnly || !this.loadingMoreEnabled || !(this.loadingStatus === Enum.More.Default || this.loadingStatus === Enum.More.Fail) || this.loading || this.showEmpty) return;
 			// #ifdef MP-WEIXIN
 			if (!this.isIos && !this.refresherOnly && !this.usePageScroll) {
 				const currentTimestamp = u.getTime();
