@@ -110,6 +110,11 @@ export default {
 			type: Boolean,
 			default: u.gc('concat', true)
 		},
+		//请求失败是否触发reject，默认为是
+		callNetworkReject: {
+			type: Boolean,
+			default: u.gc('callNetworkReject', true)
+		},
 		//父组件v-model所绑定的list的值
 		value: {
 			type: Array,
@@ -719,8 +724,8 @@ export default {
 		_callDataPromise(success, totalList) {
 			for (const key in this.dataPromiseResultMap) {
 				const obj = this.dataPromiseResultMap[key];
-				if (!obj) break;
-				success ? obj.resolve({ totalList, noMore: this.loadingStatus === Enum.More.NoMore }) : obj.reject(`z-paging-${key}-error`);
+				if (!obj) continue;
+				success ? obj.resolve({ totalList, noMore: this.loadingStatus === Enum.More.NoMore }) : this.callNetworkReject && obj.reject(`z-paging-${key}-error`);
 			}
 		},
 		//检查complete data的类型
