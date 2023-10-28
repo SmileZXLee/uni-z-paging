@@ -19,7 +19,7 @@
 			<!-- 自定义没有更多数据view -->
 			<template #loadingMoreNoMore>
 				<!-- 此处的custom-nomore为demo中自定义的组件，非z-paging的内置组件，请在实际项目中自行创建。这里插入什么view，没有更多数据就显示什么view -->
-				<custom-nomore></custom-nomore>
+				<custom-nomore />
 			</template>
 			
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->

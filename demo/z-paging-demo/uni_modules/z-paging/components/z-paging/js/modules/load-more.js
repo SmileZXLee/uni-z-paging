@@ -297,11 +297,11 @@ export default {
 				return false;
 			}
 			if (this.useChatRecordMode && type !== 'Loading') return false;
-			if (!this.$slots) return false;
+			if (!this.zSlots) return false;
 			if (type === 'Custom') {
 				return this.showDefaultLoadingMoreText && !(this.loadingStatus === Enum.More.NoMore && !this.showLoadingMoreNoMoreView);
 			}
-			const res = this.loadingStatus === Enum.More[type] && this.$slots[`loadingMore${type}`] && (type === 'NoMore' ? this.showLoadingMoreNoMoreView : true);
+			const res = this.loadingStatus === Enum.More[type] && this.zSlots[`loadingMore${type}`] && (type === 'NoMore' ? this.showLoadingMoreNoMoreView : true);
 			if (res) {
 				// #ifdef APP-NVUE
 				if (!this.isIos) {
