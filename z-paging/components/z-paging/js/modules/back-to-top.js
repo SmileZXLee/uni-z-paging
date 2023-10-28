@@ -69,6 +69,17 @@ export default {
 	methods: {
 		//点击返回顶部
 		_backToTopClick() {
+			let callbacked = false;
+			this.$emit('backToTopClick', toTop => {
+				(toTop === undefined || toTop === true) && this._handleToTop();
+				callbacked = true;
+			});
+			this.$nextTick(() => {
+				!callbacked && this._handleToTop();
+			})
+		},
+		//处理滚动到顶部
+		_handleToTop() {
 			!this.backToTopWithAnimate && this._checkShouldShowBackToTop(0);
 			this.scrollToTop(this.backToTopWithAnimate);
 		},
