@@ -306,7 +306,7 @@ export default {
 		showRefresher() {
 			const showRefresher = this.finalRefresherEnabled && this.useCustomRefresher;
 			// #ifndef APP-NVUE
-			this.customRefresherHeight === -1 && showRefresher && u.delay(() => this.$nextTick(this._updateCustomRefresherHeight));
+			this.customRefresherHeight === -1 && showRefresher && this.updateCustomRefresherHeight();
 			// #endif
 			return showRefresher;
 		},
@@ -336,6 +336,10 @@ export default {
 		},
 		handleRefresherStatusChanged(func) {
 			this.refresherStatusChangedFunc = func;
+		},
+		//手动更新自定义下拉刷新view高度
+		updateCustomRefresherHeight() {
+			u.delay(() => this.$nextTick(this._updateCustomRefresherHeight));
 		},
 		//自定义下拉刷新被触发
 		_onRefresh(fromScrollView = false,isUserPullDown = true) {
