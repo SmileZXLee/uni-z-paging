@@ -75,5 +75,5 @@
 
 ## 感谢支持
 
-[![Stargazers repo roster for @weilanwl/coloruiBeta](https://reporoster.com/stars/SmileZXLee/uni-z-paging)](https://github.com/SmileZXLee/uni-z-paging/stargazers)
+[![Stargazers repo roster for @SmileZXLee/uni-z-paging](https://reporoster.com/stars/SmileZXLee/uni-z-paging)](https://github.com/SmileZXLee/uni-z-paging/stargazers)
 
