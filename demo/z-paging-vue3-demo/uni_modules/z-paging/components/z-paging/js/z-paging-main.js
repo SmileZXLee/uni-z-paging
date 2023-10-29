@@ -61,6 +61,7 @@ export default {
 			renderPropScrollTop: -1,
 			checkScrolledToBottomTimeOut: null,
 			cacheTopHeight: -1,
+			statusBarHeight: systemInfo.statusBarHeight,
 
 			//--------------状态&判断---------------
 			insideOfPaging: -1,

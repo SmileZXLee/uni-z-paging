@@ -196,6 +196,11 @@ export default {
 			type: Boolean,
 			default: u.gc('refresherNoTransform', false)
 		},
+		//是否开启下拉刷新状态栏占位，适用于隐藏导航栏时，下拉刷新需要避开状态栏高度的情况，默认为否
+		useRefresherStatusBarPlaceholder: {
+			type: Boolean,
+			default: u.gc('useRefresherStatusBarPlaceholder', false)
+		},
 	},
 	data() {
 		return {
@@ -272,8 +277,11 @@ export default {
 					refresherThreshold = '120rpx';
 				}
 			}
-			if (idDefault && this.customRefresherHeight > 0) return this.customRefresherHeight;
-			return u.convertToPx(refresherThreshold);
+			if (idDefault && this.customRefresherHeight > 0) return this.customRefresherHeight + this.finalRefresherThresholdPlaceholder;
+			return u.convertToPx(refresherThreshold) + this.finalRefresherThresholdPlaceholder;
+		},
+		finalRefresherThresholdPlaceholder() {
+			return this.useRefresherStatusBarPlaceholder ? this.statusBarHeight : 0;
 		},
 		finalRefresherFixedBacHeight() {
 			return u.convertToPx(this.refresherFixedBacHeight);
