@@ -52,10 +52,6 @@
 	flex-direction: row;
 }
 
-.zp-custom-refresher-container {
-	overflow: hidden;
-}
-
 .zp-scroll-view-container,.zp-scroll-view {
 	position: relative;
 	/* #ifndef APP-NVUE */
@@ -146,12 +142,7 @@
 }
 
 .zp-custom-refresher-container {
-	/* #ifndef APP-NVUE */
-	display: flex;
-	/* #endif */
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
+	overflow: hidden;
 }
 
 .zp-back-to-top {
