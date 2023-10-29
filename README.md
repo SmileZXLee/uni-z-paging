@@ -19,13 +19,19 @@
 ```
 .
 ├── demo
+│   │
 │   ├── z-paging-demo 采用【选项式api】写法，支持vue2和vue3，此文件夹可直接拖到HBuilderX中运行
+│   │
 │   └── z-paging-vue3-demo 采用【组合式api】写法，仅支持vue3，此文件夹可直接拖到HBuilderX中运行
+│ 
 ├── z-paging 【z-paging】源码，可直接拷贝到`uni_modules`文件夹下或复制子组件到`compoments`目录下亦可。
+│
 ├── .gitattributes
+│
 ├── .gitignore
+│
 ├── LICENSE
-├── LICENSE
+│
 └── README.md
 ```
 
