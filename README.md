@@ -15,10 +15,17 @@
 ### 更新组件前，请注意[版本差异](https://z-paging.zxlee.cn/start/upgrade-guide.html)
 
 ### 仓库目录说明
-- **demo**: `z-paging`十几种场景的示例代码，包含vue2和vue3的写法示例
-  - [z-paging-demo](./demo/z-paging-demo): 采用`选项式api`写法，支持vue2和vue3，此文件夹可直接拖到HBuilderX中运行
-  - [z-paging-vue3-demo](./demo/z-paging-vue3-demo): 采用`组合式api`写法，仅支持vue3，此文件夹可直接拖到HBuilderX中运行
-- **z-paging**: `z-paging`源代码，可直接拷贝到`uni_modules`文件夹下使用，或复制需要的子组件到`compoments`目录下亦可。
+
+```
+.
+├── demo
+│   │
+│   ├── z-paging-demo 采用`选项式api`写法，支持vue2和vue3，此文件夹可直接拖到HBuilderX中运行
+│   │ 
+│   └── z-paging-vue3-demo 采用`组合式api`写法，仅支持vue3，此文件夹可直接拖到HBuilderX中运行
+│ 
+└── z-paging `z-paging`源代码，可直接拷贝到`uni_modules`文件夹下使用，或复制需要的子组件到`compoments`目录下亦可。
+```
 
 ### 功能&特点
 
