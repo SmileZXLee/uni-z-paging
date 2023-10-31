@@ -145,6 +145,10 @@
 	overflow: hidden;
 }
 
+.zp-custom-refresher-refresh {
+	display: block;
+}
+
 .zp-back-to-top {
 	width: 76rpx;
 	height: 76rpx;
