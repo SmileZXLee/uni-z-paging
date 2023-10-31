@@ -16,7 +16,7 @@ function useZPagingComp(paging) {
 		cPaging.value.doChatRecordLoadMore();
 	}
 	const pageReachBottom = () => {
-		if (!cPaging &|| !cPaging.value) return;
+		if (!cPaging || !cPaging.value) return;
 		cPaging.value.pageReachBottom();
 	}
 	return { reload, updatePageScrollTop, doChatRecordLoadMore, pageReachBottom };
