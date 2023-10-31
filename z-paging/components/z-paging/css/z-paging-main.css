@@ -146,7 +146,9 @@
 }
 
 .zp-custom-refresher-refresh {
+	/* #ifndef APP-NVUE */
 	display: block;
+	/* #endif */
 }
 
 .zp-back-to-top {
