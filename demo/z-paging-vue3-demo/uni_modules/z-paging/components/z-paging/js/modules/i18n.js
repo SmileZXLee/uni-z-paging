@@ -7,10 +7,11 @@ import u from '.././z-paging-utils'
 import c from '.././z-paging-constant'
 import interceptor from '../z-paging-interceptor'
 
+const language = uni.getSystemInfoSync().language;
 export default {
 	data() {
 		return {
-			language: uni.getSystemInfoSync().language
+			language
 		}
 	},
 	computed: {

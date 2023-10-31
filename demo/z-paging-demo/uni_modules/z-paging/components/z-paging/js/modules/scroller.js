@@ -217,8 +217,7 @@ export default {
 			this.$nextTick(() => {
 				this.oldScrollTop = 0;
 			})
-			if (!this.useChatRecordMode || this.loadingStatus === Enum.More.NoMore) return;
-			this._onLoadingMore('click');
+			this.useChatRecordMode && this.loadingStatus !== Enum.More.NoMore && this._onLoadingMore('click');
 		},
 		//当滚动到底部时
 		_onScrollToLower(e) {
@@ -418,11 +417,14 @@ export default {
 			this.$emit('scrollTopChange', newVal);
 			this.$emit('update:scrollTop', newVal);
 			this._checkShouldShowBackToTop(newVal);
-			const scrollTop = this.isIos ? (newVal > 5 ? 6 : 0) : newVal;
-			if (isPageScrollTop) {
+			const scrollTop = this.isIos ? (newVal > 5 ? 6 : 0) : (newVal > 105 ? 106 : (newVal > 5 ? 6 : 0));
+			if (isPageScrollTop && this.wxsPageScrollTop !== scrollTop) {
 				this.wxsPageScrollTop = scrollTop;
-			} else {
+			} else if (!isPageScrollTop && this.wxsScrollTop !== scrollTop) {
 				this.wxsScrollTop = scrollTop;
+				if (scrollTop > 6) {
+					this.scrollEnable = true;
+				}
 			}
 		},
 		//更新使用页面滚动时slot="top"或"bottom"插入view的高度

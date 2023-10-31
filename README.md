@@ -14,6 +14,27 @@
 
 ### 更新组件前，请注意[版本差异](https://z-paging.zxlee.cn/start/upgrade-guide.html)
 
+### 仓库目录说明
+
+```
+.
+├── demo
+│   │
+│   ├── z-paging-demo 采用【选项式api】写法，支持vue2和vue3，此文件夹可直接拖到HBuilderX中运行
+│   │
+│   └── z-paging-vue3-demo 采用【组合式api】写法，仅支持vue3，此文件夹可直接拖到HBuilderX中运行
+│ 
+├── z-paging 【z-paging】源码，可直接拷贝到【uni_modules】文件夹下或复制子组件到【compoments】目录下亦可。
+│
+├── .gitattributes
+│
+├── .gitignore
+│
+├── LICENSE
+│
+└── README.md
+```
+
 ### 功能&特点
 
 * 【配置简单】仅需两步（绑定网络请求方法、绑定分页结果数组）轻松完成完整下拉刷新，上拉加载更多功能。
@@ -54,5 +75,5 @@
 
 ## 感谢支持
 
-[![Stargazers repo roster for @weilanwl/coloruiBeta](https://reporoster.com/stars/SmileZXLee/uni-z-paging)](https://github.com/SmileZXLee/uni-z-paging/stargazers)
+[![Stargazers repo roster for @SmileZXLee/uni-z-paging](https://reporoster.com/stars/SmileZXLee/uni-z-paging)](https://github.com/SmileZXLee/uni-z-paging/stargazers)
 

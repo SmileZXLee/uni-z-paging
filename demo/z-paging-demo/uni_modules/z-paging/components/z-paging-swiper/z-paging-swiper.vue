@@ -130,6 +130,7 @@
 
 	.zp-swiper-super {
 		flex: 1;
+		overflow: hidden;
 		position: relative;
 		/* #ifndef APP-NVUE */
 		display: flex;

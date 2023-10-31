@@ -14,55 +14,6 @@
 	</view>
 </template>
 
-<script>
-	export default {
-		props: {
-			// 当前加载了几页
-			current: {
-				type: Number,
-				default: function() {
-					return 0;
-				},
-			},
-			// 一共有多少页可以加载
-			total: {
-				type: Number,
-				default: function() {
-					return 0;
-				},
-			},
-		},
-		data() {
-			return {
-				//0 返回返回顶部图片 1显示current/total
-				type: 0,
-				//当前定时器
-				timeout: null
-			};
-		},
-		methods: {
-			isScroll() {
-				//如果页面正在滚动，则显示current/total
-				if (this.type === 0) {
-					this.type = 1;
-					this.timeout = setTimeout(() => {
-						//过1秒之后，显示返回顶部图片
-						this.type = 0;
-					}, 1000);
-				} else {
-					if (this.timeout) {
-						//如果在1秒内，又触发了滚动事件，则清空定时器，重新计算时间
-						clearTimeout(this.timeout);
-						this.timeout = setTimeout(() => {
-							this.type = 0;
-						}, 1000);
-					}
-				}
-			}
-		}
-	}
-</script>
-
 <script setup>
 	import { ref } from 'vue';
 

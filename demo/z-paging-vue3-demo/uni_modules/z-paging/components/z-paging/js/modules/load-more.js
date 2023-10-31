@@ -205,9 +205,9 @@ export default {
 				}
 			}
 		},
-		//触发加载更多时调用,from:0-滑动到底部触发；1-点击加载更多触发
+		//触发加载更多时调用,from:toBottom-滑动到底部触发；1、click-点击加载更多触发
 		_onLoadingMore(from = 'click') {
-			if (from === 'toBottom' && !this.scrollToBottomBounceEnabled && this.scrollEnable) {
+			if (this.isIos && from === 'toBottom' && !this.scrollToBottomBounceEnabled && this.scrollEnable) {
 				this.scrollEnable = false;
 				this.$nextTick(() => {
 					this.scrollEnable = true;
@@ -215,7 +215,7 @@ export default {
 			}
 			this.$emit('scrolltolower', from);
 			if (from === 'toBottom' && (!this.toBottomLoadingMoreEnabled || this.useChatRecordMode)) return;
-			if (this.refresherOnly || !this.loadingMoreEnabled || !(this.loadingStatus === Enum.More.Default || this.loadingStatus === Enum.More.Fail) || this.loading) return;
+			if (this.refresherOnly || !this.loadingMoreEnabled || !(this.loadingStatus === Enum.More.Default || this.loadingStatus === Enum.More.Fail) || this.loading || this.showEmpty) return;
 			// #ifdef MP-WEIXIN
 			if (!this.isIos && !this.refresherOnly && !this.usePageScroll) {
 				const currentTimestamp = u.getTime();
@@ -297,11 +297,11 @@ export default {
 				return false;
 			}
 			if (this.useChatRecordMode && type !== 'Loading') return false;
-			if (!this.$slots) return false;
+			if (!this.zSlots) return false;
 			if (type === 'Custom') {
 				return this.showDefaultLoadingMoreText && !(this.loadingStatus === Enum.More.NoMore && !this.showLoadingMoreNoMoreView);
 			}
-			const res = this.loadingStatus === Enum.More[type] && this.$slots[`loadingMore${type}`] && (type === 'NoMore' ? this.showLoadingMoreNoMoreView : true);
+			const res = this.loadingStatus === Enum.More[type] && this.zSlots[`loadingMore${type}`] && (type === 'NoMore' ? this.showLoadingMoreNoMoreView : true);
 			if (res) {
 				// #ifdef APP-NVUE
 				if (!this.isIos) {

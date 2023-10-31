@@ -36,7 +36,7 @@ export default {
 		isOldWebView() {
 			// #ifndef APP-NVUE || MP-KUAISHOU
 			try {
-				const systemInfos = systemInfo.system.split(' ');
+				const systemInfos = uni.getSystemInfoSync().system.split(' ');
 				const deviceType = systemInfos[0];
 				const version = parseInt(systemInfos[1]);
 				if ((deviceType === 'iOS' && version <= 10) || (deviceType === 'Android' && version <= 6)) {

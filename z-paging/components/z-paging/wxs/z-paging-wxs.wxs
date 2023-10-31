@@ -84,9 +84,7 @@ function touchmove(e, ownerIns) {
 		return true;
 	}
 	if (prevent && !state.disabledBounce) {
-		if (isIos) {
-			ownerIns.callMethod('_handleScrollViewDisableBounce', {bounce: false}); 
-		}
+		ownerIns.callMethod('_handleScrollViewDisableBounce', {bounce: false});
 		state.disabledBounce = true;
 		_handlePullingDown(state, ownerIns, prevent);
 		return !prevent;
@@ -218,7 +216,7 @@ function _getMoveDis(e, ins) {
 			diffDis = diffDis * (1 - refresherOutRate);
 		}
 	}
-	diffDis = diffDis > 100 ? diffDis / 100 : diffDis;
+	diffDis = diffDis > 100 ? diffDis / 100 : (diffDis > 20 ? diffDis / 1.2 : diffDis);
 	currentDis += diffDis;
 	currentDis = Math.max(0, currentDis);
 	return {
@@ -270,7 +268,7 @@ function _touchDisabled(e, ins, processTag) {
 	var fixedIsTopHitCount = state.fixedIsTopHitCount || 0;
 	if (fixedIsTop) {
 		fixedIsTopHitCount ++;
-		if (fixedIsTopHitCount <= 3) {
+		if (fixedIsTopHitCount <= 2) {
 			fixedIsTop = false;
 		}
 		state.fixedIsTopHitCount = fixedIsTopHitCount;

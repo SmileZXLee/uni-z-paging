@@ -61,6 +61,7 @@ export default {
 			renderPropScrollTop: -1,
 			checkScrolledToBottomTimeOut: null,
 			cacheTopHeight: -1,
+			statusBarHeight: systemInfo.statusBarHeight,
 
 			//--------------状态&判断---------------
 			insideOfPaging: -1,
@@ -69,6 +70,7 @@ export default {
 			disabledBounce: false,
 			fromCompleteEmit: false,
 			disabledCompleteEmit: false,
+			pageLaunched: false,
 			
 			//---------------wxs相关---------------
 			wxsIsScrollTopInTopRange: true,
@@ -176,7 +178,7 @@ export default {
 	created(){
 		if (this.createdReload && !this.refresherOnly && this.auto) {
 			this._startLoading();
-			this._preReload();
+			this.$nextTick(this._preReload);
 		}
 	},
 	mounted() {
@@ -188,7 +190,7 @@ export default {
 		this.finalUseCache && this._setListByLocalCache();
 		let delay = 0;
 		// #ifdef H5 || MP
-		delay = 100;
+		delay = c.delayTime;
 		// #endif
 		this.$nextTick(() => {
 			this.systemInfo = uni.getSystemInfoSync();
@@ -323,8 +325,28 @@ export default {
 			}
 			!this.usePageScroll && this.$refs['zp-n-list'].setSpecialEffects(args);
 		},
+		// #ifdef APP-VUE
+		//当app长时间进入后台后进入前台，因系统内存管理导致app重新加载时，进行一些适配处理
+		_handlePageLaunch() {
+			// 首次触发不进行处理，只有进入后台后打开app重新加载时才处理
+			if (this.pageLaunched) {
+				// 解决在vue3+ios中，app ReLaunch时顶部下拉刷新展示位置向下偏移的问题
+				// #ifdef VUE3
+				this.refresherThresholdUpdateTag = 1;
+				this.$nextTick(() => {
+					this.refresherThresholdUpdateTag = 0;
+				})
+				// #endif
+				// 解决使用虚拟列表时，app ReLaunch时白屏问题
+				this._checkVirtualListScroll();
+			}
+			this.pageLaunched = true;
+		},
+		// #endif
 		//使手机发生较短时间的振动（15ms）
 		_doVibrateShort() {
+			// #ifndef H5
+			
 			// #ifdef APP-PLUS
 			if (this.isIos) {
 				const UISelectionFeedbackGenerator = plus.ios.importClass('UISelectionFeedbackGenerator');
@@ -339,6 +361,8 @@ export default {
 			// #endif
 			// #ifndef APP-PLUS
 			uni.vibrateShort();
+			// #endif
+			
 			// #endif
 		},
 		//设置z-paging高度

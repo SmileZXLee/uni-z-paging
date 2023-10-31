@@ -110,6 +110,11 @@ export default {
 			type: Boolean,
 			default: u.gc('concat', true)
 		},
+		//请求失败是否触发reject，默认为是
+		callNetworkReject: {
+			type: Boolean,
+			default: u.gc('callNetworkReject', true)
+		},
 		//父组件v-model所绑定的list的值
 		value: {
 			type: Array,
@@ -152,6 +157,7 @@ export default {
 			fromEmptyViewReload: false,
 			queryFrom: '',
 			listRendering: false,
+			isHandlingRefreshToPage: false
 		}
 	},
 	computed: {
@@ -277,12 +283,13 @@ export default {
 		},
 		//从顶部添加数据，不会影响分页的pageNo和pageSize
 		addDataFromTop(data, toTop = true, toTopWithAnimate = true) {
-			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data;
+			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data.reverse();
+			// #ifndef APP-NVUE
+			this.finalUseVirtualList && this._setCellIndex(data, 'top')
+			// #endif
 			this.totalData = [...data, ...this.totalData];
 			if (toTop) {
-				u.delay(() => {
-					this._scrollToTop(toTopWithAnimate);
-				})
+				u.delay(() => this._scrollToTop(toTopWithAnimate));
 			}
 		},
 		//重新设置列表数据，调用此方法不会影响pageNo和pageSize，也不会触发请求。适用场景：当需要删除列表中某一项时，将删除对应项后的数组通过此方法传递给z-paging。(当出现类似的需要修改列表数组的场景时，请使用此方法，请勿直接修改page中:list.sync绑定的数组)
@@ -341,19 +348,12 @@ export default {
 		},
 		//刷新列表数据，pageNo和pageSize不会重置，列表数据会重新从服务端获取。必须保证@query绑定的方法中的pageNo和pageSize和传给服务端的一致
 		refresh() {
-			if (!this.realTotalData.length) return this.reload();
-			const disPageNo = this.pageNo - this.defaultPageNo + 1;
-			if (disPageNo >= 1) {
-				this.loading = true;
-				this.privateConcat = false;
-				const totalPageSize = disPageNo * this.pageSize;
-				this.currentRefreshPageSize = totalPageSize;
-				this._emitQuery(this.defaultPageNo, totalPageSize, Enum.QueryFrom.Refresh);
-				this._callMyParentQuery(this.defaultPageNo, totalPageSize);
-			}
-			return new Promise((resolve, reject) => {
-				this.dataPromiseResultMap.reload = { resolve, reject };
-			});
+			return this._handleRefreshWithDisPageNo(this.pageNo - this.defaultPageNo + 1);
+		},
+		//刷新列表数据至指定页，例如pageNo=5时则代表刷新列表至第5页，此时pageNo会变为5，列表会展示前5页的数据。必须保证@query绑定的方法中的pageNo和pageSize和传给服务端的一致
+		refreshToPage(pageNo) {
+			this.isHandlingRefreshToPage = true;
+			return this._handleRefreshWithDisPageNo(pageNo + this.defaultPageNo - 1);
 		},
 		//手动更新列表缓存数据，将自动截取v-model绑定的list中的前pageSize条覆盖缓存，请确保在list数据更新到预期结果后再调用此方法
 		updateCache() {
@@ -376,6 +376,13 @@ export default {
 		},
 		//reload之前的一些处理
 		_preReload(animate = this.showRefresherWhenReload, isFromMounted = true) {
+			const showRefresher = this.finalRefresherEnabled && this.useCustomRefresher;
+			// #ifndef APP-NVUE
+			if (this.customRefresherHeight === -1 && showRefresher) {
+				u.delay(() => this._preReload(animate, isFromMounted), c.delayTime / 2);
+				return;
+			}
+			// #endif
 			this.isUserReload = true;
 			this.loadingType = Enum.LoadingType.Refresher;
 			if (animate) {
@@ -466,9 +473,7 @@ export default {
 			if (!this.isFirstPage) {
 				this.listRendering = true;
 				this.$nextTick(() => {
-					u.delay(() => {
-						this.listRendering = false;
-					})
+					u.delay(() => this.listRendering = false);
 				})
 			} else {
 				this.listRendering = false;
@@ -518,10 +523,18 @@ export default {
 						this._callDataPromise(true, this.totalData);
 					}, dataChangeDelayTime)
 				}
+				if (this.isHandlingRefreshToPage) {
+					this.isHandlingRefreshToPage = false;
+					this.pageNo = this.defaultPageNo + Math.ceil(data.length / this.pageSize) - 1;
+					if (data.length % this.pageSize !== 0) {
+						this.customNoMore = 1;
+					}
+				}
 			} else {
 				this._currentDataChange(data, this.currentData);
 				this._callDataPromise(false);
 				this.loadingStatus = Enum.More.Fail;
+				this.isHandlingRefreshToPage = false;
 				if (this.loadingType === Enum.LoadingType.LoadingMore) {
 					this.pageNo --;
 				}
@@ -569,7 +582,7 @@ export default {
 		_currentDataChange(newVal, oldVal) {
 			newVal = [...newVal];
 			// #ifndef APP-NVUE
-			this.finalUseVirtualList && this._setCellIndex(newVal, this.totalData.length === 0)
+			this.finalUseVirtualList && this._setCellIndex(newVal, 'bottom');
 			this.useChatRecordMode && newVal.reverse();
 			// #endif
 			if (this.isFirstPage && this.finalConcat) {
@@ -643,6 +656,21 @@ export default {
 			}
 			this.privateConcat = true;
 		},
+		//根据pageNo处理refresh操作
+		_handleRefreshWithDisPageNo(pageNo) {
+			if (!this.realTotalData.length) return this.reload();
+			if (pageNo >= 1) {
+				this.loading = true;
+				this.privateConcat = false;
+				const totalPageSize = pageNo * this.pageSize;
+				this.currentRefreshPageSize = totalPageSize;
+				this._emitQuery(this.defaultPageNo, totalPageSize, Enum.QueryFrom.Refresh);
+				this._callMyParentQuery(this.defaultPageNo, totalPageSize);
+			}
+			return new Promise((resolve, reject) => {
+				this.dataPromiseResultMap.reload = { resolve, reject };
+			});
+		},
 		//本地分页请求
 		_localPagingQueryList(pageNo, pageSize, localPagingLoadingTime, callback) {
 			pageNo = Math.max(1, pageNo);
@@ -696,8 +724,8 @@ export default {
 		_callDataPromise(success, totalList) {
 			for (const key in this.dataPromiseResultMap) {
 				const obj = this.dataPromiseResultMap[key];
-				if (!obj) break;
-				success ? obj.resolve({ totalList, noMore: this.loadingStatus === Enum.More.NoMore }) : obj.reject(`z-paging-${key}-error`);
+				if (!obj) continue;
+				success ? obj.resolve({ totalList, noMore: this.loadingStatus === Enum.More.NoMore }) : this.callNetworkReject && obj.reject(`z-paging-${key}-error`);
 			}
 		},
 		//检查complete data的类型

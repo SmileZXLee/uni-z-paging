@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-v2.5.8 (2023-05-03)
+v2.6.1 (2023-10-29)
 by ZXLee
 -->
 <!-- 文档地址：https://z-paging.zxlee.cn -->
@@ -63,14 +63,15 @@ by ZXLee
 						:change:renderPropIsIosAndH5="pagingRenderjs.renderPropIsIosAndH5Change" :renderPropIsIosAndH5="isIosAndH5"
 						<!-- #endif -->
 						>	
-							<view v-if="showRefresher" class="zp-custom-refresher-view" :style="[{'margin-top': `-${finalRefresherThreshold}px`,'background': refresherBackground,'opacity': isTouchmoving ? 1 : 0}]">
+							<view v-if="showRefresher" class="zp-custom-refresher-view" :style="[{'margin-top': `-${finalRefresherThreshold+refresherThresholdUpdateTag}px`,'background': refresherBackground,'opacity': isTouchmoving ? 1 : 0}]">
 								<view class="zp-custom-refresher-container" :style="[{'height': `${finalRefresherThreshold}px`,'background': refresherBackground}]">
+									<view v-if="useRefresherStatusBarPlaceholder" class="zp-custom-refresher-status-bar-placeholder" :style="[{'height': `${statusBarHeight}px`}]" />
 									<!-- 下拉刷新view -->
 									<view class="zp-custom-refresher-slot-view">
 										<slot v-if="!(zSlots.refresherComplete&&refresherStatus===R.Complete)" :refresherStatus="refresherStatus" name="refresher" />
 									</view>
 									<slot v-if="zSlots.refresherComplete&&refresherStatus===R.Complete" name="refresherComplete" />
-									<z-paging-refresh ref="refresh" v-else-if="!showCustomRefresher" :style="[{'height': `${finalRefresherThreshold}px`}]" :status="refresherStatus"
+									<z-paging-refresh ref="refresh" v-else-if="!showCustomRefresher" :style="[{'height': `${finalRefresherThreshold - finalRefresherThresholdPlaceholder}px`}]" :status="refresherStatus"
 										:defaultThemeStyle="finalRefresherThemeStyle" :defaultText="finalRefresherDefaultText"
 										:pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText"
 										:defaultImg="refresherDefaultImg" :pullingImg="refresherPullingImg" :refreshingImg="refresherRefreshingImg" :completeImg="refresherCompleteImg" :refreshingAnimated="refresherRefreshingAnimated"
@@ -95,8 +96,8 @@ by ZXLee
 										<slot name="header"/>
 										<view class="zp-list-container" :style="[innerListStyle]">
 											<template v-if="finalUseVirtualList">
-												<view class="zp-list-cell" :style="[innerCellStyle]" :id="`zp-id-${item['zp_index']}`" v-for="(item,index) in virtualList" :key="item['zp_unique_index']" @click="_innerCellClick(item,virtualTopRangeIndex+index)">
-													<view v-if="useCompatibilityMode">使用兼容模式请在组件源码z-paging.vue第99行中注释这一行，并打开下面一行注释</view>
+												<view class="zp-list-cell" :style="[innerCellStyle]" :id="`zp-id-${item[virtualCellIndexKey]}`" v-for="(item,index) in virtualList" :key="item['zp_unique_index']" @click="_innerCellClick(item,virtualTopRangeIndex+index)">
+													<view v-if="useCompatibilityMode">使用兼容模式请在组件源码z-paging.vue第100行中注释这一行，并打开下面一行注释</view>
 													<!-- <zp-public-virtual-cell v-if="useCompatibilityMode" :extraData="extraData" :item="item" :index="virtualTopRangeIndex+index" /> -->
 													<slot v-else name="cell" :item="item" :index="virtualTopRangeIndex+index"/>
 												</view>
@@ -128,7 +129,7 @@ by ZXLee
 									<view v-if="safeAreaInsetBottom&&useSafeAreaPlaceholder" class="zp-safe-area-placeholder" :style="[{height:safeAreaBottom+'px'}]" />
 								</view>
 								<!-- 空数据图 -->
-								<view v-if="showEmpty" :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}" :style="[{emptyViewSuperStyle}]">
+								<view v-if="showEmpty" :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}" :style="[emptyViewSuperStyle]">
 									<slot v-if="zSlots.empty" name="empty" :isLoadFailed="isLoadFailed"/>
 									<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
 									:emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" 
@@ -177,6 +178,7 @@ by ZXLee
 				@loadmore="_nOnLoadmore" @scroll="_nOnScroll">
 				<refresh v-if="(zSlots.top?cacheTopHeight!==-1:true)&&finalNvueRefresherEnabled" class="zp-n-refresh" :style="[nvueRefresherStyle]" :display="nRefresherLoading?'show':'hide'" @refresh="_nOnRrefresh" @pullingdown="_nOnPullingdown">
 					<view ref="zp-n-refresh-container" class="zp-n-refresh-container" :style="[{background:refresherBackground,width:nRefresherWidth}]" id="zp-n-refresh-container">
+						<view v-if="useRefresherStatusBarPlaceholder" class="zp-custom-refresher-status-bar-placeholder" :style="[{'height': `${statusBarHeight}px`}]" />
 						<!-- 下拉刷新view -->
 						<slot v-if="zSlots.refresherComplete&&refresherStatus===R.Complete" name="refresherComplete" />
 						<slot v-else-if="(nScopedSlots?nScopedSlots:zSlots).refresher" :refresherStatus="refresherStatus" name="refresher" />
@@ -189,6 +191,7 @@ by ZXLee
 				</refresh>
 				<component :is="nViewIs" v-if="isIos&&!useChatRecordMode?oldScrollTop>10:true" ref="zp-n-list-top-tag" class="zp-n-list-top-tag" style="margin-top: -1rpx;" :style="[{height:finalNvueRefresherEnabled?'0px':'1px'}]"></component>
 				<component :is="nViewIs" v-if="nShowRefresherReveal" ref="zp-n-list-refresher-reveal" :style="[{transform:`translateY(-${nShowRefresherRevealHeight}px)`},{background:refresherBackground}]">
+					<view v-if="useRefresherStatusBarPlaceholder" class="zp-custom-refresher-status-bar-placeholder" :style="[{'height': `${statusBarHeight}px`}]" />
 					<!-- 下拉刷新view -->
 					<slot v-if="zSlots.refresherComplete&&refresherStatus===R.Complete" name="refresherComplete" />
 					<slot v-else-if="(nScopedSlots?nScopedSlots:$slots).refresher" :refresherStatus="R.Loading" name="refresher" />
@@ -216,17 +219,6 @@ by ZXLee
 				<component :is="nViewIs" v-if="showLoading&&zSlots.loading&&!loadingFullFixed" :class="{'z-paging-content-fixed':usePageScroll}" style="flex:1" :style="[nChatRecordRotateStyle]">
 					<slot name="loading" />
 				</component>
-				<!-- 空数据图 -->
-				<component :is="nViewIs" v-if="showEmpty" :class="{'z-paging-content-fixed':usePageScroll}" style="flex:1" :style="[emptyViewSuperStyle,nChatRecordRotateStyle]">
-					<view :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}">
-						<slot v-if="zSlots.empty" name="empty" :isLoadFailed="isLoadFailed" />
-						<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
-						:emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" 
-						:emptyViewImgStyle="emptyViewImgStyle" :emptyViewReloadStyle="emptyViewReloadStyle" :emptyViewZIndex="emptyViewZIndex" :emptyViewFixed="emptyViewFixed" 
-						@reload="_emptyViewReload" @viewClick="_emptyViewClick" />
-					</view>
-				</component>
-				<component is="header" v-if="!hideNvueBottomTag" ref="zp-n-list-bottom-tag" class="zp-n-list-bottom-tag"></component>
 				<!-- 上拉加载更多view -->
 				<component :is="nViewIs" v-if="!refresherOnly&&loadingMoreEnabled&&!showEmpty">
 					<view v-if="useChatRecordMode">
@@ -250,6 +242,17 @@ by ZXLee
 						<view v-if="safeAreaInsetBottom&&useSafeAreaPlaceholder" class="zp-safe-area-placeholder" :style="[{height:safeAreaBottom+'px'}]" />
 					</view>
 				</component>
+				<!-- 空数据图 -->
+				<component :is="nViewIs" v-if="showEmpty" :class="{'z-paging-content-fixed':usePageScroll}" :style="[{flex:emptyViewCenter?1:0},emptyViewSuperStyle,nChatRecordRotateStyle]">
+					<view :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}">
+						<slot v-if="zSlots.empty" name="empty" :isLoadFailed="isLoadFailed" />
+						<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
+						:emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" 
+						:emptyViewImgStyle="emptyViewImgStyle" :emptyViewReloadStyle="emptyViewReloadStyle" :emptyViewZIndex="emptyViewZIndex" :emptyViewFixed="emptyViewFixed" 
+						@reload="_emptyViewReload" @viewClick="_emptyViewClick" />
+					</view>
+				</component>
+				<component is="header" v-if="!hideNvueBottomTag" ref="zp-n-list-bottom-tag" class="zp-n-list-bottom-tag"></component>
 			</component>
 			<view v-if="zSlots.right" class="zp-page-right">
 				<slot name="right" />

@@ -6,15 +6,18 @@ const data = {
 	isTouchFromZPaging: false,
 	isUsePageScroll: false,
 	isReachedTop: true,
-	isIosAndH5: false
+	isIosAndH5: false,
+	appLaunched: false
 }
 
 export default {
 	mounted() {
-		this._handleTouch();
-		// #ifdef APP-VUE
-		this.$ownerInstance && this.$ownerInstance.callMethod('_checkVirtualListScroll');
-		// #endif
+		if (window) {
+			this._handleTouch();
+			// #ifdef APP-VUE
+			this.$ownerInstance.callMethod('_handlePageLaunch');
+			// #endif
+		}
 	},
 	methods: {
 		//接收逻辑层发送的数据
@@ -24,7 +27,7 @@ export default {
 		},
 		//拦截处理touch事件
 		_handleTouch() {
-			if (window && !window.$zPagingRenderJsInited) {
+			if (!window.$zPagingRenderJsInited) {
 				window.$zPagingRenderJsInited = true;
 				window.addEventListener('touchstart', this._handleTouchstart, { passive: true })
 				window.addEventListener('touchmove', this._handleTouchmove, { passive: false })
