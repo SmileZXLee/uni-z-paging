@@ -19,7 +19,6 @@ by ZXLee
 		<view v-if="cssSafeAreaInsetBottom===-1" class="zp-safe-area-inset-bottom"></view>
 		<!-- #endif -->
 		<!-- 顶部固定的slot -->
-		{{scrollEnable}}
 		<slot v-if="!usePageScroll&&zSlots.top" name="top" />
 		<view class="zp-page-top" @touchmove.stop.prevent v-else-if="usePageScroll&&zSlots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
 			<slot name="top" />
