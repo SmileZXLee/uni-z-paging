@@ -4,18 +4,18 @@ var currentDis = 0;
 var isPCFlag = -1;
 var startY = -1;
 
-function propObserver(newValue, oldValue, ownerIns, ins) {
+function propObserver(newVal, oldVal, ownerIns, ins) {
 	var state = ownerIns.getState() || {};
 	state.currentIns = ins;
 	var dataset = ins.getDataset();
 	var loading = dataset.loading == true;
-	if (newValue && newValue.indexOf('end') != -1) {
-		var transition = newValue.split('end')[0];
+	if (newVal && newVal.indexOf('end') != -1) {
+		var transition = newVal.split('end')[0];
 		_setTransform('translateY(0px)', ins, false, transition);
 		state.moveDis = 0;
 		state.oldMoveDis = 0;
 		currentDis = 0;
-	} else if (newValue && newValue.indexOf('begin') != -1) {
+	} else if (newVal && newVal.indexOf('begin') != -1) {
 		var refresherThreshold = ins.getDataset().refresherthreshold;
 		_setTransformValue(refresherThreshold, ins, state, false);
 	}
@@ -84,7 +84,7 @@ function touchmove(e, ownerIns) {
 		return true;
 	}
 	if (prevent && !state.disabledBounce) {
-		ownerIns.callMethod('_handleScrollViewDisableBounce', {bounce: false});
+		ownerIns.callMethod('_handleScrollViewBounce', {bounce: false});
 		state.disabledBounce = true;
 		_handlePullingDown(state, ownerIns, prevent);
 		return !prevent;
@@ -117,10 +117,13 @@ function touchend(e, ownerIns) {
 	var ins = _getIns(ownerIns);
 	var dataset = ins.getDataset();
 	var state = ins.getState();
+	if (state.disabledBounce) {
+		ownerIns.callMethod('_handleScrollViewBounce', {bounce: true});
+		state.disabledBounce = false;
+	}
 	if (_touchDisabled(e, ins, 2)) return;
 	state.reachMaxAngle = true;
 	state.hitReachMaxAngleCount = 0;
-	state.disabledBounce = false;
 	state.fixedIsTopHitCount = 0;
 	if (!state.isTouchmoving) return;
 	var oldRefresherStatus = state.refresherStatus;

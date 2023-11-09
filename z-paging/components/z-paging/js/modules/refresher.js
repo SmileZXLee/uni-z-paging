@@ -337,7 +337,7 @@ export default {
 			this.totalData = this.realTotalData;
 			this._refresherEnd();
 			this._endSystemLoadingAndRefresh();
-			this._handleScrollViewDisableBounce({ bounce: true });
+			this._handleScrollViewBounce({ bounce: true });
 			this.$nextTick(() => {
 				this.refresherTriggered = false;
 			})
@@ -441,11 +441,9 @@ export default {
 			moveDis = this._getFinalRefresherMoveDis(moveDis);
 			this._handleRefresherTouchmove(moveDis, touch);
 			if (!this.disabledBounce) {
-				if(this.isIos){
-					// #ifndef MP-LARK
-					this._handleScrollViewDisableBounce({ bounce: false });
-					// #endif
-				}
+				// #ifndef MP-LARK
+				this._handleScrollViewBounce({ bounce: false });
+				// #endif
 				this.disabledBounce = true;
 			}
 			this._emitTouchmove({ pullingDistance: moveDis, dy: this.moveDis - this.oldMoveDis });
@@ -468,13 +466,13 @@ export default {
 		// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
 		//拖拽结束
 		_refresherTouchend(e) {
+			this._handleScrollViewBounce({bounce: true});
 			if (this._touchDisabled() || !this.isTouchmoving) return;
 			const touch = u.getTouch(e);
 			let refresherTouchendY = touch.touchY;
 			let moveDis = refresherTouchendY - this.refresherTouchstartY;
 			moveDis = this._getFinalRefresherMoveDis(moveDis);
 			this._handleRefresherTouchend(moveDis);
-			this._handleScrollViewDisableBounce({bounce: true});
 			this.disabledBounce = false;
 		},
 		// #endif
@@ -515,12 +513,16 @@ export default {
 			}
 		},
 		//处理scroll-view bounce是否生效
-		_handleScrollViewDisableBounce({ bounce }) {
-			if (!this.usePageScroll && !this.scrollToTopBounceEnabled && this.wxsScrollTop <= 5) {
-				// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
-				this.refresherTransition = '';
-				// #endif
-				this.scrollEnable = bounce;
+		_handleScrollViewBounce({ bounce }) {
+			if (!this.usePageScroll && !this.scrollToTopBounceEnabled) {
+				if (this.wxsScrollTop <= 5) {
+					// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
+					this.refresherTransition = '';
+					// #endif
+					this.scrollEnable = bounce;
+				} else if (bounce) {
+					this.scrollEnable = bounce;
+				}
 			}
 		},
 		//wxs正在下拉状态改变处理
