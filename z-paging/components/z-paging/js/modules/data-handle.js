@@ -605,6 +605,8 @@ export default {
 					}
 					// #endif
 					this.totalData = newVal;
+				}else {
+					this.totalData = newVal;
 				}
 				if (this.useChatRecordMode) {
 					// #ifndef APP-NVUE
