@@ -51,8 +51,6 @@
 				})
 			},
 			doSend(msg){
-				this.$refs.paging.scrollIntoViewById('z-paging-19')
-				return;
 				uni.showLoading({
 					title: '发送中...'
 				})
