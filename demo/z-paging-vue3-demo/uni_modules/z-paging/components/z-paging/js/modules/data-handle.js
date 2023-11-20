@@ -604,8 +604,8 @@ export default {
 						newVal.reverse();
 					}
 					// #endif
-					this.totalData = newVal;
 				}
+				this.totalData = newVal;
 				if (this.useChatRecordMode) {
 					// #ifndef APP-NVUE
 					this.$nextTick(() => {
