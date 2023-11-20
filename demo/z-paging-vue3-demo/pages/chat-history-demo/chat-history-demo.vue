@@ -25,6 +25,8 @@
     const dataList = ref([]);
 	
 	onPageScroll((e) => {
+		//更新z-paging内部scrollTop
+		paging.value.updatePageScrollTop(e.scrollTop);
 		//如果滚动到顶部，触发加载更多聊天记录
 		if (e.scrollTop < 10) {
 			paging.value.doChatRecordLoadMore();

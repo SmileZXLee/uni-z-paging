@@ -351,14 +351,21 @@ export default {
 		},
 		//滚动到指定位置
 		_scrollToY(y, offset = 0, animate = false, addScrollTop = false) {
-			this.privateScrollWithAnimation = animate ? 1 : 0;
+			this.privateScrollWithAnimation = animate ? 1 : 0;			
 			if (this.usePageScroll) {
+				if (addScrollTop && this.pageScrollTop !== -1) {
+				   y += this.pageScrollTop; 
+				}
+				const scrollTop = y - offset;
 				uni.pageScrollTo({
-					scrollTop: y - offset,
+					scrollTop,
 					duration: animate ? 100 : 0
 				});
+				if (this.pageScrollTop !== -1) {
+					this.pageScrollTop = scrollTop;
+				}
 			} else {
-				if(addScrollTop){
+				if (addScrollTop) {
 				   y += this.oldScrollTop; 
 				}
 				this.scrollTop = y - offset;

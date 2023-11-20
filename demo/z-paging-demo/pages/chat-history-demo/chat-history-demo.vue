@@ -24,6 +24,8 @@
 			}
 		},
 		onPageScroll(e) {
+			//更新z-paging内部scrollTop
+			this.$refs.paging.updatePageScrollTop(e.scrollTop);
 			//如果滚动到顶部，触发加载更多聊天记录
 			if (e.scrollTop < 10) {
 				this.$refs.paging.doChatRecordLoadMore();
@@ -49,6 +51,8 @@
 				})
 			},
 			doSend(msg){
+				this.$refs.paging.scrollIntoViewById('z-paging-19')
+				return;
 				uni.showLoading({
 					title: '发送中...'
 				})
