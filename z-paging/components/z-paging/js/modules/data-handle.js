@@ -658,7 +658,7 @@ export default {
 		},
 		//根据pageNo处理refresh操作
 		_handleRefreshWithDisPageNo(pageNo) {
-			if (!this.realTotalData.length) return this.reload();
+			if (!this.isHandlingRefreshToPage && !this.realTotalData.length) return this.reload();
 			if (pageNo >= 1) {
 				this.loading = true;
 				this.privateConcat = false;
