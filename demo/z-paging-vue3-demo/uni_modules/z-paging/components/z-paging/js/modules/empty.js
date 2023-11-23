@@ -104,6 +104,11 @@ export default {
 			default: u.gc('emptyViewZIndex', 9)
 		},
 	},
+	data() {
+		return {
+			customerEmptyViewErrorText: ''
+		}
+	},
 	computed: {
 		finalEmptyViewImg() {
 			return this.isLoadFailed ? this.emptyViewErrorImg : this.emptyViewImg;

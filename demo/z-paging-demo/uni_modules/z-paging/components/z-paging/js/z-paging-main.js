@@ -404,8 +404,13 @@ export default {
 		},
 		//添加全局emit监听
 		_onEmit() {
-			uni.$on(c.errorUpdateKey, () => {
-				this.loading && this.complete(false).catch(() => {});
+			uni.$on(c.errorUpdateKey, (errorMsg) => {
+				if (this.loading) {
+					if (!!errorMsg) {
+						this.customerEmptyViewErrorText = errorMsg;
+					}
+					this.complete(false).catch(() => {});
+				}
 			})
 			uni.$on(c.completeUpdateKey, (data) => {
 				setTimeout(() => {

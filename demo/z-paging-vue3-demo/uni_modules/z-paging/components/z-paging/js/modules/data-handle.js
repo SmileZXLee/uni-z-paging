@@ -258,6 +258,11 @@ export default {
 			}
 			return this.addData(data, success);
 		},
+		//请求结束且请求失败时调用，支持传入请求失败原因
+		completeByError(errorMsg) {
+			this.customerEmptyViewErrorText = errorMsg;
+			return this.complete(false);
+		},
 		//与上方complete方法功能一致，新版本中设置服务端回调数组请使用complete方法
 		addData(data, success = true) {
 			if (!this.fromCompleteEmit) {

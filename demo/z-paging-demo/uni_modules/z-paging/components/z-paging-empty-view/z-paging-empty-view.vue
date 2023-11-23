@@ -149,6 +149,7 @@
 		color: #aaaaaa;
 		text-align: center;
 		margin-top: 10rpx;
+		padding: 0rpx 20rpx;
 	}
 
 	.zp-main-error-btn {

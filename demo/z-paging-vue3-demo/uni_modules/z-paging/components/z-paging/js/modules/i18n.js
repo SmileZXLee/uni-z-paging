@@ -63,7 +63,7 @@ export default {
 			return this._getI18nText('zp.emptyView.reload', this.emptyViewReloadText);
 		},
 		finalEmptyViewErrorText() {
-			return this._getI18nText('zp.emptyView.error', this.emptyViewErrorText);
+			return this.customerEmptyViewErrorText || this._getI18nText('zp.emptyView.error', this.emptyViewErrorText);
 		},
 		finalSystemLoadingText() {
 			return this._getI18nText('zp.systemLoading.title', this.systemLoadingText);
