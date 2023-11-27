@@ -282,7 +282,7 @@ export default {
 			return this.pagingContentStyle;
 		},
 		renderJsIgnore() {
-			if ((this.usePageScroll && this.useChatRecordMode) || !this.refresherEnabled || !this.useCustomRefresher) {
+			if ((this.usePageScroll && this.useChatRecordMode) || (!this.refresherEnabled && this.scrollable) || !this.useCustomRefresher) {
 				this.$nextTick(() => {
 					this.renderPropScrollTop = 10;
 				})
