@@ -506,7 +506,7 @@ export default {
 			}
 			this.isSettingCacheList = false;
 			if (success) {
-				if (!(this.privateConcat === false && this.loadingStatus === Enum.More.NoMore)) {
+				if (!(this.privateConcat === false && !this.isHandlingRefreshToPage && this.loadingStatus === Enum.More.NoMore)) {
 					this.loadingStatus = Enum.More.Default;
 				}
 				if (isLocal) {
@@ -594,7 +594,7 @@ export default {
 				this.totalData = [];
 			}
 			if (this.customNoMore !== -1) {
-				if (this.customNoMore === 1 || !newVal.length) {
+				if (this.customNoMore === 1 || (this.customNoMore !== 0 && !newVal.length)) {
 					this.loadingStatus = Enum.More.NoMore;
 				}
 			} else {
@@ -669,8 +669,14 @@ export default {
 				this.privateConcat = false;
 				const totalPageSize = pageNo * this.pageSize;
 				this.currentRefreshPageSize = totalPageSize;
-				this._emitQuery(this.defaultPageNo, totalPageSize, Enum.QueryFrom.Refresh);
-				this._callMyParentQuery(this.defaultPageNo, totalPageSize);
+				if (this.isLocalPaging && this.isHandlingRefreshToPage) {
+					this._localPagingQueryList(this.defaultPageNo, totalPageSize, 0, res => {
+						this.complete(res);
+					})
+				} else {
+					this._emitQuery(this.defaultPageNo, totalPageSize, Enum.QueryFrom.Refresh);
+					this._callMyParentQuery(this.defaultPageNo, totalPageSize);
+				}
 			}
 			return new Promise((resolve, reject) => {
 				this.dataPromiseResultMap.reload = { resolve, reject };
