@@ -347,7 +347,7 @@ export default {
 		},
 		//手动更新自定义下拉刷新view高度
 		updateCustomRefresherHeight() {
-			u.delay(() => this.$nextTick(this._updateCustomRefresherHeight));
+			u.delay(() => this.$nextTick(this._updateCustomRefresherHeight), c.delayTime * 2);
 		},
 		//自定义下拉刷新被触发
 		_onRefresh(fromScrollView = false,isUserPullDown = true) {
