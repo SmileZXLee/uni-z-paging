@@ -4,37 +4,51 @@
     "version" : "0.0",
     "configurations" : [
         {
-            "app-plus" : {
-                "launchtype" : "remote"
-            },
-            "default" : {
-                "launchtype" : "remote"
-            },
-            "h5" : {
-                "launchtype" : "remote"
-            },
-            "mp-alipay" : {
-                "launchtype" : "remote"
-            },
-            "mp-baidu" : {
-                "launchtype" : "remote"
-            },
-            "mp-feishu" : {
-                "launchtype" : "remote"
-            },
-            "mp-kuaishou" : {
-                "launchtype" : "remote"
-            },
-            "mp-qq" : {
-                "launchtype" : "remote"
-            },
-            "mp-toutiao" : {
-                "launchtype" : "remote"
-            },
-            "mp-weixin" : {
-                "launchtype" : "remote"
-            },
-            "type" : "uniCloud"
+        	"app-plus" : 
+        	{
+        		"launchtype" : "remote"
+        	},
+        	"default" : 
+        	{
+        		"launchtype" : "remote"
+        	},
+        	"h5" : 
+        	{
+        		"launchtype" : "remote"
+        	},
+        	"mp-alipay" : 
+        	{
+        		"launchtype" : "remote"
+        	},
+        	"mp-baidu" : 
+        	{
+        		"launchtype" : "remote"
+        	},
+        	"mp-feishu" : 
+        	{
+        		"launchtype" : "remote"
+        	},
+        	"mp-kuaishou" : 
+        	{
+        		"launchtype" : "remote"
+        	},
+        	"mp-qq" : 
+        	{
+        		"launchtype" : "remote"
+        	},
+        	"mp-toutiao" : 
+        	{
+        		"launchtype" : "remote"
+        	},
+        	"mp-weixin" : 
+        	{
+        		"launchtype" : "remote"
+        	},
+        	"quickapp-webview-huawei" : 
+        	{
+        		"launchtype" : "remote"
+        	},
+        	"type" : "uniCloud"
         },
         {
             "playground" : "standard",
