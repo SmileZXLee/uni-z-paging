@@ -1,9 +1,9 @@
 <!-- 在这个文件对每个tab对应的列表进行渲染 -->
 <template>
 	<view class="content">
-		<!-- 这里设置了z-paging加载时禁止自动调用reload方法，自行控制何时reload（懒加载）-->
 		<!--  :enable-back-to-top="currentIndex===tabIndex" 在nvue上可以多加这一句，因为默认是允许点击返回顶部的，但是这个页面有多个scroll-view，会全部返回顶部，所以需要控制是当前index才允许点击返回顶部 -->
-		<z-paging ref="paging" class="paging" v-model="dataList" @query="queryList" :fixed="false" :auto="false">
+		<!-- 如果当前页已经加载过数据或者当前切换到的tab是当前页，才展示当前页数据（懒加载） -->
+		<z-paging v-if="firstLoaded || isCurrentPage" ref="paging" class="paging" v-model="dataList" @query="queryList" :fixed="false">
 			<!-- 在nvue中，z-paging中插入的列表item必须是cell，必须使用cell包住，因为在nvue中，z-paging使用的是nvue的list组件。 -->
 			<!-- 不能使用index作为key的唯一标识，:key必须添加并且必须是唯一的 -->
 			<!-- 如果希望在vue中渲染view，nvue中渲染cell，可使用z-paging-cell代替cell -->
@@ -22,7 +22,10 @@
 
 	const paging = ref(null);
 	const dataList = ref([]);
+	//当前组件是否已经加载过了
 	const firstLoaded = ref(false);
+	//是否滚动到当前页
+	const isCurrentPage = ref(false);
 
 	const props = defineProps({
 		tabIndex: {
@@ -37,10 +40,12 @@
 
 	watch(() => props.currentIndex, (newVal) => {
 		if (newVal === props.tabIndex) {
+			//懒加载，当滑动到当前的item时，才去加载
 			if (!firstLoaded.value) {
+				// 这里需要延迟渲染z-paging的原因是为了避免在一些平台上立即渲染可能引发的底层报错问题
 				setTimeout(() => {
-					paging.value.reload();
-				}, 100)
+					isCurrentPage.value = true;
+				}, 100);
 			}
 		}
 	}, {

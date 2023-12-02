@@ -2,7 +2,7 @@
 <template>
 	<view class="content">
 		<z-paging ref="paging" v-model="dataList" use-page-scroll use-chat-record-mode @query="queryList">
-			<!-- 聊天item -->
+			<!-- 聊天item，:id="`z-paging-${index}`"必须加 -->
 			<view :id="`z-paging-${index}`" v-for="(item,index) in dataList" :key="index">
 				<chat-item :item="item"></chat-item>
 			</view>
