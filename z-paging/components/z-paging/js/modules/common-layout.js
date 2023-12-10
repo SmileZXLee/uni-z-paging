@@ -66,6 +66,12 @@ export default {
 		this.isReadyDestroy = true;
 	},
 	methods: {
+		// 更新fixed模式下z-paging的布局
+		updateFixedLayout() {
+			this.fixed && this.$nextTick(() => {
+				this.systemInfo = uni.getSystemInfoSync();
+			})
+		},
 		//获取节点尺寸
 		_getNodeClientRect(select, inDom = true, scrollOffset = false) {
 			if (this.isReadyDestroy) {
