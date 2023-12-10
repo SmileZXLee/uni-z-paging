@@ -196,6 +196,7 @@ export default {
 			this.systemInfo = uni.getSystemInfoSync();
 			!this.usePageScroll && this.autoHeight && this._setAutoHeight();
 			this.loaded = true;
+			u.delay(this.updateFixedLayout);
 		})
 		this.updatePageScrollTopHeight();
 		this.updatePageScrollBottomHeight();
@@ -249,7 +250,7 @@ export default {
 	},
 	computed: {
 		finalPagingStyle() {
-			const pagingStyle = this.pagingStyle;
+			const pagingStyle = { ...this.pagingStyle };
 			if (!this.systemInfo) return pagingStyle;
 			const { windowTop, windowBottom } = this;
 			if (!this.usePageScroll && this.fixed) {
