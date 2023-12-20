@@ -173,7 +173,7 @@ export default {
 		watchTouchDirectionChange: {
 			type: Boolean,
 			default: u.gc('watchTouchDirectionChange', false)
-		},
+		}
 	},
 	created(){
 		if (this.createdReload && !this.refresherOnly && this.auto) {
