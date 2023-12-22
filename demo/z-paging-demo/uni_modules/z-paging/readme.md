@@ -4,7 +4,7 @@
     <img alt="logo" src="https://z-paging.zxlee.cn/img/title-logo.png" height="100" style="margin-bottom: 50px;">
 </p>
 
-[![version](https://img.shields.io/badge/version-2.6.5-blue)](https://github.com/SmileZXLee/uni-z-paging)
+[![version](https://img.shields.io/badge/version-2.6.6-blue)](https://github.com/SmileZXLee/uni-z-paging)
 [![license](https://img.shields.io/github/license/SmileZXLee/uni-z-paging)](https://en.wikipedia.org/wiki/MIT_License)
 
 ### 文档地址：[https://z-paging.zxlee.cn](https://z-paging.zxlee.cn)

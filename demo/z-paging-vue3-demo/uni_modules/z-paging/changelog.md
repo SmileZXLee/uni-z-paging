@@ -1,3 +1,5 @@
+## 2.6.6（2023-12-22）
+`修复` 全局配置值为false或0时不生效的问题。  
 ## 2.6.5（2023-12-20）
 1.`新增` `updateFixedLayout`方法，以修复在`iOS+h5+tabbar+fixed+底部有安全区域`的设备中从tabbar页面跳转到无tabbar页面后返回，底部有一段空白区域的问题。  
 2.`优化` `swiper-demo`性能，切换到当前页才渲染`z-paging`组件&组件卸载后禁止继续查询节点信息,修复由此引发的`Error: Not Found：Page`的问题。  
