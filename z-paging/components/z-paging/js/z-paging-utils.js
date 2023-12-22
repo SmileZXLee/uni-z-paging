@@ -12,7 +12,8 @@ const timeoutMap = {};
 function gc(key, defaultValue) {
 	_handleDefaultConfig();
 	if (!config) return defaultValue;
-	return config[key] || defaultValue;
+	const value = config[key];
+	return value === undefined ? defaultValue : value;
 }
 
 //获取最终的touch位置
@@ -39,8 +40,8 @@ function getTouchFromZPaging(target) {
 		const classList = target.classList;
 		if (classList && classList.contains('z-paging-content')) {
 			return {
-				isFromZp: true, 
-				isPageScroll: classList.contains('z-paging-content-page'), 
+				isFromZp: true,
+				isPageScroll: classList.contains('z-paging-content-page'),
 				isReachedTop: classList.contains('z-paging-reached-top')
 			};
 		} else {
