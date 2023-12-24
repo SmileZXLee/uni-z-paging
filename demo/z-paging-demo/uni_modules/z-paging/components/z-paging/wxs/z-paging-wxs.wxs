@@ -264,8 +264,9 @@ function _touchDisabled(e, ins, processTag) {
 	var scrollTop = parseFloat(dataset.scrolltop);
 	var finalScrollTop = usePageScroll ? pageScrollTop : scrollTop;
 	var fixedIsTop = false;
-	var isIos = _isTrue(dataset.isios);
-	if (!isIos && finalScrollTop == (state.startScrollTop || 0) && finalScrollTop <= 105) {
+	// 是否要处理滚动到顶部scrollTop不为0时候的容错，之前在安卓中scroll-view有概率滚动到顶部时scrollTop不为0导致下拉刷新判断异常，经过测试在HX3.98+已修复，因此暂时关闭此容错判断
+	var handleFaultTolerantMove = false;
+	if (handleFaultTolerantMove && finalScrollTop == (state.startScrollTop || 0) && finalScrollTop <= 105) {
 		fixedIsTop = true;
 	}
 	var fixedIsTopHitCount = state.fixedIsTopHitCount || 0;
@@ -278,10 +279,10 @@ function _touchDisabled(e, ins, processTag) {
 	} else {
 		state.fixedIsTopHitCount = 0;
 	}
-	if (!isIos && processTag === 0) {
+	if (handleFaultTolerantMove && processTag === 0) {
 		state.startScrollTop = finalScrollTop || 0;
 	}
-	if (!isIos && processTag === 2) {
+	if (handleFaultTolerantMove && processTag === 2) {
 		fixedIsTop = true;
 	}
 	return loading || useChatRecordMode || !refresherEnabled || !useCustomRefresher || 
