@@ -1,23 +1,38 @@
 /* [z-paging]公用的静态css资源 */
 
 .zp-line-loading-image {
-	margin-right: 8rpx;
-	width: 28rpx;
-	height: 28rpx;
 	/* #ifndef APP-NVUE */
 	animation: loading-flower 1s steps(12) infinite;
 	/* #endif */
 	color: #666666;
 }
+.zp-line-loading-image-rpx {
+	margin-right: 8rpx;
+	width: 28rpx;
+	height: 28rpx;
+}
+.zp-line-loading-image-px {
+	margin-right: 4px;
+	width: 14px;
+	height: 14px;
+}
 
-.zp-loading-image-ios{
+.zp-loading-image-ios-rpx {
+	width: 40rpx;
+	height: 40rpx;
+}
+.zp-loading-image-ios-px {
 	width: 20px;
 	height: 20px;
 }
 
-.zp-loading-image-android{
+.zp-loading-image-android-rpx {
 	width: 32rpx;
 	height: 32rpx;
+}
+.zp-loading-image-android-px {
+	width: 16px;
+	height: 16px;
 }
 
 /* #ifndef APP-NVUE */

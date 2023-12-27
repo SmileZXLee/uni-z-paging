@@ -169,6 +169,11 @@ export default {
 		watchTouchDirectionChange: {
 			type: Boolean,
 			default: u.gc('watchTouchDirectionChange', false)
+		},
+		//z-paging中布局的单位，默认为rpx
+		unit: {
+			type: String,
+			default: u.gc('unit', 'rpx')
 		}
 	},
 	created(){

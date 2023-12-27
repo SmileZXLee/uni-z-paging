@@ -152,14 +152,23 @@
 }
 
 .zp-back-to-top {
-	width: 76rpx;
-	height: 76rpx;
 	z-index: 999;
 	position: absolute;
 	bottom: 0rpx;
-	right: 25rpx;
 	transition-duration: .3s;
 	transition-property: opacity;
+}
+.zp-back-to-top-rpx {
+	width: 76rpx;
+	height: 76rpx;
+	bottom: 0rpx;
+	right: 25rpx;
+}
+.zp-back-to-top-px {
+	width: 38px;
+	height: 38px;
+	bottom: 0px;
+	right: 13px;
 }
 
 .zp-back-to-top-show {

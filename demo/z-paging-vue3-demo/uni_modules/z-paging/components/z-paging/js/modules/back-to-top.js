@@ -47,22 +47,31 @@ export default {
 		}
 	},
 	computed: {
+		backToTopThresholdUnitConverted() {
+			return u.addUnit(this.backToTopThreshold, this.unit);
+		},
+		backToTopBottomUnitConverted() {
+			return u.addUnit(this.backToTopBottom, this.unit);
+		},
 		finalEnableBackToTop() {
 			return this.usePageScroll ? false : this.enableBackToTop;
 		},
 		finalBackToTopThreshold() {
-			return u.convertToPx(this.backToTopThreshold);
+			return u.convertToPx(this.backToTopThresholdUnitConverted);
 		},
 		finalBackToTopStyle() {
 			const backToTopStyle = this.backToTopStyle;
 			if (!backToTopStyle.bottom) {
-				backToTopStyle.bottom = this.windowBottom + u.convertToPx(this.backToTopBottom) + 'px';
+				backToTopStyle.bottom = this.windowBottom + u.convertToPx(this.backToTopBottomUnitConverted) + 'px';
 			}
 			if(!backToTopStyle.position){
 				backToTopStyle.position = this.usePageScroll ? 'fixed': 'absolute';
 			}
 			return backToTopStyle;
 		},
+		finalBackToTopClass() {
+			return `${this.backToTopClass} zp-back-to-top-${this.unit}`;
+		}
 	},
 	methods: {
 		//点击返回顶部

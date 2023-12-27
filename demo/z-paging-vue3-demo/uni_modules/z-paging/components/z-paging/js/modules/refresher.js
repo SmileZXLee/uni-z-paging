@@ -257,18 +257,21 @@ export default {
 		pullDownDisTimeStamp() {
 			return 1000 / this.refresherFps;
 		},
+		refresherThresholdUnitConverted() {
+			return u.addUnit(this.refresherThreshold, this.unit);
+		},
 		finalRefresherEnabled() {
 			if (this.useChatRecordMode) return false;
 			if (this.privateRefresherEnabled === -1) return this.refresherEnabled;
 			return this.privateRefresherEnabled === 1;
 		},
 		finalRefresherThreshold() {
-			let refresherThreshold = this.refresherThreshold;
+			let refresherThreshold = this.refresherThresholdUnitConverted;
 			let idDefault = false;
-			if (refresherThreshold === '80rpx') {
+			if (refresherThreshold === u.addUnit(80, this.unit)) {
 				idDefault = true;
 				if (this.showRefresherUpdateTime) {
-					refresherThreshold = '120rpx';
+					refresherThreshold = u.addUnit(120, this.unit);
 				}
 			}
 			if (idDefault && this.customRefresherHeight > 0) return this.customRefresherHeight + this.finalRefresherThresholdPlaceholder;
@@ -604,7 +607,7 @@ export default {
 			this._cleanRefresherCompleteTimeout();
 			// #ifndef APP-NVUE
 			const doRefreshAnimateAfter = !this.doRefreshAnimateAfter && (this.finalShowRefresherWhenReload) && this
-				.customRefresherHeight === -1 && this.refresherThreshold === '80rpx';
+				.customRefresherHeight === -1 && this.refresherThreshold === u.addUnit(80, this.unit);
 			if (doRefreshAnimateAfter) {
 				this.doRefreshAnimateAfter = true;
 				return;

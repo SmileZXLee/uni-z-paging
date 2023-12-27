@@ -141,6 +141,19 @@ function wait(ms) {
 	});
 }
 
+// 添加单位
+function addUnit(value, unit) {
+	if (Object.prototype.toString.call(value) === '[object String]') {
+		let tempValue = value;
+		tempValue = tempValue.replace('rpx', '').replace('upx', '').replace('px', '');
+		if (value.indexOf('rpx') === -1 && value.indexOf('upx') === -1 && text.indexOf('px') !== -1) {
+			tempValue = parseFloat(tempValue) * 2;
+		}
+		value = tempValue;
+	}
+	return unit === 'rpx' ? value + 'rpx' : (value / 2) + 'px';
+}
+
 //------------------ 私有方法 ------------------------
 //处理全局配置
 function _handleDefaultConfig() {
@@ -221,5 +234,6 @@ export default {
 	getInstanceId,
 	consoleErr,
 	delay,
-	wait
+	wait,
+	addUnit
 };

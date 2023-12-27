@@ -9,14 +9,14 @@
 				<!-- #endif -->
 				<!-- #ifdef APP-NVUE -->
 				<view v-else :style="[{'margin-right':showUpdateTime?'18rpx':'12rpx'}]">
-					<loading-indicator :class="isIos?'zp-loading-image-ios':'zp-loading-image-android'" 
+					<loading-indicator :class="isIos?`zp-loading-image-ios-${unit}`:`zp-loading-image-android-${unit}`" 
 					:style="[{color:zTheme.indicator[ts]},imgStyle]" :animating="true" />
 				</view>
 				<!-- #endif -->
 			</view>
 			<view class="zp-r-right">
 				<text class="zp-r-right-text" :style="[rightTextStyle,titleStyle]">{{currentTitle}}</text>
-				<text v-if="showUpdateTime&&refresherTimeText.length" class="zp-r-right-text zp-r-right-time-text" :style="[rightTextStyle,updateTimeStyle]">
+				<text v-if="showUpdateTime&&refresherTimeText.length" class="zp-r-right-text" :class="`zp-r-right-time-text-${unit}`" :style="[rightTextStyle,updateTimeStyle]">
 					{{refresherTimeText}}
 				</text>
 			</view>
@@ -45,7 +45,7 @@
 			};
 		},
 		props: ['status', 'defaultThemeStyle', 'defaultText', 'pullingText', 'refreshingText', 'completeText', 'defaultImg', 'pullingImg', 
-			'refreshingImg', 'completeImg', 'refreshingAnimated', 'showUpdateTime', 'updateTimeKey', 'imgStyle', 'titleStyle', 'updateTimeStyle', 'updateTimeTextMap'
+			'refreshingImg', 'completeImg', 'refreshingAnimated', 'showUpdateTime', 'updateTimeKey', 'imgStyle', 'titleStyle', 'updateTimeStyle', 'updateTimeTextMap', 'unit'
 		],
 		computed: {
 			ts() {
@@ -64,8 +64,8 @@
 			},
 			leftImageStyle() {
 				const showUpdateTime = this.showUpdateTime;
-				const size = showUpdateTime ? '36rpx' : '30rpx';
-				return {width: size,height: size,'margin-right': showUpdateTime ? '20rpx' : '9rpx'};
+				const size = showUpdateTime ? u.addUnit(36, this.unit) : u.addUnit(30, this.unit);
+				return {width: size,height: size,'margin-right': showUpdateTime ? u.addUnit(20, this.unit) : u.addUnit(9, this.unit)};
 			},
 			leftImageSrc() {
 				const R = this.R;
@@ -89,10 +89,11 @@
 			rightTextStyle() {
 				let stl = {};
 				// #ifdef APP-NVUE
-				const textHeight = this.showUpdateTime ? '40rpx' : '80rpx';
+				const textHeight = this.showUpdateTime ? u.addUnit(40, this.unit) : u.addUnit(80, this.unit);
 				stl = {'height': textHeight, 'line-height': textHeight}
 				// #endif
 				stl['color'] = this.zTheme.title[this.ts];
+				stl['font-size'] = u.addUnit(28, this.unit);
 				return stl;
 			}
 		},
@@ -121,7 +122,7 @@
 
 	.zp-r-container-padding {
 		/* #ifdef APP-NVUE */
-		padding: 15rpx 0rpx;
+		padding: 7px 0rpx;
 		/* #endif */
 	}
 
@@ -143,7 +144,7 @@
 		color: #666666;
 	}
 	
-	.zp-r-left-image-pre-size{
+	.zp-r-left-image-pre-size {
 		/* #ifndef APP-NVUE */
 		width: 30rpx;
 		height: 30rpx;
@@ -160,7 +161,6 @@
 	}
 
 	.zp-r-right {
-		font-size: 27rpx;
 		/* #ifndef APP-NVUE */
 		display: flex;
 		/* #endif */
@@ -169,14 +169,12 @@
 		justify-content: center;
 	}
 
-	.zp-r-right-text {
-		/* #ifdef APP-NVUE */
-		font-size: 28rpx;
-		/* #endif */
-	}
-
-	.zp-r-right-time-text {
+	.zp-r-right-time-text-rpx {
 		margin-top: 10rpx;
 		font-size: 24rpx;
+	}
+	.zp-r-right-time-text-px {
+		margin-top: 5px;
+		font-size: 12px;
 	}
 </style>

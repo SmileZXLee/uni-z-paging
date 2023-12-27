@@ -7,9 +7,9 @@
 <template>
 	<view :class="{'zp-container':true,'zp-container-fixed':emptyViewFixed}" :style="[finalEmptyViewStyle]" @click="emptyViewClick">
 		<view class="zp-main">
-			<image v-if="!emptyViewImg.length" class="zp-main-image" :style="[emptyViewImgStyle]" :src="emptyImg" />
-			<image v-else class="zp-main-image" mode="aspectFit" :style="[emptyViewImgStyle]" :src="emptyViewImg" />
-			<text class="zp-main-title" :style="[emptyViewTitleStyle]">{{emptyViewText}}</text>
+			<image v-if="!emptyViewImg.length" :class="`zp-main-image-${unit}`" :style="[emptyViewImgStyle]" :src="emptyImg" />
+			<image v-else :class="`zp-main-image-${unit}`" mode="aspectFit" :style="[emptyViewImgStyle]" :src="emptyViewImg" />
+			<text :class="`zp-main-title zp-main-title-${unit}`" :style="[emptyViewTitleStyle]">{{emptyViewText}}</text>
 			<text v-if="showEmptyViewReload" class="zp-main-error-btn" :style="[emptyViewReloadStyle]" @click.stop="reloadClick">{{emptyViewReloadText}}</text>
 		</view>
 	</view>
@@ -87,6 +87,11 @@
 			emptyViewFixed: {
 				type: Boolean,
 				default: true
+			},
+			//空数据图中布局的单位，默认为rpx
+			unit: {
+				type: String,
+				default: 'rpx'
 			}
 		},
 		computed: {
@@ -139,17 +144,28 @@
         padding: 50rpx 0rpx;
 	}
 
-	.zp-main-image {
+	.zp-main-image-rpx {
 		width: 200rpx;
 		height: 200rpx;
 	}
+	.zp-main-image-px {
+		width: 100px;
+		height: 100px;
+	}
 
 	.zp-main-title {
-		font-size: 26rpx;
 		color: #aaaaaa;
 		text-align: center;
+	}
+	.zp-main-title-rpx {
+		font-size: 26rpx;
 		margin-top: 10rpx;
 		padding: 0rpx 20rpx;
+	}
+	.zp-main-title-px {
+		font-size: 13px;
+		margin-top: 5px;
+		padding: 0px 10px;
 	}
 
 	.zp-main-error-btn {

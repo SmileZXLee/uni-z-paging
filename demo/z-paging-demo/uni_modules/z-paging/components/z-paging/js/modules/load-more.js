@@ -141,6 +141,7 @@ export default {
 				noMoreText: this.finalLoadingMoreNoMoreText,
 				failText: this.finalLoadingMoreFailText,
 				hideContent: !this.loadingMoreDefaultAsLoading && this.listRendering,
+				unit: this.unit
 			};
 		},
 		finalLoadingMoreThemeStyle() {
