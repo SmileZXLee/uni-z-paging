@@ -7,23 +7,17 @@ export default {
 		//自定义底部加载更多样式
 		loadingMoreCustomStyle: {
 			type: Object,
-			default: function() {
-				return u.gc('loadingMoreCustomStyle', {});
-			}
+			default: u.gc('loadingMoreCustomStyle', {})
 		},
 		//自定义底部加载更多文字样式
 		loadingMoreTitleCustomStyle: {
 			type: Object,
-			default: function() {
-				return u.gc('loadingMoreTitleCustomStyle', {});
-			}
+			default: u.gc('loadingMoreTitleCustomStyle', {})
 		},
 		//自定义底部加载更多加载中动画样式
 		loadingMoreLoadingIconCustomStyle: {
 			type: Object,
-			default: function() {
-				return u.gc('loadingMoreLoadingIconCustomStyle', {});
-			}
+			default: u.gc('loadingMoreLoadingIconCustomStyle', {})
 		},
 		//自定义底部加载更多加载中动画图标类型，可选flower或circle，默认为flower
 		loadingMoreLoadingIconType: {
@@ -103,9 +97,7 @@ export default {
 		//自定义底部没有更多数据的分割线样式
 		loadingMoreNoMoreLineCustomStyle: {
 			type: Object,
-			default: function() {
-				return u.gc('loadingMoreNoMoreLineCustomStyle', {});
-			},
+			default: u.gc('loadingMoreNoMoreLineCustomStyle', {})
 		},
 		//当分页未满一屏时，是否自动加载更多，默认为否(nvue无效)
 		insideMore: {

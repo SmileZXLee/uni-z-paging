@@ -31,9 +31,7 @@ export default {
 		//点击返回顶部按钮的自定义样式
 		backToTopStyle: {
 			type: Object,
-			default: function() {
-				return u.gc('backToTopStyle', {});
-			},
+			default: u.gc('backToTopStyle', {}),
 		},
 		//iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，只支持竖向，默认为是
 		enableBackToTop: {

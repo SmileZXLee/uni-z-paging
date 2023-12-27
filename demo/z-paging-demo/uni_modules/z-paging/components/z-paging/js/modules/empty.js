@@ -46,37 +46,27 @@ export default {
 		//空数据图样式
 		emptyViewStyle: {
 			type: Object,
-			default: function() {
-				return u.gc('emptyViewStyle', {});
-			}
+			default: u.gc('emptyViewStyle', {})
 		},
 		//空数据图容器样式
 		emptyViewSuperStyle: {
 			type: Object,
-			default: function() {
-				return u.gc('emptyViewSuperStyle', {});
-			}
+			default: u.gc('emptyViewSuperStyle', {})
 		},
 		//空数据图img样式
 		emptyViewImgStyle: {
 			type: Object,
-			default: function() {
-				return u.gc('emptyViewImgStyle', {});
-			}
+			default: u.gc('emptyViewImgStyle', {})
 		},
 		//空数据图描述文字样式
 		emptyViewTitleStyle: {
 			type: Object,
-			default: function() {
-				return u.gc('emptyViewTitleStyle', {});
-			}
+			default: u.gc('emptyViewTitleStyle', {})
 		},
 		//空数据图重新加载按钮样式
 		emptyViewReloadStyle: {
 			type: Object,
-			default: function() {
-				return u.gc('emptyViewReloadStyle', {});
-			}
+			default: u.gc('emptyViewReloadStyle', {})
 		},
 		//空数据图片是否铺满z-paging，默认为否，即填充满z-paging内列表(滚动区域)部分。若设置为否，则为填铺满整个z-paging
 		emptyViewFixed: {

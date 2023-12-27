@@ -18,9 +18,7 @@ export default {
 		//使用兼容模式时传递的附加数据
 		extraData: {
 			type: Object,
-			default: function() {
-				return u.gc('extraData', {});
-			}
+			default: u.gc('extraData', {})
 		},
 		//是否在z-paging内部循环渲染列表(内置列表)，默认为否。若use-virtual-list为true，则此项恒为true
 		useInnerList: {
@@ -40,16 +38,12 @@ export default {
 		//innerList样式
 		innerListStyle: {
 			type: Object,
-			default: function() {
-				return u.gc('innerListStyle', {});
-			}
+			default: u.gc('innerListStyle', {})
 		},
 		//innerCell样式
 		innerCellStyle: {
 			type: Object,
-			default: function() {
-				return u.gc('innerCellStyle', {});
-			}
+			default: u.gc('innerCellStyle', {})
 		},
 		//预加载的列表可视范围(列表高度)页数，默认为12，即预加载当前页及上下各12页的cell。此数值越大，则虚拟列表中加载的dom越多，内存消耗越大(会维持在一个稳定值)，但增加预加载页面数量可缓解快速滚动短暂白屏问题
 		preloadPage: {

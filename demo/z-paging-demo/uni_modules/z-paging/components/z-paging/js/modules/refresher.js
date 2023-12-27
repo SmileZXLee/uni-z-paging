@@ -13,23 +13,17 @@ export default {
 		//自定义下拉刷新中左侧图标的样式
 		refresherImgStyle: {
 			type: Object,
-			default: function() {
-				return u.gc('refresherImgStyle', {});
-			}
+			default: u.gc('refresherImgStyle', {})
 		},
 		//自定义下拉刷新中右侧状态描述文字的样式
 		refresherTitleStyle: {
 			type: Object,
-			default: function() {
-				return u.gc('refresherTitleStyle', {});
-			}
+			default: u.gc('refresherTitleStyle', {})
 		},
 		//自定义下拉刷新中右侧最后更新时间文字的样式(show-refresher-update-time为true时有效)
 		refresherUpdateTimeStyle: {
 			type: Object,
-			default: function() {
-				return u.gc('refresherUpdateTimeStyle', {});
-			}
+			default: u.gc('refresherUpdateTimeStyle', {})
 		},
 		//在微信小程序和QQ小程序中，是否实时监听下拉刷新中进度，默认为否
 		watchRefresherTouchmove: {

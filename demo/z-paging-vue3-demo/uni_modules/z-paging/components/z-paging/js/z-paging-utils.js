@@ -10,10 +10,12 @@ const timeoutMap = {};
 
 //获取默认配置信息
 function gc(key, defaultValue) {
-	_handleDefaultConfig();
-	if (!config) return defaultValue;
-	const value = config[key];
-	return value === undefined ? defaultValue : value;
+	return () => {
+		_handleDefaultConfig();
+		if (!config) return defaultValue;
+		const value = config[key];
+		return value === undefined ? defaultValue : value;
+	}
 }
 
 //获取最终的touch位置

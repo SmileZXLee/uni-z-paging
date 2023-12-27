@@ -361,15 +361,11 @@ export default {
 					scrollTop,
 					duration: animate ? 100 : 0
 				});
-				if (this.pageScrollTop !== -1) {
-					this.pageScrollTop = scrollTop;
-				}
 			} else {
 				if (addScrollTop) {
 				   y += this.oldScrollTop; 
 				}
 				this.scrollTop = y - offset;
-				this.oldScrollTop = this.scrollTop;
 			}
 		},
 		//scroll-view滚动中

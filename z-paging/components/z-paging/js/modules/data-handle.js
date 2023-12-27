@@ -26,9 +26,7 @@ export default {
 		//为保证数据一致，设置当前tab切换时的标识key，并在complete中传递相同key，若二者不一致，则complete将不会生效
 		dataKey: {
 			type: [Number, String, Object],
-			default: function() {
-				return u.gc('dataKey', null);
-			},
+			default: u.gc('dataKey', null),
 		},
 		//使用缓存，若开启将自动缓存第一页的数据，默认为否。请注意，因考虑到切换tab时不同tab数据不同的情况，默认仅会缓存组件首次加载时第一次请求到的数据，后续的下拉刷新操作不会更新缓存。
 		useCache: {

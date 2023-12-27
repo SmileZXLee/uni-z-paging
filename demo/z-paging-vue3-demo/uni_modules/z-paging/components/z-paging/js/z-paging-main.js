@@ -93,9 +93,7 @@ export default {
 		//设置z-paging的style，部分平台(如微信小程序)无法直接修改组件的style，可使用此属性代替
 		pagingStyle: {
 			type: Object,
-			default: function() {
-				return u.gc('pagingStyle', {});
-			},
+			default: u.gc('pagingStyle', {}),
 		},
 		//z-paging的高度，优先级低于pagingStyle中设置的height；传字符串，如100px、100rpx、100%
 		height: {
@@ -115,9 +113,7 @@ export default {
 		//设置z-paging的容器(插槽的父view)的style
 		pagingContentStyle: {
 			type: Object,
-			default: function() {
-				return u.gc('pagingContentStyle', {});
-			},
+			default: u.gc('pagingContentStyle', {}),
 		},
 		//z-paging是否自动高度，若自动高度则会自动铺满屏幕
 		autoHeight: {
