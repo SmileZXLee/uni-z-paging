@@ -27,12 +27,12 @@
 }
 
 .zp-loading-image-android-rpx {
-	width: 32rpx;
-	height: 32rpx;
+	width: 34rpx;
+	height: 34rpx;
 }
 .zp-loading-image-android-px {
-	width: 16px;
-	height: 16px;
+	width: 17px;
+	height: 17px;
 }
 
 /* #ifndef APP-NVUE */

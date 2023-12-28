@@ -449,6 +449,6 @@ export default {
 		_offEmit(){
 			uni.$off(c.errorUpdateKey);
 			uni.$off(c.completeUpdateKey);
-		}
+		},
 	},
 };

@@ -7,9 +7,9 @@
 <template>
 	<view :class="{'zp-container':true,'zp-container-fixed':emptyViewFixed}" :style="[finalEmptyViewStyle]" @click="emptyViewClick">
 		<view class="zp-main">
-			<image v-if="!emptyViewImg.length" :class="`zp-main-image-${unit}`" :style="[emptyViewImgStyle]" :src="emptyImg" />
-			<image v-else :class="`zp-main-image-${unit}`" mode="aspectFit" :style="[emptyViewImgStyle]" :src="emptyViewImg" />
-			<text :class="`zp-main-title zp-main-title-${unit}`" :style="[emptyViewTitleStyle]">{{emptyViewText}}</text>
+			<image v-if="!emptyViewImg.length" :class="{'zp-main-image-rpx':unit==='rpx','zp-main-image-px':unit==='px'}" :style="[emptyViewImgStyle]" :src="emptyImg" />
+			<image v-else :class="{'zp-main-image-rpx':unit==='rpx','zp-main-image-px':unit==='px'}" mode="aspectFit" :style="[emptyViewImgStyle]" :src="emptyViewImg" />
+			<text class="zp-main-title" :class="{'zp-main-title-rpx':unit==='rpx','zp-main-title-px':unit==='px'}" :style="[emptyViewTitleStyle]">{{emptyViewText}}</text>
 			<text v-if="showEmptyViewReload" class="zp-main-error-btn" :style="[emptyViewReloadStyle]" @click.stop="reloadClick">{{emptyViewReloadText}}</text>
 		</view>
 	</view>

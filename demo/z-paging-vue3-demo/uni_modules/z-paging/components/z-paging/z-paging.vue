@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-v2.6.7 (2023-12-27)
+v2.6.8 (2023-12-28)
 by ZXLee
 -->
 <!-- 文档地址：https://z-paging.zxlee.cn -->
@@ -228,7 +228,7 @@ by ZXLee
 								<text v-if="loadingStatus!==M.Loading" @click="_onScrollToUpper"
 									:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
 								<view>
-									<loading-indicator v-if="loadingStatus===M.Loading" class="zp-line-loading-image" :class="`zp-line-loading-image-${unit}`" animating />
+									<loading-indicator v-if="loadingStatus===M.Loading" class="zp-line-loading-image" :class="{'zp-line-loading-image-rpx':unit==='rpx','zp-line-loading-image-px':unit==='px'}" animating />
 								</view>
 							</view>
 						</view>
