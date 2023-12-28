@@ -5,7 +5,7 @@
 			<view class="zp-r-left">
 				<image v-if="status!==R.Loading" :class="leftImageClass" :style="[leftImageStyle,imgStyle]" :src="leftImageSrc" />
 				<!-- #ifndef APP-NVUE -->
-				<image v-else :class="{'zp-line-loading-image':refreshingAnimated,'zp-r-left-image':true}" :style="[leftImageStyle,imgStyle]" :src="leftImageSrc" />
+				<image v-else :class="{'zp-line-loading-image':refreshingAnimated,'zp-r-left-image':true,'zp-r-left-image-pre-size-rpx':unit==='rpx','zp-r-left-image-pre-size-px':unit==='px'}" :style="[leftImageStyle,imgStyle]" :src="leftImageSrc" />
 				<!-- #endif -->
 				<!-- #ifdef APP-NVUE -->
 				<view v-else :style="[{'margin-right':showUpdateTime?addUnit(18,unit):addUnit(12, unit)}]">
@@ -59,8 +59,9 @@
 				return this.statusTextArr[this.status] || this.defaultText;
 			},
 			leftImageClass() {
-				if (this.status === this.R.Complete) return 'zp-r-left-image-pre-size';
-				return `zp-r-left-image zp-r-left-image-pre-size ${this.status === this.R.Default ? 'zp-r-arrow-down' : 'zp-r-arrow-top'}`;
+				const preSizeClass = `zp-r-left-image-pre-size-${this.unit}`;
+				if (this.status === this.R.Complete) return preSizeClass;
+				return `zp-r-left-image ${preSizeClass} ${this.status === this.R.Default ? 'zp-r-arrow-down' : 'zp-r-arrow-top'}`;
 			},
 			leftImageStyle() {
 				const showUpdateTime = this.showUpdateTime;
@@ -147,10 +148,18 @@
 		color: #666666;
 	}
 	
-	.zp-r-left-image-pre-size {
+	.zp-r-left-image-pre-size-rpx {
 		/* #ifndef APP-NVUE */
-		width: 30rpx;
-		height: 30rpx;
+		width: 32rpx;
+		height: 32rpx;
+		overflow: hidden;
+		/* #endif */
+	}
+	
+	.zp-r-left-image-pre-size-px {
+		/* #ifndef APP-NVUE */
+		width: 16px;
+		height: 16px;
 		overflow: hidden;
 		/* #endif */
 	}

@@ -273,9 +273,6 @@ export default {
 			}
 			return pagingStyle;
 		},
-		finalLowerThreshold() {
-			return u.convertToPx(this.lowerThreshold);
-		},
 		finalPagingContentStyle() {
 			if (this.contentZIndex != 1) {
 				this.pagingContentStyle['z-index'] = this.contentZIndex;

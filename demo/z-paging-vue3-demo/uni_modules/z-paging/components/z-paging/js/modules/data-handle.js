@@ -98,6 +98,11 @@ export default {
 			type: Boolean,
 			default: u.gc('useChatRecordMode', false)
 		},
+		//使用聊天记录模式时滚动到顶部后，列表垂直移动偏移距离。默认0rpx。单位px
+		chatRecordMoreOffset: {
+			type: [Number, String],
+			default: u.gc('chatRecordMoreOffset', '0rpx')
+		},
 		//使用聊天记录模式时是否自动隐藏键盘：在用户触摸列表时候自动隐藏键盘，默认为是
 		autoHideKeyboardWhenChat: {
 			type: Boolean,
@@ -173,6 +178,9 @@ export default {
 		},
 		finalCacheKey() {
 			return this.cacheKey ? `${c.cachePrefixKey}-${this.cacheKey}` : null; 
+		},
+		finalChatRecordMoreOffset() {
+			return u.convertToPx(this.chatRecordMoreOffset);
 		},
 		isFirstPage() {
 			return this.pageNo === this.defaultPageNo;
@@ -611,9 +619,11 @@ export default {
 				this.totalData = newVal;
 				if (this.useChatRecordMode) {
 					// #ifndef APP-NVUE
-					this.$nextTick(() => {
-						this._scrollToBottom(false);
-					})
+					u.delay(() => {
+						this.$nextTick(() => {
+							this._scrollToBottom(false);
+						})
+					}, this.usePageScroll ? 0 : 10)
 					// #endif
 				}
 			} else {
@@ -629,7 +639,7 @@ export default {
 						this.privateScrollWithAnimation = 0;
 						this.$emit('update:chatIndex', idIndex);
 						this.$nextTick(() => {
-							this._scrollIntoView(idIndexStr, 30 + Math.max(0, this.cacheTopHeight), false, () => {
+							this._scrollIntoView(idIndexStr, 30 + this.finalChatRecordMoreOffset + Math.max(0, this.cacheTopHeight), false, () => {
 								this.$emit('update:chatIndex', 0);
 							});
 						})

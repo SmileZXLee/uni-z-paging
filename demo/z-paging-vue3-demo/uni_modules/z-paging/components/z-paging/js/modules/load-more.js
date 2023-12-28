@@ -147,6 +147,9 @@ export default {
 		finalLoadingMoreThemeStyle() {
 			return this.loadingMoreThemeStyle.length ? this.loadingMoreThemeStyle : this.defaultThemeStyle;
 		},
+		finalLowerThreshold() {
+			return u.convertToPx(this.lowerThreshold);
+		},
 		showLoadingMoreDefault() {
 			return this._showLoadingMore('Default');
 		},
