@@ -17,9 +17,7 @@ export default {
 		//nvue waterfall配置，仅在nvue中且nvueListIs=waterfall时有效，配置参数详情参见：https://uniapp.dcloud.io/component/waterfall
 		nvueWaterfallConfig: {
 			type: Object,
-			default: function() {
-				return u.gc('nvueWaterfallConfig', {});
-			}
+			default: u.gc('nvueWaterfallConfig', {})
 		},
 		//nvue 控制是否回弹效果，iOS不支持动态修改
 		nvueBounce: {
@@ -39,9 +37,7 @@ export default {
 		//nvue中refresh组件的样式
 		nvueRefresherStyle: {
 			type: Object,
-			default: function() {
-				return u.gc('nvueRefresherStyle', {});
-			}
+			default: u.gc('nvueRefresherStyle', {})
 		},
 		//nvue中是否按分页模式(类似竖向swiper)显示List，默认为false
 		nvuePagingEnabled: {
