@@ -2,6 +2,7 @@
 <template>
 	<view class="zp-l-container" :class="{'zp-l-container-rpx':c.unit==='rpx','zp-l-container-px':c.unit==='px'}" :style="[c.customStyle]" @click="doClick">
 		<template v-if="!c.hideContent">
+			<!-- 底部加载更多loading -->
 			<text v-if="c.showNoMoreLine&&finalStatus===M.NoMore" :class="{'zp-l-line-rpx':c.unit==='rpx','zp-l-line-px':c.unit==='px'}" :style="[{backgroundColor:zTheme.line[ts]},c.noMoreLineCustomStyle]" />
 			<!-- #ifndef APP-NVUE -->
 			<image v-if="finalStatus===M.Loading&&!!c.loadingIconCustomImage"
@@ -10,10 +11,12 @@
 				:class="{'zp-line-loading-image-rpx':c.unit==='rpx','zp-line-loading-image-px':c.unit==='px'}" :style="[c.iconCustomStyle]" :src="zTheme.flower[ts]" />
 			<!-- #endif -->
 			<!-- #ifdef APP-NVUE -->
+			<!-- nvue中底部加载更多loading使用系统自带的 -->
 			<view>
 				<loading-indicator v-if="finalStatus===M.Loading&&finalLoadingIconType!=='circle'" :class="{'zp-line-loading-image-rpx':c.unit==='rpx','zp-line-loading-image-px':c.unit==='px'}" :style="[{color:zTheme.indicator[ts]}]" :animating="true" />
 			</view>
 			<!-- #endif -->
+			<!-- 底部加载更多状态文字 -->
 			<text v-if="finalStatus===M.Loading&&finalLoadingIconType==='circle'&&!c.loadingIconCustomImage.length"
 				class="zp-l-circle-loading-view" :class="{'zp-l-circle-loading-view-rpx':c.unit==='rpx','zp-l-circle-loading-view-px':c.unit==='px'}" :style="[{borderColor:zTheme.circleBorder[ts],borderTopColor:zTheme.circleBorderTop[ts]},c.iconCustomStyle]" />
 			<text :class="{'zp-l-text-rpx':c.unit==='rpx','zp-l-text-px':c.unit==='px'}" :style="[{color:zTheme.title[ts]},c.titleCustomStyle]">{{ownLoadingMoreText}}</text>
@@ -44,17 +47,21 @@
 			ts() {
 				return this.c.defaultThemeStyle;
 			},
+			// 底部加载更多配置
 			c() {
 				return this.zConfig || {};
 			},
+			// 底部加载更多文字
 			ownLoadingMoreText() {
 				const statusTextArr = [this.c.defaultText,this.c.loadingText,this.c.noMoreText,this.c.failText];
 				return statusTextArr[this.finalStatus];
 			},
+			// 底部加载更多状态
 			finalStatus() {
 				if (this.c.defaultAsLoading && this.c.status === this.M.Default) return this.M.Loading;
 				return this.c.status;
 			},
+			// 加载更多icon类型
 			finalLoadingIconType() {
 				// #ifdef APP-NVUE
 				return 'flower';
@@ -63,6 +70,7 @@
 			}
 		},
 		methods: {
+			// 点击了加载更多
 			doClick() {
 				this.$emit('doClick');
 			}

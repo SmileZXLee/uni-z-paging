@@ -72,11 +72,12 @@ export default {
 				this.systemInfo = uni.getSystemInfoSync();
 			})
 		},
-		//获取节点尺寸
+		// 获取节点尺寸
 		_getNodeClientRect(select, inDom = true, scrollOffset = false) {
 			if (this.isReadyDestroy) {
 				return Promise.resolve(false);
 			};
+			// nvue中获取节点信息
 			// #ifdef APP-NVUE
 			select = select.replace(/[.|#]/g, '');
 			const ref = this.$refs[select];
@@ -91,6 +92,8 @@ export default {
 			});
 			return;
 			// #endif
+			
+			// vue中获取节点信息
 			//#ifdef MP-ALIPAY
 			inDom = false;
 			//#endif
@@ -102,7 +105,7 @@ export default {
 				});
 			});
 		},
-		//获取slot="left"和slot="right"宽度并且更新布局
+		// 获取slot="left"和slot="right"宽度并且更新布局
 		_updateLeftAndRightWidth(targetStyle, parentNodePrefix) {
 			this.$nextTick(() => {
 				let delayTime = 0;
@@ -118,7 +121,7 @@ export default {
 				}, delayTime)
 			})
 		},
-		//通过获取css设置的底部安全区域占位view高度设置bottom距离
+		// 通过获取css设置的底部安全区域占位view高度设置bottom距离
 		_getCssSafeAreaInsetBottom(success) {
 			this._getNodeClientRect('.zp-safe-area-inset-bottom').then(res => {
 				this.cssSafeAreaInsetBottom = res ? res[0].height : -1;

@@ -3,10 +3,13 @@
 	<view style="height: 100%;">
 		<view :class="showUpdateTime?'zp-r-container zp-r-container-padding':'zp-r-container'">
 			<view class="zp-r-left">
+				<!-- 非加载中(继续下拉刷新、松手立即刷新状态图片) -->
 				<image v-if="status!==R.Loading" :class="leftImageClass" :style="[leftImageStyle,imgStyle]" :src="leftImageSrc" />
+				<!-- 加载状态图片 -->
 				<!-- #ifndef APP-NVUE -->
 				<image v-else :class="{'zp-line-loading-image':refreshingAnimated,'zp-r-left-image':true,'zp-r-left-image-pre-size-rpx':unit==='rpx','zp-r-left-image-pre-size-px':unit==='px'}" :style="[leftImageStyle,imgStyle]" :src="leftImageSrc" />
 				<!-- #endif -->
+				<!-- 在nvue中，加载状态loading使用系统loading -->
 				<!-- #ifdef APP-NVUE -->
 				<view v-else :style="[{'margin-right':showUpdateTime?addUnit(18,unit):addUnit(12, unit)}]">
 					<loading-indicator :class="isIos?{'zp-loading-image-ios-rpx':unit==='rpx','zp-loading-image-ios-px':unit==='px'}:{'zp-loading-image-android-rpx':unit==='rpx','zp-loading-image-android-px':unit==='px'}" 
@@ -14,8 +17,11 @@
 				</view>
 				<!-- #endif -->
 			</view>
+			<!-- 右侧文字内容 -->
 			<view class="zp-r-right">
+				<!-- 右侧下拉刷新状态文字 -->
 				<text class="zp-r-right-text" :style="[rightTextStyle,titleStyle]">{{currentTitle}}</text>
+				<!-- 右侧下拉刷新时间文字 -->
 				<text v-if="showUpdateTime&&refresherTimeText.length" class="zp-r-right-text" :class="{'zp-r-right-time-text-rpx':unit==='rpx','zp-r-right-time-texts-px':unit==='px'}" :style="[rightTextStyle,updateTimeStyle]">
 					{{refresherTimeText}}
 				</text>
@@ -51,23 +57,28 @@
 			ts() {
 				return this.defaultThemeStyle;
 			},
+			// 当前状态数组
 			statusTextArr() {
 				this.updateTime();
-				return [this.defaultText,this.pullingText,this.refreshingText,this.completeText];
+				return [this.defaultText, this.pullingText, this.refreshingText, this.completeText];
 			},
+			// 当前状态文字
 			currentTitle() {
 				return this.statusTextArr[this.status] || this.defaultText;
 			},
+			// 左侧图片class
 			leftImageClass() {
 				const preSizeClass = `zp-r-left-image-pre-size-${this.unit}`;
 				if (this.status === this.R.Complete) return preSizeClass;
 				return `zp-r-left-image ${preSizeClass} ${this.status === this.R.Default ? 'zp-r-arrow-down' : 'zp-r-arrow-top'}`;
 			},
+			// 左侧图片style
 			leftImageStyle() {
 				const showUpdateTime = this.showUpdateTime;
 				const size = showUpdateTime ? u.addUnit(36, this.unit) : u.addUnit(32, this.unit);
 				return {width: size,height: size,'margin-right': showUpdateTime ? u.addUnit(20, this.unit) : u.addUnit(9, this.unit)};
 			},
+			// 左侧图片src
 			leftImageSrc() {
 				const R = this.R;
 				const status = this.status;
@@ -87,6 +98,7 @@
 				}
 				return '';
 			},
+			// 右侧文字style
 			rightTextStyle() {
 				let stl = {};
 				// #ifdef APP-NVUE
@@ -99,9 +111,11 @@
 			}
 		},
 		methods: {
+			// 添加单位
 			addUnit(value, unit) {
 				return u.addUnit(value, unit);
 			},
+			// 更新下拉刷新时间
 			updateTime() {
 				if (this.showUpdateTime) {
 					this.refresherTimeText = u.getRefesrherFormatTimeByKey(this.updateTimeKey, this.updateTimeTextMap);

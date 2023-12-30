@@ -704,7 +704,7 @@ export default {
 		_saveLocalCache(data) {
 			uni.setStorageSync(this.finalCacheKey, data);
 		},
-		//通过缓存数据填充列表数据
+		// 通过缓存数据填充列表数据
 		_setListByLocalCache() {
 			this.totalData = uni.getStorageSync(this.finalCacheKey) || [];
 			this.isSettingCacheList = true;

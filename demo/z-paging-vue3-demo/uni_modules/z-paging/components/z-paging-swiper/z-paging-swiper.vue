@@ -161,10 +161,6 @@
 		/* #endif */
 	}
 	
-	.zp-right{
-		right: 0;
-	}
-	
 	.zp-swiper-item {
 		height: 100%;
 	}

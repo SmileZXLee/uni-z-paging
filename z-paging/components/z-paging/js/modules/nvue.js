@@ -9,47 +9,47 @@ const weexAnimation = weex.requireModule('animation');
 export default {
 	props: {
 		// #ifdef APP-NVUE
-		//nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list
+		// nvue中修改列表类型，可选值有list、waterfall和scroller，默认为list
 		nvueListIs: {
 			type: String,
 			default: u.gc('nvueListIs', 'list')
 		},
-		//nvue waterfall配置，仅在nvue中且nvueListIs=waterfall时有效，配置参数详情参见：https://uniapp.dcloud.io/component/waterfall
+		// nvue waterfall配置，仅在nvue中且nvueListIs=waterfall时有效，配置参数详情参见：https://uniapp.dcloud.io/component/waterfall
 		nvueWaterfallConfig: {
 			type: Object,
 			default: u.gc('nvueWaterfallConfig', {})
 		},
-		//nvue 控制是否回弹效果，iOS不支持动态修改
+		// nvue 控制是否回弹效果，iOS不支持动态修改
 		nvueBounce: {
 			type: Boolean,
 			default: u.gc('nvueBounce', true)
 		},
-		//nvue中通过代码滚动到顶部/底部时，是否加快动画效果(无滚动动画时无效)，默认为否
+		// nvue中通过代码滚动到顶部/底部时，是否加快动画效果(无滚动动画时无效)，默认为否
 		nvueFastScroll: {
 			type: Boolean,
 			default: u.gc('nvueFastScroll', false)
 		},
-		//nvue中list的id
+		// nvue中list的id
 		nvueListId: {
 			type: String,
 			default: u.gc('nvueListId', '')
 		},
-		//nvue中refresh组件的样式
+		// nvue中refresh组件的样式
 		nvueRefresherStyle: {
 			type: Object,
 			default: u.gc('nvueRefresherStyle', {})
 		},
-		//nvue中是否按分页模式(类似竖向swiper)显示List，默认为false
+		// nvue中是否按分页模式(类似竖向swiper)显示List，默认为false
 		nvuePagingEnabled: {
 			type: Boolean,
 			default: u.gc('nvuePagingEnabled', false)
 		},
-		//是否隐藏nvue列表底部的tagView，此view用于标识滚动到底部位置，若隐藏则滚动到底部功能将失效，在nvue中实现吸顶+swiper功能时需将最外层z-paging的此属性设置为true。默认为否
+		// 是否隐藏nvue列表底部的tagView，此view用于标识滚动到底部位置，若隐藏则滚动到底部功能将失效，在nvue中实现吸顶+swiper功能时需将最外层z-paging的此属性设置为true。默认为否
 		hideNvueBottomTag: {
 			type: Boolean,
 			default: u.gc('hideNvueBottomTag', false)
 		},
-		//nvue中控制onscroll事件触发的频率：表示两次onscroll事件之间列表至少滚动了10px。注意，将该值设置为较小的数值会提高滚动事件采样的精度，但同时也会降低页面的性能
+		// nvue中控制onscroll事件触发的频率：表示两次onscroll事件之间列表至少滚动了10px。注意，将该值设置为较小的数值会提高滚动事件采样的精度，但同时也会降低页面的性能
 		offsetAccuracy: {
 			type: Number,
 			default: u.gc('offsetAccuracy', 10)
@@ -143,7 +143,7 @@ export default {
 	},
 	methods: {
 		// #ifdef APP-NVUE
-		//列表滚动时触发
+		// 列表滚动时触发
 		_nOnScroll(e) {
 			this.$emit('scroll', e);
 			const contentOffsetY = -e.contentOffset.y;
@@ -151,21 +151,21 @@ export default {
 			this.nListIsDragging = e.isDragging;
 			this._checkShouldShowBackToTop(contentOffsetY, contentOffsetY - 1);
 		},
-		//下拉刷新刷新中
+		// 下拉刷新刷新中
 		_nOnRrefresh() {
 			if (this.nShowRefresherReveal) return;
 			this.nRefresherLoading = true;
 			this.refresherStatus = Enum.Refresher.Loading;
 			this._doRefresherLoad();
 		},
-		//下拉刷新下拉中
+		// 下拉刷新下拉中
 		_nOnPullingdown(e) {
 			if (this.refresherStatus === Enum.Refresher.Loading || (this.isIos && !this.nListIsDragging)) return;
 			this._emitTouchmove(e);
 			const { viewHeight, pullingDistance } = e;
 			this.refresherStatus = pullingDistance >= viewHeight ? Enum.Refresher.ReleaseToRefresh : Enum.Refresher.Default;
 		},
-		//下拉刷新结束
+		// 下拉刷新结束
 		_nRefresherEnd(doEnd = true) {
 			if (doEnd) {
 			   this._nDoRefresherEndAnimation(0, -this.nShowRefresherRevealHeight); 
@@ -173,7 +173,7 @@ export default {
 			   this.nRefresherLoading = false;
 			}
 		},
-		//执行主动触发下拉刷新动画
+		// 执行主动触发下拉刷新动画
 		_nDoRefresherEndAnimation(height, translateY, animate = true, checkStack = true) {
 			this._cleanRefresherCompleteTimeout();
 			this._cleanRefresherEndTimeout();
