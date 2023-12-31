@@ -39,8 +39,8 @@
 				}],
 				applicationLocale: '',
 				
-				//------------------------ z-paging分页相关 -----------------------
-				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
+				// ------------------------ z-paging分页相关 -----------------------
+				// v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
 				dataList: [],
 				tabList: ['测试1', '测试2', '测试3', '测试4'],
 				tabIndex: 0,
@@ -56,7 +56,7 @@
 			})
 		},
 		methods: {
-			//点击了切换语言
+			// 点击了切换语言
 			languageSwitch() {
 				uni.showActionSheet({
 					itemList: this.locales.map(item => item.text),
@@ -68,28 +68,28 @@
 				});
 			},
 			
-			//------------------------ z-paging分页相关 -----------------------
+			// ------------------------ z-paging分页相关 -----------------------
 			tabChange(index) {
 				this.tabIndex = index;
-				//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
+				// 当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
 				this.$refs.paging.reload();
 			},
 			queryList(pageNo, pageSize) {
-				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
-				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
-				//模拟请求服务器获取分页数据，请替换成自己的网络请求
+				// 组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
+				// 这里的pageNo和pageSize会自动计算好，直接传给服务器即可
+				// 模拟请求服务器获取分页数据，请替换成自己的网络请求
 				const params = {
 					pageNo: pageNo,
 					pageSize: pageSize,
 					type: this.tabIndex + 1
 				}
 				this.$request.queryList(params).then(res => {
-					//将请求的结果数组传递给z-paging
+					// 将请求的结果数组传递给z-paging
 					this.$refs.paging.complete(res.data.list);
 				}).catch(res => {
-					//如果请求失败写this.$refs.paging.complete(false);
-					//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
-					//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
+					// 如果请求失败写this.$refs.paging.complete(false);
+					// 注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
+					// 在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
 					this.$refs.paging.complete(false);
 				})
 			},

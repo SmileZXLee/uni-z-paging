@@ -27,15 +27,15 @@
 			};
 		},
 		methods: {
-			//tabs通知swiper切换
+			// tabs通知swiper切换
 			tabsChange(index) {
 				this.current = index;
 			},
-			//swiper滑动中
+			// swiper滑动中
 			swiperTransition(e) {
 				this.$refs.tabs.setDx(e.detail.dx);
 			},
-			//swiper滑动结束
+			// swiper滑动结束
 			swiperAnimationfinish(e) {
 				this.current = e.detail.current;
 				this.$refs.tabs.unlockDx();

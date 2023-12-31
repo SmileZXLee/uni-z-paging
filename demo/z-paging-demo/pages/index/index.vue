@@ -49,9 +49,9 @@
 			// #endif
 		},
 		methods: {
-			//下拉刷新被触发
+			// 下拉刷新被触发
 			onRefresh() {
-				//以告知z-paging下拉刷新结束，这样才可以开始下一次的下拉刷新
+				// 以告知z-paging下拉刷新结束，这样才可以开始下一次的下拉刷新
 				setTimeout(() => {
 					//1.5秒之后停止刷新动画
 					this.$refs.paging.complete();

@@ -18,23 +18,23 @@
 	export default {
 		data() {
 			return {
-				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
+				// v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
 				dataList: [],
-				//当前组件是否已经加载过了
+				// 当前组件是否已经加载过了
 				firstLoaded: false,
-				//是否滚动到当前页
+				// 是否滚动到当前页
 				isCurrentPage: false
 			}
 		},
 		props:{
-			//当前组件的index，也就是当前组件是swiper中的第几个
+			// 当前组件的index，也就是当前组件是swiper中的第几个
 			tabIndex: {
 				type: Number,
 				default: function(){
 					return 0
 				}
 			},
-			//当前swiper切换到第几个index
+			// 当前swiper切换到第几个index
 			currentIndex: {
 				type: Number,
 				default: function(){
@@ -46,7 +46,7 @@
 			currentIndex: {
 				handler(newVal) {
 					if(newVal === this.tabIndex){
-						//懒加载，当滑动到当前的item时，才去加载
+						// 懒加载，当滑动到当前的item时，才去加载
 						if(!this.firstLoaded){
 							// 这里需要延迟渲染z-paging的原因是为了避免在一些平台上立即渲染可能引发的底层报错问题
 							this.$nextTick(() => {
@@ -62,9 +62,9 @@
 		},
 		methods: {
 			queryList(pageNo, pageSize) {
-				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
-				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
-				//模拟请求服务器获取分页数据，请替换成自己的网络请求
+				// 组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
+				// 这里的pageNo和pageSize会自动计算好，直接传给服务器即可
+				// 模拟请求服务器获取分页数据，请替换成自己的网络请求
 				const params = {
 					pageNo: pageNo,
 					pageSize: pageSize,
@@ -75,9 +75,9 @@
 					this.$refs.paging.complete(res.data.list);
 					this.firstLoaded = true;
 				}).catch(res => {
-					//如果请求失败写this.$refs.paging.complete(false);
-					//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
-					//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
+					// 如果请求失败写this.$refs.paging.complete(false);
+					// 注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
+					// 在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
 					this.$refs.paging.complete(false);
 				})
 			},

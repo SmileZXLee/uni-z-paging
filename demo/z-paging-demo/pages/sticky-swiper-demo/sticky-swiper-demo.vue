@@ -59,32 +59,32 @@
 		},
 		methods: {
 			queryList() {
-				//触发了下拉刷新，通过当前tabIndex对应的列表下拉刷新
+				// 触发了下拉刷新，通过当前tabIndex对应的列表下拉刷新
 				this.$refs.swiperItem[this.current].reload(() => {
-					//当当前显示的列表刷新结束，结束当前页面的刷新状态
+					// 当当前显示的列表刷新结束，结束当前页面的刷新状态
 					this.$refs.pagePaging.endRefresh();
 				});
 			},
 			scroll(e) {
 				const scrollTop = e.detail.scrollTop;
-				//如果当前页面的scroll-view的scrollTop大于等于headerView的高度，则代表吸顶了
+				// 如果当前页面的scroll-view的scrollTop大于等于headerView的高度，则代表吸顶了
 				if (scrollTop < this.headerHeight) {
-					//还没吸顶
-					//禁止子组件的z-paging(scroll-view)滚动，当前页面的z-paging(scroll-view)允许滚动
+					// 还没吸顶
+					// 禁止子组件的z-paging(scroll-view)滚动，当前页面的z-paging(scroll-view)允许滚动
 					this.scrollable = true;
 					this.$refs.swiperItem[this.current].setScrollable(false);
 				} else {
-					//吸顶了
-					//允许子组件的z-paging(scroll-view)滚动，当前页面的z-paging(scroll-view)禁止滚动
+					// 吸顶了
+					// 允许子组件的z-paging(scroll-view)滚动，当前页面的z-paging(scroll-view)禁止滚动
 					this.scrollable = false;
 					this.$refs.swiperItem[this.current].setScrollable(true);
 				}
 			},
-			//子组件设置当前页面的列表是否可以滚动
+			// 子组件设置当前页面的列表是否可以滚动
 			setScrollable(scrollable) {
 				this.scrollable = scrollable;
 			},
-			//子组件设置当前页面进入吸顶状态并禁止滚动
+			// 子组件设置当前页面进入吸顶状态并禁止滚动
 			setStickyed() {
 				this.scrollable = false;
 				this.$refs.pagePaging.scrollToY(this.headerHeight);
@@ -93,11 +93,11 @@
 			tabChange(index) {
 				this.current = index;
 			},
-			//swiper滑动中
+			// swiper滑动中
 			swiperTransition(e) {
 				this.$refs.tabs.setDx(e.detail.dx);
 			},
-			//swiper滑动结束
+			// swiper滑动结束
 			swiperAnimationfinish(e) {
 				this.current = e.detail.current;
 				this.$refs.swiperItem[this.current].setScrollable(!this.scrollable);

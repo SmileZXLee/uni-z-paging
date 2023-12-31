@@ -17,7 +17,7 @@ ZPInterceptor.handleQuery((pageNo, pageSize, from)=>{
 */
 
 // --------------------------全局配置z-paging属性---------------------------
-//此方案兼容vue2/3、vue/nvue；但是由于在vue3+appVue端，props默认值读取在main.js之前执行，因此在vue3+appVue端，此方案无效。请在@/uni_modules/z-paging/components/config/index.js中配置
+// 【方案1】(推荐)在main.js中添加z-paging配置(具体位置没有要求，确保初始化项目执行到即可)
 /*
 uni.$zp = {
 	config: {
@@ -28,7 +28,10 @@ uni.$zp = {
 		//...
 	}
 }
+
+// 【方案二】 在文件 z-paging/config/index.js中进行配置，但是需要注意更新插件时要避免被覆盖。
 */
+
 
 
 // #ifndef VUE3

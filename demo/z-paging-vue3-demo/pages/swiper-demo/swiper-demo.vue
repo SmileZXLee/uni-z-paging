@@ -30,17 +30,17 @@
 	const tabList = ref(['测试1','测试2','测试3','测试4']);
 	
 	
-	//tabs通知swiper切换
+	// tabs通知swiper切换
 	const tabsChange = (index) => {
 		current.value = index;
 	}
 	
-	//swiper滑动中
+	// swiper滑动中
 	const swiperTransition = (e) => {
 		tabs.value.setDx(e.detail.dx);
 	}
 	
-	//swiper滑动结束
+	// swiper滑动结束
 	const swiperAnimationfinish = (e) => {
 		current.value = e.detail.current;
 		tabs.value.unlockDx();

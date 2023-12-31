@@ -39,35 +39,35 @@
 			}
 		},
 		methods: {
-			//tabs通知swiper切换
+			// tabs通知swiper切换
 			tabChange(index) {
 				this._setCurrent(index);
 			},
-			//下拉刷新时，通知当前显示的列表进行reload操作
+			// 下拉刷新时，通知当前显示的列表进行reload操作
 			onRefresh(){
 				this.$refs.swiperList[this.current].reload(() => {
 					//当当前显示的列表刷新结束，结束当前页面的刷新状态
 					this.$refs.pagePaging.endRefresh();
 				});
 			},
-			//当滚动到底部时，通知当前显示的列表加载更多
+			// 当滚动到底部时，通知当前显示的列表加载更多
 			scrolltolower(){
 				this.$refs.swiperList[this.current].doLoadMore();
 			},
-			//swiper滑动中
+			// swiper滑动中
 			swiperTransition(e) {
 				this.$refs.tabs.setDx(e.detail.dx);
 			},
-			//swiper滑动结束
+			// swiper滑动结束
 			swiperAnimationfinish(e) {
 				this._setCurrent(e.detail.current);
 				this.$refs.tabs.unlockDx();
 			},
-			//设置swiper的高度
+			// 设置swiper的高度
 			heightChanged(height){
 				if(height === 0){
-					//默认swiper高度为屏幕可用高度-tabsView高度-slot="top"内view的高度
-					//注意：uni.upx2px(80)不是固定的，它等于slot="top"内view的高度，如果slot="top"内view的高度不为80rpx，则需要修改这个值
+					// 默认swiper高度为屏幕可用高度-tabsView高度-slot="top"内view的高度
+					// 注意：uni.upx2px(80)不是固定的，它等于slot="top"内view的高度，如果slot="top"内view的高度不为80rpx，则需要修改这个值
 					height = uni.getSystemInfoSync().windowHeight - uni.upx2px(80);
 				}
 				this.swiperHeight = height;

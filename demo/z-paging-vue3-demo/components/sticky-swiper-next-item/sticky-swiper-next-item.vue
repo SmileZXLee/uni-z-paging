@@ -68,41 +68,41 @@
 		request.queryList(params).then(res => {
 			paging.value.complete(res.data.list);
 			hideEmptyView.value = false;
-			//请求结束，调用父组件的下拉刷新结束回调函数，使得父组件中的z-paging下拉刷新结束
+			// 请求结束，调用父组件的下拉刷新结束回调函数，使得父组件中的z-paging下拉刷新结束
 			if (completeFunc.value) {
 				completeFunc.value();
 			}
 		}).catch(res => {
 			paging.value.complete(false);
-			//请求结束，调用父组件的下拉刷新结束回调函数，使得父组件中的z-paging下拉刷新结束
+			// 请求结束，调用父组件的下拉刷新结束回调函数，使得父组件中的z-paging下拉刷新结束
 			if (completeFunc.value) {
 				completeFunc.value();
 			}
 		});
 	};
 	
-	//页面通知当前子组件刷新列表
+	// 页面通知当前子组件刷新列表
 	const reload = (tempCompleteFunc) => {
-		//先把父组件下拉刷新的回调函数存起来
+		// 先把父组件下拉刷新的回调函数存起来
 		completeFunc.value = tempCompleteFunc;
-		//调用z-paging的reload方法
+		// 调用z-paging的reload方法
 		paging.value.reload();
 	}
 	
-	//当列表高度改变时，通知页面的swiper同步更改高度
+	// 当列表高度改变时，通知页面的swiper同步更改高度
 	const contentHeightChanged = (height) => {
 		const finalHeight = dataList.value.length ? height : 0;
-		//限制内容最小高度为屏幕可见高度减z-tabs高度。注意，页面中有使用slot="top"插入的view，则此处的minHeight还应该减去slot="top"插入的view的高度
+		// 限制内容最小高度为屏幕可见高度减z-tabs高度。注意，页面中有使用slot="top"插入的view，则此处的minHeight还应该减去slot="top"插入的view的高度
 		const minHeight = uni.getSystemInfoSync().windowHeight - uni.upx2px(80);
 		emits('heightChanged',Math.max(finalHeight, minHeight));
 	}
 	
-	//页面通知当前子组件加载更多数据
+	// 页面通知当前子组件加载更多数据
 	const doLoadMore = () => {
 		paging.value.doLoadMore();
 	}
 	
-	//页面通知当前子组件清除数据
+	// 页面通知当前子组件清除数据
 	const clear = () => {
 		paging.value.clear();
 		hideEmptyView.value= true;

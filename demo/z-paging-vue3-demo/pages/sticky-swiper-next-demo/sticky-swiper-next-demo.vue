@@ -42,40 +42,40 @@
 	const tabList = ref(['测试1','测试2','测试3','测试4']);
 	let current = ref(0);
 	
-	//tabs通知swiper切换
+	// tabs通知swiper切换
 	const tabsChange = (index) => {
 		_setCurrent(index);
 	}
 	
-	//下拉刷新时，通知当前显示的列表进行reload操作
+	// 下拉刷新时，通知当前显示的列表进行reload操作
 	const onRefresh = () => {
 		swiperItems.value[current.value].reload(() => {
-			//当当前显示的列表刷新结束，结束当前页面的刷新状态
+			// 当当前显示的列表刷新结束，结束当前页面的刷新状态
 			pagePaging.value.complete([]);
 		});
 	}
 	
-	//当滚动到底部时，通知当前显示的列表加载更多
+	// 当滚动到底部时，通知当前显示的列表加载更多
 	const scrolltolower = () => {
 		swiperItems.value[current.value].doLoadMore();
 	}
 	
-	//swiper滑动中
+	// swiper滑动中
 	const swiperTransition = (e) => {
 		tabs.value.setDx(e.detail.dx);
 	}
 	
-	//swiper滑动结束
+	// swiper滑动结束
 	const swiperAnimationfinish = (e) => {
 		_setCurrent(e.detail.current);
 		tabs.value.unlockDx();
 	}
 	
-	//设置swiper的高度
+	// 设置swiper的高度
 	const heightChanged = (height) => {
 		if(height === 0){
-			//默认swiper高度为屏幕可用高度-tabsView高度-slot="top"内view的高度
-			//注意：uni.upx2px(80)不是固定的，它等于slot="top"内view的高度，如果slot="top"内view的高度不为80rpx，则需要修改这个值
+			// 默认swiper高度为屏幕可用高度-tabsView高度-slot="top"内view的高度
+			// 注意：uni.upx2px(80)不是固定的，它等于slot="top"内view的高度，如果slot="top"内view的高度不为80rpx，则需要修改这个值
 			height = uni.getSystemInfoSync().windowHeight - uni.upx2px(80);
 		}
 		swiperHeight.value = height;
@@ -83,7 +83,7 @@
 	
 	const _setCurrent = (tempCurrent) => {
 		if (tempCurrent !== current.value){
-			//切换tab时，将上一个tab的数据清空
+			// 切换tab时，将上一个tab的数据清空
 			swiperItems.value[current.value].clear();
 		}
 		current.value = tempCurrent;

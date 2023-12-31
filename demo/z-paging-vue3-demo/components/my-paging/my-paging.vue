@@ -51,46 +51,46 @@
 	const emits = defineEmits(['input', 'query'])
 	
 	const props = defineProps({
-		//用于接收父组件v-model所绑定的list的值
+		// 用于接收父组件v-model所绑定的list的值
 		value: {
 			type: Array,
 			default: function() {
 				return [];
 			}
 		},
-		//是否使用虚拟列表，默认为否
+		// 是否使用虚拟列表，默认为否
 		useVirtualList: {
 			type: Boolean,
 			default: false
 		},
-		//是否在z-paging内部循环渲染列表(内置列表)，默认为否。若use-virtual-list为true，则此项恒为true
+		// 是否在z-paging内部循环渲染列表(内置列表)，默认为否。若use-virtual-list为true，则此项恒为true
 		useInnerList: {
 			type: Boolean,
 			default: false
 		},
-		//内置列表cell的key名称，仅nvue有效，在nvue中开启use-inner-list时必须填此项
+		// 内置列表cell的key名称，仅nvue有效，在nvue中开启use-inner-list时必须填此项
 		cellKeyName: {
 			type: String,
 			default: ''
 		},
-		//innerList样式
+		// innerList样式
 		innerListStyle: {
 			type: Object,
 			default: function() {
 				return {};
 			}
 		},
-		//预加载的列表可视范围(列表高度)页数，默认为7，即预加载当前页及上下各7页的cell。此数值越大，则虚拟列表中加载的dom越多，内存消耗越大(会维持在一个稳定值)，但增加预加载页面数量可缓解快速滚动短暂白屏问题
+		// 预加载的列表可视范围(列表高度)页数，默认为7，即预加载当前页及上下各7页的cell。此数值越大，则虚拟列表中加载的dom越多，内存消耗越大(会维持在一个稳定值)，但增加预加载页面数量可缓解快速滚动短暂白屏问题
 		preloadPage: {
 			type: [Number, String],
 			default: 7
 		},
-		//虚拟列表cell高度模式，默认为fixed，也就是每个cell高度完全相同，将以第一个cell高度为准进行计算。可选值【dynamic】，即代表高度是动态非固定的，【dynamic】性能低于【fixed】。
+		// 虚拟列表cell高度模式，默认为fixed，也就是每个cell高度完全相同，将以第一个cell高度为准进行计算。可选值【dynamic】，即代表高度是动态非固定的，【dynamic】性能低于【fixed】。
 		cellHeightMode: {
 			type: String,
 			default: 'fixed'
 		},
-		//虚拟列表scroll取样帧率，默认为60，过高可能出现卡顿等问题
+		// 虚拟列表scroll取样帧率，默认为60，过高可能出现卡顿等问题
 		virtualScrollFps: {
 			type: [Number, String],
 			default: 60
@@ -116,34 +116,34 @@
 		// #endif
 	})
 	
-	//监听z-paging的@query事件，通过emit传递给页面
+	// 监听z-paging的@query事件，通过emit传递给页面
     const queryList = (pageNo, pageSize) => {
 		emits('query', pageNo, pageSize);
     }
 	
-	//接收页面触发的reload方法，传给z-paging
+	// 接收页面触发的reload方法，传给z-paging
 	const reload = (data) => {
 		paging.value.reload(data);
 	}
 	
-	//接收页面触发的complete方法，传给z-paging
+	// 接收页面触发的complete方法，传给z-paging
 	const complete = (data) => {
 		paging.value.complete(data);
 	}
 	
 	/*
-	//如果是使用页面滚动，则需要添加以下三个方法，注意页面那边要引入hooks，与使用页面滚动示例写法相同。
-	//接收页面触发的updatePageScrollTop方法，传给z-paging
+	// 如果是使用页面滚动，则需要添加以下三个方法，注意页面那边要引入hooks，与使用页面滚动示例写法相同。
+	// 接收页面触发的updatePageScrollTop方法，传给z-paging
 	const updatePageScrollTop = (data) => {
 		paging.value.updatePageScrollTop(data);
 	}
 	
-	//接收页面触发的pageReachBottom方法，传给z-paging
+	// 接收页面触发的pageReachBottom方法，传给z-paging
 	const pageReachBottom = () => {
 		paging.value.pageReachBottom();
 	}
 	
-	//接收页面触发的doChatRecordLoadMore方法，传给z-paging
+	// 接收页面触发的doChatRecordLoadMore方法，传给z-paging
 	const doChatRecordLoadMore = () => {
 		paging.value.doChatRecordLoadMore();
 	}

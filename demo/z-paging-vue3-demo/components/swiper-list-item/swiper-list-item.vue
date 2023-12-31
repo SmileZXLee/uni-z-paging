@@ -20,9 +20,9 @@
 
 	const paging = ref(null);
 	const dataList = ref([]);
-	//当前组件是否已经加载过了
+	// 当前组件是否已经加载过了
 	const firstLoaded = ref(false);
-	//是否滚动到当前页
+	// 是否滚动到当前页
 	const isCurrentPage = ref(false);
 
 	const props = defineProps({
@@ -38,7 +38,7 @@
 
 	watch(() => props.currentIndex, (newVal) => {
 		if (newVal === props.tabIndex) {
-			//懒加载，当滑动到当前的item时，才去加载
+			// 懒加载，当滑动到当前的item时，才去加载
 			if (!firstLoaded.value) {
 				// 这里需要延迟渲染z-paging的原因是为了避免在一些平台上立即渲染可能引发的底层报错问题
 				setTimeout(() => {

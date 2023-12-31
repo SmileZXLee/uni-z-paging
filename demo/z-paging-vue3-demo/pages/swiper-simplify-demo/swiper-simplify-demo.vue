@@ -40,23 +40,23 @@
     const swiperItem = ref(null);
 	const tabs = ref(null);
 	
-	//注意，这个数组是一个二维数组，数组里面包含的是所有tabs的list数组
+	// 注意，这个数组是一个二维数组，数组里面包含的是所有tabs的list数组
 	const dataList = ref([])
 	const current = ref(0);
 	const tabList = ref(['测试1','测试2','测试3','测试4']);
 	
 	
-	//tabs通知swiper切换
+	// tabs通知swiper切换
 	const tabsChange = (index) => {
 		current.value = index;
 	}
 	
-	//swiper滑动中
+	// swiper滑动中
 	const swiperTransition = (e) => {
 		tabs.value.setDx(e.detail.dx);
 	}
 	
-	//swiper滑动结束
+	// swiper滑动结束
 	const swiperAnimationfinish = (e) => {
 		current.value = e.detail.current;
 		tabs.value.unlockDx();
@@ -64,26 +64,26 @@
 	
 	// @query所绑定的方法不要自己调用！！需要刷新列表数据时，只需要调用paging.value.reload()即可
 	const queryList = (pageNo, pageSize) => {
-		//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
-		//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
-		//模拟请求服务器获取分页数据，请替换成自己的网络请求
+		// 组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
+		// 这里的pageNo和pageSize会自动计算好，直接传给服务器即可
+		// 模拟请求服务器获取分页数据，请替换成自己的网络请求
 		const params = {
 			pageNo: pageNo,
 			pageSize: pageSize,
 			type: current.value + 1
 		}
 		request.queryList(params).then(res => {
-			//将请求的结果数组传递给z-paging
+			// 将请求的结果数组传递给z-paging
 			swiperItem.value[current.value].complete(res.data.list);
 		}).catch(res => {
-			//如果请求失败写swiperItem.value[current.value].complete(false);
-			//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
-			//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
+			// 如果请求失败写swiperItem.value[current.value].complete(false);
+			// 注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
+			// 在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
 			swiperItem.value[current.value].complete(false);
 		})
 	}
 	
-	//更新当前对应tab的数据
+	// 更新当前对应tab的数据
 	const updateList = (data) => {
 		dataList.value[current.value] = data;
 	}

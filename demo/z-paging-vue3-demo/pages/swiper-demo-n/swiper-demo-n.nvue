@@ -29,7 +29,7 @@
 	const tabList = ref(['测试1','测试2','测试3','测试4']);
 	
 	
-	//swiper change时触发
+	// swiper change时触发
 	const swiperChange = (e) => {
 		// #ifndef APP-PLUS || H5 || MP-WEIXIN || MP-QQ
 		let tempCurrent = e.target.current || e.detail.current;
@@ -37,17 +37,17 @@
 		// #endif
 	}
 	
-	//tabs通知swiper切换
+	// tabs通知swiper切换
 	const tabsChange = (index) => {
 		current.value = index;
 	}
 	
-	//swiper滑动中
+	// swiper滑动中
 	const swiperTransition = (e) => {
 		tabs.value.setDx(e.detail.dx);
 	}
 	
-	//swiper滑动结束
+	// swiper滑动结束
 	const swiperAnimationfinish = (e) => {
 		current.value = e.detail.current;
 		tabs.value.unlockDx();

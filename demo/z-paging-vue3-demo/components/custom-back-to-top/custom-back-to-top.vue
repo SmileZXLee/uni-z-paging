@@ -34,16 +34,16 @@
 	});
 
 	function isScroll() {
-		//如果页面正在滚动，则显示current/total
+		// 如果页面正在滚动，则显示current/total
 		if (type.value === 0) {
 			type.value = 1;
 			timeout = setTimeout(() => {
-				//过1秒之后，显示返回顶部图片
+				// 过1秒之后，显示返回顶部图片
 				type.value = 0;
 			}, 1000);
 		} else {
 			if (timeout) {
-				//如果在1秒内，又触发了滚动事件，则清空定时器，重新计算时间
+				// 如果在1秒内，又触发了滚动事件，则清空定时器，重新计算时间
 				clearTimeout(timeout);
 				timeout = setTimeout(() => {
 					type.value = 0;

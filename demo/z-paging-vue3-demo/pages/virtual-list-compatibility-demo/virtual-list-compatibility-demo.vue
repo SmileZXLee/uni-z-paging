@@ -32,13 +32,13 @@
 	const tabList = ref(['cell高度相同','cell高度不同']);
 	
 	const extraData = {
-		//给这个页面的虚拟列表取一个名字，这样在zp-virtual-cell中可以根据这个名字来区分不同页面的cell
+		// 给这个页面的虚拟列表取一个名字，这样在zp-virtual-cell中可以根据这个名字来区分不同页面的cell
 		id: 'test1',
-		//这边可以附加其他的当前页面需要传给cell的值
+		// 这边可以附加其他的当前页面需要传给cell的值
 		
-		//这里示范了通过props传递方法回调来代替cell组件内部emit的场景，如果需要监听点击cell可以直接通过@innerCellClick监听
+		// 这里示范了通过props传递方法回调来代替cell组件内部emit的场景，如果需要监听点击cell可以直接通过@innerCellClick监听
 		titleClickedCallback: (title) => {
-			//点击了标题
+			// 点击了标题
 			console.log('点击了标题' + title)
 		}
 	}
@@ -46,32 +46,32 @@
 	
 	const tabsChange = (index) => {
 		tabIndex.value = index;
-		//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
+		// 当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
 		paging.value.reload();
 	}
 	
 	// @query所绑定的方法不要自己调用！！需要刷新列表数据时，只需要调用paging.value.reload()即可
     const queryList = (pageNo, pageSize) => {
-		//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
-		//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
-		//模拟请求服务器获取分页数据，请替换成自己的网络请求
+		// 组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
+		// 这里的pageNo和pageSize会自动计算好，直接传给服务器即可
+		// 模拟请求服务器获取分页数据，请替换成自己的网络请求
 		const params = {
 			pageNo: pageNo,
 			pageSize: pageSize,
 			random: tabIndex.value === 1
 		}
 		request.queryListLong(params).then(res => {
-			//将请求的结果数组传递给z-paging
+			// 将请求的结果数组传递给z-paging
 			paging.value.complete(res.data.list);
 		}).catch(res => {
-			//如果请求失败写paging.value.complete(false);
-			//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
-			//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
+			// 如果请求失败写paging.value.complete(false);
+			// 注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
+			// 在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
 			paging.value.complete(false);
 		})
     }
 	
-	//内置列表cell被点击时触发，会自动带两个参数：item和index过来
+	// 内置列表cell被点击时触发，会自动带两个参数：item和index过来
 	const innerCellClick = (item, index) => {
 		console.log('点击了' + item.title)
 	}

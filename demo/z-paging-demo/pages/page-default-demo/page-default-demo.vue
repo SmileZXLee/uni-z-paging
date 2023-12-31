@@ -20,14 +20,14 @@
 </template>
 
 <script>
-	//使用页面滚动时引入此mixin，用于监听和处理onPullDownRefresh等页面生命周期方法(如果全局引入了，就不要这一步，全局引入示例见main.js)
+	// 使用页面滚动时引入此mixin，用于监听和处理onPullDownRefresh等页面生命周期方法(如果全局引入了，就不要这一步，全局引入示例见main.js)
 	import ZPMixin from '@/uni_modules/z-paging/components/z-paging/js/z-paging-mixin'
 	export default {
-		//注意这一步不要漏掉，必须注册mixins(如果全局引入了，就不要这一步，全局引入示例见main.js)
+		// 注意这一步不要漏掉，必须注册mixins(如果全局引入了，就不要这一步，全局引入示例见main.js)
 		mixins: [ZPMixin],
 		data() {
 			return {
-				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
+				// v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
 				dataList: [],
 				tabList: ['测试1','测试2','测试3','测试4'],
 				tabIndex: 0
@@ -36,25 +36,25 @@
 		methods: {
 			tabChange(index) {
 				this.tabIndex = index;
-				//当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
+				// 当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
 				this.$refs.paging.reload();
 			},
 			queryList(pageNo, pageSize) {
-				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
-				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
-				//模拟请求服务器获取分页数据，请替换成自己的网络请求
+				// 组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
+				// 这里的pageNo和pageSize会自动计算好，直接传给服务器即可
+				// 模拟请求服务器获取分页数据，请替换成自己的网络请求
 				const params = {
 					pageNo: pageNo,
 					pageSize: pageSize,
 					type: this.tabIndex + 1
 				}
 				this.$request.queryList(params).then(res => {
-					//将请求的结果数组传递给z-paging
+					// 将请求的结果数组传递给z-paging
 					this.$refs.paging.complete(res.data.list);
 				}).catch(res => {
-					//如果请求失败写this.$refs.paging.complete(false);
-					//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
-					//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
+					// 如果请求失败写this.$refs.paging.complete(false);
+					// 注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
+					// 在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
 					this.$refs.paging.complete(false);
 				})
 			},

@@ -36,7 +36,7 @@
 	export default {
 		data() {
 			return {
-				//注意，这个数组是一个二维数组，数组里面包含的是所有tabs的list数组
+				// 注意，这个数组是一个二维数组，数组里面包含的是所有tabs的list数组
 				dataList: [],
 				tabList: ['测试1','测试2','测试3','测试4'],
 				current: 0, // tabs组件的current值，表示当前活动的tab选项
@@ -47,30 +47,30 @@
 			tabChange(index) {
 				this.current = index;
 			},
-			//swiper滑动中
+			// swiper滑动中
 			swiperTransition(e) {
 				this.$refs.tabs.setDx(e.detail.dx);
 			},
-			//swiper滑动结束
+			// swiper滑动结束
 			swiperAnimationfinish(e) {
 				this.current = e.detail.current;
 				this.$refs.tabs.unlockDx();
 			},
 			queryList(pageNo, pageSize) {
-				//这里的网络请求请替换成自己的网络请求
-				//this.current代表当前下拉刷新/上拉加载更多对应的是第几个
+				// 这里的网络请求请替换成自己的网络请求
+				// this.current代表当前下拉刷新/上拉加载更多对应的是第几个
 				const params = {
 					pageNo: pageNo,
 					pageSize: pageSize,
 					type: this.current + 1
 				}
 				this.$request.queryList(params).then(res => {
-					//将请求的结果数组传递给z-paging
+					// 将请求的结果数组传递给z-paging
 					this.$refs.swiperItem[this.current].complete(res.data.list);
 				})
 			},
 			updateList(data) {
-				//更新当前对应tab的数据，注意这里请用$set而非this.dataList[this.current]=data，因为需要触发列表渲染
+				// 更新当前对应tab的数据，注意这里请用$set而非this.dataList[this.current]=data，因为需要触发列表渲染
 				this.$set(this.dataList, this.current, data);
 			}
 		}

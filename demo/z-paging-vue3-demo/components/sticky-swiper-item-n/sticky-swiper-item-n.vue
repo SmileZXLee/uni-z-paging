@@ -64,34 +64,34 @@
 			//将请求的结果数组传递给z-paging
 			paging.value.complete(res.data.list);
 			firstLoaded.value = true;
-			//请求结束，调用父组件的下拉刷新结束回调函数，使得父组件中的z-paging下拉刷新结束
+			// 请求结束，调用父组件的下拉刷新结束回调函数，使得父组件中的z-paging下拉刷新结束
 			if (completeFunc.value) {
 				completeFunc.value();
 			}
 		}).catch(res => {
-			//如果请求失败写paging.value.complete(false);
-			//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
-			//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
+			// 如果请求失败写paging.value.complete(false);
+			// 注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
+			// 在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
 			paging.value.complete(false);
-			//请求结束，调用父组件的下拉刷新结束回调函数，使得父组件中的z-paging下拉刷新结束
+			// 请求结束，调用父组件的下拉刷新结束回调函数，使得父组件中的z-paging下拉刷新结束
 			if (completeFunc.value) {
 				completeFunc.value();
 			}
 		});
 	}
 	
-	//父组件下拉刷新了，通知子组件，子组件调用内部z-paging的reload方法，这里的参数func代表下拉刷新结束的回调函数
+	// 父组件下拉刷新了，通知子组件，子组件调用内部z-paging的reload方法，这里的参数func代表下拉刷新结束的回调函数
 	const reload = (func) => {
-		//先把父组件下拉刷新的回调函数存起来
+		// 先把父组件下拉刷新的回调函数存起来
 		completeFunc.value = func;
-		//调用z-paging的reload方法
+		// 调用z-paging的reload方法
 		paging.value.reload();
 	}
 	
-	//设置嵌套list父容器支持swiper-list吸顶滚动效果
+	// 设置嵌套list父容器支持swiper-list吸顶滚动效果
 	const setSpecialEffects = (height) => {
 		paging.value.setSpecialEffects({
-			//这个id就是sticky-swiper-demo-n中设置的nvue-list-id，二者的值必须完全一致！
+			// 这个id就是sticky-swiper-demo-n中设置的nvue-list-id，二者的值必须完全一致！
 			id: 'z-paging-nlist',
 			headerHeight: height
 		});
