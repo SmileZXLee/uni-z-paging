@@ -37,17 +37,17 @@
 			};
 		},
 		props: {
-			//是否使用fixed布局，默认为是
+			// 是否使用fixed布局，默认为是
 			fixed: {
 				type: Boolean,
 				default: true
 			},
-			//是否开启底部安全区域适配
+			// 是否开启底部安全区域适配
 			safeAreaInsetBottom: {
 				type: Boolean,
 				default: false
 			},
-			//z-paging-swiper样式
+			// z-paging-swiper样式
 			swiperStyle: {
 				type: Object,
 				default: function() {
@@ -92,7 +92,7 @@
 			}
 		},
 		methods: {
-			//更新slot="left"和slot="right"宽度，当slot="left"或slot="right"宽度动态改变时调用
+			// 更新slot="left"和slot="right"宽度，当slot="left"或slot="right"宽度动态改变时调用
 			updateLeftAndRightWidth() {
 				if (!this.isOldWebView) return;
 				this.$nextTick(() => this._updateLeftAndRightWidth(this.swiperContentStyle, 'zp-swiper'));

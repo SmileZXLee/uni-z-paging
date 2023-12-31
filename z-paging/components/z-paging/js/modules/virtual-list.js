@@ -5,47 +5,47 @@ import Enum from '.././z-paging-enum'
 
 export default {
 	props: {
-		//是否使用虚拟列表，默认为否
+		// 是否使用虚拟列表，默认为否
 		useVirtualList: {
 			type: Boolean,
 			default: u.gc('useVirtualList', false)
 		},
-		//在使用虚拟列表时，是否使用兼容模式，默认为否
+		// 在使用虚拟列表时，是否使用兼容模式，默认为否
 		useCompatibilityMode: {
 			type: Boolean,
 			default: u.gc('useCompatibilityMode', false)
 		},
-		//使用兼容模式时传递的附加数据
+		// 使用兼容模式时传递的附加数据
 		extraData: {
 			type: Object,
 			default: u.gc('extraData', {})
 		},
-		//是否在z-paging内部循环渲染列表(内置列表)，默认为否。若use-virtual-list为true，则此项恒为true
+		// 是否在z-paging内部循环渲染列表(内置列表)，默认为否。若use-virtual-list为true，则此项恒为true
 		useInnerList: {
 			type: Boolean,
 			default: u.gc('useInnerList', false)
 		},
-		//强制关闭inner-list，默认为false，如果为true将强制关闭innerList，适用于开启了虚拟列表后需要强制关闭inner-list的情况
+		// 强制关闭inner-list，默认为false，如果为true将强制关闭innerList，适用于开启了虚拟列表后需要强制关闭inner-list的情况
 		forceCloseInnerList: {
 			type: Boolean,
 			default: u.gc('forceCloseInnerList', false)
 		},
-		//内置列表cell的key名称，仅nvue有效，在nvue中开启use-inner-list时必须填此项
+		// 内置列表cell的key名称，仅nvue有效，在nvue中开启use-inner-list时必须填此项
 		cellKeyName: {
 			type: String,
 			default: u.gc('cellKeyName', '')
 		},
-		//innerList样式
+		// innerList样式
 		innerListStyle: {
 			type: Object,
 			default: u.gc('innerListStyle', {})
 		},
-		//innerCell样式
+		// innerCell样式
 		innerCellStyle: {
 			type: Object,
 			default: u.gc('innerCellStyle', {})
 		},
-		//预加载的列表可视范围(列表高度)页数，默认为12，即预加载当前页及上下各12页的cell。此数值越大，则虚拟列表中加载的dom越多，内存消耗越大(会维持在一个稳定值)，但增加预加载页面数量可缓解快速滚动短暂白屏问题
+		// 预加载的列表可视范围(列表高度)页数，默认为12，即预加载当前页及上下各12页的cell。此数值越大，则虚拟列表中加载的dom越多，内存消耗越大(会维持在一个稳定值)，但增加预加载页面数量可缓解快速滚动短暂白屏问题
 		preloadPage: {
 			type: [Number, String],
 			default: u.gc('preloadPage', 12),
@@ -54,17 +54,17 @@ export default {
 				return value > 0;
 			}
 		},
-		//虚拟列表cell高度模式，默认为fixed，也就是每个cell高度完全相同，将以第一个cell高度为准进行计算。可选值【dynamic】，即代表高度是动态非固定的，【dynamic】性能低于【fixed】。
+		// 虚拟列表cell高度模式，默认为fixed，也就是每个cell高度完全相同，将以第一个cell高度为准进行计算。可选值【dynamic】，即代表高度是动态非固定的，【dynamic】性能低于【fixed】。
 		cellHeightMode: {
 			type: String,
 			default: u.gc('cellHeightMode', Enum.CellHeightMode.Fixed)
 		},
-		//虚拟列表列数，默认为1。常用于每行有多列的情况，例如每行有2列数据，需要将此值设置为2
+		// 虚拟列表列数，默认为1。常用于每行有多列的情况，例如每行有2列数据，需要将此值设置为2
 		virtualListCol: {
 			type: [Number, String],
 			default: u.gc('virtualListCol', 1)
 		},
-		//虚拟列表scroll取样帧率，默认为80，过低容易出现白屏问题，过高容易出现卡顿问题
+		// 虚拟列表scroll取样帧率，默认为80，过低容易出现白屏问题，过高容易出现卡顿问题
 		virtualScrollFps: {
 			type: [Number, String],
 			default: u.gc('virtualScrollFps', 80)
@@ -97,6 +97,7 @@ export default {
 		}
 	},
 	watch: {
+		// 监听总数据的改变，刷新虚拟列表布局
 		realTotalData(newVal) {
 			// #ifndef APP-NVUE
 			if (this.finalUseVirtualList) {
@@ -110,6 +111,7 @@ export default {
 			}
 			// #endif
 		},
+		// 监听虚拟列表渲染数组的改变并emit
 		virtualList(newVal){
 			this.$emit('update:virtualList', newVal);
 			this.$emit('virtualListChange', newVal);
@@ -147,7 +149,7 @@ export default {
 		},
 	},
 	methods: {
-		//在使用动态高度虚拟列表时，若在列表数组中需要插入某个item，需要调用此方法；item:需要插入的item，index:插入的cell位置，若index为2，则插入的item在原list的index=1之后，index从0开始
+		// 在使用动态高度虚拟列表时，若在列表数组中需要插入某个item，需要调用此方法；item:需要插入的item，index:插入的cell位置，若index为2，则插入的item在原list的index=1之后，index从0开始
 		doInsertVirtualListItem(item, index) {
 			if (this.cellHeightMode !== Enum.CellHeightMode.Dynamic) return;
 			this.virtualItemInsertedCount ++;
@@ -164,6 +166,7 @@ export default {
 					await u.wait(c.delayTime);
 					
 					const cellNode = await this._getNodeClientRect(`#zp-id-${item[cellIndexKey]}`, this.finalUseInnerList);
+					// 如果获取当前cell的节点信息失败，则重试（不超过10次）
 					if (!cellNode) {
 						retryCount ++;
 						continue;
@@ -172,12 +175,14 @@ export default {
 					const currentHeight = cellNode ? cellNode[0].height : 0;
 					const lastHeightCache = this.virtualHeightCacheList[index - 1];
 					const lastTotalHeight = lastHeightCache ? lastHeightCache.totalHeight : 0;
+					// 在缓存的cell高度数组中，插入此cell高度信息
 					this.virtualHeightCacheList.splice(index, 0, {
 						height: currentHeight,
 						lastTotalHeight,
 						totalHeight: lastTotalHeight + currentHeight
 					});
 					
+					// 从当前index起后续的cell缓存高度的lastTotalHeight和totalHeight需要加上当前cell的高度
 					for (let i = index + 1; i < this.virtualHeightCacheList.length; i++) {
 						const thisNode = this.virtualHeightCacheList[i];
 						thisNode.lastTotalHeight += currentHeight;
@@ -189,17 +194,19 @@ export default {
 				}
 			})
 		},
-		//在使用动态高度虚拟列表时，手动更新指定cell的缓存高度(当cell高度在初始化之后再次改变时调用)；index:需要更新的cell在列表中的位置，从0开始
+		// 在使用动态高度虚拟列表时，手动更新指定cell的缓存高度(当cell高度在初始化之后再次改变时调用)；index:需要更新的cell在列表中的位置，从0开始
 		didUpdateVirtualListCell(index) {
 			if (this.cellHeightMode !== Enum.CellHeightMode.Dynamic) return;
 			const currentNode = this.virtualHeightCacheList[index];
 			this.$nextTick(() => {
 				this._getNodeClientRect(`#zp-id-${index}`, this.finalUseInnerList).then(cellNode => {
+					// 更新当前cell的高度
 					const cellNodeHeight = cellNode ? cellNode[0].height : 0;
 					const heightDis = cellNodeHeight - currentNode.height;
 					currentNode.height = cellNodeHeight;
 					currentNode.totalHeight = currentNode.lastTotalHeight + cellNodeHeight;
 					
+					// 从当前index起后续的cell缓存高度的lastTotalHeight和totalHeight需要加上当前cell变化的高度
 					for (let i = index + 1; i < this.virtualHeightCacheList.length; i++) {
 						const thisNode = this.virtualHeightCacheList[i];
 						thisNode.totalHeight += heightDis;
@@ -208,21 +215,24 @@ export default {
 				});
 			})
 		},
-		//在使用动态高度虚拟列表时，若删除了列表数组中的某个item，需要调用此方法以更新高度缓存数组；index:删除的cell在列表中的位置，从0开始
+		// 在使用动态高度虚拟列表时，若删除了列表数组中的某个item，需要调用此方法以更新高度缓存数组；index:删除的cell在列表中的位置，从0开始
 		didDeleteVirtualListCell(index) {
 			if (this.cellHeightMode !== Enum.CellHeightMode.Dynamic) return;
 			const currentNode = this.virtualHeightCacheList[index];
+			// 从当前index起后续的cell缓存高度的lastTotalHeight和totalHeight需要减去当前cell的高度
 			for (let i = index + 1; i < this.virtualHeightCacheList.length; i++) {
 				const thisNode = this.virtualHeightCacheList[i];
 				thisNode.totalHeight -= currentNode.height;
 				thisNode.lastTotalHeight -= currentNode.height;
 			}
+			// 将当前cell的高度信息从高度缓存数组中删除
 			this.virtualHeightCacheList.splice(index, 1);
 		},
-		//初始化虚拟列表
+		// 初始化虚拟列表
 		_virtualListInit() {
 			this.$nextTick(() => {
 				u.delay(() => {
+					// 获取虚拟列表滚动区域的高度
 					this._getNodeClientRect('.zp-scroll-view').then(node => {
 						if (node) {
 							this.pagingOrgTop = node[0].top;
@@ -232,7 +242,7 @@ export default {
 				});
 			})
 		},
-		//cellHeightMode为fixed时获取第一个cell高度
+		// cellHeightMode为fixed时获取第一个cell高度
 		_updateFixedCellHeight() {
 			this.$nextTick(() => {
 				u.delay(() => {
@@ -240,6 +250,7 @@ export default {
 						if (!cellNode) {
 							if (this.getCellHeightRetryCount.fixed > 10) return;
 							this.getCellHeightRetryCount.fixed ++;
+							// 如果获取第一个cell的节点信息失败，则重试（不超过10次）
 							this._updateFixedCellHeight();
 						} else {
 							this.virtualCellHeight = cellNode[0].height;
@@ -249,7 +260,7 @@ export default {
 				}, c.delayTime, 'updateFixedCellHeightDelay');
 			})
 		},
-		//cellHeightMode为dynamic时获取每个cell高度
+		// cellHeightMode为dynamic时获取每个cell高度
 		_updateDynamicCellHeight(list, dataFrom = 'bottom') {
 			const dataFromTop = dataFrom === 'top';
 			const heightCacheList = this.virtualHeightCacheList;
@@ -264,12 +275,14 @@ export default {
 							if (this.getCellHeightRetryCount.dynamic <= 10) {
 								heightCacheList.splice(heightCacheList.length - i, i);
 								this.getCellHeightRetryCount.dynamic ++;
+								// 如果获取当前cell的节点信息失败，则重试（不超过10次）
 								this._updateDynamicCellHeight(list, dataFrom);
 							}
 							return;
 						} 
 						const lastHeightCache = currentCacheList.length ? currentCacheList.slice(-1)[0] : null;
 						const lastTotalHeight = lastHeightCache ? lastHeightCache.totalHeight : 0;
+						// 缓存当前cell的高度信息：height-当前cell高度；lastTotalHeight-前面所有cell的高度总和；totalHeight-包含当前cell的所有高度总和
 						currentCacheList.push({
 							height: currentHeight,
 							lastTotalHeight,
@@ -279,8 +292,10 @@ export default {
 							listTotalHeight += currentHeight;
 						}
 					}
+					// 如果数据是从顶部拼接的
 					if (dataFromTop && list.length) {
 						for (let i = 0; i < heightCacheList.length; i++) {
+							// 更新之前所有项的缓存高度，需要加上此次插入的所有cell高度之和（因为是从顶部插入的cell）
 							const heightCacheItem = heightCacheList[i];
 							heightCacheItem.lastTotalHeight += listTotalHeight;
 							heightCacheItem.totalHeight += listTotalHeight;
@@ -291,7 +306,7 @@ export default {
 				}, c.delayTime, 'updateDynamicCellHeightDelay')
 			})
 		},
-		//设置cellItem的index
+		// 设置cellItem的index
 		_setCellIndex(list, dataFrom = 'bottom') {
 			let currentItemIndex = 0;
 			const cellIndexKey = this.virtualCellIndexKey;
@@ -323,7 +338,7 @@ export default {
 			this.getCellHeightRetryCount.dynamic = 0;
 			this.cellHeightMode === Enum.CellHeightMode.Dynamic && this._updateDynamicCellHeight(list, dataFrom);
 		},
-		//更新scroll滚动
+		// 更新scroll滚动（虚拟列表滚动时触发）
 		_updateVirtualScroll(scrollTop, scrollDiff = 0) {
 			const currentTimeStamp = u.getTime();
 			scrollTop === 0 && this._resetTopRange();
@@ -335,13 +350,21 @@ export default {
 			let scrollIndex = 0;
 			const cellHeightMode = this.cellHeightMode;
 			if (cellHeightMode === Enum.CellHeightMode.Fixed) {
+				// 如果是固定高度的虚拟列表
+				// 计算当前滚动到的cell的index = scrollTop / 虚拟列表cell的固定高度
 				scrollIndex = parseInt(scrollTop / this.virtualCellHeight) || 0;
+				// 更新顶部和底部占位view的高度（为兼容考虑，顶部采用transformY的方式占位)
 				this._updateFixedTopRangeIndex(scrollIndex);
 				this._updateFixedBottomRangeIndex(scrollIndex);
 			} else if(cellHeightMode === Enum.CellHeightMode.Dynamic) {
+				// 如果是不固定高度的虚拟列表
+				// 当前滚动的方向
 				const scrollDirection = scrollDiff > 0 ? 'top' : 'bottom';
+				// 视图区域的高度
 				const rangePageHeight = this.virtualRangePageHeight;
+				// 顶部视图区域外的高度（顶部不需要渲染而是需要占位部分的高度）
 				const topRangePageOffset = scrollTop - rangePageHeight;
+				// 底部视图区域外的高度（底部不需要渲染而是需要占位部分的高度）
 				const bottomRangePageOffset = scrollTop + this.finalVirtualPageHeight + rangePageHeight;
 				
 				let virtualBottomRangeIndex = 0;
@@ -351,31 +374,43 @@ export default {
 				const lastHeightCache = !!heightCacheList ? heightCacheList.slice(-1)[0] : null;
 				
 				let startTopRangeIndex = this.virtualTopRangeIndex;
+				// 如果是向底部滚动（顶部占位的高度不断增大，顶部的实际渲染cell数量不断减少）
 				if (scrollDirection === 'bottom') {
+					// 从顶部视图边缘的cell的位置开始向后查找
 					for (let i = startTopRangeIndex; i < heightCacheList.length; i++){
 						const heightCacheItem = heightCacheList[i];
+						// 如果查找到某个cell对应的totalHeight大于顶部视图区域外的高度，则此cell为顶部视图边缘的cell
 						if (heightCacheItem && heightCacheItem.totalHeight > topRangePageOffset) {
+							// 记录顶部视图边缘cell的index并更新顶部占位区域的高度并停止继续查找
 							this.virtualTopRangeIndex = i;
 							this.virtualPlaceholderTopHeight = heightCacheItem.lastTotalHeight;
 							break;
 						}
 					}
 				} else {
+					// 如果是向顶部滚动（顶部占位的高度不断减少，顶部的实际渲染cell数量不断增加）
 					let topRangeMatched = false;
+					// 从顶部视图边缘的cell的位置开始向前查找
 					for (let i = startTopRangeIndex; i >= 0; i--){
 						const heightCacheItem = heightCacheList[i];
+						// 如果查找到某个cell对应的totalHeight小于顶部视图区域外的高度，则此cell为顶部视图边缘的cell
 						if (heightCacheItem && heightCacheItem.totalHeight < topRangePageOffset) {
+							// 记录顶部视图边缘cell的index并更新顶部占位区域的高度并停止继续查找
 							this.virtualTopRangeIndex = i;
 							this.virtualPlaceholderTopHeight = heightCacheItem.lastTotalHeight;
 							topRangeMatched = true;
 							break;
 						}
 					}
+					// 如果查找不到，则认为顶部占位高度为0了，顶部cell不需要继续复用，重置topRangeIndex和placeholderTopHeight
 					!topRangeMatched && this._resetTopRange();
 				}
+				// 从顶部视图边缘的cell的位置开始向后查找
 				for (let i = this.virtualTopRangeIndex; i < heightCacheList.length; i++){
 					const heightCacheItem = heightCacheList[i];
+					// 如果查找到某个cell对应的totalHeight大于底部视图区域外的高度，则此cell为底部视图边缘的cell
 					if (heightCacheItem && heightCacheItem.totalHeight > bottomRangePageOffset) {
+						// 记录底部视图边缘cell的index并更新底部占位区域的高度并停止继续查找
 						virtualBottomRangeIndex = i;
 						virtualPlaceholderBottomHeight = lastHeightCache.totalHeight - heightCacheItem.totalHeight;
 						reachedLimitBottom = true;
@@ -392,7 +427,7 @@ export default {
 				this._updateVirtualList();
 			}
 		},
-		//更新fixedCell模式下topRangeIndex&placeholderTopHeight
+		// 更新fixedCell模式下topRangeIndex&placeholderTopHeight
 		_updateFixedTopRangeIndex(scrollIndex) {
 			let virtualTopRangeIndex = this.virtualCellHeight === 0 ? 0 : scrollIndex - (parseInt(this.finalVirtualPageHeight / this.virtualCellHeight) || 1) * this.preloadPage;
 			virtualTopRangeIndex *= this.virtualListCol;
@@ -400,7 +435,7 @@ export default {
 			this.virtualTopRangeIndex = virtualTopRangeIndex;
 			this.virtualPlaceholderTopHeight = (virtualTopRangeIndex / this.virtualListCol) * this.virtualCellHeight;
 		},
-		//更新fixedCell模式下bottomRangeIndex&placeholderBottomHeight
+		// 更新fixedCell模式下bottomRangeIndex&placeholderBottomHeight
 		_updateFixedBottomRangeIndex(scrollIndex) {
 			let virtualBottomRangeIndex = this.virtualCellHeight === 0 ? this.pageSize : scrollIndex + (parseInt(this.finalVirtualPageHeight / this.virtualCellHeight) || 1) * (this.preloadPage + 1);
 			virtualBottomRangeIndex *= this.virtualListCol;
@@ -409,7 +444,7 @@ export default {
 			this.virtualPlaceholderBottomHeight = (this.realTotalData.length - virtualBottomRangeIndex) * this.virtualCellHeight / this.virtualListCol;
 			this._updateVirtualList();
 		},
-		//更新virtualList
+		// 更新virtualList
 		_updateVirtualList() {
 			const shouldUpdateList = this.updateVirtualListFromDataChange || (this.lastVirtualTopRangeIndex !== this.virtualTopRangeIndex || this.lastVirtualBottomRangeIndex !== this.virtualBottomRangeIndex);
 			if (shouldUpdateList) {
@@ -419,7 +454,7 @@ export default {
 				this.virtualList = this.realTotalData.slice(this.virtualTopRangeIndex, this.virtualBottomRangeIndex + 1);
 			}
 		},
-		//重置动态cell模式下的高度缓存数据、虚拟列表和滚动状态
+		// 重置动态cell模式下的高度缓存数据、虚拟列表和滚动状态
 		_resetDynamicListState(resetVirtualList = false) {
 			this.virtualHeightCacheList = [];
 			if (resetVirtualList) {
@@ -428,13 +463,13 @@ export default {
 			this.virtualTopRangeIndex = 0;
 			this.virtualPlaceholderTopHeight = 0;
 		},
-		//重置topRangeIndex和placeholderTopHeight
+		// 重置topRangeIndex和placeholderTopHeight
 		_resetTopRange() {
 			this.virtualTopRangeIndex = 0;
 			this.virtualPlaceholderTopHeight = 0;
 			this._updateVirtualList();
 		},
-		//检测虚拟列表当前滚动位置，如发现滚动位置不正确则重新计算虚拟列表相关参数(为解决在App中可能出现的长时间进入后台后打开App白屏的问题)
+		// 检测虚拟列表当前滚动位置，如发现滚动位置不正确则重新计算虚拟列表相关参数(为解决在App中可能出现的长时间进入后台后打开App白屏的问题)
 		_checkVirtualListScroll() {
 			if (this.finalUseVirtualList) {
 				this.$nextTick(() => {
@@ -447,7 +482,7 @@ export default {
 				})
 			}
 		},
-		//处理使用内置列表时点击了cell事件
+		// 处理使用内置列表时点击了cell事件
 		_innerCellClick(item, index) {
 			this.$emit('innerCellClick', item, index);
 		}

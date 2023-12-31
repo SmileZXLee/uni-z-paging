@@ -243,8 +243,10 @@ export default {
 							const realTotalDataCount = this.pageNo == this.defaultPageNo ? 0 : this.realTotalData.length;
 							const dataLength = this.privateConcat ? data.length : 0;
 							let exceedCount = realTotalDataCount + dataLength - total;
+							// 没有更多数据了
 							if (exceedCount >= 0) {
 								nomore = true;
+								// 仅截取total内部分的数据
 								exceedCount = this.defaultPageSize - exceedCount;
 								if (this.privateConcat && exceedCount > 0 && exceedCount < data.length) {
 									data = data.splice(0, exceedCount);
@@ -257,19 +259,19 @@ export default {
 			}
 			return this.addData(data, success);
 		},
-		//【自行判断是否有更多数据】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否有更多数据，第三个参数为是否成功(默认是是）
+		//【自行判断是否有更多数据】请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否没有更多数据，第三个参数为是否成功(默认是是）
 		completeByNoMore(data, nomore, success = true) {
 			if (nomore != 'undefined') {
 				this.customNoMore = nomore == true ? 1 : 0;
 			}
 			return this.addData(data, success);
 		},
-		//请求结束且请求失败时调用，支持传入请求失败原因
+		// 请求结束且请求失败时调用，支持传入请求失败原因
 		completeByError(errorMsg) {
 			this.customerEmptyViewErrorText = errorMsg;
 			return this.complete(false);
 		},
-		//与上方complete方法功能一致，新版本中设置服务端回调数组请使用complete方法
+		// 与上方complete方法功能一致，新版本中设置服务端回调数组请使用complete方法
 		addData(data, success = true) {
 			if (!this.fromCompleteEmit) {
 				this.disabledCompleteEmit = true;
@@ -292,7 +294,7 @@ export default {
 				this.dataPromiseResultMap.complete = { resolve, reject };
 			});
 		},
-		//从顶部添加数据，不会影响分页的pageNo和pageSize
+		// 从顶部添加数据，不会影响分页的pageNo和pageSize
 		addDataFromTop(data, toTop = true, toTopWithAnimate = true) {
 			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data.reverse();
 			// #ifndef APP-NVUE
@@ -303,13 +305,13 @@ export default {
 				u.delay(() => this._scrollToTop(toTopWithAnimate));
 			}
 		},
-		//重新设置列表数据，调用此方法不会影响pageNo和pageSize，也不会触发请求。适用场景：当需要删除列表中某一项时，将删除对应项后的数组通过此方法传递给z-paging。(当出现类似的需要修改列表数组的场景时，请使用此方法，请勿直接修改page中:list.sync绑定的数组)
+		// 重新设置列表数据，调用此方法不会影响pageNo和pageSize，也不会触发请求。适用场景：当需要删除列表中某一项时，将删除对应项后的数组通过此方法传递给z-paging。(当出现类似的需要修改列表数组的场景时，请使用此方法，请勿直接修改page中:list.sync绑定的数组)
 		resetTotalData(data) {
 			this.isTotalChangeFromAddData = true;
 			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data;
 			this.totalData = data;
 		},
-		//添加聊天记录
+		// 添加聊天记录
 		addChatRecordData(data, toBottom = true, toBottomWithAnimate = true) {
 			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data;
 			if (!this.useChatRecordMode) return;
@@ -331,7 +333,7 @@ export default {
 				})
 			}
 		},
-		//设置本地分页数据，请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging作分页处理（若调用了此方法，则上拉加载更多时内部会自动分页，不会触发@query所绑定的事件）
+		// 设置本地分页数据，请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging作分页处理（若调用了此方法，则上拉加载更多时内部会自动分页，不会触发@query所绑定的事件）
 		setLocalPaging(data, success = true) {
 			this.isLocalPaging = true;
 			this.$nextTick(() => {
@@ -341,7 +343,7 @@ export default {
 				this.dataPromiseResultMap.localPaging = { resolve, reject };
 			});
 		},
-		//重新加载分页数据，pageNo会恢复为默认值，相当于下拉刷新的效果(animate为true时会展示下拉刷新动画，默认为false)
+		// 重新加载分页数据，pageNo会恢复为默认值，相当于下拉刷新的效果(animate为true时会展示下拉刷新动画，默认为false)
 		reload(animate = this.showRefresherWhenReload) {
 			if (animate) {
 				this.privateShowRefresherWhenReload = animate;
@@ -357,35 +359,35 @@ export default {
 				this.dataPromiseResultMap.reload = { resolve, reject };
 			});
 		},
-		//刷新列表数据，pageNo和pageSize不会重置，列表数据会重新从服务端获取。必须保证@query绑定的方法中的pageNo和pageSize和传给服务端的一致
+		// 刷新列表数据，pageNo和pageSize不会重置，列表数据会重新从服务端获取。必须保证@query绑定的方法中的pageNo和pageSize和传给服务端的一致
 		refresh() {
 			return this._handleRefreshWithDisPageNo(this.pageNo - this.defaultPageNo + 1);
 		},
-		//刷新列表数据至指定页，例如pageNo=5时则代表刷新列表至第5页，此时pageNo会变为5，列表会展示前5页的数据。必须保证@query绑定的方法中的pageNo和pageSize和传给服务端的一致
+		// 刷新列表数据至指定页，例如pageNo=5时则代表刷新列表至第5页，此时pageNo会变为5，列表会展示前5页的数据。必须保证@query绑定的方法中的pageNo和pageSize和传给服务端的一致
 		refreshToPage(pageNo) {
 			this.isHandlingRefreshToPage = true;
 			return this._handleRefreshWithDisPageNo(pageNo + this.defaultPageNo - 1);
 		},
-		//手动更新列表缓存数据，将自动截取v-model绑定的list中的前pageSize条覆盖缓存，请确保在list数据更新到预期结果后再调用此方法
+		// 手动更新列表缓存数据，将自动截取v-model绑定的list中的前pageSize条覆盖缓存，请确保在list数据更新到预期结果后再调用此方法
 		updateCache() {
 			if (this.finalUseCache && this.totalData.length) {
 				this._saveLocalCache(this.totalData.slice(0, Math.min(this.totalData.length, this.pageSize)));
 			}
 		},
-		//清空分页数据
+		// 清空分页数据
 		clean() {
 			this._reload(true);
 			this._addData([], true, false);
 		},
-		//清空分页数据
+		// 清空分页数据
 		clear() {
 			this.clean();
 		},
-		//手动触发滚动到顶部加载更多，聊天记录模式时有效
+		// 手动触发滚动到顶部加载更多，聊天记录模式时有效
 		doChatRecordLoadMore() {
 			this.useChatRecordMode && this._onLoadingMore('click');
 		},
-		//reload之前的一些处理
+		// reload之前的一些处理
 		_preReload(animate = this.showRefresherWhenReload, isFromMounted = true) {
 			const showRefresher = this.finalRefresherEnabled && this.useCustomRefresher;
 			// #ifndef APP-NVUE
@@ -432,7 +434,7 @@ export default {
 			}
 			this._reload(false, isFromMounted);
 		},
-		//重新加载分页数据
+		// 重新加载分页数据
 		_reload(isClean = false, isFromMounted = false, isUserPullDown = false) {
 			this.isAddedData = false;
 			this.insideOfPaging = -1;
@@ -466,7 +468,7 @@ export default {
 			})
 			// #endif
 		},
-		//处理服务端返回的数组
+		// 处理服务端返回的数组
 		_addData(data, success, isLocal) {
 			this.isAddedData = true;
 			this.fromEmptyViewReload = false;
@@ -551,7 +553,7 @@ export default {
 				}
 			}
 		},
-		//所有数据改变时调用
+		// 所有数据改变时调用
 		_totalDataChange(newVal, oldVal, eventThrow=true) {
 			if ((!this.isUserReload || !this.autoCleanListWhenReload) && this.firstPageLoaded && !newVal.length && oldVal.length) {
 				return;
@@ -589,7 +591,7 @@ export default {
 				// #endif
 			})
 		},
-		//当前数据改变时调用
+		// 当前数据改变时调用
 		_currentDataChange(newVal, oldVal) {
 			newVal = [...newVal];
 			// #ifndef APP-NVUE
@@ -669,7 +671,7 @@ export default {
 			}
 			this.privateConcat = true;
 		},
-		//根据pageNo处理refresh操作
+		// 根据pageNo处理refresh操作
 		_handleRefreshWithDisPageNo(pageNo) {
 			if (!this.isHandlingRefreshToPage && !this.realTotalData.length) return this.reload();
 			if (pageNo >= 1) {
@@ -690,7 +692,7 @@ export default {
 				this.dataPromiseResultMap.reload = { resolve, reject };
 			});
 		},
-		//本地分页请求
+		// 本地分页请求
 		_localPagingQueryList(pageNo, pageSize, localPagingLoadingTime, callback) {
 			pageNo = Math.max(1, pageNo);
 			pageSize = Math.max(1, pageSize);
@@ -700,7 +702,7 @@ export default {
 			const resultPagingList = totalPagingList.splice(pageNoIndex, finalPageNoIndex - pageNoIndex);
 			u.delay(() => callback(resultPagingList), localPagingLoadingTime)
 		},
-		//存储列表缓存数据
+		// 存储列表缓存数据
 		_saveLocalCache(data) {
 			uni.setStorageSync(this.finalCacheKey, data);
 		},
@@ -709,7 +711,7 @@ export default {
 			this.totalData = uni.getStorageSync(this.finalCacheKey) || [];
 			this.isSettingCacheList = true;
 		},
-		//修改父view的list
+		// 修改父view的list
 		_callMyParentList(newVal) {
 			if (this.autowireListName.length) {
 				const myParent = u.getParent(this.$parent);
@@ -718,7 +720,7 @@ export default {
 				}
 			}
 		},
-		//调用父view的query
+		// 调用父view的query
 		_callMyParentQuery(customPageNo = 0, customPageSize = 0) {
 			if (this.autowireQueryName) {
 				if (this.myParentQuery === -1) {
@@ -732,14 +734,14 @@ export default {
 				}
 			}
 		},
-		//emit query事件
+		// emit query事件
 		_emitQuery(pageNo, pageSize, from){
 			this.queryFrom = from;
 			this.requestTimeStamp = u.getTime();
 			const [lastItem] = this.realTotalData.slice(-1);
 			this.$emit('query', ...interceptor._handleQuery(pageNo, pageSize, from, lastItem || null));
 		},
-		//触发数据改变promise
+		// 触发数据改变promise
 		_callDataPromise(success, totalList) {
 			for (const key in this.dataPromiseResultMap) {
 				const obj = this.dataPromiseResultMap[key];
@@ -747,7 +749,7 @@ export default {
 				success ? obj.resolve({ totalList, noMore: this.loadingStatus === Enum.More.NoMore }) : this.callNetworkReject && obj.reject(`z-paging-${key}-error`);
 			}
 		},
-		//检查complete data的类型
+		// 检查complete data的类型
 		_checkDataType(data, success, isLocal) {
 			const dataType = Object.prototype.toString.call(data);
 			if (dataType === '[object Boolean]') {

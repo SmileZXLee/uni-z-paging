@@ -50,23 +50,18 @@ export default {
 		}
 	},
 	computed: {
-		// 根据当前的unit转换后的点击返回顶部threshold
 		backToTopThresholdUnitConverted() {
 			return u.addUnit(this.backToTopThreshold, this.unit);
 		},
-		// 根据当前的unit转换后的点击返回顶部bottom
 		backToTopBottomUnitConverted() {
 			return u.addUnit(this.backToTopBottom, this.unit);
 		},
-		// 最终的iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部；页面滚动时此控制无效
 		finalEnableBackToTop() {
 			return this.usePageScroll ? false : this.enableBackToTop;
 		},
-		// 最终的点击返回顶部threshold
 		finalBackToTopThreshold() {
 			return u.convertToPx(this.backToTopThresholdUnitConverted);
 		},
-		// 最终的点击返回顶部style
 		finalBackToTopStyle() {
 			const backToTopStyle = this.backToTopStyle;
 			if (!backToTopStyle.bottom) {
@@ -77,7 +72,6 @@ export default {
 			}
 			return backToTopStyle;
 		},
-		// 最终的点击返回顶部class
 		finalBackToTopClass() {
 			return `${this.backToTopClass} zp-back-to-top-${this.unit}`;
 		}

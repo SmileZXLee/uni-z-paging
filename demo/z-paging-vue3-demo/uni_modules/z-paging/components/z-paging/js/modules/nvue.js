@@ -175,15 +175,18 @@ export default {
 		},
 		// 执行主动触发下拉刷新动画
 		_nDoRefresherEndAnimation(height, translateY, animate = true, checkStack = true) {
+			// 清除下拉刷新相关timeout
 			this._cleanRefresherCompleteTimeout();
 			this._cleanRefresherEndTimeout();
 			
 			if (!this.finalShowRefresherWhenReload) {
+				// 如果reload不需要自动展示下拉刷新view，则在complete duration结束后再把下拉刷新状态设置回默认
 				this.refresherEndTimeout = u.delay(() => {
 					this.refresherStatus = Enum.Refresher.Default;
 				}, this.refresherCompleteDuration);
 				return;
 			}
+			// 用户处理用户在短时间内多次调用reload的情况，此时下拉刷新view不需要重复显示，只需要保证最后一次reload对应的请求结束后收回下拉刷新view即可
 			const stackCount = this.refresherRevealStackCount;
 			if (height === 0 && checkStack) {
 				this.refresherRevealStackCount --;
@@ -201,6 +204,7 @@ export default {
 				if (height > 0) {
 					this.nShowRefresherReveal = true;
 				}
+				// 展示下拉刷新view
 				weexAnimation.transition(this.$refs['zp-n-list-refresher-reveal'], {
 					styles: {
 						height: `${height}px`,
@@ -219,16 +223,16 @@ export default {
 			}, duration > 0 ? duration - 60 : 0);
 			this.nOldShowRefresherRevealHeight = height;
 		},
-		//滚动到底部加载更多
+		// 滚动到底部加载更多
 		_nOnLoadmore() {
 			if (this.nShowRefresherReveal || !this.totalData.length) return;
 			this.useChatRecordMode ? this.doChatRecordLoadMore() : this._onLoadingMore('toBottom');
 		},
-		//获取nvue waterfall单项配置
+		// 获取nvue waterfall单项配置
 		_nGetWaterfallConfig(key, defaultValue) {
 			return this.nvueWaterfallConfig[key] || defaultValue;
 		},
-		//更新nvue 下拉刷新view容器的宽度
+		// 更新nvue 下拉刷新view容器的宽度
 		_nUpdateRefresherWidth() {
 			u.delay(() => {
 				this.$nextTick(()=>{

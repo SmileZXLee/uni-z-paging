@@ -25,70 +25,70 @@
 			};
 		},
 		props: {
-			//空数据描述文字
+			// 空数据描述文字
 			emptyViewText: {
 				type: String,
 				default: '没有数据哦~'
 			},
-			//空数据图片
+			// 空数据图片
 			emptyViewImg: {
 				type: String,
 				default: ''
 			},
-			//是否显示空数据图重新加载按钮
+			// 是否显示空数据图重新加载按钮
 			showEmptyViewReload: {
 				type: Boolean,
 				default: false
 			},
-			//空数据点击重新加载文字
+			// 空数据点击重新加载文字
 			emptyViewReloadText: {
 				type: String,
 				default: '重新加载'
 			},
-			//是否是加载失败
+			// 是否是加载失败
 			isLoadFailed: {
 				type: Boolean,
 				default: false
 			},
-			//空数据图样式
+			// 空数据图样式
 			emptyViewStyle: {
 				type: Object,
 				default: function() {
                     return {}
                 }
 			},
-			//空数据图img样式
+			// 空数据图img样式
 			emptyViewImgStyle: {
 				type: Object,
 				default: function() {
 				    return {}
 				}
 			},
-			//空数据图描述文字样式
+			// 空数据图描述文字样式
 			emptyViewTitleStyle: {
 				type: Object,
 				default: function() {
 				    return {}
 				}
 			},
-			//空数据图重新加载按钮样式
+			// 空数据图重新加载按钮样式
 			emptyViewReloadStyle: {
 				type: Object,
 				default: function() {
 				    return {}
 				}
 			},
-			//空数据图z-index
+			// 空数据图z-index
 			emptyViewZIndex: {
 				type: Number,
 				default: 9
 			},
-			//空数据图片是否使用fixed布局并铺满z-paging
+			// 空数据图片是否使用fixed布局并铺满z-paging
 			emptyViewFixed: {
 				type: Boolean,
 				default: true
 			},
-			//空数据图中布局的单位，默认为rpx
+			// 空数据图中布局的单位，默认为rpx
 			unit: {
 				type: String,
 				default: 'rpx'
@@ -104,9 +104,11 @@
 			}
 		},
 		methods: {
+			// 点击了reload按钮
 			reloadClick() {
 				this.$emit('reload');
 			},
+			// 点击了空数据view
 			emptyViewClick() {
 				this.$emit('viewClick');
 			}

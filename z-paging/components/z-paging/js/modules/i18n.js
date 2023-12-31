@@ -25,19 +25,19 @@ export default {
 				return 'zh-Hans';
 			}
 		},
-		// 最终的默认状态下拉刷新文字
+		// 最终的下拉刷新默认状态的文字
 		finalRefresherDefaultText() {
 			return this._getI18nText('zp.refresher.default', this.refresherDefaultText);
 		},
-		// 最终的默认状态下拉中文字
+		// 最终的下拉刷新下拉中的文字
 		finalRefresherPullingText() {
 			return this._getI18nText('zp.refresher.pulling', this.refresherPullingText);
 		},
-		// 最终的默认状态下拉刷新中文字
+		// 最终的下拉刷新中文字
 		finalRefresherRefreshingText() {
 			return this._getI18nText('zp.refresher.refreshing', this.refresherRefreshingText);
 		},
-		// 最终的默认状态下拉刷新完成文字
+		// 最终的下拉刷新完成文字
 		finalRefresherCompleteText() {
 			return this._getI18nText('zp.refresher.complete', this.refresherCompleteText);
 		},

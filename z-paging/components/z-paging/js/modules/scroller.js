@@ -8,42 +8,42 @@ const weexDom = weex.requireModule('dom');
 
 export default {
 	props: {
-		//使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
+		// 使用页面滚动，默认为否，当设置为是时则使用页面的滚动而非此组件内部的scroll-view的滚动，使用页面滚动时z-paging无需设置确定的高度且对于长列表展示性能更高，但配置会略微繁琐
 		usePageScroll: {
 			type: Boolean,
 			default: u.gc('usePageScroll', false)
 		},
-		//是否可以滚动，使用内置scroll-view和nvue时有效，默认为是
+		// 是否可以滚动，使用内置scroll-view和nvue时有效，默认为是
 		scrollable: {
 			type: Boolean,
 			default: u.gc('scrollable', true)
 		},
-		//控制是否出现滚动条，默认为是
+		// 控制是否出现滚动条，默认为是
 		showScrollbar: {
 			type: Boolean,
 			default: u.gc('showScrollbar', true)
 		},
-		//是否允许横向滚动，默认为否
+		// 是否允许横向滚动，默认为否
 		scrollX: {
 			type: Boolean,
 			default: u.gc('scrollX', false)
 		},
-		//iOS设备上滚动到顶部时是否允许回弹效果，默认为否。关闭回弹效果后可使滚动到顶部与下拉刷新更连贯，但是有吸顶view时滚动到顶部时可能出现抖动。
+		// iOS设备上滚动到顶部时是否允许回弹效果，默认为否。关闭回弹效果后可使滚动到顶部与下拉刷新更连贯，但是有吸顶view时滚动到顶部时可能出现抖动。
 		scrollToTopBounceEnabled: {
 			type: Boolean,
 			default: u.gc('scrollToTopBounceEnabled', false)
 		},
-		//iOS设备上滚动到底部时是否允许回弹效果，默认为是。
+		// iOS设备上滚动到底部时是否允许回弹效果，默认为是。
 		scrollToBottomBounceEnabled: {
 			type: Boolean,
 			default: u.gc('scrollToBottomBounceEnabled', true)
 		},
-		//在设置滚动条位置时使用动画过渡，默认为否
+		// 在设置滚动条位置时使用动画过渡，默认为否
 		scrollWithAnimation: {
 			type: Boolean,
 			default: u.gc('scrollWithAnimation', false)
 		},
-		//值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素
+		// 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素
 		scrollIntoView: {
 			type: String,
 			default: u.gc('scrollIntoView', '')
@@ -115,7 +115,7 @@ export default {
 		}
 	},
 	methods: {
-		//滚动到顶部，animate为是否展示滚动动画，默认为是
+		// 滚动到顶部，animate为是否展示滚动动画，默认为是
 		scrollToTop(animate, checkReverse = true) {
 			// #ifdef APP-NVUE
 			if (checkReverse && this.useChatRecordMode) {
@@ -136,7 +136,7 @@ export default {
 				// #endif
 			})
 		},
-		//滚动到底部，animate为是否展示滚动动画，默认为是
+		// 滚动到底部，animate为是否展示滚动动画，默认为是
 		scrollToBottom(animate, checkReverse = true) {
 			// #ifdef APP-NVUE
 			if (checkReverse && this.useChatRecordMode) {
@@ -157,50 +157,50 @@ export default {
 				// #endif
 			})
 		},
-		//滚动到指定view(vue中有效)。sel为需要滚动的view的id值，不包含"#"；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
+		// 滚动到指定view(vue中有效)。sel为需要滚动的view的id值，不包含"#"；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
 		scrollIntoViewById(sel, offset, animate) {
 			this._scrollIntoView(sel, offset, animate);
 		},
-		//滚动到指定view(vue中有效)。nodeTop为需要滚动的view的top值(通过uni.createSelectorQuery()获取)；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
+		// 滚动到指定view(vue中有效)。nodeTop为需要滚动的view的top值(通过uni.createSelectorQuery()获取)；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
 		scrollIntoViewByNodeTop(nodeTop, offset, animate) {
 			this.scrollTop = this.oldScrollTop;
 			this.$nextTick(() => {
 				this._scrollIntoViewByNodeTop(nodeTop, offset, animate);
 			})
 		},
-		//滚动到指定位置(vue中有效)。y为与顶部的距离，单位为px；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
+		// 滚动到指定位置(vue中有效)。y为与顶部的距离，单位为px；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
 		scrollToY(y, offset, animate) {
 			this.scrollTop = this.oldScrollTop;
 			this.$nextTick(() => {
 				this._scrollToY(y, offset, animate);
 			})
 		},
-		//滚动到指定view(nvue中有效)。index为需要滚动的view的index(第几个)；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
+		// 滚动到指定view(nvue中有效)。index为需要滚动的view的index(第几个)；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
 		scrollIntoViewByIndex(index, offset, animate) {
 			this._scrollIntoView(index, offset, animate);
 		},
-		//滚动到指定view(nvue中有效)。view为需要滚动的view(通过`this.$refs.xxx`获取)，不包含"#"；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
+		// 滚动到指定view(nvue中有效)。view为需要滚动的view(通过`this.$refs.xxx`获取)，不包含"#"；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
 		scrollIntoViewByView(view, offset, animate) {
 			this._scrollIntoView(view, offset, animate);
 		},
-		//当使用页面滚动并且自定义下拉刷新时，请在页面的onPageScroll中调用此方法，告知z-paging当前的pageScrollTop，否则会导致在任意位置都可以下拉刷新
+		// 当使用页面滚动并且自定义下拉刷新时，请在页面的onPageScroll中调用此方法，告知z-paging当前的pageScrollTop，否则会导致在任意位置都可以下拉刷新
 		updatePageScrollTop(value) {
 			this.pageScrollTop = value;
 		},
-		//当使用页面滚动并且设置了slot="top"时，默认初次加载会自动获取其高度，并使内部容器下移，当slot="top"的view高度动态改变时，在其高度需要更新时调用此方法
+		// 当使用页面滚动并且设置了slot="top"时，默认初次加载会自动获取其高度，并使内部容器下移，当slot="top"的view高度动态改变时，在其高度需要更新时调用此方法
 		updatePageScrollTopHeight() {
 			this._updatePageScrollTopOrBottomHeight('top');
 		},
-		//当使用页面滚动并且设置了slot="bottom"时，默认初次加载会自动获取其高度，并使内部容器下移，当slot="bottom"的view高度动态改变时，在其高度需要更新时调用此方法
+		// 当使用页面滚动并且设置了slot="bottom"时，默认初次加载会自动获取其高度，并使内部容器下移，当slot="bottom"的view高度动态改变时，在其高度需要更新时调用此方法
 		updatePageScrollBottomHeight() {
 			this._updatePageScrollTopOrBottomHeight('bottom');
 		},
-		//更新slot="left"和slot="right"宽度，当slot="left"或slot="right"宽度动态改变时调用
+		// 更新slot="left"和slot="right"宽度，当slot="left"或slot="right"宽度动态改变时调用
 		updateLeftAndRightWidth() {
 			if (!this.finalIsOldWebView) return;
 			this.$nextTick(() => this._updateLeftAndRightWidth(this.scrollViewContainerStyle, 'zp-page'));
 		},
-		//更新z-paging内置scroll-view的scrollTop
+		// 更新z-paging内置scroll-view的scrollTop
 		updateScrollViewScrollTop(scrollTop, animate = true) {
 			this.privateScrollWithAnimation = animate ? 1 : 0;
 			this.scrollTop = this.oldScrollTop;
@@ -210,7 +210,7 @@ export default {
 			});
 		},
 		
-		//当滚动到顶部时
+		// 当滚动到顶部时
 		_onScrollToUpper() {
 			this.$emit('scrolltoupper');
 			this.$emit('scrollTopChange', 0);
@@ -219,13 +219,14 @@ export default {
 			})
 			this.useChatRecordMode && this.loadingStatus !== Enum.More.NoMore && this._onLoadingMore('click');
 		},
-		//当滚动到底部时
+		// 当滚动到底部时
 		_onScrollToLower(e) {
 			(!e.detail || !e.detail.direction || e.detail.direction === 'bottom') && this._onLoadingMore('toBottom')
 		},
-		//滚动到顶部
+		// 滚动到顶部
 		_scrollToTop(animate = true, isPrivate = true) {
 			// #ifdef APP-NVUE
+			// 在nvue中需要通过weex.scrollToElement滚动到顶部，此时在顶部插入了一个view，使得滚动到这个view位置
 			const el = this.$refs['zp-n-list-top-tag'];
 			if (this.usePageScroll) {
 				this._getNodeClientRect('zp-page-scroll-top', false).then(node => {
@@ -269,9 +270,10 @@ export default {
 				this.oldScrollTop = this.scrollTop;
 			});
 		},
-		//滚动到底部
+		// 滚动到底部
 		async _scrollToBottom(animate = true) {
 			// #ifdef APP-NVUE
+			// 在nvue中需要通过weex.scrollToElement滚动到顶部，此时在底部插入了一个view，使得滚动到这个view位置
 			const el = this.$refs['zp-n-list-bottom-tag'];
 			if (el) {
 				weexDom.scrollToElement(el, {
@@ -307,7 +309,7 @@ export default {
 				}
 			} catch (e) {}
 		},
-		//滚动到指定view
+		// 滚动到指定view
 		_scrollIntoView(sel, offset = 0, animate = false, finishCallback) {
 			try {
 				this.scrollTop = this.oldScrollTop;
@@ -345,11 +347,11 @@ export default {
 				});
 			} catch (e) {}
 		},
-		//通过nodeTop滚动到指定view
+		// 通过nodeTop滚动到指定view
 		_scrollIntoViewByNodeTop(nodeTop, offset = 0, animate = false) {
 			this._scrollToY(nodeTop, offset, animate, true);
 		},
-		//滚动到指定位置
+		// 滚动到指定位置
 		_scrollToY(y, offset = 0, animate = false, addScrollTop = false) {
 			this.privateScrollWithAnimation = animate ? 1 : 0;			
 			if (this.usePageScroll) {
@@ -368,7 +370,7 @@ export default {
 				this.scrollTop = y - offset;
 			}
 		},
-		//scroll-view滚动中
+		// scroll-view滚动中
 		_scroll(e) {
 			this.$emit('scroll', e);
 			const scrollTop = e.detail.scrollTop;
@@ -381,7 +383,7 @@ export default {
 			// 在非ios平台滚动中，再次验证一下是否滚动到了底部。因为在一些安卓设备中，有概率滚动到底部不触发@scrolltolower事件，因此添加双重检测逻辑
 			!this.isIos && this._checkScrolledToBottom(scrollDiff);
 		},
-		//检测scrollView是否要铺满屏幕
+		// 检测scrollView是否要铺满屏幕
 		_doCheckScrollViewShouldFullHeight(totalData) {
 			if (this.autoFullHeight && this.usePageScroll && this.isTotalChangeFromAddData) {
 				// #ifndef APP-NVUE
@@ -398,7 +400,7 @@ export default {
 				this._preCheckShowNoMoreInside(totalData)
 			} 
 		},
-		//检测z-paging是否要全屏覆盖(当使用页面滚动并且不满全屏时，默认z-paging需要铺满全屏，避免数据过少时内部的empty-view无法正确展示)
+		// 检测z-paging是否要全屏覆盖(当使用页面滚动并且不满全屏时，默认z-paging需要铺满全屏，避免数据过少时内部的empty-view无法正确展示)
 		async _checkScrollViewShouldFullHeight(callback) {
 			try {
 				const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
@@ -417,7 +419,7 @@ export default {
 				callback(null, null);
 			}
 		},
-		//scrollTop改变时触发
+		// scrollTop改变时触发
 		_scrollTopChange(newVal, isPageScrollTop){
 			this.$emit('scrollTopChange', newVal);
 			this.$emit('update:scrollTop', newVal);
@@ -434,7 +436,7 @@ export default {
 				}
 			}
 		},
-		//更新使用页面滚动时slot="top"或"bottom"插入view的高度
+		// 更新使用页面滚动时slot="top"或"bottom"插入view的高度
 		_updatePageScrollTopOrBottomHeight(type) {
 			// #ifndef APP-NVUE
 			if (!this.usePageScroll) return;
