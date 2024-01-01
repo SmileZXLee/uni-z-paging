@@ -134,7 +134,7 @@ function touchend(e, ownerIns) {
 	var dataset = ins.getDataset();
 	var state = ins.getState();
 	if (state.disabledBounce) {
-		// 通过js允许列表滚动
+		// 通知js允许列表滚动
 		ownerIns.callMethod('_handleScrollViewBounce', { bounce: true });
 		state.disabledBounce = false;
 	}

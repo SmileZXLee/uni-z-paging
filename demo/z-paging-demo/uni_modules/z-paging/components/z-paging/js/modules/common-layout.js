@@ -16,8 +16,8 @@ export default {
 		// 顶部可用距离
 		windowTop() {
 			if (!this.systemInfo) return 0;
-			//暂时修复vue3中隐藏系统导航栏后windowTop获取不正确的问题，具体bug详见https://ask.dcloud.net.cn/question/141634
-			//感谢litangyu！！https://github.com/SmileZXLee/uni-z-paging/issues/25
+			// 暂时修复vue3中隐藏系统导航栏后windowTop获取不正确的问题，具体bug详见https://ask.dcloud.net.cn/question/141634
+			// 感谢litangyu！！https://github.com/SmileZXLee/uni-z-paging/issues/25
 			// #ifdef VUE3 && H5
 			const pageHeadNode = document.getElementsByTagName("uni-page-head");
 			if (!pageHeadNode.length) return 0;
@@ -52,7 +52,7 @@ export default {
 			// #endif
 			return false;
 		},
-		// 当前组件的$slots，为兼容不同平台
+		// 当前组件的$slots，兼容不同平台
 		zSlots() {
 			// #ifdef VUE2
 			

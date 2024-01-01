@@ -111,7 +111,7 @@ export default {
 					}, 300)
 				}
 			} else {
-				// 如果当前点击返回顶部按钮显示的class是生效状态，并且滚动小于触发阈值，则隐藏返回顶部按钮
+				// 如果当前点击返回顶部按钮显示的class是生效状态并且滚动小于触发阈值，则隐藏返回顶部按钮
 				if (this.showBackToTopClass) {
 					this.backToTopClass = 'zp-back-to-top zp-back-to-top-hide';
 					u.delay(() => {

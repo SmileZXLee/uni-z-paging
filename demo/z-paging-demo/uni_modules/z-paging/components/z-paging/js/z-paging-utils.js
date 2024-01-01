@@ -183,9 +183,9 @@ function _handleDefaultConfig() {
 function _timeFormat(time, textMap) {
 	const date = new Date(time);
 	const currentDate = new Date();
-	// 设置time对应的天，去除时分秒，使得可以支持比较日期
+	// 设置time对应的天，去除时分秒，使得可以直接比较日期
 	const dateDay = new Date(time).setHours(0, 0, 0, 0);
-	// 设置当前的天，去除时分秒，使得可以支持比较日期
+	// 设置当前的天，去除时分秒，使得可以直接比较日期
 	const currentDateDay = new Date().setHours(0, 0, 0, 0);
 	const disTime = dateDay - currentDateDay;
 	let dayStr = '';

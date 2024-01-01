@@ -214,7 +214,7 @@ export default {
 		// #endif
 	},
 	methods: {
-		//请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认是是）
+		// 请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging处理，第一个参数为请求结果数组，第二个参数为是否成功(默认为是）
 		complete(data, success = true) {
 			this.customNoMore = -1;
 			return this.addData(data, success);
