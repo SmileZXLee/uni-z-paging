@@ -374,14 +374,14 @@ export default {
 			this.$emit('Restore');
 		},
 		// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
-		// 拖拽开始
+		// touch开始
 		_refresherTouchstart(e) {
 			this._handleListTouchstart();
 			if (this._touchDisabled()) return;
 			this._handleRefresherTouchstart(u.getTouch(e));
 		},
 		// #endif
-		// 进一步处理拖拽开始结果
+		// 进一步处理touch开始结果
 		_handleRefresherTouchstart(touch) {
 			if (!this.loading && this.isTouchEnded) {
 				this.isTouchmoving = false;
@@ -399,7 +399,7 @@ export default {
 		
 		// 非appvue或微信小程序或QQ小程序或h5平台，使用js控制下拉刷新
 		// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
-		// 拖拽中
+		// touch中
 		_refresherTouchmove(e) {
 			const currentTimeStamp = u.getTime();
 			let touch = null;
@@ -458,7 +458,7 @@ export default {
 			this._emitTouchmove({ pullingDistance: moveDis, dy: this.moveDis - this.oldMoveDis });
 		},
 		// #endif
-		// 进一步处理拖拽中结果
+		// 进一步处理touch中结果
 		_handleRefresherTouchmove(moveDis, touch) {
 			this.refresherReachMaxAngle = true;
 			this.isTouchmovingTimeout && clearTimeout(this.isTouchmovingTimeout);
@@ -475,7 +475,7 @@ export default {
 			this.moveDis = moveDis;
 		},
 		// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
-		// 拖拽结束
+		// touch结束
 		_refresherTouchend(e) {
 			// 下拉刷新用户手离开屏幕，允许列表滚动
 			this._handleScrollViewBounce({bounce: true});
@@ -488,7 +488,7 @@ export default {
 			this.disabledBounce = false;
 		},
 		// #endif
-		// 进一步处理拖拽结束结果
+		// 进一步处理touch结束结果
 		_handleRefresherTouchend(moveDis) {
 			// #ifndef APP-PLUS || H5 || MP-WEIXIN
 			if (!this.isTouchmoving) return;

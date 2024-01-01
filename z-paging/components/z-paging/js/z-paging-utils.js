@@ -10,7 +10,7 @@ const timeoutMap = {};
 
 // 获取默认配置信息
 function gc(key, defaultValue) {
-	// 这里return一个函数以解决在vue3+appvue中，props默认配置读取在main.js之前执行导致uni.$zp全局配置无效的问题。相当于props中default中传入一个带有返回值的函数
+	// 这里return一个函数以解决在vue3+appvue中，props默认配置读取在main.js之前执行导致uni.$zp全局配置无效的问题。相当于props的default中传入一个带有返回值的函数
 	return () => {
 		// 处理z-paging全局配置
 		_handleDefaultConfig();
@@ -70,7 +70,7 @@ function consoleErr(err) {
 	console.error(`[z-paging]${err}`);
 }
 
-// 延时操作，如果key存在，调用时根据key停止之前的延时操作
+// 延时操作，如果key存在，调用时清除对应key之前的延时操作
 function delay(callback, ms = c.delayTime, key) {
 	const timeout = setTimeout(callback, ms);;
 	if (!!key) {

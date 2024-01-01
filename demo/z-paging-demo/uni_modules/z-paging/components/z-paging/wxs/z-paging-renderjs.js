@@ -20,12 +20,12 @@ export default {
 		}
 	},
 	methods: {
-		//接收逻辑层发送的数据
+		// 接收逻辑层发送的数据
 		renderPropIsIosAndH5Change(newVal) {
 			if (newVal === -1) return;
 			data.isIosAndH5 = newVal;
 		},
-		//拦截处理touch事件
+		// 拦截处理touch事件
 		_handleTouch() {
 			if (!window.$zPagingRenderJsInited) {
 				window.$zPagingRenderJsInited = true;
@@ -33,6 +33,7 @@ export default {
 				window.addEventListener('touchmove', this._handleTouchmove, { passive: false })
 			}
 		},
+		// 处理touch开始
 		_handleTouchstart(e) {
 			const touch = u.getTouch(e);
 			data.startY = touch.touchY;
@@ -41,15 +42,20 @@ export default {
 			data.isUsePageScroll = touchResult.isPageScroll;
 			data.isReachedTop = touchResult.isReachedTop;
 		},
+		// 处理touch中
 		_handleTouchmove(e) {
 			const touch = u.getTouch(e);
 			const moveY = touch.touchY - data.startY;
+			console.log(moveY)
+			// 如果是在z-paging内触摸 并且 （是在顶部位置且是下拉的情况下（或是在iOS+h5+scroll-view并且是往上拉的情况：避免在此平台中滚动到底部后上拉有个系统灰色遮罩导致列表被短暂锁定））
 			if (data.isTouchFromZPaging && ((data.isReachedTop && moveY > 0)  || (data.isIosAndH5 && !data.isUsePageScroll && moveY < 0))) {
 				if (e.cancelable && !e.defaultPrevented) {
+					// 阻止事件冒泡，以避免在一些平台中下拉刷新时整个page跟着一起下拉&在iOS+h5+scroll-view中在底部上拉有个系统灰色遮罩导致列表被短暂锁定的问题
 					e.preventDefault();
 				}
 			}
 		},
+		// 移除touch相关事件监听
 		_removeAllEventListener(){
 			window.removeEventListener('touchstart');
 			window.removeEventListener('touchmove');

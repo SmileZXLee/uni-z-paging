@@ -4,11 +4,13 @@ var currentDis = 0;
 var isPCFlag = -1;
 var startY = -1;
 
+// 监听js层传过来的数据
 function propObserver(newVal, oldVal, ownerIns, ins) {
 	var state = ownerIns.getState() || {};
 	state.currentIns = ins;
 	var dataset = ins.getDataset();
 	var loading = dataset.loading == true;
+	// 如果是下拉刷新结束，更新transform
 	if (newVal && newVal.indexOf('end') != -1) {
 		var transition = newVal.split('end')[0];
 		_setTransform('translateY(0px)', ins, false, transition);
@@ -16,11 +18,13 @@ function propObserver(newVal, oldVal, ownerIns, ins) {
 		state.oldMoveDis = 0;
 		currentDis = 0;
 	} else if (newVal && newVal.indexOf('begin') != -1) {
+		// 如果是下拉刷新开始，更新transform
 		var refresherThreshold = ins.getDataset().refresherthreshold;
 		_setTransformValue(refresherThreshold, ins, state, false);
 	}
 }
 
+// touch开始
 function touchstart(e, ownerIns) {
 	var ins = _getIns(ownerIns);
 	var state = {};
@@ -42,9 +46,11 @@ function touchstart(e, ownerIns) {
 		state.isTouchmoving = false;
 	}
 	state.isTouchEnded = false;
+	// 通知js层touch开始
 	ownerIns.callMethod('_handleRefresherTouchstart', touch);
 }
 
+// touch中
 function touchmove(e, ownerIns) {
 	var touch = _getTouch(e);
 	var ins = _getIns(ownerIns);
@@ -56,21 +62,25 @@ function touchmove(e, ownerIns) {
 	var moveDisObj = {};
 	var moveDis = 0;
 	var prevent = false;
+	// 如果需要监听touch方向的改变
 	if (watchTouchDirectionChange) {
 		moveDisObj = _getMoveDis(e, ins);
 		moveDis = moveDisObj.currentDis;
 		prevent = moveDisObj.isDown;
 		var direction = prevent ? 'top' : 'bottom';
+		// 确保只在touch方向改变时通知一次js层，而不是touchmove中持续通知
 		if (prevent == state.oldTouchDirection && prevent != state.oldEmitedTouchDirection) {
 			ownerIns.callMethod('_handleTouchDirectionChange', { direction: direction }); 
 			state.oldEmitedTouchDirection = prevent;
 		}
 		state.oldTouchDirection = prevent;
 	}
+	// 判断是否允许下拉刷新
 	if (_touchDisabled(e, ins, 1)) {
 		_handlePullingDown(state, ownerIns, false);
 		return true;
 	}
+	// 判断下拉刷新的角度是否在要求范围内
 	if (!_getAngleIsInRange(e, touch, state, dataset)) {
 		_handlePullingDown(state, ownerIns, false);
 		return true;
@@ -79,16 +89,19 @@ function touchmove(e, ownerIns) {
 	moveDis = moveDisObj.currentDis;
 	prevent = moveDisObj.isDown;
 	if (moveDis < 0) {
+		// moveDis小于0，将transform重置为0
 		_setTransformValue(0, ins, state, false);
 		_handlePullingDown(state, ownerIns, false);
 		return true;
 	}
 	if (prevent && !state.disabledBounce) {
-		ownerIns.callMethod('_handleScrollViewBounce', {bounce: false});
+		// 如果是用户下拉并且需要触发下拉刷新，需要通知js层将列表禁止滚动，防止在下拉刷新过程中列表也可以滚动导致的下拉刷新偏移过大的问题（在下拉刷新过程中仅通知一次）
+		ownerIns.callMethod('_handleScrollViewBounce', { bounce: false });
 		state.disabledBounce = true;
 		_handlePullingDown(state, ownerIns, prevent);
 		return !prevent;
 	}
+	// 更新transform
 	_setTransformValue(moveDis, ins, state, false);
 	var oldRefresherStatus = state.refresherStatus;
 	var oldIsTouchmoving = _isTrue(dataset.oldistouchmoving);
@@ -102,9 +115,11 @@ function touchmove(e, ownerIns) {
 	if (state.isTouchEnded) {
 		state.isTouchEnded = false;
 	}
+	// 如果需要实时监听下拉位置偏移，则需要实时通知js层，此操作会使wxs层与js层频繁通信从而导致在一些性能较差设备中下拉刷新卡顿
 	if (hasTouchmove) {
 		ownerIns.callMethod('_handleWxsPullingDown', { moveDis:moveDis, diffDis:moveDisObj.diffDis });
 	}
+	// 在下拉刷新状态改变时通知js层
 	if (oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus || oldIsTouchmoving != isTouchmoving) {
 		ownerIns.callMethod('_handleRefresherTouchmove', moveDis, touch);
 	}
@@ -112,13 +127,15 @@ function touchmove(e, ownerIns) {
 	return !prevent;
 }
 
+// touch结束
 function touchend(e, ownerIns) {
 	var touch = _getTouch(e);
 	var ins = _getIns(ownerIns);
 	var dataset = ins.getDataset();
 	var state = ins.getState();
 	if (state.disabledBounce) {
-		ownerIns.callMethod('_handleScrollViewBounce', {bounce: true});
+		// 通过js允许列表滚动
+		ownerIns.callMethod('_handleScrollViewBounce', { bounce: true });
 		state.disabledBounce = false;
 	}
 	if (_touchDisabled(e, ins, 2)) return;
@@ -133,6 +150,7 @@ function touchend(e, ownerIns) {
 	if (!(moveDis >= refresherThreshold && oldRefresherStatus === 1)) {
 		state.isTouchmoving = false;
 	}
+	// 通知js层touch结束
 	ownerIns.callMethod('_handleRefresherTouchend', moveDis);
 	state.isTouchEnded = true;
 	if (oldMoveDis < refresherThreshold) return;
@@ -145,6 +163,7 @@ function touchend(e, ownerIns) {
 }
 
 // #ifdef H5
+// 判断是否是pc平台
 function isPC() {
 	if (!navigator) return false;
 	if (isPCFlag != -1) return isPCFlag;
@@ -154,6 +173,8 @@ function isPC() {
 }
 
 var movable = false;
+
+// 在pc平台监听mousedown、mousemove、mouseup等相关事件并转为对应touch事件处理，使得在pc平台也支持通过鼠标进行下拉刷新
 
 function mousedown(e, ins) {
 	if (!isPC()) return;
@@ -179,6 +200,7 @@ function mouseleave(e, ins) {
 // #endif
 
 
+// 修改视图层transform
 function _setTransformValue(value, ins, state, animate) {
 	value = value || 0;
 	if (state.moveDis == value) return;
@@ -186,6 +208,7 @@ function _setTransformValue(value, ins, state, animate) {
 	_setTransform('translateY(' + value + 'px)', ins, animate, '');
 }
 
+// 设置视图层transform，直接在视图层操作下拉刷新，使得js层不需要频繁和视图层通信，从而大大提升下拉刷新性能
 function _setTransform(transform, ins, animate, transition) {
 	var dataset = ins.getDataset();
 	if (_isTrue(dataset.refreshernotransform)) return;
@@ -202,6 +225,7 @@ function _setTransform(transform, ins, animate, transition) {
 	})
 }
 
+// 进一步处理下拉刷新的偏移数据
 function _getMoveDis(e, ins) {
 	var state = ins.getState();
 	var refresherThreshold = parseFloat(ins.getDataset().refresherthreshold);
@@ -212,13 +236,16 @@ function _getMoveDis(e, ins) {
 	var moveDis = touch.touchY - currentStartY;
 	var oldMoveDis = state.oldMoveDis || 0;
 	state.oldMoveDis = moveDis;
+	// 获取当前下拉刷新位置与上次的偏移量
 	var diffDis = moveDis - oldMoveDis;
 	if (diffDis > 0) {
+		// 对偏移量进行进一步处理，通过refresherPullRate等配置进行约束
 		diffDis = diffDis * refresherPullRate;
 		if (currentDis > refresherThreshold) {
 			diffDis = diffDis * (1 - refresherOutRate);
 		}
 	}
+	// 控制diffDis过大的情况，比如进入页面突然猛然下拉，此时diffDis不应进行太大的偏移
 	diffDis = diffDis > 100 ? diffDis / 100 : (diffDis > 20 ? diffDis / 2.2 : diffDis);
 	currentDis += diffDis;
 	currentDis = Math.max(0, currentDis);
@@ -229,6 +256,7 @@ function _getMoveDis(e, ins) {
 	};
 }
 
+// 获取经过统一格式包装的当前touch对象
 function _getTouch(e) {
 	var touch = e;
 	if (e.touches && e.touches.length) {
@@ -244,6 +272,7 @@ function _getTouch(e) {
 	};
 }
 
+// 获取当前currentIns
 function _getIns(ownerIns) {
 	var ins = ownerIns.getState().currentIns;
 	if (!ins) {
@@ -252,6 +281,7 @@ function _getIns(ownerIns) {
 	return ins;
 }
 
+// 判断当前状态是否允许下拉刷新
 function _touchDisabled(e, ins, processTag) {
 	var dataset = ins.getDataset();
 	var state = ins.getState();
@@ -290,6 +320,7 @@ function _touchDisabled(e, ins, processTag) {
 	((!usePageScroll && useCustomRefresher && scrollTop > 5) && !fixedIsTop);
 }
 
+// 判断下拉刷新的角度是否在要求范围内
 function _getAngleIsInRange(e, touch, state, dataset) {
 	var maxAngle = dataset.refreshermaxangle;
 	var refresherAecc = _isTrue(dataset.refresheraecc);
@@ -298,13 +329,16 @@ function _getAngleIsInRange(e, touch, state, dataset) {
 	var moveDis = state.oldMoveDis;
 	if (!lastTouch) return true;
 	if (maxAngle >= 0 && maxAngle <= 90 && lastTouch) {
+		// 考虑下拉刷新手势由水平移动转为垂直方向移动的情况，此时不应当只判断垂直方向角度是否符合要求，应当直接禁止以避免在swiper中使用下拉刷新时，横向切换swiper途中手未离开屏幕还可以下拉刷新的问题
 		if ((!moveDis || moveDis < 1) && !refresherAecc && reachMaxAngle != null && !reachMaxAngle) return false;
 		var x = Math.abs(touch.touchX - lastTouch.touchX);
 		var y = Math.abs(touch.touchY - lastTouch.touchY);
 		var z = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 		if ((x || y) && x > 1) {
+			// 获取下拉刷新前后两次位移的角度
 			var angle = Math.asin(y / z) / Math.PI * 180;
 			if (angle < maxAngle) {
+				// 如果角度小于配置要求，则return，同时通过hitReachMaxAngleCount控制角度判断的灵敏程度以最大程度兼容各种使用场景
 				var hitReachMaxAngleCount = state.hitReachMaxAngleCount || 0;
 				state.hitReachMaxAngleCount = ++hitReachMaxAngleCount;
 				if (state.hitReachMaxAngleCount > 2) {
@@ -319,6 +353,7 @@ function _getAngleIsInRange(e, touch, state, dataset) {
 	return true;
 }
 
+// 进一步处理是否在下拉刷新并通知js层
 function _handlePullingDown(state, ins, onPullingDown) {
 	var oldOnPullingDown = state.onPullingDown || false;
 	if (oldOnPullingDown != onPullingDown) {
@@ -327,6 +362,7 @@ function _handlePullingDown(state, ins, onPullingDown) {
 	state.onPullingDown = onPullingDown;
 }
 
+// 判断js层传过来的值是否为true
 function _isTrue(value) {
 	value = (typeof(value) === 'string' ? JSON.parse(value) : value) || false;
 	return value == true || value == 'true';

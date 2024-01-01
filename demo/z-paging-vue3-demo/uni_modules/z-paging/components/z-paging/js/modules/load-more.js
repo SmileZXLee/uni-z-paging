@@ -123,7 +123,7 @@ export default {
 			loadingMoreDefaultSlot: null,
 			// 是否展示底部加载更多
 			showLoadingMore: false,
-			// 是否是开发者自定义的加载更多
+			// 是否是开发者自定义的加载更多，-1代表交由z-paging自行判断；1代表没有更多了；0代表还有更多数据
 			customNoMore: -1,
 		}
 	},

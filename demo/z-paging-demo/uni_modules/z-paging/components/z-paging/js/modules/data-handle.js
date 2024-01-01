@@ -563,6 +563,7 @@ export default {
 				eventThrow = false;
 			}
 			this.realTotalData = newVal;
+			// emit列表更新事件
 			if (eventThrow) {
 				this.$emit('input', newVal);
 				// #ifdef VUE3
@@ -576,15 +577,18 @@ export default {
 			this.isTotalChangeFromAddData = false;
 			this.$nextTick(() => {
 				u.delay(()=>{
+					// emit z-paging内容区域高度改变事件
 					this._getNodeClientRect('.zp-paging-container-content').then(res => {
 						res && this.$emit('contentHeightChanged', res[0].height);
 					});
 				}, c.delayTime * (this.isIos ? 1 : 3))
 				// #ifdef APP-NVUE
+				// 在nvue中，如果当前是聊天记录模式并且是第一页，则触发滚动到最底部
 				if (this.useChatRecordMode && this.nIsFirstPageAndNoMore && this.isFirstPage && !this.nFirstPageAndNoMoreChecked) {
 					this.nFirstPageAndNoMoreChecked = true;
 					this._scrollToBottom(false);
 				}
+				// 在nvue中延时600毫秒展示底部加载更多，避免底部加载更多太早加载闪一下的问题
 				u.delay(() => {
 					this.nShowBottom = true;
 				}, c.delayTime * 6, 'nShowBottomDelay');
@@ -601,11 +605,14 @@ export default {
 			if (this.isFirstPage && this.finalConcat) {
 				this.totalData = [];
 			}
+			// customNoMore：-1代表交由z-paging自行判断；1代表没有更多了；0代表还有更多数据
 			if (this.customNoMore !== -1) {
+				// 如果customNoMore等于1 或者 customNoMore不是0并且新增数组长度为0(也就是不是明确的还有更多数据并且新增的数组长度为0)，则没有更多数据了
 				if (this.customNoMore === 1 || (this.customNoMore !== 0 && !newVal.length)) {
 					this.loadingStatus = Enum.More.NoMore;
 				}
 			} else {
+				// 如果新增的数据数组长度为0 或者 新增的数组长度小于默认的pageSize，则没有更多数据了
 				if (!newVal.length || (newVal.length && newVal.length < this.defaultPageSize)) {
 					this.loadingStatus = Enum.More.NoMore;
 				}
@@ -619,6 +626,7 @@ export default {
 					// #endif
 				}
 				this.totalData = newVal;
+				// 在vue中，如果是聊天记录模式，则触发滚动到底部，此处延时滚动到底部是为了解决在非页面滚动情况下即使加了nextTick也可能出现的最新数据未完全渲染从而导致滚动到底部位置不正确的问题
 				if (this.useChatRecordMode) {
 					// #ifndef APP-NVUE
 					u.delay(() => {
@@ -629,14 +637,19 @@ export default {
 					// #endif
 				}
 			} else {
+				// 聊天记录模式
 				if (this.useChatRecordMode) {
 					// #ifdef APP-NVUE
+					// 在nvue中，即使聊天记录模式是在顶部拼接数据，依然是将新数据拼接在旧数据之后，因为在nvue+聊天记录模式中，将列表旋转了180度
 					this.totalData = [...this.totalData, ...newVal];
 					// #endif
 					//#ifndef APP-NVUE
 					const idIndex = newVal.length;
 					let idIndexStr = `z-paging-${idIndex}`;
+					// 在vue中，需要将新数据拼接在旧数据之前
 					this.totalData = [...newVal, ...this.totalData];
+					// 在非nvue的平台，并且是加载下一页的情况，由于加载下一页之后会默认滚动到最顶部，因此此时需要通过代码将列表滚动回当前加载的位置
+					// 在nvue平台中将列表旋转了180度，因此滚动到顶部加载更多等同于滚动到底部加载更多，则无此问题
 					if (this.pageNo !== this.defaultPageNo) {
 						this.privateScrollWithAnimation = 0;
 						this.$emit('update:chatIndex', idIndex);
@@ -656,6 +669,7 @@ export default {
 					if (this.finalConcat) {
 						const currentScrollTop = this.oldScrollTop;
 						this.totalData = [...this.totalData, ...newVal];
+						// 此处是为了解决在微信小程序中，在某些情况下滚动到底部加载更多后滚动位置直接变为最底部的问题，因此需要通过代码强制滚动回加载更多前的位置
 						// #ifdef MP-WEIXIN
 						if (!this.isIos && !this.refresherOnly && !this.usePageScroll && newVal.length) {
 							this.loadingMoreTimeStamp = u.getTime();
@@ -679,11 +693,13 @@ export default {
 				this.privateConcat = false;
 				const totalPageSize = pageNo * this.pageSize;
 				this.currentRefreshPageSize = totalPageSize;
+				// 如果是本地分页，则在组件内部自己处理分页逻辑，不emit query相关事件
 				if (this.isLocalPaging && this.isHandlingRefreshToPage) {
 					this._localPagingQueryList(this.defaultPageNo, totalPageSize, 0, res => {
 						this.complete(res);
 					})
 				} else {
+					// emit query相关事件
 					this._emitQuery(this.defaultPageNo, totalPageSize, Enum.QueryFrom.Refresh);
 					this._callMyParentQuery(this.defaultPageNo, totalPageSize);
 				}

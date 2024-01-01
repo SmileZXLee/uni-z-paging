@@ -11,12 +11,12 @@
 				:class="{'zp-line-loading-image-rpx':c.unit==='rpx','zp-line-loading-image-px':c.unit==='px'}" :style="[c.iconCustomStyle]" :src="zTheme.flower[ts]" />
 			<!-- #endif -->
 			<!-- #ifdef APP-NVUE -->
-			<!-- nvue中底部加载更多loading使用系统自带的 -->
+			<!-- 在nvue中底部加载更多loading使用系统自带的 -->
 			<view>
 				<loading-indicator v-if="finalStatus===M.Loading&&finalLoadingIconType!=='circle'" :class="{'zp-line-loading-image-rpx':c.unit==='rpx','zp-line-loading-image-px':c.unit==='px'}" :style="[{color:zTheme.indicator[ts]}]" :animating="true" />
 			</view>
 			<!-- #endif -->
-			<!-- 底部加载更多状态文字 -->
+			<!-- 底部加载更多文字 -->
 			<text v-if="finalStatus===M.Loading&&finalLoadingIconType==='circle'&&!c.loadingIconCustomImage.length"
 				class="zp-l-circle-loading-view" :class="{'zp-l-circle-loading-view-rpx':c.unit==='rpx','zp-l-circle-loading-view-px':c.unit==='px'}" :style="[{borderColor:zTheme.circleBorder[ts],borderTopColor:zTheme.circleBorderTop[ts]},c.iconCustomStyle]" />
 			<text :class="{'zp-l-text-rpx':c.unit==='rpx','zp-l-text-px':c.unit==='px'}" :style="[{color:zTheme.title[ts]},c.titleCustomStyle]">{{ownLoadingMoreText}}</text>
