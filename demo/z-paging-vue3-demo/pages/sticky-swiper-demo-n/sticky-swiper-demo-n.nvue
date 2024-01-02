@@ -61,6 +61,7 @@
 	
 	onLoad(() => {
 		// 获取页面可见高度，除去header以外的高度必须等于页面可见高度！
+		// 注意：如果是自定义导航栏通过slot="top"插入的情况，这里的pageHeight.value = uni.getSystemInfoSync().windowHeight - 自定义导航栏高度。底部tabbar亦然
 		pageHeight.value = uni.getSystemInfoSync().windowHeight;
 		nextTick(() => {
 			// 获取header的高度
