@@ -150,7 +150,7 @@ function addUnit(value, unit) {
 	if (Object.prototype.toString.call(value) === '[object String]') {
 		let tempValue = value;
 		tempValue = tempValue.replace('rpx', '').replace('upx', '').replace('px', '');
-		if (value.indexOf('rpx') === -1 && value.indexOf('upx') === -1 && text.indexOf('px') !== -1) {
+		if (value.indexOf('rpx') === -1 && value.indexOf('upx') === -1 && value.indexOf('px') !== -1) {
 			tempValue = parseFloat(tempValue) * 2;
 		}
 		value = tempValue;
