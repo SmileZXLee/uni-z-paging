@@ -6,7 +6,7 @@ import interceptor from '../z-paging-interceptor'
 
 export default {
 	props: {
-		//自定义初始的pageNo，默认为1
+		// 自定义初始的pageNo，默认为1
 		defaultPageNo: {
 			type: [Number, String],
 			default: u.gc('defaultPageNo', 1),
@@ -14,7 +14,7 @@ export default {
 				this.pageNo = newVal;
 			},
 		},
-		//自定义pageSize，默认为10
+		// 自定义pageSize，默认为10
 		defaultPageSize: {
 			type: [Number, String],
 			default: u.gc('defaultPageSize', 10),
@@ -23,102 +23,102 @@ export default {
 				return value > 0;
 			}
 		},
-		//为保证数据一致，设置当前tab切换时的标识key，并在complete中传递相同key，若二者不一致，则complete将不会生效
+		// 为保证数据一致，设置当前tab切换时的标识key，并在complete中传递相同key，若二者不一致，则complete将不会生效
 		dataKey: {
 			type: [Number, String, Object],
 			default: u.gc('dataKey', null),
 		},
-		//使用缓存，若开启将自动缓存第一页的数据，默认为否。请注意，因考虑到切换tab时不同tab数据不同的情况，默认仅会缓存组件首次加载时第一次请求到的数据，后续的下拉刷新操作不会更新缓存。
+		// 使用缓存，若开启将自动缓存第一页的数据，默认为否。请注意，因考虑到切换tab时不同tab数据不同的情况，默认仅会缓存组件首次加载时第一次请求到的数据，后续的下拉刷新操作不会更新缓存。
 		useCache: {
 			type: Boolean,
 			default: u.gc('useCache', false)
 		},
-		//使用缓存时缓存的key，用于区分不同列表的缓存数据，useCache为true时必须设置，否则缓存无效
+		// 使用缓存时缓存的key，用于区分不同列表的缓存数据，useCache为true时必须设置，否则缓存无效
 		cacheKey: {
 			type: String,
 			default: u.gc('cacheKey', null)
 		},
-		//缓存模式，默认仅会缓存组件首次加载时第一次请求到的数据，可设置为always，即代表总是缓存，每次列表刷新(下拉刷新、调用reload等)都会更新缓存
+		// 缓存模式，默认仅会缓存组件首次加载时第一次请求到的数据，可设置为always，即代表总是缓存，每次列表刷新(下拉刷新、调用reload等)都会更新缓存
 		cacheMode: {
 			type: String,
 			default: u.gc('cacheMode', Enum.CacheMode.Default)
 		},
-		//自动注入的list名，可自动修改父view(包含ref="paging")中对应name的list值
+		// 自动注入的list名，可自动修改父view(包含ref="paging")中对应name的list值
 		autowireListName: {
 			type: String,
 			default: u.gc('autowireListName', '')
 		},
-		//自动注入的query名，可自动调用父view(包含ref="paging")中的query方法
+		// 自动注入的query名，可自动调用父view(包含ref="paging")中的query方法
 		autowireQueryName: {
 			type: String,
 			default: u.gc('autowireQueryName', '')
 		},
-		//z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
+		// z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
 		auto: {
 			type: Boolean,
 			default: u.gc('auto', true)
 		},
-		//用户下拉刷新时是否触发reload方法，默认为是
+		// 用户下拉刷新时是否触发reload方法，默认为是
 		reloadWhenRefresh: {
 			type: Boolean,
 			default: u.gc('reloadWhenRefresh', true)
 		},
-		//reload时自动滚动到顶部，默认为是
+		// reload时自动滚动到顶部，默认为是
 		autoScrollToTopWhenReload: {
 			type: Boolean,
 			default: u.gc('autoScrollToTopWhenReload', true)
 		},
-		//reload时立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
+		// reload时立即自动清空原list，默认为是，若立即自动清空，则在reload之后、请求回调之前页面是空白的
 		autoCleanListWhenReload: {
 			type: Boolean,
 			default: u.gc('autoCleanListWhenReload', true)
 		},
-		//列表刷新时自动显示下拉刷新view，默认为否
+		// 列表刷新时自动显示下拉刷新view，默认为否
 		showRefresherWhenReload: {
 			type: Boolean,
 			default: u.gc('showRefresherWhenReload', false)
 		},
-		//列表刷新时自动显示加载更多view，且为加载中状态，默认为否
+		// 列表刷新时自动显示加载更多view，且为加载中状态，默认为否
 		showLoadingMoreWhenReload: {
 			type: Boolean,
 			default: u.gc('showLoadingMoreWhenReload', false)
 		},
-		//组件created时立即触发reload(可解决一些情况下先看到页面再看到loading的问题)，auto为true时有效。为否时将在mounted+nextTick后触发reload，默认为否
+		// 组件created时立即触发reload(可解决一些情况下先看到页面再看到loading的问题)，auto为true时有效。为否时将在mounted+nextTick后触发reload，默认为否
 		createdReload: {
 			type: Boolean,
 			default: u.gc('createdReload', false)
 		},
-		//本地分页时上拉加载更多延迟时间，单位为毫秒，默认200毫秒
+		// 本地分页时上拉加载更多延迟时间，单位为毫秒，默认200毫秒
 		localPagingLoadingTime: {
 			type: [Number, String],
 			default: u.gc('localPagingLoadingTime', 200)
 		},
-		//使用聊天记录模式，默认为否
+		// 使用聊天记录模式，默认为否
 		useChatRecordMode: {
 			type: Boolean,
 			default: u.gc('useChatRecordMode', false)
 		},
-		//使用聊天记录模式时滚动到顶部后，列表垂直移动偏移距离。默认0rpx。单位px
+		// 使用聊天记录模式时滚动到顶部后，列表垂直移动偏移距离。默认0rpx。单位px
 		chatRecordMoreOffset: {
 			type: [Number, String],
 			default: u.gc('chatRecordMoreOffset', '0rpx')
 		},
-		//使用聊天记录模式时是否自动隐藏键盘：在用户触摸列表时候自动隐藏键盘，默认为是
+		// 使用聊天记录模式时是否自动隐藏键盘：在用户触摸列表时候自动隐藏键盘，默认为是
 		autoHideKeyboardWhenChat: {
 			type: Boolean,
 			default: u.gc('autoHideKeyboardWhenChat', true)
 		},
-		//自动拼接complete中传过来的数组(使用聊天记录模式时无效)
+		// 自动拼接complete中传过来的数组(使用聊天记录模式时无效)
 		concat: {
 			type: Boolean,
 			default: u.gc('concat', true)
 		},
-		//请求失败是否触发reject，默认为是
+		// 请求失败是否触发reject，默认为是
 		callNetworkReject: {
 			type: Boolean,
 			default: u.gc('callNetworkReject', true)
 		},
-		//父组件v-model所绑定的list的值
+		// 父组件v-model所绑定的list的值
 		value: {
 			type: Array,
 			default: function() {
@@ -388,11 +388,21 @@ export default {
 			this.useChatRecordMode && this._onLoadingMore('click');
 		},
 		// reload之前的一些处理
-		_preReload(animate = this.showRefresherWhenReload, isFromMounted = true) {
+		_preReload(animate = this.showRefresherWhenReload, isFromMounted = true, retryCount = 0) {
 			const showRefresher = this.finalRefresherEnabled && this.useCustomRefresher;
 			// #ifndef APP-NVUE
+			// 如果获取slot="refresher"高度失败，则不触发reload，直到获取slot="refresher"高度成功
 			if (this.customRefresherHeight === -1 && showRefresher) {
-				u.delay(() => this._preReload(animate, isFromMounted), c.delayTime / 2);
+				u.delay(() => {
+					retryCount ++;
+					// 如果重试次数是10的倍数(也就是每500毫秒)，尝试重新获取一下slot="refresher"高度
+					// 此举是为了解决在某些特殊情况下，z-paging组件mounted了，但是未展示在用户面前，（比如在tabbar页面中，未切换到对应tabbar但是通过代码让z-paging展示了，此时控制台会报Error: Not Found：Page，因为这时候去获取dom节点信息获取不到）
+					// 当用户在某个时刻让此z-paging展示在面前时，即可顺利获取到slot="refresher"高度，递归停止
+					if (retryCount % 10 === 0) {
+						this._updateCustomRefresherHeight();
+					}
+					this._preReload(animate, isFromMounted, retryCount);
+				}, c.delayTime / 2);
 				return;
 			}
 			// #endif

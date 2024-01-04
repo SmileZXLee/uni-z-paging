@@ -71,6 +71,7 @@ export default {
 			fromCompleteEmit: false,
 			disabledCompleteEmit: false,
 			pageLaunched: false,
+			active: false,
 			
 			// ---------------wxs相关---------------
 			wxsIsScrollTopInTopRange: true,
@@ -176,7 +177,7 @@ export default {
 			default: u.gc('unit', 'rpx')
 		}
 	},
-	created(){
+	created() {
 		// 组件创建时，检测是否开始加载状态
 		if (this.createdReload && !this.refresherOnly && this.auto) {
 			this._startLoading();
@@ -184,6 +185,7 @@ export default {
 		}
 	},
 	mounted() {
+		this.active = true;
 		this.wxsPropType = u.getTime().toString();
 		this.renderJsIgnore;
 		if (!this.createdReload && !this.refresherOnly && this.auto) {
@@ -238,11 +240,14 @@ export default {
 		// #endif
 	},
 	destroyed() {
+		this.active = false;
 		// 当组件销毁时，移除全局emit监听
 		this._offEmit();
 	},
 	// #ifdef VUE3
 	unmounted() {
+		this.active = false;
+		// 当组件销毁时，移除全局emit监听
 		this._offEmit();
 	},
 	// #endif

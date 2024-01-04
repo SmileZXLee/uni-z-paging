@@ -313,7 +313,7 @@ export default {
 		showRefresher() {
 			const showRefresher = this.finalRefresherEnabled && this.useCustomRefresher;
 			// #ifndef APP-NVUE
-			this.customRefresherHeight === -1 && showRefresher && this.updateCustomRefresherHeight();
+			this.active && this.customRefresherHeight === -1 && showRefresher && this.updateCustomRefresherHeight();
 			// #endif
 			return showRefresher;
 		},
