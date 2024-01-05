@@ -12,7 +12,7 @@
 			<swiper-item class="swiper-item" v-for="(item, index) in tabList" :key="index">
 				<!-- 这里的swiper-list-item为demo中为演示用定义的组件，列表及分页代码在swiper-list-item组件内 -->
 				<!-- 请注意，swiper-list-item非z-paging内置组件，在自己的项目中必须自己创建，若未创建则会报组件不存在的错误 -->
-				<swiper-list-item :tabIndex="index" :currentIndex="current"></swiper-list-item>
+				<swiper-list-item ref="listItem" :tabIndex="index" :currentIndex="current"></swiper-list-item>
 			</swiper-item>
 		</swiper>
 	</z-paging-swiper>
@@ -25,6 +25,10 @@
 				tabList: ['测试1','测试2','测试3','测试4'],
 				current: 0, // tabs组件的current值，表示当前活动的tab选项
 			};
+		},
+		onShow() {
+			// 在页面onShow的时候，刷新当前列表（不是必须的）
+			// this.$refs.listItem && this.reloadCurrentList();
 		},
 		methods: {
 			// tabs通知swiper切换
@@ -39,6 +43,10 @@
 			swiperAnimationfinish(e) {
 				this.current = e.detail.current;
 				this.$refs.tabs.unlockDx();
+			},
+			// 如果要通知当前展示的z-paging刷新，请调用此方法
+			reloadCurrentList() {
+				this.$refs.listItem[this.current].reload();
 			}
 		}
 	}
