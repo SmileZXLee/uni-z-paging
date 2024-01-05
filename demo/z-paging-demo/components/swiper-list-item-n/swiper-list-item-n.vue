@@ -65,7 +65,7 @@
 			// 接收父组件传过来的刷新列表要求
 			reload() {
 				// 刷新列表数据(如果不希望列表pageNo被重置可以用refresh代替reload方法)
-				this.$refs.paging.reload();	
+				this.$refs.paging && this.$refs.paging.reload();	
 			},
 			queryList(pageNo, pageSize) {
 				// 组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
