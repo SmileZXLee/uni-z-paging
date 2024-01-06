@@ -8,7 +8,7 @@
 			<image v-if="finalStatus===M.Loading&&!!c.loadingIconCustomImage"
 				:src="c.loadingIconCustomImage" :style="[c.iconCustomStyle]" :class="{'zp-l-line-loading-custom-image':true,'zp-l-line-loading-custom-image-animated':c.loadingAnimated,'zp-l-line-loading-custom-image-rpx':c.unit==='rpx','zp-l-line-loading-custom-image-px':c.unit==='px'}" />
 			<image v-if="finalStatus===M.Loading&&finalLoadingIconType==='flower'&&!c.loadingIconCustomImage.length"
-				:class="{'zp-line-loading-image-rpx':c.unit==='rpx','zp-line-loading-image-px':c.unit==='px'}" :style="[c.iconCustomStyle]" :src="zTheme.flower[ts]" />
+				:class="{'zp-line-loading-image':true,'zp-line-loading-image-rpx':c.unit==='rpx','zp-line-loading-image-px':c.unit==='px'}" :style="[c.iconCustomStyle]" :src="zTheme.flower[ts]" />
 			<!-- #endif -->
 			<!-- #ifdef APP-NVUE -->
 			<!-- 在nvue中底部加载更多loading使用系统自带的 -->
