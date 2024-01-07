@@ -1,12 +1,11 @@
 <!-- 聊天记录模式演示(vue)，vue中目前无法解决分页闪动问题，使用nvue可实现聊天记录无闪动分页 -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" v-model="dataList" use-page-scroll use-chat-record-mode @query="queryList">
-			<!-- 聊天item，:id="`z-paging-${index}`"必须加 -->
-			<view :id="`z-paging-${index}`" v-for="(item,index) in dataList" :key="index">
+		<z-paging ref="paging" v-model="dataList" use-chat-record-mode @cellStyleChange="cellStyleChange" @query="queryList">
+			<!-- :style="cellStyle"必须写，否则会导致列表倒置！！！ -->
+			<view v-for="(item,index) in dataList" :key="index" :style="cellStyle">
 				<chat-item :item="item"></chat-item>
 			</view>
-			
 			<!-- 底部聊天输入框 -->
 			<template #bottom>
 				<chat-input-bar @send="doSend" />
@@ -19,37 +18,36 @@
 	export default {
 		data() {
 			return {
-				//v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
+				// v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
 				dataList: [],
-			}
-		},
-		onPageScroll(e) {
-			//更新z-paging内部scrollTop
-			this.$refs.paging.updatePageScrollTop(e.scrollTop);
-			//如果滚动到顶部，触发加载更多聊天记录
-			if (e.scrollTop < 10) {
-				this.$refs.paging.doChatRecordLoadMore();
+				// 当前cell旋转的style，必须写
+				cellStyle: {}
 			}
 		},
 		methods: {
 			queryList(pageNo, pageSize) {
-				//组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
-				//这里的pageNo和pageSize会自动计算好，直接传给服务器即可
-				//模拟请求服务器获取分页数据，请替换成自己的网络请求
+				// 组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
+				// 这里的pageNo和pageSize会自动计算好，直接传给服务器即可
+				// 模拟请求服务器获取分页数据，请替换成自己的网络请求
 				const params = {
 					pageNo: pageNo,
 					pageSize: pageSize,
 				}
 				this.$request.queryChatList(params).then(res => {
-					//将请求的结果数组传递给z-paging
+					// 将请求的结果数组传递给z-paging
 					this.$refs.paging.complete(res.data.list);
 				}).catch(res => {
-					//如果请求失败写this.$refs.paging.complete(false);
-					//注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
-					//在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
+					// 如果请求失败写this.$refs.paging.complete(false);
+					// 注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
+					// 在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
 					this.$refs.paging.complete(false);
 				})
 			},
+			// 监听cellStyle改变，这个方法必须写！！
+			cellStyleChange(cellStyle){
+				this.cellStyle = cellStyle;
+			},
+			// 发送新消息
 			doSend(msg){
 				uni.showLoading({
 					title: '发送中...'

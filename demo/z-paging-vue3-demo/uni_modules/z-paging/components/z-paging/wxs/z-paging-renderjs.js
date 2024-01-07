@@ -7,6 +7,7 @@ const data = {
 	isUsePageScroll: false,
 	isReachedTop: true,
 	isIosAndH5: false,
+	useChatRecordMode: false,
 	appLaunched: false
 }
 
@@ -20,10 +21,14 @@ export default {
 		}
 	},
 	methods: {
-		// 接收逻辑层发送的数据
+		// 接收逻辑层发送的数据（是否是ios+h5）
 		renderPropIsIosAndH5Change(newVal) {
 			if (newVal === -1) return;
 			data.isIosAndH5 = newVal;
+		},
+		// 接收逻辑层发送的数据（是否是聊天记录模式）
+		renderPropUseChatRecordModeChange(newVal) {
+			data.useChatRecordMode = newVal;
 		},
 		// 拦截处理touch事件
 		_handleTouch() {
@@ -46,8 +51,8 @@ export default {
 		_handleTouchmove(e) {
 			const touch = u.getTouch(e);
 			const moveY = touch.touchY - data.startY;
-			// 如果是在z-paging内触摸并且（是在顶部位置且是下拉的情况下（或是在iOS+h5+scroll-view并且是往上拉的情况：避免在此平台中滚动到底部后上拉有个系统灰色遮罩导致列表被短暂锁定的问题））
-			if (data.isTouchFromZPaging && ((data.isReachedTop && moveY > 0)  || (data.isIosAndH5 && !data.isUsePageScroll && moveY < 0))) {
+			// 如果是在z-paging内触摸并且 不是聊天记录滚动模式 并且（是在顶部位置且是下拉的情况下（或是在iOS+h5+scroll-view并且是往上拉的情况：避免在此平台中滚动到底部后上拉有个系统灰色遮罩导致列表被短暂锁定的问题））
+			if (data.isTouchFromZPaging && !data.useChatRecordMode && ((data.isReachedTop && moveY > 0)  || (data.isIosAndH5 && !data.isUsePageScroll && moveY < 0))) {
 				if (e.cancelable && !e.defaultPrevented) {
 					// 阻止事件冒泡，以避免在一些平台中下拉刷新时整个page跟着一起下拉&在iOS+h5+scroll-view中在底部上拉有个系统灰色遮罩导致列表被短暂锁定的问题
 					e.preventDefault();

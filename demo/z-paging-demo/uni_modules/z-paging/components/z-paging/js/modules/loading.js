@@ -43,15 +43,13 @@ export default {
 			this.$nextTick(() => {
 				this.loadingStatusAfterRender = newVal;
 			})
-			// #ifdef APP-NVUE
 			if (this.useChatRecordMode) {
 				if (this.pageNo === this.defaultPageNo && newVal === Enum.More.NoMore) {
-					this.nIsFirstPageAndNoMore = true;
+					this.isFirstPageAndNoMore = true;
 					return;
 				}
 			}
-			this.nIsFirstPageAndNoMore = false;
-			//  #endif
+			this.isFirstPageAndNoMore = false;
 		},
 		loading(newVal){
 			if (newVal) {

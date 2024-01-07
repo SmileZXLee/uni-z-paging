@@ -29,7 +29,7 @@ by ZXLee
 			</view>
 			<view :class="{'zp-scroll-view-container':true,'zp-absoulte':finalIsOldWebView}" :style="[scrollViewContainerStyle]">
 				<scroll-view
-					ref="zp-scroll-view" :class="{'zp-scroll-view':true,'zp-scroll-view-absolute':!usePageScroll,'zp-scroll-view-hide-scrollbar':!showScrollbar}"
+					ref="zp-scroll-view" :class="{'zp-scroll-view':true,'zp-scroll-view-absolute':!usePageScroll,'zp-scroll-view-hide-scrollbar':!showScrollbar}" :style="[chatRecordRotateStyle]"
 					:scroll-top="scrollTop" :scroll-x="scrollX"
 					:scroll-y="scrollable&&!usePageScroll&&scrollEnable&&(refresherCompleteScrollable?true:refresherStatus!==R.Complete)" :enable-back-to-top="finalEnableBackToTop"
 					:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
@@ -61,6 +61,7 @@ by ZXLee
 						<!-- #endif -->
 						<!-- #ifdef APP-VUE || H5 -->
 						:change:renderPropIsIosAndH5="pagingRenderjs.renderPropIsIosAndH5Change" :renderPropIsIosAndH5="isIosAndH5"
+						:change:renderPropUseChatRecordMode="pagingRenderjs.renderPropUseChatRecordModeChange" :renderPropUseChatRecordMode="useChatRecordMode"
 						<!-- #endif -->
 						>	
 							<view v-if="showRefresher" class="zp-custom-refresher-view" :style="[{'margin-top': `-${finalRefresherThreshold+refresherThresholdUpdateTag}px`,'background': refresherBackground,'opacity': isTouchmoving ? 1 : 0}]">
@@ -80,12 +81,6 @@ by ZXLee
 								</view>
 							</view>
 							<view class="zp-paging-container">
-								<slot v-if="useChatRecordMode&&zSlots.chatLoading&&loadingStatus!==M.NoMore&&realTotalData.length" name="chatLoading" />
-								<view v-else-if="useChatRecordMode&&loadingStatus!==M.NoMore&&realTotalData.length" class="zp-chat-record-loading-container">
-									<text v-if="loadingStatus!==M.Loading" @click="_onScrollToUpper"
-										:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
-									<image v-else :src="base64Flower" class="zp-chat-record-loading-custom-image" />
-								</view>
 								<!-- 全屏Loading -->
 								<slot v-if="showLoading&&zSlots.loading&&!loadingFullFixed" name="loading" />
 								<!-- 主体内容 -->
@@ -110,6 +105,13 @@ by ZXLee
 										</view>
 										<slot name="footer"/>
 									</template>
+									<!-- 聊天记录模式加载更多loading -->
+									<slot v-if="useChatRecordMode&&zSlots.chatLoading&&loadingStatus!==M.NoMore&&realTotalData.length" name="chatLoading" />
+									<view v-else-if="useChatRecordMode&&loadingStatus!==M.NoMore&&realTotalData.length" class="zp-chat-record-loading-container">
+										<text v-if="loadingStatus!==M.Loading" @click="_onScrollToUpper"
+											:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
+										<image v-else :src="base64Flower" class="zp-chat-record-loading-custom-image" />
+									</view>
 									<view v-if="useVirtualList" class="zp-virtual-placeholder" :style="[{height:virtualPlaceholderBottomHeight+'px'}]"/>
 									<!-- 上拉加载更多view -->
 									<!-- #ifndef MP-ALIPAY -->
@@ -171,7 +173,7 @@ by ZXLee
 			<view v-if="zSlots.left" class="zp-page-left">
 				<slot name="left" />
 			</view>
-			<component :is="finalNvueListIs" ref="zp-n-list" :id="nvueListId" :style="[{'flex': 1,'top':isIos?'0px':'-1px'},usePageScroll?scrollViewStyle:{},nChatRecordRotateStyle]" :alwaysScrollableVertical="true"
+			<component :is="finalNvueListIs" ref="zp-n-list" :id="nvueListId" :style="[{'flex': 1,'top':isIos?'0px':'-1px'},usePageScroll?scrollViewStyle:{},chatRecordRotateStyle]" :alwaysScrollableVertical="true"
 				:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar&&!useChatRecordMode" :loadmoreoffset="finalLowerThreshold" :enable-back-to-top="enableBackToTop"
 				:scrollable="scrollable&&scrollEnable&&(refresherCompleteScrollable?true:refresherStatus!==R.Complete)" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 				:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap" :pagingEnabled="nvuePagingEnabled" :offset-accuracy="offsetAccuracy"
@@ -216,7 +218,7 @@ by ZXLee
 					<slot />
 				</template>
 				<!-- 全屏Loading -->
-				<component :is="nViewIs" v-if="showLoading&&zSlots.loading&&!loadingFullFixed" :class="{'z-paging-content-fixed':usePageScroll}" style="flex:1" :style="[nChatRecordRotateStyle]">
+				<component :is="nViewIs" v-if="showLoading&&zSlots.loading&&!loadingFullFixed" :class="{'z-paging-content-fixed':usePageScroll}" style="flex:1" :style="[chatRecordRotateStyle]">
 					<slot name="loading" />
 				</component>
 				<!-- 上拉加载更多view -->
@@ -228,7 +230,7 @@ by ZXLee
 								<text v-if="loadingStatus!==M.Loading" @click="_onScrollToUpper"
 									:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
 								<view>
-									<loading-indicator v-if="loadingStatus===M.Loading" class="zp-line-loading-image" :class="{'zp-line-loading-image-rpx':unit==='rpx','zp-line-loading-image-px':unit==='px'}" animating />
+									<loading-indicator v-if="loadingStatus===M.Loading" class="zp-line-loading-image" :class="{'zp-line-loading-image-rpx':unit==='rpx','zp-line-loading-image-px':unit==='px'}" :animating="true" />
 								</view>
 							</view>
 						</view>
@@ -243,7 +245,7 @@ by ZXLee
 					</view>
 				</component>
 				<!-- 空数据图 -->
-				<component :is="nViewIs" v-if="showEmpty" :class="{'z-paging-content-fixed':usePageScroll}" :style="[{flex:emptyViewCenter?1:0},emptyViewSuperStyle,nChatRecordRotateStyle]">
+				<component :is="nViewIs" v-if="showEmpty" :class="{'z-paging-content-fixed':usePageScroll}" :style="[{flex:emptyViewCenter?1:0},emptyViewSuperStyle,chatRecordRotateStyle]">
 					<view :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}">
 						<slot v-if="zSlots.empty" name="empty" :isLoadFailed="isLoadFailed" />
 						<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 

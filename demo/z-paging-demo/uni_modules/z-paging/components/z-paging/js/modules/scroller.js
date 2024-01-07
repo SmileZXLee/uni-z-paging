@@ -117,14 +117,13 @@ export default {
 	methods: {
 		// 滚动到顶部，animate为是否展示滚动动画，默认为是
 		scrollToTop(animate, checkReverse = true) {
-			// #ifdef APP-NVUE
 			if (checkReverse && this.useChatRecordMode) {
-				if (!this.nIsFirstPageAndNoMore) {
+				// 如果是页面滚动并且不是第一页且没有更多，则滚动到顶部实际上是滚动到底部，因为列表旋转了180度
+				if (!this.isFirstPageAndNoMore) {
 					this.scrollToBottom(animate, false);
 					return;
 				}
 			}
-			// #endif
 			this.$nextTick(() => {
 				this._scrollToTop(animate, false);
 				// #ifdef APP-NVUE
@@ -138,14 +137,13 @@ export default {
 		},
 		// 滚动到底部，animate为是否展示滚动动画，默认为是
 		scrollToBottom(animate, checkReverse = true) {
-			// #ifdef APP-NVUE
 			if (checkReverse && this.useChatRecordMode) {
-				if (!this.nIsFirstPageAndNoMore) {
+				// 如果是页面滚动并且不是第一页且没有更多，则滚动到底部实际上是滚动到顶部，因为列表旋转了180度
+				if (!this.isFirstPageAndNoMore) {
 					this.scrollToTop(animate, false);
 					return;
 				}
 			}
-			// #endif
 			this.$nextTick(() => {
 				this._scrollToBottom(animate);
 				// #ifdef APP-NVUE
@@ -217,11 +215,10 @@ export default {
 			this.$nextTick(() => {
 				this.oldScrollTop = 0;
 			})
-			this.useChatRecordMode && this.loadingStatus !== Enum.More.NoMore && this._onLoadingMore('click');
 		},
 		// 当滚动到底部时
 		_onScrollToLower(e) {
-			(!e.detail || !e.detail.direction || e.detail.direction === 'bottom') && this._onLoadingMore('toBottom')
+			(!e.detail || !e.detail.direction || e.detail.direction === 'bottom') && this._onLoadingMore(this.useChatRecordMode ? 'click' : 'toBottom')
 		},
 		// 滚动到顶部
 		_scrollToTop(animate = true, isPrivate = true) {

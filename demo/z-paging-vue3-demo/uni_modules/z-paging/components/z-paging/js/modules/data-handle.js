@@ -160,7 +160,8 @@ export default {
 			fromEmptyViewReload: false,
 			queryFrom: '',
 			listRendering: false,
-			isHandlingRefreshToPage: false
+			isHandlingRefreshToPage: false,
+			isFirstPageAndNoMore: false
 		}
 	},
 	computed: {
@@ -197,6 +198,14 @@ export default {
 			if (newVal) {
 				this.nLoadingMoreFixedHeight = false;
 			}
+		},
+		isFirstPageAndNoMore: {
+			handler(newVal) {
+				const cellStyle = this.chatRecordRotateStyle;
+				this.$emit('update:cellStyle', cellStyle);
+				this.$emit('cellStyleChange', cellStyle);
+			},
+			immediate: true
 		},
 		value: {
 			handler(newVal) {
@@ -316,20 +325,10 @@ export default {
 			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data;
 			if (!this.useChatRecordMode) return;
 			this.isTotalChangeFromAddData = true;
-			//#ifndef APP-NVUE
-			this.totalData = [...this.totalData, ...data];
-			//#endif
-			//#ifdef APP-NVUE
-			this.totalData = this.nIsFirstPageAndNoMore ? [...this.totalData, ...data] : [...data, ...this.totalData];
-			//#endif
+			this.totalData = this.isFirstPageAndNoMore ? [...this.totalData, ...data] : [...data, ...this.totalData];
 			if (toBottom) {
 				u.delay(() => {
-					//#ifndef APP-NVUE
-					this._scrollToBottom(toBottomWithAnimate);
-					//#endif
-					//#ifdef APP-NVUE
-					this.nIsFirstPageAndNoMore ? this._scrollToBottom(toBottomWithAnimate) : this._scrollToTop(toBottomWithAnimate);
-					//#endif
+					this.isFirstPageAndNoMore ? this._scrollToBottom(toBottomWithAnimate) : this._scrollToTop(toBottomWithAnimate);
 				})
 			}
 		},
@@ -505,9 +504,7 @@ export default {
 			data = dataTypeRes.data;
 			success = dataTypeRes.success;
 			let delayTime = c.delayTime;
-			// #ifdef APP-NVUE
 			if (this.useChatRecordMode) delayTime = 0;
-			// #endif
 			this.loadingForNow = false;
 			u.delay(() => {
 				this.pagingLoaded = true;
@@ -593,8 +590,8 @@ export default {
 					});
 				}, c.delayTime * (this.isIos ? 1 : 3))
 				// #ifdef APP-NVUE
-				// 在nvue中，如果当前是聊天记录模式并且是第一页，则触发滚动到最底部
-				if (this.useChatRecordMode && this.nIsFirstPageAndNoMore && this.isFirstPage && !this.nFirstPageAndNoMoreChecked) {
+				// 如果当前是聊天记录模式并且是第一页，则触发滚动到最底部
+				if (this.useChatRecordMode && this.isFirstPageAndNoMore && this.isFirstPage && !this.nFirstPageAndNoMoreChecked) {
 					this.nFirstPageAndNoMoreChecked = true;
 					this._scrollToBottom(false);
 				}
@@ -610,7 +607,6 @@ export default {
 			newVal = [...newVal];
 			// #ifndef APP-NVUE
 			this.finalUseVirtualList && this._setCellIndex(newVal, 'bottom');
-			this.useChatRecordMode && newVal.reverse();
 			// #endif
 			if (this.isFirstPage && this.finalConcat) {
 				this.totalData = [];
@@ -629,68 +625,26 @@ export default {
 			}
 			if (!this.totalData.length) {
 				if (this.finalConcat) {
-					// #ifdef APP-NVUE
 					if (this.useChatRecordMode && this.isFirstPage && this.loadingStatus === Enum.More.NoMore) {
 						newVal.reverse();
 					}
-					// #endif
 				}
 				this.totalData = newVal;
-				// 在vue中，如果是聊天记录模式，则触发滚动到底部，此处延时滚动到底部是为了解决在非页面滚动情况下即使加了nextTick也可能出现的最新数据未完全渲染从而导致滚动到底部位置不正确的问题
-				if (this.useChatRecordMode) {
-					// #ifndef APP-NVUE
-					u.delay(() => {
-						this.$nextTick(() => {
-							this._scrollToBottom(false);
-						})
-					}, this.usePageScroll ? 0 : 10)
-					// #endif
-				}
 			} else {
-				// 聊天记录模式
-				if (this.useChatRecordMode) {
-					// #ifdef APP-NVUE
-					// 在nvue中，即使聊天记录模式是在顶部拼接数据，依然是将新数据拼接在旧数据之后，因为在nvue+聊天记录模式中，将列表旋转了180度
+				if (this.finalConcat) {
+					const currentScrollTop = this.oldScrollTop;
 					this.totalData = [...this.totalData, ...newVal];
+					// 此处是为了解决在微信小程序中，在某些情况下滚动到底部加载更多后滚动位置直接变为最底部的问题，因此需要通过代码强制滚动回加载更多前的位置
+					// #ifdef MP-WEIXIN
+					if (!this.isIos && !this.refresherOnly && !this.usePageScroll && newVal.length) {
+						this.loadingMoreTimeStamp = u.getTime();
+						this.$nextTick(() => {
+							this.scrollToY(currentScrollTop);
+						})
+					}
 					// #endif
-					//#ifndef APP-NVUE
-					const idIndex = newVal.length;
-					let idIndexStr = `z-paging-${idIndex}`;
-					// 在vue中，需要将新数据拼接在旧数据之前
-					this.totalData = [...newVal, ...this.totalData];
-					// 在非nvue的平台，并且是加载下一页的情况，由于加载下一页之后会默认滚动到最顶部，因此此时需要通过代码将列表滚动回当前加载的位置
-					// 在nvue平台中将列表旋转了180度，因此滚动到顶部加载更多等同于滚动到底部加载更多，则无此问题
-					if (this.pageNo !== this.defaultPageNo) {
-						this.privateScrollWithAnimation = 0;
-						this.$emit('update:chatIndex', idIndex);
-						this.$nextTick(() => {
-							this._scrollIntoView(idIndexStr, 30 + this.finalChatRecordMoreOffset + Math.max(0, this.cacheTopHeight), false, () => {
-								this.$emit('update:chatIndex', 0);
-							});
-						})
-					} else {
-						this.$nextTick(() => {
-							this._scrollToBottom(false);
-						})
-					}
-					//#endif
-		
 				} else {
-					if (this.finalConcat) {
-						const currentScrollTop = this.oldScrollTop;
-						this.totalData = [...this.totalData, ...newVal];
-						// 此处是为了解决在微信小程序中，在某些情况下滚动到底部加载更多后滚动位置直接变为最底部的问题，因此需要通过代码强制滚动回加载更多前的位置
-						// #ifdef MP-WEIXIN
-						if (!this.isIos && !this.refresherOnly && !this.usePageScroll && newVal.length) {
-							this.loadingMoreTimeStamp = u.getTime();
-							this.$nextTick(() => {
-								this.scrollToY(currentScrollTop);
-							})
-						}
-						// #endif
-					} else {
-						this.totalData = newVal;
-					}
+					this.totalData = newVal;
 				}
 			}
 			this.privateConcat = true;
