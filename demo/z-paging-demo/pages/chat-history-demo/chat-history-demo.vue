@@ -3,6 +3,7 @@
 	<view class="content">
 		<z-paging ref="paging" v-model="dataList" use-chat-record-mode @query="queryList">
 			<!-- style="transform: scaleY(-1)"必须写，否则会导致列表倒置！！！ -->
+			<!-- 注意不要直接在chat-item组件标签上设置style，因为在微信小程序中是无效的，请包一层view -->
 			<view v-for="(item,index) in dataList" :key="index" style="transform: scaleY(-1)">
 				<chat-item :item="item"></chat-item>
 			</view>
