@@ -325,10 +325,10 @@ export default {
 			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data;
 			if (!this.useChatRecordMode) return;
 			this.isTotalChangeFromAddData = true;
-			this.totalData = this.isFirstPageAndNoMore ? [...this.totalData, ...data] : [...data, ...this.totalData];
+			this.totalData = [...data, ...this.totalData];
 			if (toBottom) {
 				u.delay(() => {
-					this.isFirstPageAndNoMore ? this._scrollToBottom(toBottomWithAnimate) : this._scrollToTop(toBottomWithAnimate);
+					this._scrollToTop(toBottomWithAnimate);
 				})
 			}
 		},
@@ -590,11 +590,6 @@ export default {
 					});
 				}, c.delayTime * (this.isIos ? 1 : 3))
 				// #ifdef APP-NVUE
-				// 如果当前是聊天记录模式并且是第一页，则触发滚动到最底部
-				if (this.useChatRecordMode && this.isFirstPageAndNoMore && this.isFirstPage && !this.nFirstPageAndNoMoreChecked) {
-					this.nFirstPageAndNoMoreChecked = true;
-					this._scrollToBottom(false);
-				}
 				// 在nvue中延时600毫秒展示底部加载更多，避免底部加载更多太早加载闪一下的问题
 				u.delay(() => {
 					this.nShowBottom = true;

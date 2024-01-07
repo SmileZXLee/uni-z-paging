@@ -119,10 +119,8 @@ export default {
 		scrollToTop(animate, checkReverse = true) {
 			if (checkReverse && this.useChatRecordMode) {
 				// 如果是页面滚动并且不是第一页且没有更多，则滚动到顶部实际上是滚动到底部，因为列表旋转了180度
-				if (!this.isFirstPageAndNoMore) {
-					this.scrollToBottom(animate, false);
-					return;
-				}
+				this.scrollToBottom(animate, false);
+				return;
 			}
 			this.$nextTick(() => {
 				this._scrollToTop(animate, false);
@@ -139,10 +137,8 @@ export default {
 		scrollToBottom(animate, checkReverse = true) {
 			if (checkReverse && this.useChatRecordMode) {
 				// 如果是页面滚动并且不是第一页且没有更多，则滚动到底部实际上是滚动到顶部，因为列表旋转了180度
-				if (!this.isFirstPageAndNoMore) {
-					this.scrollToTop(animate, false);
-					return;
-				}
+				this.scrollToTop(animate, false);
+				return;
 			}
 			this.$nextTick(() => {
 				this._scrollToBottom(animate);

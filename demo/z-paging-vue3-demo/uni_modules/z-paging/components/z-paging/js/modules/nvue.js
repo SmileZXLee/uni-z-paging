@@ -63,7 +63,6 @@ export default {
 			nShowBottom: true,
 			nFixFreezing: false,
 			nShowRefresherReveal: false,
-			nFirstPageAndNoMoreChecked: false,
 			nLoadingMoreFixedHeight: false,
 			nShowRefresherRevealHeight: 0,
 			nOldShowRefresherRevealHeight: -1,

@@ -80,7 +80,7 @@ by ZXLee
 										:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle" :unit="unit" />
 								</view>
 							</view>
-							<view class="zp-paging-container">
+							<view class="zp-paging-container" :style="[{justifyContent:useChatRecordMode?'flex-end':'flex-start'}]">
 								<!-- 全屏Loading -->
 								<slot v-if="showLoading&&zSlots.loading&&!loadingFullFixed" name="loading" />
 								<!-- 主体内容 -->
@@ -131,7 +131,7 @@ by ZXLee
 									<view v-if="safeAreaInsetBottom&&useSafeAreaPlaceholder" class="zp-safe-area-placeholder" :style="[{height:safeAreaBottom+'px'}]" />
 								</view>
 								<!-- 空数据图 -->
-								<view v-if="showEmpty" :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}" :style="[emptyViewSuperStyle]">
+								<view v-if="showEmpty" :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}" :style="[emptyViewSuperStyle,chatRecordRotateStyle]">
 									<slot v-if="zSlots.empty" name="empty" :isLoadFailed="isLoadFailed"/>
 									<z-paging-empty-view v-else :emptyViewImg="finalEmptyViewImg" :emptyViewText="finalEmptyViewText" :showEmptyViewReload="finalShowEmptyViewReload" 
 									:emptyViewReloadText="finalEmptyViewReloadText" :isLoadFailed="isLoadFailed" :emptyViewStyle="emptyViewStyle" :emptyViewTitleStyle="emptyViewTitleStyle" 

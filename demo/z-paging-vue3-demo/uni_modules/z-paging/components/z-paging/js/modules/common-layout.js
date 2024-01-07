@@ -67,7 +67,7 @@ export default {
 		},
 		// 聊天记录模式旋转180度style
 		chatRecordRotateStyle() {
-			return this.useChatRecordMode ? { transform: this.isFirstPageAndNoMore ? 'scaleY(1)' : ' scaleY(-1)' } : {};
+			return this.useChatRecordMode ? { transform: 'scaleY(-1)' } : {};
 		},
 	},
 	beforeDestroy() {

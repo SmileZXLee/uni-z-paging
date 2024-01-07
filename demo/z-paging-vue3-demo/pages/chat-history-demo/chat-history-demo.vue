@@ -1,9 +1,9 @@
-<!-- 聊天记录模式演示(vue)，vue中目前无法解决分页闪动问题，使用nvue可实现聊天记录无闪动分页 -->
+<!-- 聊天记录模式演示(vue)，加载更多聊天记录无闪动 -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" v-model="dataList" use-chat-record-mode @cellStyleChange="cellStyleChange" @query="queryList">
-			<!-- :style="cellStyle"必须写，否则会导致列表倒置！！！ -->
-			<view v-for="(item,index) in dataList" :key="index" :style="cellStyle">
+		<z-paging ref="paging" v-model="dataList" use-chat-record-mode @query="queryList">
+			<!-- style="transform: scaleY(-1)"必须写，否则会导致列表倒置！！！ -->
+			<view v-for="(item,index) in dataList" :key="index" style="transform: scaleY(-1)">
 				<chat-item :item="item"></chat-item>
 			</view>
 			
@@ -22,8 +22,6 @@
     const paging = ref(null);
 	// v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
     const dataList = ref([]);
-	// 当前cell旋转的style，必须写
-	const cellStyle = ref({});
 	
 	// @query所绑定的方法不要自己调用！！需要刷新列表数据时，只需要调用paging.value.reload()即可
     const queryList = (pageNo, pageSize) => {
@@ -44,11 +42,6 @@
 			paging.value.complete(false);
 		})
     }
-	
-	// 监听cellStyle改变，这个方法必须写！！
-	const cellStyleChange = (style) => {
-		cellStyle.value = style;
-	}
 	
 	// 发送新消息
 	const doSend = (msg) => {
