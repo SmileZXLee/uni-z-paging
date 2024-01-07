@@ -6,10 +6,9 @@
 			
 			<!-- 在nvue中，z-paging中插入的列表item必须是cell，必须使用cell包住，因为在nvue中，z-paging使用的是nvue的list组件。 -->
 			<!-- 不能使用index作为key的唯一标识，:key必须添加并且必须是唯一的 -->
-			<!-- 注意！！！！这里ref必须绑定index，且格式为z-paging-${index}，格式不能变，否则会导致滑动到顶部加载更多数据时滚动位置不正确！！！！！！ -->
-			<!-- :style="cellStyle"必须写，必须写！！！ -->
+			<!-- :style="cellStyle"必须写，否则会导致列表倒置！！！ -->
 			<!-- 如果希望在vue中渲染view，nvue中渲染cell，可使用z-paging-cell代替cell -->
-			<cell @touchstart="touchstart" v-for="(item,index) in dataList" :style="cellStyle" class="item" :key="item.title" :ref="`z-paging-${index}`">
+			<cell class="item" @touchstart="touchstart" v-for="(item,index) in dataList" :style="cellStyle" :key="item.title">
 				<!-- 聊天item -->
 				<chat-item :item="item"></chat-item>
 			</cell>
@@ -23,24 +22,13 @@
 
 <script setup>
 	import { ref } from 'vue';
-	import { onPageScroll } from '@dcloudio/uni-app';
 	import request from '/http/request.js';
 	
-	
     const paging = ref(null);
-	
 	// v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
     const dataList = ref([]);
+	// 当前cell旋转的style，必须写
 	const cellStyle = ref({});
-	
-	
-	onPageScroll((e) => {
-		// 如果滚动到顶部，触发加载更多聊天记录
-		if (e.scrollTop < 10) {
-			paging.value.doChatRecordLoadMore();
-		}
-	})
-	
 	
 	// @query所绑定的方法不要自己调用！！需要刷新列表数据时，只需要调用paging.value.reload()即可
     const queryList = (pageNo, pageSize) => {
@@ -72,6 +60,7 @@
 		uni.hideKeyboard()
 	}
 	
+	// 发送新消息
 	const doSend = (msg) => {
 		uni.showLoading({
 			title: '发送中...'
