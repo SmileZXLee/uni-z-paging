@@ -412,7 +412,7 @@ export default {
 		// 组件销毁后续处理
 		_handleUnmounted() {
 			this.active = false;
-			uni.offKeyboardHeightChange();
+			uni.offKeyboardHeightChange(() => {});
 			this._offEmit();
 		},
 		// 触发更新是否超出页面状态

@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-v2.7.0 (2024-01-07)
+v2.7.1 (2024-01-08)
 by ZXLee
 -->
 <!-- 文档地址：https://z-paging.zxlee.cn -->
@@ -153,7 +153,7 @@ by ZXLee
 			<view class="zp-page-bottom" @touchmove.stop.prevent v-else-if="usePageScroll&&zSlots.bottom" :style="[{'bottom': `${windowBottom}px`}]">
 				<slot name="bottom" />
 			</view>
-			<view v-if="useChatRecordMode" class="zp-page-bottom-keybord-placeholder" :style="[{height:finalKeybordHeight+'px'}]" />
+			<view v-if="useChatRecordMode" class="zp-page-bottom-keyboard-placeholder" :style="[{height:finalKeyboardHeight+'px'}]" />
 		</view>
 		<!-- 点击返回顶部view -->
 		<view v-if="showBackToTopClass" :class="finalBackToTopClass" :style="[finalBackToTopStyle]" @click.stop="_backToTopClick">
@@ -266,7 +266,7 @@ by ZXLee
 		<!-- 底部固定的slot -->
 		<view class="zp-page-bottom-container">
 			<slot name="bottom" />
-			<view v-if="useChatRecordMode" class="zp-page-bottom-keybord-placeholder" :style="[{height:finalKeybordHeight+'px'}]" />
+			<view v-if="useChatRecordMode" class="zp-page-bottom-keyboard-placeholder" :style="[{height:finalKeyboardHeight+'px'}]" />
 		</view>
 		<!-- 点击返回顶部view -->
 		<view v-if="showBackToTopClass" :class="finalBackToTopClass" :style="[finalBackToTopStyle]" @click.stop="_backToTopClick">

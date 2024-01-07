@@ -1,7 +1,7 @@
 <!-- 聊天记录模式演示(vue)，加载更多聊天记录无闪动 -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" v-model="dataList" use-chat-record-mode @query="queryList">
+		<z-paging ref="paging" v-model="dataList" use-chat-record-mode @query="queryList" @keyboardHeightChange="keyboardHeightChange">
 			<!-- style="transform: scaleY(-1)"必须写，否则会导致列表倒置！！！ -->
 			<!-- 注意不要直接在chat-item组件标签上设置style，因为在微信小程序中是无效的，请包一层view -->
 			<view v-for="(item,index) in dataList" :key="index" style="transform: scaleY(-1)">
@@ -9,7 +9,7 @@
 			</view>
 			<!-- 底部聊天输入框 -->
 			<template #bottom>
-				<chat-input-bar @send="doSend" />
+				<chat-input-bar ref="chatInputBar" @send="doSend" />
 			</template>
 		</z-paging>
 	</view>
@@ -41,6 +41,10 @@
 					// 在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
 					this.$refs.paging.complete(false);
 				})
+			},
+			// 监听键盘高度改变，请不要直接通过uni.onKeyboardHeightChange监听，否则可能导致z-paging内置的键盘高度改变监听失效（如果不需要切换表情面板则不用写）
+			keyboardHeightChange(res) {
+				this.$refs.chatInputBar.updateKeyboardHeightChange(res);
 			},
 			// 发送新消息
 			doSend(msg){

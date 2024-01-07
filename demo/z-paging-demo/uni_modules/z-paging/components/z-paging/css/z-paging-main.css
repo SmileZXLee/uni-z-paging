@@ -137,7 +137,7 @@
 	/* #endif */
 }
 
-.zp-page-bottom-keybord-placeholder {
+.zp-page-bottom-keyboard-placeholder {
 	transition-property: height;
 	transition-duration: 0.15s;
 	/* #ifndef APP-NVUE */

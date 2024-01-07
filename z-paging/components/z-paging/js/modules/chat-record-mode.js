@@ -22,7 +22,7 @@ export default {
 	data() {
 		return {
 			// 键盘高度
-			keybordHeight: 0
+			keyboardHeight: 0
 		}
 	},
 	computed: {
@@ -34,14 +34,15 @@ export default {
 			return this.useChatRecordMode ? { transform: 'scaleY(-1)' } : {};
 		},
 		// 最终的键盘高度
-		finalKeybordHeight() {
-			return this.keybordHeight;
+		finalKeyboardHeight() {
+			return this.keyboardHeight;
 		}
 	},
 	mounted() {
 		// 监听键盘高度变化
 		uni.onKeyboardHeightChange(res => {
-			this.keybordHeight = res.height;
+			this.$emit('keyboardHeightChange', res);
+			this.keyboardHeight = res.height;
 		})
 	},
 	methods: {
@@ -60,6 +61,6 @@ export default {
 		// 手动触发滚动到顶部加载更多，聊天记录模式时有效
 		doChatRecordLoadMore() {
 			this.useChatRecordMode && this._onLoadingMore('click');
-		},
+		}
 	}
 }
