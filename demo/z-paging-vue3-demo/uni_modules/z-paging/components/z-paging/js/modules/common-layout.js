@@ -65,14 +65,15 @@ export default {
 			
 			return this.$slots;
 		},
-		// 聊天记录模式旋转180度style
-		chatRecordRotateStyle() {
-			return this.useChatRecordMode ? { transform: 'scaleY(-1)' } : {};
-		},
 	},
 	beforeDestroy() {
 		this.isReadyDestroy = true;
 	},
+	// #ifdef VUE3
+	unmounted() {
+		this.isReadyDestroy = true;
+	},
+	// #endif
 	methods: {
 		// 更新fixed模式下z-paging的布局
 		updateFixedLayout() {

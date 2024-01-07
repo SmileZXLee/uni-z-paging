@@ -93,21 +93,6 @@ export default {
 			type: [Number, String],
 			default: u.gc('localPagingLoadingTime', 200)
 		},
-		// 使用聊天记录模式，默认为否
-		useChatRecordMode: {
-			type: Boolean,
-			default: u.gc('useChatRecordMode', false)
-		},
-		// 使用聊天记录模式时滚动到顶部后，列表垂直移动偏移距离。默认0rpx。单位px
-		chatRecordMoreOffset: {
-			type: [Number, String],
-			default: u.gc('chatRecordMoreOffset', '0rpx')
-		},
-		// 使用聊天记录模式时是否自动隐藏键盘：在用户触摸列表时候自动隐藏键盘，默认为是
-		autoHideKeyboardWhenChat: {
-			type: Boolean,
-			default: u.gc('autoHideKeyboardWhenChat', true)
-		},
 		// 自动拼接complete中传过来的数组(使用聊天记录模式时无效)
 		concat: {
 			type: Boolean,
@@ -179,9 +164,6 @@ export default {
 		},
 		finalCacheKey() {
 			return this.cacheKey ? `${c.cachePrefixKey}-${this.cacheKey}` : null; 
-		},
-		finalChatRecordMoreOffset() {
-			return u.convertToPx(this.chatRecordMoreOffset);
 		},
 		isFirstPage() {
 			return this.pageNo === this.defaultPageNo;
@@ -320,18 +302,6 @@ export default {
 			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data;
 			this.totalData = data;
 		},
-		// 添加聊天记录
-		addChatRecordData(data, toBottom = true, toBottomWithAnimate = true) {
-			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data;
-			if (!this.useChatRecordMode) return;
-			this.isTotalChangeFromAddData = true;
-			this.totalData = [...data, ...this.totalData];
-			if (toBottom) {
-				u.delay(() => {
-					this._scrollToTop(toBottomWithAnimate);
-				})
-			}
-		},
 		// 设置本地分页数据，请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging作分页处理（若调用了此方法，则上拉加载更多时内部会自动分页，不会触发@query所绑定的事件）
 		setLocalPaging(data, success = true) {
 			this.isLocalPaging = true;
@@ -381,10 +351,6 @@ export default {
 		// 清空分页数据
 		clear() {
 			this.clean();
-		},
-		// 手动触发滚动到顶部加载更多，聊天记录模式时有效
-		doChatRecordLoadMore() {
-			this.useChatRecordMode && this._onLoadingMore('click');
 		},
 		// reload之前的一些处理
 		_preReload(animate = this.showRefresherWhenReload, isFromMounted = true, retryCount = 0) {

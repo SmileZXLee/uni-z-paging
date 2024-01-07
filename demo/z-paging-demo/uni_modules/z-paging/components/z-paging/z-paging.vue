@@ -92,7 +92,7 @@ by ZXLee
 										<view class="zp-list-container" :style="[innerListStyle]">
 											<template v-if="finalUseVirtualList">
 												<view class="zp-list-cell" :style="[innerCellStyle]" :id="`zp-id-${item[virtualCellIndexKey]}`" v-for="(item,index) in virtualList" :key="item['zp_unique_index']" @click="_innerCellClick(item,virtualTopRangeIndex+index)">
-													<view v-if="useCompatibilityMode">使用兼容模式请在组件源码z-paging.vue第100行中注释这一行，并打开下面一行注释</view>
+													<view v-if="useCompatibilityMode">使用兼容模式请在组件源码z-paging.vue第95行中注释这一行，并打开下面一行注释</view>
 													<!-- <zp-public-virtual-cell v-if="useCompatibilityMode" :extraData="extraData" :item="item" :index="virtualTopRangeIndex+index" /> -->
 													<slot v-else name="cell" :item="item" :index="virtualTopRangeIndex+index"/>
 												</view>
@@ -148,9 +148,12 @@ by ZXLee
 			</view>
 		</view>
 		<!-- 底部固定的slot -->
-		<slot v-if="!usePageScroll&&zSlots.bottom" name="bottom" />
-		<view class="zp-page-bottom" @touchmove.stop.prevent v-else-if="usePageScroll&&zSlots.bottom" :style="[{'bottom': `${windowBottom}px`}]">
-			<slot name="bottom" />
+		<view class="zp-page-bottom-container">
+			<slot v-if="!usePageScroll&&zSlots.bottom" name="bottom" />
+			<view class="zp-page-bottom" @touchmove.stop.prevent v-else-if="usePageScroll&&zSlots.bottom" :style="[{'bottom': `${windowBottom}px`}]">
+				<slot name="bottom" />
+			</view>
+			<view v-if="useChatRecordMode" class="zp-page-bottom-keybord-placeholder" :style="[{height:finalKeybordHeight+'px'}]" />
 		</view>
 		<!-- 点击返回顶部view -->
 		<view v-if="showBackToTopClass" :class="finalBackToTopClass" :style="[finalBackToTopStyle]" @click.stop="_backToTopClick">
@@ -261,7 +264,10 @@ by ZXLee
 			</view>
 		</component>
 		<!-- 底部固定的slot -->
-		<slot name="bottom" />
+		<view class="zp-page-bottom-container">
+			<slot name="bottom" />
+			<view v-if="useChatRecordMode" class="zp-page-bottom-keybord-placeholder" :style="[{height:finalKeybordHeight+'px'}]" />
+		</view>
 		<!-- 点击返回顶部view -->
 		<view v-if="showBackToTopClass" :class="finalBackToTopClass" :style="[finalBackToTopStyle]" @click.stop="_backToTopClick">
 			<slot v-if="zSlots.backToTop" name="backToTop" />

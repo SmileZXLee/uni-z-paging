@@ -17,6 +17,7 @@ import emptyModule from './modules/empty'
 import refresherModule from './modules/refresher'
 import loadMoreModule from './modules/load-more'
 import loadingModule from './modules/loading'
+import chatRecordModerModule from './modules/chat-record-mode'
 import scrollerModule from './modules/scroller'
 import backToTopModule from './modules/back-to-top'
 import virtualListModule from './modules/virtual-list'
@@ -41,6 +42,7 @@ export default {
 		refresherModule,
 		loadMoreModule,
 		loadingModule,
+		chatRecordModerModule,
 		scrollerModule,
 		backToTopModule,
 		virtualListModule
@@ -240,15 +242,11 @@ export default {
 		// #endif
 	},
 	destroyed() {
-		this.active = false;
-		// 当组件销毁时，移除全局emit监听
-		this._offEmit();
+		this._handleUnmounted();
 	},
 	// #ifdef VUE3
 	unmounted() {
-		this.active = false;
-		// 当组件销毁时，移除全局emit监听
-		this._offEmit();
+		this._handleUnmounted();
 	},
 	// #endif
 	watch: {
@@ -410,6 +408,12 @@ export default {
 					this.$delete(this.scrollViewInStyle, heightKey);
 				}
 			} catch (e) {}
+		},
+		// 组件销毁后续处理
+		_handleUnmounted() {
+			this.active = false;
+			uni.offKeyboardHeightChange();
+			this._offEmit();
 		},
 		// 触发更新是否超出页面状态
 		_updateInsideOfPaging() {
