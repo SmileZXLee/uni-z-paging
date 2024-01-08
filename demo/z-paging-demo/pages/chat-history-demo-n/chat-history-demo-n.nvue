@@ -55,6 +55,8 @@
 			// 触摸列表cell时，隐藏键盘。(为什么不放在list内部处理？因为在list上或其父view上添加@touchstart可能引发列表被锁住无法滚动等一系列问题)
 			touchstart() {
 				uni.hideKeyboard();
+				// 通知chatInputBar隐藏表情面板
+				this.$refs.inputBar.hidedKeyboard();
 			},
 			// 发送消息
 			doSend(msg) {

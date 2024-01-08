@@ -51,7 +51,9 @@
 	
 	// 触摸列表cell时，隐藏键盘。(为什么不放在list内部处理？因为在list上或其父view上添加@touchstart可能引发列表被锁住无法滚动等一系列问题)
 	const touchstart = () => {
-		uni.hideKeyboard()
+		uni.hideKeyboard();
+		// 通知chatInputBar隐藏表情面板
+		inputBar.value.hidedKeyboard();
 	}
 	
 	// 监听键盘高度改变，请不要直接通过uni.onKeyboardHeightChange监听，否则可能导致z-paging内置的键盘高度改变监听失效（如果不需要切换表情面板则不用写）
