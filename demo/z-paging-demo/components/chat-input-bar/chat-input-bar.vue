@@ -16,10 +16,14 @@
 			</view>
 		</view>
 		<!-- （如果不需要切换表情面板则不用写） -->
-		<view v-if="emojiType === 'keyboard'" class="emoji-panel">
-			<text class="emoji-panel-text" v-for="(item, index) in emojisArr" :key="index" @click="emojiClick(item)">
-				{{item}}
-			</text>
+		<view v-if="emojiType === 'keyboard'" class="emoji-panel-container">
+			<scroll-view scroll-y style="height: 100%;flex: 1;">
+				<view class="emoji-panel">
+					<text class="emoji-panel-text" v-for="(item, index) in emojisArr" :key="index" @click="emojiClick(item)">
+						{{item}}
+					</text>
+				</view>
+			</scroll-view>
 		</view>
 	</view>
 </template>
@@ -32,7 +36,7 @@
 				msg: '',
 				
 				// 表情数组（如果不需要切换表情面板则不用写）
-				emojisArr: ['😊','👻','👍','😜','😳','😋','😥','😰','🤠','😎','😇'],
+				emojisArr: ['😊','😁','😀','😃','😣','😞','😩','😫','😲','😟','😦','😜','😳','😋','😥','😰','🤠','😎','😇','😉','😭','😈','😕','😏','😘','😤','😡','😅','😬','😺','😻','😽','😼','🙈','🙉','🙊','🔥','👍','👎','👌','✌️','🙏','💪','👻'],
 				// 当前input focus（如果不需要切换表情面板则不用写）
 				focus: false,
 				// 当前表情/键盘切换类型（如果不需要切换表情面板则不用写）
@@ -77,61 +81,70 @@
 </script>
 
 <style scoped>
-	.chat-input-bar{
+	.chat-input-bar {
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 		border-top: solid 1px #f5f5f5;
 		background-color: #f8f8f8;
 		
-		padding: 10rpx 15rpx;
+		padding: 10rpx 20rpx;
 	}
-	.chat-input-container{
+	.chat-input-container {
 		flex: 1;
-		display: flex;
 		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
 		padding: 15rpx;
-		/* #endif */
-		/* #ifdef APP-NVUE */
-		padding: 10rpx;
-		/* #endif */
 		background-color: white;
 		border-radius: 10rpx;
 	}
-	.chat-input{
+	.chat-input {
 		flex: 1;
 		font-size: 28rpx;
 	}
 	.emoji-container {
-		margin: 20rpx 0rpx 10rpx 20rpx;
+		width: 54rpx;
+		height: 54rpx;
+		margin: 10rpx 0rpx 10rpx 20rpx;
 	}
 	.emoji-img {
 		width: 54rpx;
 		height: 54rpx;
 	}
-	.chat-input-send{
+	.chat-input-send {
 		background-color: #007AFF;
 		margin: 10rpx 10rpx 10rpx 20rpx;
 		border-radius: 10rpx;
-		padding: 10rpx 30rpx;
-		
+		width: 110rpx;
+		height: 60rpx;
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		justify-content: center;
+		align-items: center;
 	}
-	.chat-input-send-text{
+	.chat-input-send-text {
 		color: white;
 		font-size: 26rpx;
 	}
+	.emoji-panel-container {
+		height: 400rpx;
+		background-color: #f3f3f3;
+	}
 	.emoji-panel {
 		font-size: 30rpx;
-		height: 400rpx;
+		/* #ifndef APP-NVUE */
 		display: flex;
+		/* #endif */
 		flex-direction: row;
-		background-color: #fef6d8;
 		flex-wrap: wrap;
-		gap: 15rpx;
-		padding: 20rpx;
+		padding-right: 10rpx;
+		padding-bottom: 10rpx;
 	}
 	.emoji-panel-text {
-		font-size: 40rpx;
-		margin-left: 20rx;
+		font-size: 50rpx;
+		margin-left: 15rpx;
+		margin-top: 20rpx;
 	}
 </style>

@@ -9,7 +9,7 @@
 			</view>
 			<!-- 底部聊天输入框 -->
 			<template #bottom>
-				<chat-input-bar ref="chatInputBar" @send="doSend" />
+				<chat-input-bar ref="inputBar" @send="doSend" />
 			</template>
 		</z-paging>
 	</view>
@@ -44,7 +44,7 @@
 			},
 			// 监听键盘高度改变，请不要直接通过uni.onKeyboardHeightChange监听，否则可能导致z-paging内置的键盘高度改变监听失效（如果不需要切换表情面板则不用写）
 			keyboardHeightChange(res) {
-				this.$refs.chatInputBar.updateKeyboardHeightChange(res);
+				this.$refs.inputBar.updateKeyboardHeightChange(res);
 			},
 			// 发送新消息
 			doSend(msg){
