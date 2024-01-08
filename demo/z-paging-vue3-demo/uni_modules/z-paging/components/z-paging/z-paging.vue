@@ -206,6 +206,7 @@ by ZXLee
 						:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey" :updateTimeTextMap="finalRefresherUpdateTimeTextMap"
 						:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle" :unit="unit" />
 				</component>
+				<!-- 内置列表 -->
 				<template v-if="finalUseInnerList">
 					<component :is="nViewIs">
 						<slot name="header"/>
