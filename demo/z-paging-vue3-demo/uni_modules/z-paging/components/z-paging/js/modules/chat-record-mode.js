@@ -41,10 +41,12 @@ export default {
 	mounted() {
 		// 监听键盘高度变化（H5、百度小程序、抖音小程序、飞书小程序不支持）
 		// #ifndef H5 || MP-BAIDU || MP-TOUTIAO
-		uni.onKeyboardHeightChange(res => {
-			this.$emit('keyboardHeightChange', res);
-			this.keyboardHeight = res.height;
-		})
+		if (this.useChatRecordMode) {
+			uni.onKeyboardHeightChange(res => {
+				this.$emit('keyboardHeightChange', res);
+				this.keyboardHeight = res.height;
+			})
+		}
 		// #endif
 	},
 	methods: {

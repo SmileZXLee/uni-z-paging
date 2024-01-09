@@ -1,3 +1,6 @@
+## 2.7.2（2024-01-09）
+1.`修复` `vue3+h5`中报错`uni.onKeyboardHeightChange is not a function`的问题。  
+2.`优化` 聊天记录模式细节：表情面板在触摸列表时隐藏&添加隐藏动画。  
 ## 2.7.1（2024-01-08）
 1.`新增` `keyboardHeightChange` event，支持监听键盘高度改变。  
 2.`新增` 聊天记录模式新增切换表情面板/键盘demo。  
