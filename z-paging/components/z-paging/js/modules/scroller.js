@@ -117,7 +117,7 @@ export default {
 	methods: {
 		// 滚动到顶部，animate为是否展示滚动动画，默认为是
 		scrollToTop(animate, checkReverse = true) {
-			if (checkReverse && this.useChatRecordMode) {
+			if (this.useChatRecordMode && checkReverse) {
 				// 如果是页面滚动并且不是第一页且没有更多，则滚动到顶部实际上是滚动到底部，因为列表旋转了180度
 				this.scrollToBottom(animate, false);
 				return;
@@ -135,7 +135,7 @@ export default {
 		},
 		// 滚动到底部，animate为是否展示滚动动画，默认为是
 		scrollToBottom(animate, checkReverse = true) {
-			if (checkReverse && this.useChatRecordMode) {
+			if (this.useChatRecordMode && checkReverse) {
 				// 如果是页面滚动并且不是第一页且没有更多，则滚动到底部实际上是滚动到顶部，因为列表旋转了180度
 				this.scrollToTop(animate, false);
 				return;

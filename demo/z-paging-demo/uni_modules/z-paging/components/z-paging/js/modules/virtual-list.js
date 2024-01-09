@@ -159,7 +159,6 @@ export default {
 			const cellIndexKey = this.virtualCellIndexKey;
 			item[cellIndexKey] = `custom-${this.virtualItemInsertedCount}`;
 			item[c.listCellIndexUniqueKey] = `${this.virtualListKey}-${item[cellIndexKey]}`;
-			this.totalData.splice(index, 0, item);
 			this.$nextTick(async () => {
 				let retryCount = 0;
 				while (retryCount <= 10) {

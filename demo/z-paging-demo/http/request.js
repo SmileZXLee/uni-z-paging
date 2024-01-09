@@ -10,18 +10,27 @@ const showLog = false;
 /* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件。实际项目中在queryList中调用自己的请求即可 */
 /* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件。实际项目中在queryList中调用自己的请求即可 */
 
+// 查询普通列表数据
 function queryList(data) {
 	const listCount = 24;
 	return _queryList(data, listCount);
 }
 
+// 查询超长列表数据
 function queryListLong(data) {
 	const listCount = 100000;
 	return _queryList(data, listCount, true, data.random);
 }
 
+// 查询聊天记录列表数据
 function queryChatList(data) {
 	const listCount = 24;
+	return _queryList(data, listCount, false, false, true);
+}
+
+// 查询超长聊天记录列表数据
+function queryChatListLong(data) {
+	const listCount = 100000;
 	return _queryList(data, listCount, false, false, true);
 }
 
@@ -120,5 +129,6 @@ function getNews(random) {
 export default {
 	queryList,
 	queryListLong,
-	queryChatList
+	queryChatList,
+	queryChatListLong
 }

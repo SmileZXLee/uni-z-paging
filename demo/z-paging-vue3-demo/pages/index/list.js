@@ -72,7 +72,12 @@ export default {
 		{
 			title: '聊天记录模式演示',
 			file: 'chat-history-demo',
-			subTitle: ''
+			subTitle: '滚动到顶部加载更多无闪动'
+		},
+		{
+			title: '聊天记录模式+虚拟列表演示',
+			file: 'chat-history-virtual-demo',
+			subTitle: '滚动到顶部加载更多无闪动+支持虚拟列表'
 		},
 		{
 			title: 'i18n国际化演示',

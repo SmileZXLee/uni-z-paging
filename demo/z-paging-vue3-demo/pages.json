@@ -233,6 +233,14 @@
 				"enablePullDownRefresh": false
 			}
 
+		},
+		{
+			"path" : "pages/chat-history-virtual-demo/chat-history-virtual-demo",
+			"style" : 
+			{
+				"navigationBarTitleText" : "聊天记录模式+虚拟列表演示",
+				"enablePullDownRefresh" : false
+			}
 		}
 	],
 	"globalStyle": {

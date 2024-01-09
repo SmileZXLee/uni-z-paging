@@ -1,5 +1,6 @@
 // [z-paging]聊天记录模式模块
 import u from '.././z-paging-utils'
+import Enum from '.././z-paging-enum'
 
 export default {
 	props: {
@@ -52,15 +53,9 @@ export default {
 	methods: {
 		// 添加聊天记录
 		addChatRecordData(data, toBottom = true, toBottomWithAnimate = true) {
-			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data;
 			if (!this.useChatRecordMode) return;
 			this.isTotalChangeFromAddData = true;
-			this.totalData = [...data, ...this.totalData];
-			if (toBottom) {
-				u.delay(() => {
-					this._scrollToTop(toBottomWithAnimate);
-				})
-			}
+			this.addDataFromTop(data, toBottom, toBottomWithAnimate);
 		},
 		// 手动触发滚动到顶部加载更多，聊天记录模式时有效
 		doChatRecordLoadMore() {

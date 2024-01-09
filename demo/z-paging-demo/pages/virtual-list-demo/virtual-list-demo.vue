@@ -14,7 +14,7 @@
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内，放在所有cell上方的用slot="header"插入，放在所有cell下方的用slot="footer"插入 -->
 			
 			<!-- 通过slot="cell"插入列表for循环的cell，slot-scope中提供当前for循环的item和index -->
-			<!-- vue3中写法如下 -->
+			<!-- vue2/3中写法如下 -->
 			<template #cell="{item,index}">
 				<view class="item" @click="itemClick(item,index)">
 					<image class="item-image" mode="aspectFit" src="@/static/boji1.png"></image>

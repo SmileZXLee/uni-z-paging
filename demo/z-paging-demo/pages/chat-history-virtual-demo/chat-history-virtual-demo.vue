@@ -1,13 +1,21 @@
-<!-- 聊天记录模式演示(vue)，加载更多聊天记录无闪动 -->
+<!-- 聊天记录模式+虚拟列表演示(vue)，加载更多聊天记录无闪动&支持渲染大量数据 -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" v-model="dataList" use-chat-record-mode 
+		<z-paging ref="paging" v-model="dataList" use-chat-record-mode use-virtual-list cell-height-mode="dynamic" 
 		@query="queryList" @keyboardHeightChange="keyboardHeightChange" @hidedKeyboard="hidedKeyboard">
+			<!-- 顶部提示文字 -->
+			<template #top>
+				<view class="header">聊天记录总条数：10万条</view>
+			</template>
+			
 			<!-- style="transform: scaleY(-1)"必须写，否则会导致列表倒置！！！ -->
 			<!-- 注意不要直接在chat-item组件标签上设置style，因为在微信小程序中是无效的，请包一层view -->
-			<view v-for="(item,index) in dataList" :key="index" style="transform: scaleY(-1)">
-				<chat-item :item="item"></chat-item>
-			</view>
+			<template #cell="{item,index}">
+				<view style="transform: scaleY(-1)">
+					<chat-item :item="item"></chat-item>
+				</view>
+			</template>
+			
 			<!-- 底部聊天输入框 -->
 			<template #bottom>
 				<chat-input-bar ref="inputBar" @send="doSend" />
@@ -33,7 +41,7 @@
 					pageNo: pageNo,
 					pageSize: pageSize,
 				}
-				this.$request.queryChatList(params).then(res => {
+				this.$request.queryChatListLong(params).then(res => {
 					// 将请求的结果数组传递给z-paging
 					this.$refs.paging.complete(res.data.list);
 				}).catch(res => {
@@ -58,19 +66,25 @@
 				})
 				setTimeout(()=>{
 					uni.hideLoading();
-					this.$refs.paging.addChatRecordData({
+					this.$refs.paging.addChatRecordData([{
 						time: '',
 						icon: '/static/daxiong.jpg',
 						name: '大雄',
 						content: msg,
 						isMe: true
-					});
+					}]);
 				},500)
 			}
 		}
 	}
 </script>
 
-<style>
-	
+<style scoped>
+	.header{
+		background-color: red;
+		font-size: 24rpx;
+		text-align: center;
+		padding: 20rpx 0rpx;
+		color: white;
+	}
 </style>

@@ -1,18 +1,21 @@
-<!-- 聊天记录模式演示(nvue)，加载更多聊天记录无闪动 -->
+<!-- 聊天记录模式+虚拟列表演示(vue)，加载更多聊天记录无闪动&支持渲染大量数据 -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" v-model="dataList" use-chat-record-mode 
-		@query="queryList" @keyboardHeightChange="keyboardHeightChange">
-			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
+		<z-paging ref="paging" v-model="dataList" use-chat-record-mode use-virtual-list cell-height-mode="dynamic" 
+		@query="queryList" @keyboardHeightChange="keyboardHeightChange" @hidedKeyboard="hidedKeyboard">
+			<!-- 顶部提示文字 -->
+			<template #top>
+				<view class="header">聊天记录总条数：10万条</view>
+			</template>
 			
-			<!-- 在nvue中，z-paging中插入的列表item必须是cell，必须使用cell包住，因为在nvue中，z-paging使用的是nvue的list组件。 -->
-			<!-- 不能使用index作为key的唯一标识，:key必须添加并且必须是唯一的 -->
 			<!-- style="transform: scaleY(-1)"必须写，否则会导致列表倒置！！！ -->
-			<!-- 如果希望在vue中渲染view，nvue中渲染cell，可使用z-paging-cell代替cell -->
-			<cell class="item" @touchstart="touchstart" v-for="(item,index) in dataList" :key="item.title" style="transform: scaleY(-1)">
-				<!-- 聊天item -->
-				<chat-item :item="item"></chat-item>
-			</cell>
+			<!-- 注意不要直接在chat-item组件标签上设置style，因为在微信小程序中是无效的，请包一层view -->
+			<template #cell="{item,index}">
+				<view style="transform: scaleY(-1)">
+					<chat-item :item="item"></chat-item>
+				</view>
+			</template>
+			
 			<!-- 底部聊天输入框 -->
 			<template #bottom>
 				<chat-input-bar ref="inputBar" @send="doSend" />
@@ -39,7 +42,7 @@
 			pageNo: pageNo,
 			pageSize: pageSize
 		}
-		request.queryChatList(params).then(res => {
+		request.queryChatListLong(params).then(res => {
 			// 将请求的结果数组传递给z-paging
 			paging.value.complete(res.data.list);
 		}).catch(res => {
@@ -50,16 +53,14 @@
 		})
     }
 	
-	// 触摸列表cell时，隐藏键盘。(为什么不放在list内部处理？因为在list上或其父view上添加@touchstart可能引发列表被锁住无法滚动等一系列问题)
-	const touchstart = () => {
-		uni.hideKeyboard();
-		// 通知chatInputBar隐藏表情面板
-		inputBar.value.hidedKeyboard();
-	}
-	
 	// 监听键盘高度改变，请不要直接通过uni.onKeyboardHeightChange监听，否则可能导致z-paging内置的键盘高度改变监听失效（如果不需要切换表情面板则不用写）
 	const keyboardHeightChange = (res) => {
 		inputBar.value.updateKeyboardHeightChange(res);
+	}
+	
+	// 用户尝试隐藏键盘，此时如果表情面板在展示中，应当通知chatInputBar隐藏表情面板（如果不需要切换表情面板则不用写）
+	const hidedKeyboard = () => {
+		inputBar.value.hidedKeyboard();
 	}
 	
 	// 发送新消息
@@ -80,6 +81,12 @@
 	}
 </script>
 
-<style>
-	
+<style scoped>
+	.header{
+		background-color: red;
+		font-size: 24rpx;
+		text-align: center;
+		padding: 20rpx 0rpx;
+		color: white;
+	}
 </style>
