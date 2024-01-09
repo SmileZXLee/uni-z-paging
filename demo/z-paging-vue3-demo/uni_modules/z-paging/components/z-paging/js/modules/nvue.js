@@ -134,6 +134,10 @@ export default {
 			this.nListIsDragging = e.isDragging;
 			this._checkShouldShowBackToTop(contentOffsetY, contentOffsetY - 1);
 		},
+		// 列表滚动结束
+		_nOnScrollend(e) {
+			this.$emit('scrollend', e);
+		},
 		// 下拉刷新刷新中
 		_nOnRrefresh() {
 			if (this.nShowRefresherReveal) return;

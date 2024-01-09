@@ -585,11 +585,6 @@ export default {
 				}
 			}
 			if (!this.totalData.length) {
-				if (this.finalConcat) {
-					if (this.useChatRecordMode && this.isFirstPage && this.loadingStatus === Enum.More.NoMore) {
-						newVal.reverse();
-					}
-				}
 				this.totalData = newVal;
 			} else {
 				if (this.finalConcat) {
