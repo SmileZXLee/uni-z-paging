@@ -1,4 +1,5 @@
 <!-- 聊天记录模式演示(vue)，加载更多聊天记录无闪动 -->
+<!-- nvue的聊天记录模式中需要写@cellStyleChange="cellStyleChange"，如果需要兼容nvue和vue，请以nvue中写法为准，会自动兼容vue -->
 <template>
 	<view class="content">
 		<z-paging ref="paging" v-model="dataList" use-chat-record-mode 

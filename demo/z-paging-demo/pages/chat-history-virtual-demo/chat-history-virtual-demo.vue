@@ -1,4 +1,6 @@
 <!-- 聊天记录模式+虚拟列表演示(vue)，加载更多聊天记录无闪动&支持渲染大量数据 -->
+<!-- 注意：虚拟列表缓存高度默认仅在cell初始化时获取一次，若您的聊天列表中带有图片，强烈建议给图片一个固定的高度，如果高度根据内容动态撑高，可能导致虚拟列表抖动 -->
+<!-- 如果必须实现高度根据内容动态撑高+虚拟列表功能，可监听图片加载完毕事件，并在其中调用z-paging的didUpdateVirtualListCell刷新缓存高度 -->
 <template>
 	<view class="content">
 		<z-paging ref="paging" v-model="dataList" use-chat-record-mode use-virtual-list cell-height-mode="dynamic" 
