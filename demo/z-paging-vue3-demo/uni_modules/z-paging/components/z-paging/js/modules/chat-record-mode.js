@@ -21,7 +21,12 @@ export default {
 		// 使用聊天记录模式中键盘弹出时是否自动调整slot="bottom"高度，默认为是
 		autoAdjustPositionWhenChat: {
 			type: Boolean,
-			default: u.gc('autoAdjustPositionWhenChat', false)
+			default: u.gc('autoAdjustPositionWhenChat', true)
+		},
+		// 使用聊天记录模式中键盘弹出时是否自动滚动到底部，默认为否
+		autoToBottomWhenChat: {
+			type: Boolean,
+			default: u.gc('autoToBottomWhenChat', false)
 		},
 	},
 	data() {
@@ -84,6 +89,9 @@ export default {
 			uni.onKeyboardHeightChange(res => {
 				this.$emit('keyboardHeightChange', res);
 				this.keyboardHeight = res.height;
+				if (this.autoToBottomWhenChat && this.keyboardHeight > 0) {
+					this.scrollToBottom(false);
+				} 
 			})
 		}
 		// #endif
