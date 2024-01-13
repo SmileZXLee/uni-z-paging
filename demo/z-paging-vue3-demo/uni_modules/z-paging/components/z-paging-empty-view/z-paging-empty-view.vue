@@ -10,7 +10,7 @@
 			<image v-if="!emptyViewImg.length" :class="{'zp-main-image-rpx':unit==='rpx','zp-main-image-px':unit==='px'}" :style="[emptyViewImgStyle]" :src="emptyImg" />
 			<image v-else :class="{'zp-main-image-rpx':unit==='rpx','zp-main-image-px':unit==='px'}" mode="aspectFit" :style="[emptyViewImgStyle]" :src="emptyViewImg" />
 			<text class="zp-main-title" :class="{'zp-main-title-rpx':unit==='rpx','zp-main-title-px':unit==='px'}" :style="[emptyViewTitleStyle]">{{emptyViewText}}</text>
-			<text v-if="showEmptyViewReload" class="zp-main-error-btn" :style="[emptyViewReloadStyle]" @click.stop="reloadClick">{{emptyViewReloadText}}</text>
+			<text v-if="showEmptyViewReload" :class="{'zp-main-error-btn':true,'zp-main-error-btn-rpx':unit==='rpx','zp-main-error-btn-px':unit==='px'}" :style="[emptyViewReloadStyle]" @click.stop="reloadClick">{{emptyViewReloadText}}</text>
 		</view>
 	</view>
 </template>
@@ -147,12 +147,12 @@
 	}
 
 	.zp-main-image-rpx {
-		width: 200rpx;
-		height: 200rpx;
+		width: 240rpx;
+		height: 240rpx;
 	}
 	.zp-main-image-px {
-		width: 100px;
-		height: 100px;
+		width: 120px;
+		height: 120px;
 	}
 
 	.zp-main-title {
@@ -160,22 +160,30 @@
 		text-align: center;
 	}
 	.zp-main-title-rpx {
-		font-size: 26rpx;
+		font-size: 28rpx;
 		margin-top: 10rpx;
 		padding: 0rpx 20rpx;
 	}
 	.zp-main-title-px {
-		font-size: 13px;
+		font-size: 14px;
 		margin-top: 5px;
 		padding: 0px 10px;
 	}
 
 	.zp-main-error-btn {
-		font-size: 26rpx;
-		padding: 8rpx 24rpx;
 		border: solid 1px #dddddd;
-		border-radius: 6rpx;
 		color: #aaaaaa;
+	}
+	.zp-main-error-btn-rpx {
+		font-size: 28rpx;
+		padding: 8rpx 24rpx;
+		border-radius: 6rpx;
 		margin-top: 50rpx;
+	}
+	.zp-main-error-btn-px {
+		font-size: 14px;
+		padding: 4px 12px;
+		border-radius: 3px;
+		margin-top: 25px;
 	}
 </style>
