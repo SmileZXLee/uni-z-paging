@@ -58,7 +58,6 @@ export default {
 			// 当前加载类型
 			loadingType: Enum.LoadingType.Refresher,
 			requestTimeStamp: 0,
-			chatRecordLoadingMoreText: '',
 			wxsPropType: '',
 			renderPropScrollTop: -1,
 			checkScrolledToBottomTimeOut: null,

@@ -7,6 +7,13 @@
 		<!-- bottom-bg-color：设置slot="bottom"容器的背景色，这里设置为和chat-input-bar的背景色一致 -->
 		<z-paging ref="paging" v-model="dataList" use-chat-record-mode safe-area-inset-bottom bottom-bg-color="#f8f8f8"
 		@query="queryList" @keyboardHeightChange="keyboardHeightChange" @hidedKeyboard="hidedKeyboard">
+			<!-- 顶部提示文字 -->
+			<!-- #ifdef H5 || MP-BAIDU || MP-TOUTIAO -->
+			<template #top>
+				<view class="header">由于在H5、百度小程序、抖音小程序、飞书小程序中无法监听键盘高度变化，底部输入框切换时可能会有些bug，请运行在其他平台体验最佳效果</view>
+			</template>
+			<!-- #endif -->
+			
 			<!-- style="transform: scaleY(-1)"必须写，否则会导致列表倒置（必须写在for循环标签上，不得写在容器上）！！！ -->
 			<!-- 注意不要直接在chat-item组件标签上设置style，因为在微信小程序中是无效的，请包一层view -->
 			<view v-for="(item,index) in dataList" :key="index" style="transform: scaleY(-1)">
@@ -75,6 +82,11 @@
 	}
 </script>
 
-<style>
-	
+<style scoped>
+	.header{
+		background-color: red;
+		font-size: 24rpx;
+		padding: 20rpx;
+		color: white;
+	}
 </style>

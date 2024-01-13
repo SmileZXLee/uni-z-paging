@@ -28,6 +28,11 @@ export default {
 			type: Boolean,
 			default: u.gc('autoToBottomWhenChat', false)
 		},
+		// 使用聊天记录模式中reload时是否显示chatLoading，默认为否
+		showChatLoadingWhenReload: {
+			type: Boolean,
+			default: u.gc('showChatLoadingWhenReload', false)
+		},
 	},
 	data() {
 		return {

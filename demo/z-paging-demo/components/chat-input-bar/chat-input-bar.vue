@@ -135,7 +135,7 @@
 		font-size: 26rpx;
 	}
 	.emoji-panel-container {
-		background-color: #f3f3f3;
+		background-color: #f8f8f8;
 		overflow: hidden;
 		transition-property: height;
 		transition-duration: 0.15s;

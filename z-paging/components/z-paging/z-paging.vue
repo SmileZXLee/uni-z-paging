@@ -106,12 +106,15 @@ by ZXLee
 										<slot name="footer"/>
 									</template>
 									<!-- 聊天记录模式加载更多loading -->
-									<slot v-if="useChatRecordMode&&zSlots.chatLoading&&loadingStatus!==M.NoMore&&realTotalData.length" name="chatLoading" />
-									<view v-else-if="useChatRecordMode&&loadingStatus!==M.NoMore&&realTotalData.length" class="zp-chat-record-loading-container">
-										<text v-if="loadingStatus!==M.Loading" @click="_onScrollToUpper"
-											:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
-										<image v-else :src="base64Flower" class="zp-chat-record-loading-custom-image" />
-									</view>
+									<template v-if="useChatRecordMode&&loadingStatus!==M.NoMore&&(realTotalData.length||(showChatLoadingWhenReload&&showLoading))">
+										<view :style="[chatRecordRotateStyle]">
+											<slot v-if="zSlots.chatLoading" name="chatLoading" />
+											<view v-else class="zp-chat-record-loading-container">
+												<image :src="base64Flower" class="zp-chat-record-loading-custom-image" />
+											</view>
+										</view>
+									</template>
+									<!-- 虚拟列表底部占位view -->
 									<view v-if="useVirtualList" class="zp-virtual-placeholder" :style="[{height:virtualPlaceholderBottomHeight+'px'}]"/>
 									<!-- 上拉加载更多view -->
 									<!-- #ifndef MP-ALIPAY -->
@@ -176,6 +179,15 @@ by ZXLee
 		<view ref="zp-page-top" v-if="zSlots.top" :class="{'zp-page-top':usePageScroll}" :style="[usePageScroll?{'top':`${windowTop}px`,'z-index':topZIndex}:{}]">
 			<slot name="top" />
 		</view>
+		<!-- 聊天记录模式加载更多loading（loading时候显示） -->
+		<view v-if="useChatRecordMode&&loadingStatus!==M.NoMore&&showChatLoadingWhenReload&&showLoading">
+			<slot v-if="zSlots.chatLoading" name="chatLoading" />
+			<view v-else class="zp-chat-record-loading-container">
+				<view>
+					<loading-indicator class="zp-line-loading-image" :class="{'zp-line-loading-image-rpx':unit==='rpx','zp-line-loading-image-px':unit==='px'}" :animating="true" />
+				</view>
+			</view>
+		</view>
 		<component :is="finalNvueSuperListIs" class="zp-n-list-container" :scrollable="false">
 			<view v-if="zSlots.left" class="zp-page-left">
 				<slot name="left" />
@@ -231,18 +243,18 @@ by ZXLee
 				</component>
 				<!-- 上拉加载更多view -->
 				<component :is="nViewIs" v-if="!refresherOnly&&loadingMoreEnabled&&!showEmpty">
-					<view v-if="useChatRecordMode">
-						<view v-if="loadingStatus!==M.NoMore&&realTotalData.length">
+					<!-- 聊天记录模式加载更多loading（滚动到顶部加载更多时显示） -->
+					<template v-if="useChatRecordMode&&loadingStatus!==M.NoMore&&realTotalData.length">
+						<view :style="[chatRecordRotateStyle]">
 							<slot v-if="zSlots.chatLoading" name="chatLoading" />
 							<view v-else class="zp-chat-record-loading-container">
-								<text v-if="loadingStatus!==M.Loading" @click="_onScrollToUpper"
-									:class="defaultThemeStyle==='white'?'zp-loading-more-text zp-loading-more-text-white':'zp-loading-more-text zp-loading-more-text-black'">{{chatRecordLoadingMoreText}}</text>
 								<view>
 									<loading-indicator v-if="loadingStatus===M.Loading" class="zp-line-loading-image" :class="{'zp-line-loading-image-rpx':unit==='rpx','zp-line-loading-image-px':unit==='px'}" :animating="true" />
 								</view>
 							</view>
 						</view>
-					</view>
+					</template>
+					
 					<view :style="nLoadingMoreFixedHeight?{height:loadingMoreCustomStyle&&loadingMoreCustomStyle.height?loadingMoreCustomStyle.height:'80rpx'}:{}">
 						<slot v-if="showLoadingMoreDefault" name="loadingMoreDefault" />
 						<slot v-else-if="showLoadingMoreLoading" name="loadingMoreLoading" />
