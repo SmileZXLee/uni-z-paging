@@ -153,7 +153,7 @@ by ZXLee
 			<view class="zp-page-bottom" @touchmove.stop.prevent v-else-if="usePageScroll&&zSlots.bottom" :style="[{'bottom': `${windowBottom}px`}]">
 				<slot name="bottom" />
 			</view>
-			<view v-if="useChatRecordMode" class="zp-page-bottom-keyboard-placeholder" :style="[{height:finalKeyboardHeight+'px'}]" />
+			<view v-if="useChatRecordMode&&autoAdjustPositionWhenChat" class="zp-page-bottom-keyboard-placeholder" :style="[{height:finalKeyboardHeight+'px'}]" />
 		</view>
 		<!-- 点击返回顶部view -->
 		<view v-if="showBackToTopClass" :class="finalBackToTopClass" :style="[finalBackToTopStyle]" @click.stop="_backToTopClick">
@@ -267,7 +267,7 @@ by ZXLee
 		<!-- 底部固定的slot -->
 		<view class="zp-page-bottom-container">
 			<slot name="bottom" />
-			<view v-if="useChatRecordMode" class="zp-page-bottom-keyboard-placeholder" :style="[{height:finalKeyboardHeight+'px'}]" />
+			<view v-if="useChatRecordMode&&autoAdjustPositionWhenChat" class="zp-page-bottom-keyboard-placeholder" :style="[{height:finalKeyboardHeight+'px'}]" />
 		</view>
 		<!-- 点击返回顶部view -->
 		<view v-if="showBackToTopClass" :class="finalBackToTopClass" :style="[finalBackToTopStyle]" @click.stop="_backToTopClick">

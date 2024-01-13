@@ -18,6 +18,11 @@ export default {
 			type: Boolean,
 			default: u.gc('autoHideKeyboardWhenChat', true)
 		},
+		// 使用聊天记录模式中键盘弹出时是否自动调整slot="bottom"高度，默认为是
+		autoAdjustPositionWhenChat: {
+			type: Boolean,
+			default: u.gc('autoAdjustPositionWhenChat', false)
+		},
 	},
 	data() {
 		return {
