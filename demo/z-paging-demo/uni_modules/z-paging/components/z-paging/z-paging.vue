@@ -128,7 +128,7 @@ by ZXLee
 									<slot v-else-if="loadingStatus===M.Fail&&zSlots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreFail" />
 									<z-paging-load-more @doClick="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===M.NoMore&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode" :zConfig="zLoadMoreConfig" />
 									<!-- #endif -->
-									<view v-if="safeAreaInsetBottom&&useSafeAreaPlaceholder" class="zp-safe-area-placeholder" :style="[{height:safeAreaBottom+'px'}]" />
+									<view v-if="safeAreaInsetBottom&&useSafeAreaPlaceholder&&!useChatRecordMode" class="zp-safe-area-placeholder" :style="[{height:safeAreaBottom+'px'}]" />
 								</view>
 								<!-- 空数据图 -->
 								<view v-if="showEmpty" :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}" :style="[emptyViewSuperStyle,chatRecordRotateStyle]">
@@ -148,12 +148,16 @@ by ZXLee
 			</view>
 		</view>
 		<!-- 底部固定的slot -->
-		<view class="zp-page-bottom-container">
+		<view class="zp-page-bottom-container" :style="{'background': bottomBgColor}">
 			<slot v-if="!usePageScroll&&zSlots.bottom" name="bottom" />
 			<view class="zp-page-bottom" @touchmove.stop.prevent v-else-if="usePageScroll&&zSlots.bottom" :style="[{'bottom': `${windowBottom}px`}]">
 				<slot name="bottom" />
 			</view>
-			<view v-if="useChatRecordMode&&autoAdjustPositionWhenChat" class="zp-page-bottom-keyboard-placeholder" :style="[{height:finalKeyboardHeight+'px'}]" />
+			<!-- 聊天记录模式底部占位 -->
+			<template v-if="useChatRecordMode&&autoAdjustPositionWhenChat">
+				<view :style="[{height:chatRecordModeSafeAreaBottom+'px'}]" />
+				<view class="zp-page-bottom-keyboard-placeholder-animate" :style="[{height:keyboardHeight+'px'}]" />
+			</template>
 		</view>
 		<!-- 点击返回顶部view -->
 		<view v-if="showBackToTopClass" :class="finalBackToTopClass" :style="[finalBackToTopStyle]" @click.stop="_backToTopClick">
@@ -245,7 +249,7 @@ by ZXLee
 						<slot v-else-if="showLoadingMoreNoMore" name="loadingMoreNoMore" />
 						<slot v-else-if="showLoadingMoreFail" name="loadingMoreFail" />
 						<z-paging-load-more @doClick="_onLoadingMore('click')" v-else-if="showLoadingMoreCustom" :zConfig="zLoadMoreConfig" />
-						<view v-if="safeAreaInsetBottom&&useSafeAreaPlaceholder" class="zp-safe-area-placeholder" :style="[{height:safeAreaBottom+'px'}]" />
+						<view v-if="safeAreaInsetBottom&&useSafeAreaPlaceholder&&!useChatRecordMode" class="zp-safe-area-placeholder" :style="[{height:safeAreaBottom+'px'}]" />
 					</view>
 				</component>
 				<!-- 空数据图 -->
@@ -265,9 +269,13 @@ by ZXLee
 			</view>
 		</component>
 		<!-- 底部固定的slot -->
-		<view class="zp-page-bottom-container">
+		<view class="zp-page-bottom-container" :style="{'background': bottomBgColor}">
 			<slot name="bottom" />
-			<view v-if="useChatRecordMode&&autoAdjustPositionWhenChat" class="zp-page-bottom-keyboard-placeholder" :style="[{height:finalKeyboardHeight+'px'}]" />
+			<!-- 聊天记录模式底部占位 -->
+			<template v-if="useChatRecordMode&&autoAdjustPositionWhenChat">
+				<view :style="[{height:chatRecordModeSafeAreaBottom+'px'}]" />
+				<view class="zp-page-bottom-keyboard-placeholder-animate" :style="[{height:keyboardHeight+'px'}]" />
+			</template>
 		</view>
 		<!-- 点击返回顶部view -->
 		<view v-if="showBackToTopClass" :class="finalBackToTopClass" :style="[finalBackToTopStyle]" @click.stop="_backToTopClick">

@@ -148,6 +148,11 @@ export default {
 			type: Boolean,
 			default: u.gc('useSafeAreaPlaceholder', false)
 		},
+		// z-paging bottom的背景色，默认透明，传字符串，如"#ffffff"
+		bottomBgColor: {
+			type: String,
+			default: u.gc('bottomBgColor', '#ffffff00')
+		},
 		// slot="top"的view的z-index，默认为99，仅使用页面滚动时有效
 		topZIndex: {
 			type: Number,
@@ -314,7 +319,8 @@ export default {
 		windowBottom() {
 			if (!this.systemInfo) return 0;
 			let windowBottom = this.systemInfo.windowBottom || 0;
-			if (this.safeAreaInsetBottom && !this.useSafeAreaPlaceholder) {
+			// 如果开启底部安全区域适配并且不使用placeholder的形式体现并且不是聊天记录模式（因为聊天记录模式在keyboardHeight计算初已添加了底部安全区域），在windowBottom添加底部安全区域高度
+			if (this.safeAreaInsetBottom && !this.useSafeAreaPlaceholder && !this.useChatRecordMode) {
 				windowBottom += this.safeAreaBottom;
 			}
 			return windowBottom;

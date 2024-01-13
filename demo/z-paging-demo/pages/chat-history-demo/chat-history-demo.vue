@@ -2,9 +2,12 @@
 <!-- nvue的聊天记录模式中需要写@cellStyleChange="cellStyleChange"，如果需要兼容nvue和vue，请以nvue中写法为准，会自动兼容vue -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" v-model="dataList" use-chat-record-mode 
+		<!-- use-chat-record-mode：开启聊天记录模式 -->
+		<!-- safe-area-inset-bottom：开启底部安全区域适配 -->
+		<!-- bottom-bg-color：设置slot="bottom"容器的背景色，这里设置为和chat-input-bar的背景色一致 -->
+		<z-paging ref="paging" v-model="dataList" use-chat-record-mode safe-area-inset-bottom bottom-bg-color="#f8f8f8"
 		@query="queryList" @keyboardHeightChange="keyboardHeightChange" @hidedKeyboard="hidedKeyboard">
-			<!-- style="transform: scaleY(-1)"必须写，否则会导致列表倒置！！！ -->
+			<!-- style="transform: scaleY(-1)"必须写，否则会导致列表倒置（必须写在for循环标签上，不得写在容器上）！！！ -->
 			<!-- 注意不要直接在chat-item组件标签上设置style，因为在微信小程序中是无效的，请包一层view -->
 			<view v-for="(item,index) in dataList" :key="index" style="transform: scaleY(-1)">
 				<chat-item :item="item"></chat-item>

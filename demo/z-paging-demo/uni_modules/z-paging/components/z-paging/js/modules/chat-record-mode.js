@@ -32,7 +32,9 @@ export default {
 	data() {
 		return {
 			// 键盘高度
-			keyboardHeight: 0
+			keyboardHeight: 0,
+			// 键盘高度是否未改变，此时占位高度变化不需要动画效果
+			isKeyboardHeightChanged: false,
 		}
 	},
 	computed: {
@@ -77,9 +79,9 @@ export default {
 		isChatRecordModeAndNotInversion() {
 			return this.chatRecordRotateStyle && this.chatRecordRotateStyle.transform && this.chatRecordRotateStyle.transform === 'scaleY(1)';
 		},
-		// 最终的键盘高度
-		finalKeyboardHeight() {
-			return this.keyboardHeight;
+		// 最终的聊天记录模式中底部安全区域的高度，如果开启了底部安全区域并且键盘未弹出，则添加底部区域高度
+		chatRecordModeSafeAreaBottom() {
+			return this.safeAreaInsetBottom && !this.keyboardHeight ? this.safeAreaBottom : 0;
 		}
 	},
 	mounted() {
@@ -88,7 +90,10 @@ export default {
 		if (this.useChatRecordMode) {
 			uni.onKeyboardHeightChange(res => {
 				this.$emit('keyboardHeightChange', res);
-				this.keyboardHeight = res.height;
+				if (this.autoAdjustPositionWhenChat) {
+					this.isKeyboardHeightChanged = true;
+					this.keyboardHeight = res.height;
+				}
 				if (this.autoToBottomWhenChat && this.keyboardHeight > 0) {
 					this.scrollToBottom(false);
 				} 

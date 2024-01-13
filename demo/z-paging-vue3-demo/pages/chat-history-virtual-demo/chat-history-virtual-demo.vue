@@ -3,7 +3,12 @@
 <!-- 如果必须实现高度根据内容动态撑高+虚拟列表功能，可监听图片加载完毕事件，并在其中调用z-paging的didUpdateVirtualListCell刷新缓存高度 -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" v-model="dataList" use-chat-record-mode use-virtual-list cell-height-mode="dynamic" 
+		<!-- use-chat-record-mode：开启聊天记录模式 -->
+		<!-- use-virtual-list：开启虚拟列表模式 -->
+		<!-- cell-height-mode：设置虚拟列表模式高度不固定 -->
+		<!-- safe-area-inset-bottom：开启底部安全区域适配 -->
+		<!-- bottom-bg-color：设置slot="bottom"容器的背景色，这里设置为和chat-input-bar的背景色一致 -->
+		<z-paging ref="paging" v-model="dataList" use-chat-record-mode use-virtual-list cell-height-mode="dynamic" safe-area-inset-bottom bottom-bg-color="#f8f8f8"
 		@query="queryList" @keyboardHeightChange="keyboardHeightChange" @hidedKeyboard="hidedKeyboard">
 			<!-- 顶部提示文字 -->
 			<template #top>
