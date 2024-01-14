@@ -87,7 +87,7 @@
 <style scoped>
 	.header{
 		background-color: red;
-		font-size: 24rpx;
+		font-size: 20rpx;
 		padding: 20rpx;
 		color: white;
 	}

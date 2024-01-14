@@ -80,13 +80,17 @@ export default {
 			})
 			return cellStyle;
 		},
+		// 是否是聊天记录列表并且有配置transform
+		isChatRecordModeHasTransform() {
+			return this.useChatRecordMode && this.chatRecordRotateStyle && this.chatRecordRotateStyle.transform;
+		},
 		// 是否是聊天记录列表并且列表未倒置
 		isChatRecordModeAndNotInversion() {
-			return this.useChatRecordMode && this.chatRecordRotateStyle && this.chatRecordRotateStyle.transform && this.chatRecordRotateStyle.transform === 'scaleY(1)';
+			return this.isChatRecordModeHasTransform && this.chatRecordRotateStyle.transform === 'scaleY(1)';
 		},
 		// 是否是聊天记录列表并且列表倒置
 		isChatRecordModeAndInversion() {
-			return this.useChatRecordMode && this.chatRecordRotateStyle && this.chatRecordRotateStyle.transform && this.chatRecordRotateStyle.transform === 'scaleY(-1)';
+			return this.isChatRecordModeHasTransform && this.chatRecordRotateStyle.transform === 'scaleY(-1)';
 		},
 		// 最终的聊天记录模式中底部安全区域的高度，如果开启了底部安全区域并且键盘未弹出，则添加底部区域高度
 		chatRecordModeSafeAreaBottom() {
