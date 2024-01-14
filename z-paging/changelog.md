@@ -1,3 +1,10 @@
+## 2.7.4（2024-01-14）
+1.`新增` props:`auto-adjust-position-when-chat`，支持设置使用聊天记录模式中键盘弹出时是否自动调整slot="bottom"高度。  
+2.`新增` props:`auto-to-bottom-when-chat`，支持设置使用聊天记录模式中键盘弹出时是否自动滚动到底部。  
+3.`新增` props:`show-chat-loading-when-reload`，支持设置使用聊天记录模式中reload时是否显示chatLoading。  
+4.`修复` 在聊天记录模式中`scrollIntoViewById`和`scrollIntoViewByNodeTop`无效的问题。  
+5.`优化` 聊天记录模式底部安全区域针对键盘开启/关闭兼容处理。  
+6.`优化` 更新内置的空数据图&加载失败图，感谢图鸟UI提供的免费可商用的空数据图和加载失败图！  
 ## 2.7.3（2024-01-10）
 1.`新增` 聊天记录模式支持虚拟列表&添加相关demo。  
 2.`新增` nvue中list添加`@scrollend`监听。  
