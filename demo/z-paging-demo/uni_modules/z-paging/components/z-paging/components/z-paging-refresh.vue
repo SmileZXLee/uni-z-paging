@@ -22,7 +22,7 @@
 				<!-- 右侧下拉刷新状态文字 -->
 				<text class="zp-r-right-text" :style="[rightTextStyle,titleStyle]">{{currentTitle}}</text>
 				<!-- 右侧下拉刷新时间文字 -->
-				<text v-if="showUpdateTime&&refresherTimeText.length" class="zp-r-right-text" :class="{'zp-r-right-time-text-rpx':unit==='rpx','zp-r-right-time-texts-px':unit==='px'}" :style="[rightTextStyle,updateTimeStyle]">
+				<text v-if="showUpdateTime&&refresherTimeText.length" class="zp-r-right-text" :class="{'zp-r-right-time-text-rpx':unit==='rpx','zp-r-right-time-text-px':unit==='px'}" :style="[{color:zTheme.title[ts]},updateTimeStyle]">
 					{{refresherTimeText}}
 				</text>
 			</view>
@@ -75,7 +75,7 @@
 			// 左侧图片style
 			leftImageStyle() {
 				const showUpdateTime = this.showUpdateTime;
-				const size = showUpdateTime ? u.addUnit(36, this.unit) : u.addUnit(32, this.unit);
+				const size = showUpdateTime ? u.addUnit(36, this.unit) : u.addUnit(34, this.unit);
 				return {width: size,height: size,'margin-right': showUpdateTime ? u.addUnit(20, this.unit) : u.addUnit(9, this.unit)};
 			},
 			// 左侧图片src
@@ -106,7 +106,7 @@
 				stl = {'height': textHeight, 'line-height': textHeight}
 				// #endif
 				stl['color'] = this.zTheme.title[this.ts];
-				stl['font-size'] = u.addUnit(28, this.unit);
+				stl['font-size'] = u.addUnit(30, this.unit);
 				return stl;
 			}
 		},
@@ -164,16 +164,16 @@
 	
 	.zp-r-left-image-pre-size-rpx {
 		/* #ifndef APP-NVUE */
-		width: 32rpx;
-		height: 32rpx;
+		width: 34rpx;
+		height: 34rpx;
 		overflow: hidden;
 		/* #endif */
 	}
 	
 	.zp-r-left-image-pre-size-px {
 		/* #ifndef APP-NVUE */
-		width: 16px;
-		height: 16px;
+		width: 17px;
+		height: 17px;
 		overflow: hidden;
 		/* #endif */
 	}

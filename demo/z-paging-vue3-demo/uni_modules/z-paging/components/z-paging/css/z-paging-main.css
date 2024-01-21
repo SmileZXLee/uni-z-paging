@@ -115,20 +115,6 @@
 	flex-direction: column;
 }
 
-.zp-chat-record-loading-container {
-	/* #ifndef APP-NVUE */
-	display: flex;
-	width: 100%;
-	/* #endif */
-	/* #ifdef APP-NVUE */
-	width: 750rpx;
-	/* #endif */
-	align-items: center;
-	justify-content: center;
-	height: 60rpx;
-	font-size: 26rpx;
-}
-
 .zp-chat-record-loading-custom-image {
 	width: 35rpx;
 	height: 35rpx;

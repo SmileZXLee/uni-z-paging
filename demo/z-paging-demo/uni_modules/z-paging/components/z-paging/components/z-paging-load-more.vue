@@ -2,8 +2,9 @@
 <template>
 	<view class="zp-l-container" :class="{'zp-l-container-rpx':c.unit==='rpx','zp-l-container-px':c.unit==='px'}" :style="[c.customStyle]" @click="doClick">
 		<template v-if="!c.hideContent">
-			<!-- 底部加载更多loading -->
+			<!-- 底部加载更多没有更多数据分割线 -->
 			<text v-if="c.showNoMoreLine&&finalStatus===M.NoMore" :class="{'zp-l-line-rpx':c.unit==='rpx','zp-l-line-px':c.unit==='px'}" :style="[{backgroundColor:zTheme.line[ts]},c.noMoreLineCustomStyle]" />
+			<!-- 底部加载更多loading -->
 			<!-- #ifndef APP-NVUE -->
 			<image v-if="finalStatus===M.Loading&&!!c.loadingIconCustomImage"
 				:src="c.loadingIconCustomImage" :style="[c.iconCustomStyle]" :class="{'zp-l-line-loading-custom-image':true,'zp-l-line-loading-custom-image-animated':c.loadingAnimated,'zp-l-line-loading-custom-image-rpx':c.unit==='rpx','zp-l-line-loading-custom-image-px':c.unit==='px'}" />
@@ -19,7 +20,8 @@
 			<!-- 底部加载更多文字 -->
 			<text v-if="finalStatus===M.Loading&&finalLoadingIconType==='circle'&&!c.loadingIconCustomImage.length"
 				class="zp-l-circle-loading-view" :class="{'zp-l-circle-loading-view-rpx':c.unit==='rpx','zp-l-circle-loading-view-px':c.unit==='px'}" :style="[{borderColor:zTheme.circleBorder[ts],borderTopColor:zTheme.circleBorderTop[ts]},c.iconCustomStyle]" />
-			<text :class="{'zp-l-text-rpx':c.unit==='rpx','zp-l-text-px':c.unit==='px'}" :style="[{color:zTheme.title[ts]},c.titleCustomStyle]">{{ownLoadingMoreText}}</text>
+			<text v-if="!c.isChat||(!c.chatDefaultAsLoading&&finalStatus===M.Default)||finalStatus===M.Fail" :class="{'zp-l-text-rpx':c.unit==='rpx','zp-l-text-px':c.unit==='px'}" :style="[{color:zTheme.title[ts]},c.titleCustomStyle]">{{ownLoadingMoreText}}</text>
+			<!-- 底部加载更多没有更多数据分割线 -->
 			<text v-if="c.showNoMoreLine&&finalStatus===M.NoMore" :class="{'zp-l-line-rpx':c.unit==='rpx','zp-l-line-px':c.unit==='px'}" :style="[{backgroundColor:zTheme.line[ts]},c.noMoreLineCustomStyle]" />
 		</template>
 	</view>
@@ -142,16 +144,12 @@
 	}
 
 	.zp-l-text-rpx {
-		/* #ifdef APP-NVUE */
 		font-size: 30rpx;
-		margin: 0rpx 10rpx;
-		/* #endif */
+		margin: 0rpx 6rpx;
 	}
 	.zp-l-text-px {
-		/* #ifdef APP-NVUE */
 		font-size: 15px;
-		margin: 0px 5px;
-		/* #endif */
+		margin: 0px 3px;
 	}
 
 	.zp-l-line-rpx {

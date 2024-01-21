@@ -33,6 +33,11 @@ export default {
 			type: Boolean,
 			default: u.gc('showChatLoadingWhenReload', false)
 		},
+		// 在聊天记录模式中滑动到顶部状态为默认状态时，以加载中的状态展示，默认为是。若设置为否，则默认会显示【点击加载更多】，然后才会显示loading
+		chatLoadingMoreDefaultAsLoading: {
+			type: Boolean,
+			default: u.gc('chatLoadingMoreDefaultAsLoading', true)
+		},
 	},
 	data() {
 		return {

@@ -108,10 +108,8 @@ by ZXLee
 									<!-- 聊天记录模式加载更多loading -->
 									<template v-if="useChatRecordMode&&loadingStatus!==M.NoMore&&(realTotalData.length||(showChatLoadingWhenReload&&showLoading))">
 										<view :style="[chatRecordRotateStyle]">
-											<slot v-if="zSlots.chatLoading" name="chatLoading" />
-											<view v-else class="zp-chat-record-loading-container">
-												<image :src="base64Flower" class="zp-chat-record-loading-custom-image" />
-											</view>
+											<slot v-if="zSlots.chatLoading" :loadingMoreStatus="loadingStatus" name="chatLoading" />
+											<z-paging-load-more v-else @doClick="_onLoadingMore('click')" :zConfig="zLoadMoreConfig" />
 										</view>
 									</template>
 									<!-- 虚拟列表底部占位view -->
@@ -181,12 +179,8 @@ by ZXLee
 		</view>
 		<!-- 聊天记录模式加载更多loading（loading时候显示） -->
 		<view v-if="useChatRecordMode&&loadingStatus!==M.NoMore&&showChatLoadingWhenReload&&showLoading">
-			<slot v-if="zSlots.chatLoading" name="chatLoading" />
-			<view v-else class="zp-chat-record-loading-container">
-				<view>
-					<loading-indicator class="zp-line-loading-image" :class="{'zp-line-loading-image-rpx':unit==='rpx','zp-line-loading-image-px':unit==='px'}" :animating="true" />
-				</view>
-			</view>
+			<slot v-if="zSlots.chatLoading" :loadingMoreStatus="loadingStatus" name="chatLoading" />
+			<z-paging-load-more v-else @doClick="_onLoadingMore('click')" :zConfig="zLoadMoreConfig" />
 		</view>
 		<component :is="finalNvueSuperListIs" class="zp-n-list-container" :scrollable="false">
 			<view v-if="zSlots.left" class="zp-page-left">
@@ -246,12 +240,8 @@ by ZXLee
 					<!-- 聊天记录模式加载更多loading（滚动到顶部加载更多时显示） -->
 					<template v-if="useChatRecordMode&&loadingStatus!==M.NoMore&&realTotalData.length">
 						<view :style="[chatRecordRotateStyle]">
-							<slot v-if="zSlots.chatLoading" name="chatLoading" />
-							<view v-else class="zp-chat-record-loading-container">
-								<view>
-									<loading-indicator v-if="loadingStatus===M.Loading" class="zp-line-loading-image" :class="{'zp-line-loading-image-rpx':unit==='rpx','zp-line-loading-image-px':unit==='px'}" :animating="true" />
-								</view>
-							</view>
+							<slot v-if="zSlots.chatLoading" :loadingMoreStatus="loadingStatus" name="chatLoading" />
+							<z-paging-load-more v-else @doClick="_onLoadingMore('click')" :zConfig="zLoadMoreConfig" />
 						</view>
 					</template>
 					

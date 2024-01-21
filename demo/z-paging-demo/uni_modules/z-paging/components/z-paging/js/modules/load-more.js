@@ -46,7 +46,7 @@ export default {
 		},
 		// 滑动到底部状态为默认状态时，以加载中的状态展示，默认为否。若设置为是，可避免滚动到底部看到默认状态然后立刻变为加载中状态的问题，但分页数量未超过一屏时，不会显示【点击加载更多】
 		loadingMoreDefaultAsLoading: {
-			type: [Boolean],
+			type: Boolean,
 			default: u.gc('loadingMoreDefaultAsLoading', false)
 		},
 		// 滑动到底部"默认"文字，默认为【点击加载更多】
@@ -147,7 +147,9 @@ export default {
 				noMoreText: this.finalLoadingMoreNoMoreText,
 				failText: this.finalLoadingMoreFailText,
 				hideContent: !this.loadingMoreDefaultAsLoading && this.listRendering,
-				unit: this.unit
+				unit: this.unit,
+				isChat: this.useChatRecordMode,
+				chatDefaultAsLoading: this.chatLoadingMoreDefaultAsLoading
 			};
 		},
 		// 最终的底部加载更多主题
