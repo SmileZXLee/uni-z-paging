@@ -150,7 +150,7 @@ export default {
 		// z-paging bottom的背景色，默认透明，传字符串，如"#ffffff"
 		bottomBgColor: {
 			type: String,
-			default: u.gc('bottomBgColor', '#ffffff00')
+			default: u.gc('bottomBgColor', '')
 		},
 		// slot="top"的view的z-index，默认为99，仅使用页面滚动时有效
 		topZIndex: {

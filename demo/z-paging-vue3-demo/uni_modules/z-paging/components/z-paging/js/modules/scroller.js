@@ -86,9 +86,7 @@ export default {
 			immediate: true
 		},
 		finalScrollTop(newVal) {
-			if (!this.useChatRecordMode) {
-				this.renderPropScrollTop = newVal < 6 ? 0 : 10;
-			}
+			this.renderPropScrollTop = newVal < 6 ? 0 : 10;
 		},
 	},
 	computed: {

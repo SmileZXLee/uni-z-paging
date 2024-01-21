@@ -108,7 +108,9 @@ export default {
 					this.keyboardHeight = res.height;
 				}
 				if (this.autoToBottomWhenChat && this.keyboardHeight > 0) {
-					this.scrollToBottom(false);
+					u.delay(() => {
+						this.scrollToBottom(false);
+					})
 				} 
 			})
 		}
