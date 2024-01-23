@@ -106,10 +106,13 @@ by ZXLee
 										<slot name="footer"/>
 									</template>
 									<!-- 聊天记录模式加载更多loading -->
-									<template v-if="useChatRecordMode&&loadingStatus!==M.NoMore&&(realTotalData.length||(showChatLoadingWhenReload&&showLoading))">
+									<template v-if="useChatRecordMode&&(loadingStatus!==M.NoMore||zSlots.chatNoMore)&&(realTotalData.length||(showChatLoadingWhenReload&&showLoading))">
 										<view :style="[chatRecordRotateStyle]">
-											<slot v-if="zSlots.chatLoading" :loadingMoreStatus="loadingStatus" name="chatLoading" />
-											<z-paging-load-more v-else @doClick="_onLoadingMore('click')" :zConfig="zLoadMoreConfig" />
+											<slot v-if="loadingStatus===M.NoMore&&zSlots.chatNoMore" name="chatNoMore" />
+											<template v-else>
+												<slot v-if="zSlots.chatLoading" :loadingMoreStatus="loadingStatus" name="chatLoading" />
+												<z-paging-load-more v-else @doClick="_onLoadingMore('click')" :zConfig="zLoadMoreConfig" />
+											</template>
 										</view>
 									</template>
 									<!-- 虚拟列表底部占位view -->
@@ -237,11 +240,14 @@ by ZXLee
 				</component>
 				<!-- 上拉加载更多view -->
 				<component :is="nViewIs" v-if="!refresherOnly&&loadingMoreEnabled&&!showEmpty">
-					<!-- 聊天记录模式加载更多loading（滚动到顶部加载更多时显示） -->
-					<template v-if="useChatRecordMode&&loadingStatus!==M.NoMore&&realTotalData.length">
+					<!-- 聊天记录模式加载更多loading（滚动到顶部加载更多或无更多数据时显示） -->
+					<template v-if="useChatRecordMode&&(loadingStatus!==M.NoMore||zSlots.chatNoMore)">
 						<view :style="[chatRecordRotateStyle]">
-							<slot v-if="zSlots.chatLoading" :loadingMoreStatus="loadingStatus" name="chatLoading" />
-							<z-paging-load-more v-else @doClick="_onLoadingMore('click')" :zConfig="zLoadMoreConfig" />
+							<slot v-if="loadingStatus===M.NoMore&&zSlots.chatNoMore" name="chatNoMore" />
+							<template v-else>
+								<slot v-if="zSlots.chatLoading" :loadingMoreStatus="loadingStatus" name="chatLoading" />
+								<z-paging-load-more v-else @doClick="_onLoadingMore('click')" :zConfig="zLoadMoreConfig" />
+							</template>
 						</view>
 					</template>
 					

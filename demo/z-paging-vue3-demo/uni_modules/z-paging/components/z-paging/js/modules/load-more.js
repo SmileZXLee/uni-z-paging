@@ -132,7 +132,7 @@ export default {
 		zLoadMoreConfig() {
 			return {
 				status: this.loadingStatusAfterRender,
-				defaultAsLoading: this.loadingMoreDefaultAsLoading,
+				defaultAsLoading: this.loadingMoreDefaultAsLoading || (this.useChatRecordMode && this.chatLoadingMoreDefaultAsLoading),
 				defaultThemeStyle: this.finalLoadingMoreThemeStyle,
 				customStyle: this.loadingMoreCustomStyle,
 				titleCustomStyle: this.loadingMoreTitleCustomStyle,
@@ -190,7 +190,7 @@ export default {
 		doLoadMore(type) {
 			this._onLoadingMore(type);
 		},
-		// 通过@scroll事件检测是否滚动到了底部
+		// 通过@scroll事件检测是否滚动到了底部(顺带检测下是否滚动到了顶部)
 		_checkScrolledToBottom(scrollDiff, checked = false) {
 			// 如果当前scroll-view高度未获取，则获取其高度
 			if (this.cacheScrollNodeHeight === -1) {
@@ -213,14 +213,30 @@ export default {
 					// 如果与底部的距离小于阈值，则判断为滚动到了底部，触发滚动到底部事件
 					this._onLoadingMore('toBottom');
 				} else if (scrollDiff - this.cacheScrollNodeHeight <= 500 && !checked) {
-					// 如果与底部的距离小于500px，则获取当前滚动的位置，重复上述步骤再次检测。防止因为部分性能较差安卓设备@scroll采样率过低导致的滚动到底部但是依然没有触发的问题
+					// 如果与底部的距离小于500px，则获取当前滚动的位置，延迟150毫秒重复上述步骤再次检测(避免@scroll触发时获取的scrollTop不正确导致的其他问题，此时获取的scrollTop不一定可信)。防止因为部分性能较差安卓设备@scroll采样率过低导致的滚动到底部但是依然没有触发的问题
 					u.delay(() => {
 						this._getNodeClientRect('.zp-scroll-view', true, true).then((res) => {
-							this.oldScrollTop = res[0].scrollTop;
-							const newScrollDiff = res[0].scrollHeight - this.oldScrollTop;
-							this._checkScrolledToBottom(newScrollDiff, true);
+							if (res) {
+								this.oldScrollTop = res[0].scrollTop;
+								const newScrollDiff = res[0].scrollHeight - this.oldScrollTop;
+								this._checkScrolledToBottom(newScrollDiff, true);
+							}
 						})
 					}, 150, 'checkScrolledToBottomDelay')
+				}
+				// 检测一下是否已经滚动到了顶部了，因为在安卓中滚动到顶部时scrollTop不一定为0(和滚动到底部一样的原因)，所以需要在scrollTop小于150px时，通过获取.zp-scroll-view的scrollTop再判断一下
+				if (this.oldScrollTop <= 150 && this.oldScrollTop !== 0) {
+					u.delay(() => {
+						// 这里再判断一下是否确实已经滚动到顶部了，如果已经滚动到顶部了，则不用再判断了，再次判断的原因是可能150毫秒之后oldScrollTop才是0
+						if (this.oldScrollTop !== 0) {
+							this._getNodeClientRect('.zp-scroll-view', true, true).then((res) => {
+								// 如果150毫秒后.zp-scroll-view的scrollTop为0，则认为已经滚动到了顶部了
+								if (res && res[0].scrollTop === 0 && this.oldScrollTop !== 0) {
+									this._onScrollToUpper();
+								}
+							})
+						}
+					}, 150, 'checkScrolledToTopDelay')
 				}
 			}
 		},
