@@ -420,7 +420,7 @@ export default {
 			this._offEmit();
 			// 取消监听键盘高度变化事件（H5、百度小程序、抖音小程序、飞书小程序、QQ小程序、快手小程序不支持）
 			// #ifndef H5 || MP-BAIDU || MP-TOUTIAO || MP-QQ || MP-KUAISHOU
-			this.useChatRecordMode && uni.offKeyboardHeightChange(() => {});
+			this.useChatRecordMode && uni.offKeyboardHeightChange(this._handleKeyboardHeightChange);
 			// #endif
 		},
 		// 触发更新是否超出页面状态

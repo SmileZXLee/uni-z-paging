@@ -106,21 +106,7 @@ export default {
 		// 监听键盘高度变化（H5、百度小程序、抖音小程序、飞书小程序不支持）
 		// #ifndef H5 || MP-BAIDU || MP-TOUTIAO
 		if (this.useChatRecordMode) {
-			uni.onKeyboardHeightChange(res => {
-				this.$emit('keyboardHeightChange', res);
-				if (this.autoAdjustPositionWhenChat) {
-					this.isKeyboardHeightChanged = true;
-					this.keyboardHeight = res.height;
-				}
-				if (this.autoToBottomWhenChat && this.keyboardHeight > 0) {
-					u.delay(() => {
-						this.scrollToBottom(false);
-						u.delay(() => {
-							this.scrollToBottom(false);
-						})
-					})
-				} 
-			})
+			uni.onKeyboardHeightChange(this._handleKeyboardHeightChange);
 		}
 		// #endif
 	},
@@ -134,6 +120,22 @@ export default {
 		// 手动触发滚动到顶部加载更多，聊天记录模式时有效
 		doChatRecordLoadMore() {
 			this.useChatRecordMode && this._onLoadingMore('click');
+		},
+		// 处理键盘高度变化
+		_handleKeyboardHeightChange(res) {
+			this.$emit('keyboardHeightChange', res);
+			if (this.autoAdjustPositionWhenChat) {
+				this.isKeyboardHeightChanged = true;
+				this.keyboardHeight = res.height;
+			}
+			if (this.autoToBottomWhenChat && this.keyboardHeight > 0) {
+				u.delay(() => {
+					this.scrollToBottom(false);
+					u.delay(() => {
+						this.scrollToBottom(false);
+					})
+				})
+			} 
 		}
 	}
 }
