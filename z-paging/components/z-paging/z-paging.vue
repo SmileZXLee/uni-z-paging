@@ -190,7 +190,7 @@ by ZXLee
 				<slot name="left" />
 			</view>
 			<component :is="finalNvueListIs" ref="zp-n-list" :id="nvueListId" :style="[{'flex': 1,'top':isIos?'0px':'-1px'},usePageScroll?scrollViewStyle:{},chatRecordRotateStyle]" :alwaysScrollableVertical="true"
-				:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar&&!useChatRecordMode" :loadmoreoffset="finalLowerThreshold" :enable-back-to-top="enableBackToTop"
+				:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar" :loadmoreoffset="finalLowerThreshold" :enable-back-to-top="enableBackToTop"
 				:scrollable="scrollable&&scrollEnable&&(refresherCompleteScrollable?true:refresherStatus!==R.Complete)" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 				:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap" :pagingEnabled="nvuePagingEnabled" :offset-accuracy="offsetAccuracy"
 				@loadmore="_nOnLoadmore" @scroll="_nOnScroll" @scrollend="_nOnScrollend">
@@ -241,7 +241,7 @@ by ZXLee
 				<!-- 上拉加载更多view -->
 				<component :is="nViewIs" v-if="!refresherOnly&&loadingMoreEnabled&&!showEmpty">
 					<!-- 聊天记录模式加载更多loading（滚动到顶部加载更多或无更多数据时显示） -->
-					<template v-if="useChatRecordMode&&(loadingStatus!==M.NoMore||zSlots.chatNoMore)">
+					<template v-if="useChatRecordMode&&(loadingStatus!==M.NoMore||zSlots.chatNoMore)&&realTotalData.length">
 						<view :style="[chatRecordRotateStyle]">
 							<slot v-if="loadingStatus===M.NoMore&&zSlots.chatNoMore" name="chatNoMore" />
 							<template v-else>

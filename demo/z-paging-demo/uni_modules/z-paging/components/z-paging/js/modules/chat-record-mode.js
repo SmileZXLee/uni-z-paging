@@ -115,6 +115,9 @@ export default {
 				if (this.autoToBottomWhenChat && this.keyboardHeight > 0) {
 					u.delay(() => {
 						this.scrollToBottom(false);
+						u.delay(() => {
+							this.scrollToBottom(false);
+						})
 					})
 				} 
 			})
