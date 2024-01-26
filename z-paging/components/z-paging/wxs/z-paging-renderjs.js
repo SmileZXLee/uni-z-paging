@@ -26,10 +26,7 @@ export default {
 			if (newVal === -1) return;
 			data.isIosAndH5 = newVal;
 		},
-		// 接收逻辑层发送的数据（是否是聊天记录模式）
-		renderPropUseChatRecordModeChange(newVal) {
-			data.useChatRecordMode = newVal;
-		},
+
 		// 拦截处理touch事件
 		_handleTouch() {
 			if (!window.$zPagingRenderJsInited) {
@@ -46,6 +43,7 @@ export default {
 			data.isTouchFromZPaging = touchResult.isFromZp;
 			data.isUsePageScroll = touchResult.isPageScroll;
 			data.isReachedTop = touchResult.isReachedTop;
+			data.useChatRecordMode = touchResult.isUseChatRecordMode;
 		},
 		// 处理touch中
 		_handleTouchmove(e) {

@@ -48,7 +48,8 @@ function getTouchFromZPaging(target) {
 			return {
 				isFromZp: true,
 				isPageScroll: classList.contains('z-paging-content-page'),
-				isReachedTop: classList.contains('z-paging-reached-top')
+				isReachedTop: classList.contains('z-paging-reached-top'),
+				isUseChatRecordMode: classList.contains('z-paging-use-chat-record-mode')
 			};
 		} else {
 			return getTouchFromZPaging(target.parentNode);
