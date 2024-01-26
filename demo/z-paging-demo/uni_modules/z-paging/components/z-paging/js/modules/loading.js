@@ -44,7 +44,7 @@ export default {
 				this.loadingStatusAfterRender = newVal;
 			})
 			if (this.useChatRecordMode) {
-				if (this.isFirstPage && newVal === Enum.More.NoMore) {
+				if (this.isFirstPage && (newVal === Enum.More.NoMore || newVal === Enum.More.Fail)) {
 					this.isFirstPageAndNoMore = true;
 					return;
 				}
