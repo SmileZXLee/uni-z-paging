@@ -107,6 +107,11 @@ export default {
 			type: String,
 			default: u.gc('width', '')
 		},
+		// z-paging的最大宽度，优先级低于pagingStyle中设置的max-width；传字符串，如100px、100rpx、100%。默认为空，也就是铺满窗口宽度，若设置了特定值则会自动添加margin: 0 auto
+		maxWidth: {
+			type: String,
+			default: u.gc('maxWidth', '')
+		},
 		// z-paging的背景色，优先级低于pagingStyle中设置的background。传字符串，如"#ffffff"
 		bgColor: {
 			type: String,
@@ -291,6 +296,10 @@ export default {
 			}
 			if (this.width.length && !pagingStyle['width']) {
 				pagingStyle['width'] = this.width;
+			}
+			if (this.maxWidth.length && !pagingStyle['max-width']) {
+				pagingStyle['max-width'] = this.maxWidth;
+				pagingStyle['margin'] = '0 auto';
 			}
 			return pagingStyle;
 		},
