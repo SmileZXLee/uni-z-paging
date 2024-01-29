@@ -23,6 +23,11 @@ export default {
 			type: Boolean,
 			default: u.gc('autoAdjustPositionWhenChat', true)
 		},
+		// 使用聊天记录模式中键盘弹出时占位高度偏移距离。默认0rpx。单位px
+		chatAdjustPositionOffset: {
+			type: [Number, String],
+			default: u.gc('chatAdjustPositionOffset', '0rpx')
+		},
 		// 使用聊天记录模式中键盘弹出时是否自动滚动到底部，默认为否
 		autoToBottomWhenChat: {
 			type: Boolean,
@@ -50,6 +55,9 @@ export default {
 	computed: {
 		finalChatRecordMoreOffset() {
 			return u.convertToPx(this.chatRecordMoreOffset);
+		},
+		finalChatAdjustPositionOffset() {
+			return u.convertToPx(this.chatAdjustPositionOffset);
 		},
 		// 聊天记录模式旋转180度style
 		chatRecordRotateStyle() {
@@ -126,7 +134,7 @@ export default {
 			this.$emit('keyboardHeightChange', res);
 			if (this.autoAdjustPositionWhenChat) {
 				this.isKeyboardHeightChanged = true;
-				this.keyboardHeight = res.height;
+				this.keyboardHeight = res.height > 0 ? res.height + this.finalChatAdjustPositionOffset : res.height;
 			}
 			if (this.autoToBottomWhenChat && this.keyboardHeight > 0) {
 				u.delay(() => {
