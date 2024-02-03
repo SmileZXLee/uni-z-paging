@@ -146,7 +146,8 @@ export default {
 			queryFrom: '',
 			listRendering: false,
 			isHandlingRefreshToPage: false,
-			isFirstPageAndNoMore: false
+			isFirstPageAndNoMore: false,
+			totalDataChangeThrow: true
 		}
 	},
 	computed: {
@@ -171,7 +172,8 @@ export default {
 	},
 	watch: {
 		totalData(newVal, oldVal) {
-			this._totalDataChange(newVal, oldVal);
+			this._totalDataChange(newVal, oldVal, this.totalDataChangeThrow);
+			this.totalDataChangeThrow = true;
 		},
 		currentData(newVal, oldVal) {
 			this._currentDataChange(newVal, oldVal);
@@ -183,14 +185,22 @@ export default {
 		},
 		value: {
 			handler(newVal) {
-				this.realTotalData = newVal;
+				// 当v-model绑定的数据源被更改时，此时数据源改变不emit input事件，避免循环调用
+				if (newVal !== this.totalData) {
+					this.totalDataChangeThrow = false;
+					this.totalData = newVal;
+				}
 			},
 			immediate: true
 		},
 		// #ifdef VUE3
 		modelValue: {
 			handler(newVal) {
-				this.realTotalData = newVal;
+				// 当v-model绑定的数据源被更改时，此时数据源改变不emit input事件，避免循环调用
+				if (newVal !== this.totalData) {
+					this.totalDataChangeThrow = false;
+					this.totalData = newVal;
+				}
 			},
 			immediate: true
 		}
