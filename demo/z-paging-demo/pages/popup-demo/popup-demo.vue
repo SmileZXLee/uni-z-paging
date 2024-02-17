@@ -6,7 +6,8 @@
 			<!-- 在弹窗内使用z-paging时，z-paging的父view必须确定宽高（或者z-paging本身确定宽高） -->
 			<view style="height: 700rpx;width: 500rpx;">
 				<!-- 设置fixed=false代表z-paging非铺满全屏，此时z-paging高度未确定，其父view或z-paging本身必须确定宽高 -->
-				<z-paging ref="paging" :fixed="false" v-model="dataList" @query="queryList">
+				<!-- v-if="showPaging"用于控制z-paging的展示，本身在pop-up中已经加了v-if了，但是在微信小程序中无效，会导致页面渲染时pop-up中的内容同时渲染，因此需要额外添加一个v-if -->
+				<z-paging v-if="showPaging" ref="paging" :fixed="false" v-model="dataList" @query="queryList">
 					<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 					<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
 					<template #top>
@@ -32,10 +33,13 @@
 				dataList: [],
 				tabList: ['测试1','测试2','测试3','测试4'],
 				tabIndex: 0,
+				// 是否显示z-paging
+				showPaging: false,
 			}
 		},
 		methods: {
 			open() {
+				this.showPaging = true;
 				this.$refs.popup.open();
 			},
 			tabChange(index) {

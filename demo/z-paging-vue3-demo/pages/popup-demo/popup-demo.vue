@@ -6,7 +6,7 @@
 			<!-- 在弹窗内使用z-paging时，z-paging的父view必须确定宽高（或者z-paging本身确定宽高） -->
 			<view style="height: 700rpx;width: 500rpx;">
 				<!-- 设置fixed=false代表z-paging非铺满全屏，此时z-paging高度未确定，其父view或z-paging本身必须确定宽高 -->
-				<z-paging ref="paging" :fixed="false" v-model="dataList" @query="queryList">
+				<z-paging v-if="showPaging" ref="paging" :fixed="false" v-model="dataList" @query="queryList">
 					<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 					<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
 					<template #top>
@@ -37,9 +37,12 @@
 	const tabList = ref(['测试1','测试2','测试3','测试4']);
 	// v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
     const dataList = ref([]);
+	// 是否显示z-paging
+	const showPaging = ref(false);
 	
 	// 打开弹窗
 	const open = () => {
+		showPaging.value = true;
 		popup.value.open();
 	}
 	
