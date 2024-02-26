@@ -1,5 +1,6 @@
 <!-- 聊天记录模式演示(vue)，加载更多聊天记录无闪动 -->
 <!-- nvue的聊天记录模式中需要写@cellStyleChange="cellStyleChange"，如果需要兼容nvue和vue，请以nvue中写法为准，会自动兼容vue -->
+<!-- 注意，此写法由于将列表倒置了，在iOS15以下和部分较低版本安卓中可能出现列表无法滚动的问题，此时建议使用z-paging 2.7.0以下的版本及写法 -->
 <template>
 	<view class="content">
 		<!-- use-chat-record-mode：开启聊天记录模式 -->
