@@ -197,10 +197,10 @@
 
 	.zp-r-right-time-text-rpx {
 		margin-top: 10rpx;
-		font-size: 24rpx;
+		font-size: 26rpx;
 	}
 	.zp-r-right-time-text-px {
 		margin-top: 5px;
-		font-size: 12px;
+		font-size: 13px;
 	}
 </style>
