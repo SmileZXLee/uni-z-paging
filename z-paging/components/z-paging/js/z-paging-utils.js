@@ -45,6 +45,7 @@ function getTouchFromZPaging(target) {
 	if (target && target.tagName && target.tagName !== 'BODY' && target.tagName !== 'UNI-PAGE-BODY') {
 		const classList = target.classList;
 		if (classList && classList.contains('z-paging-content')) {
+			// 此处额外记录当前z-paging是否是页面滚动、是否滚动到了顶部、是否是聊天记录模式以传给renderjs。避免不同z-paging组件renderjs内部判断数据互相影响导致的各种问题
 			return {
 				isFromZp: true,
 				isPageScroll: classList.contains('z-paging-content-page'),

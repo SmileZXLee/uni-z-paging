@@ -294,7 +294,7 @@ function _touchDisabled(e, ins, processTag) {
 	var scrollTop = parseFloat(dataset.scrolltop);
 	var finalScrollTop = usePageScroll ? pageScrollTop : scrollTop;
 	var fixedIsTop = false;
-	// 是否要处理滚动到顶部scrollTop不为0时候的容错，之前在安卓中scroll-view有概率滚动到顶部时scrollTop不为0导致下拉刷新判断异常，经过测试在HX3.98+已修复，因此暂时关闭此容错判断
+	// 是否要处理滚动到顶部scrollTop不为0时候的容错，为解决在安卓中scroll-view有概率滚动到顶部时scrollTop不为0导致下拉刷新判断异常，但此方案会导致某些情况（例如滚动到距离顶部10px处）下拉抖动，因此改为通过获取zp-scroll-view的节点信息中的scrollTop进行验证的方案
 	var handleFaultTolerantMove = false;
 	if (handleFaultTolerantMove && finalScrollTop == (state.startScrollTop || 0) && finalScrollTop <= 105) {
 		fixedIsTop = true;
