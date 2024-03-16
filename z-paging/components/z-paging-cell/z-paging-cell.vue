@@ -6,12 +6,12 @@
 <!-- z-paging-cell，用于在nvue中使用cell包裹，vue中使用view包裹 -->
 <template>
 	<!-- #ifdef APP-NVUE -->
-	<cell :style="[cellStyle]">
+	<cell :style="[cellStyle]" @touchstart="onTouchstart">
 		<slot />
 	</cell>
 	<!-- #endif -->
 	<!-- #ifndef APP-NVUE -->
-	<view :style="[cellStyle]">
+	<view :style="[cellStyle]" @touchstart="onTouchstart">
 		<slot />
 	</view>
 	<!-- #endif -->
@@ -27,6 +27,11 @@
 				default: function() {
                     return {}
                 }
+			}
+		},
+		methods: {
+			onTouchstart(e) {
+				this.$emit('touchstart', e);
 			}
 		}
 	}
