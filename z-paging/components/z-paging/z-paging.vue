@@ -14,7 +14,7 @@ by ZXLee
 
 <template name="z-paging">
 	<!-- #ifndef APP-NVUE -->
-	<view :class="{'z-paging-content':true,'z-paging-content-fixed':!usePageScroll&&fixed,'z-paging-content-page':usePageScroll,'z-paging-reached-top':renderPropScrollTop<1,'z-paging-use-chat-record-mode':useChatRecordMode}" :style="[finalPagingStyle]">
+	<view :class="{'z-paging-content':true,'z-paging-content-full':!usePageScroll,'z-paging-content-fixed':!usePageScroll&&fixed,'z-paging-content-page':usePageScroll,'z-paging-reached-top':renderPropScrollTop<1,'z-paging-use-chat-record-mode':useChatRecordMode}" :style="[finalPagingStyle]">
 		<!-- #ifndef APP-PLUS -->
 		<view v-if="cssSafeAreaInsetBottom===-1" class="zp-safe-area-inset-bottom"></view>
 		<!-- #endif -->

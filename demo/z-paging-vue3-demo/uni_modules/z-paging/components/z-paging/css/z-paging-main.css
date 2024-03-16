@@ -2,13 +2,16 @@
 
 .z-paging-content {
 	position: relative;
+	flex-direction: column;
+}
+
+.z-paging-content-full {
 	/* #ifndef APP-NVUE */
 	display: flex;
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
 	/* #endif */
-	flex-direction: column;
 }
 
 .z-paging-content-fixed, .zp-loading-fixed {
