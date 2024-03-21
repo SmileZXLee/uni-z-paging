@@ -1,24 +1,9 @@
 <!-- 虚拟列表演示(不使用内置列表)(vue) -->
-<!-- 推荐使用virtual-list-demo或virtual-list-compatibility-demo中的写法 -->
-<!-- 此写法在微信小程序上及一些平台上渲染可能会有跳动、数据渲染延迟等严重问题，非必要不建议使用 -->
-<!-- 此写法在微信小程序上及一些平台上渲染可能会有跳动、数据渲染延迟等严重问题，非必要不建议使用 -->
-<!-- 此写法在微信小程序上及一些平台上渲染可能会有跳动、数据渲染延迟等严重问题，非必要不建议使用 -->
-<!-- 此写法在微信小程序上及一些平台上渲染可能会有跳动、数据渲染延迟等严重问题，非必要不建议使用 -->
-<!-- 此写法在微信小程序上及一些平台上渲染可能会有跳动、数据渲染延迟等严重问题，非必要不建议使用 -->
-<!-- 此写法在微信小程序上及一些平台上渲染可能会有跳动、数据渲染延迟等严重问题，非必要不建议使用 -->
-<!-- 此写法在微信小程序上及一些平台上渲染可能会有跳动、数据渲染延迟等严重问题，非必要不建议使用 -->
-<!-- 此写法在微信小程序上及一些平台上渲染可能会有跳动、数据渲染延迟等严重问题，非必要不建议使用 -->
-<!-- 此写法在微信小程序上及一些平台上渲染可能会有跳动、数据渲染延迟等严重问题，非必要不建议使用 -->
-<!-- 此写法在微信小程序上及一些平台上渲染可能会有跳动、数据渲染延迟等严重问题，非必要不建议使用 -->
-<!-- 此写法在微信小程序上及一些平台上渲染可能会有跳动、数据渲染延迟等严重问题，非必要不建议使用 -->
-<!-- 此写法在微信小程序上及一些平台上渲染可能会有跳动、数据渲染延迟等严重问题，非必要不建议使用 -->
-<!-- 此写法在微信小程序上及一些平台上渲染可能会有跳动、数据渲染延迟等严重问题，非必要不建议使用 -->
-<!-- 此写法在微信小程序上及一些平台上渲染可能会有跳动、数据渲染延迟等严重问题，非必要不建议使用 -->
 <template>
 	<view class="content">
 		<!-- 如果页面中的cell高度是固定不变的，则不需要设置cell-height-mode，如果页面中高度是动态改变的，则设置cell-height-mode="dynamic" -->
-		<!-- 原先的v-model修改为:virtualList.sync以绑定处理后的虚拟列表 -->
-		<z-paging ref="paging" use-virtual-list :force-close-inner-list="true" :virtualList.sync="virtualList" :cell-height-mode="tabIndex===0?'fixed':'dynamic'" @query="queryList">
+		<!-- 原先的v-model修改为@virtualListChange="virtualListChange"并赋值处理后的虚拟列表 -->
+		<z-paging ref="paging" use-virtual-list :force-close-inner-list="true" :cell-height-mode="tabIndex===0?'fixed':'dynamic'" @virtualListChange="virtualListChange" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<template #top>
 				<view class="header">列表总数据量：10万条</view>
@@ -26,7 +11,7 @@
 				<z-tabs :list="tabList" @change="tabsChange" />
 			</template>
 			
-			<!-- :id="`zp-id-${item.zp_index}`" 必须写，必须写！！！！ -->
+			<!-- :id="`zp-id-${item.zp_index}`"和:key="item.zp_index" 必须写，必须写！！！！ -->
 			<!-- 这里for循环的index不是数组中真实的index了，请使用item.zp_index获取真实的index -->
 			<view class="item" :id="`zp-id-${item.zp_index}`" :key="item.zp_index" v-for="(item,index) in virtualList" @click="itemClick(item,item.zp_index)">
 				<image class="item-image" mode="aspectFit" src="@/static/boji1.png"></image>
@@ -41,46 +26,49 @@
 	</view>
 </template>
 
-<script>
-	export default {
-		data() {
-			return {
-				// 虚拟列表数组，请使用:virtualList.sync绑定而非v-model绑定
-				virtualList: [],
-				tabList: ['cell高度相同','cell高度不同'],
-				tabIndex: 0
-			}
-		},
-		methods: {
-			tabsChange(index) {
-				this.tabIndex = index;
-				// 当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
-				this.$refs.paging.reload();
-			},
-			queryList(pageNo, pageSize) {
-				// 组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
-				// 这里的pageNo和pageSize会自动计算好，直接传给服务器即可
-				// 模拟请求服务器获取分页数据，请替换成自己的网络请求
-				const params = {
-					pageNo: pageNo,
-					pageSize: pageSize,
-					random: this.tabIndex === 1
-				}
-				this.$request.queryListLong(params).then(res => {
-					// 将请求的结果数组传递给z-paging
-					this.$refs.paging.complete(res.data.list);
-				}).catch(res => {
-					// 如果请求失败写this.$refs.paging.complete(false);
-					// 注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
-					// 在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
-					this.$refs.paging.complete(false);
-				})
-			},
-			itemClick(item, index) {
-				console.log('点击了', item.title);
-			},
-		}
+<script setup>
+	import { ref } from 'vue';
+	import request from '/http/request.js';
+	
+	
+    const paging = ref(null);
+	
+	const tabIndex = ref(0);
+	const tabList = ref(['cell高度相同','cell高度不同']);
+	// 虚拟列表数组，通过@virtualListChange监听获取最新数组
+	const virtualList = ref([]);
+	
+	const tabsChange = (index) => {
+		tabIndex.value = index;
+		// 当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
+		paging.value.reload();
 	}
+	
+	// 监听虚拟列表数组改变并赋值给virtualList进行重新渲染
+	const virtualListChange = (vList) => {
+		virtualList.value = vList;
+	}
+	
+	// @query所绑定的方法不要自己调用！！需要刷新列表数据时，只需要调用paging.value.reload()即可
+    const queryList = (pageNo, pageSize) => {
+		// 组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
+		// 这里的pageNo和pageSize会自动计算好，直接传给服务器即可
+		// 模拟请求服务器获取分页数据，请替换成自己的网络请求
+		const params = {
+			pageNo: pageNo,
+			pageSize: pageSize,
+			random: tabIndex.value === 1
+		}
+		request.queryListLong(params).then(res => {
+			//将请求的结果数组传递给z-paging
+			paging.value.complete(res.data.list);
+		}).catch(res => {
+			// 如果请求失败写paging.value.complete(false);
+			// 注意，每次都需要在catch中写这句话很麻烦，z-paging提供了方案可以全局统一处理
+			// 在底层的网络请求抛出异常时，写uni.$emit('z-paging-error-emit');即可
+			paging.value.complete(false);
+		})
+    }
 </script>
 
 <style>

@@ -40,6 +40,11 @@ export default {
 			subTitle: '采用内部for循环slot实现，写法较为简单，在微信小程序中此写法有一些限制和问题'
 		},
 		{
+			title: '虚拟列表演示(非内置列表写法)',
+			file: 'virtual-list-no-inner-demo',
+			subTitle: '监听虚拟列表数组实时变化并渲染，兼顾兼容性和写法简便性'
+		},
+		{
 			title: '虚拟列表演示(兼容写法)',
 			file: 'virtual-list-compatibility-demo',
 			subTitle: '为提升兼容性而提供的写法，微信小程序中建议使用兼容写法'
