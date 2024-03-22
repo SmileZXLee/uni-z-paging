@@ -1,4 +1,5 @@
 <!-- 虚拟列表演示(不使用内置列表)(vue) -->
+<!-- 在vue2+微信小程序中渲染cell内容可能频繁抖动，在vue3全平台和vue2+非微信小程序中兼容良好 -->
 <template>
 	<view class="content">
 		<!-- 如果页面中的cell高度是固定不变的，则不需要设置cell-height-mode，如果页面中高度是动态改变的，则设置cell-height-mode="dynamic" -->
