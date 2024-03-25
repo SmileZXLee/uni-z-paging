@@ -1,5 +1,6 @@
 <!-- 虚拟列表演示(不使用内置列表)(vue) -->
 <!-- 写法较简单，在页面中对当前需要渲染的虚拟列表数据进行for循环，在vue3中兼容性良好 -->
+<!-- 在各平台兼容性请查阅https://z-paging.zxlee.cn/module/virtual-list.html -->
 <template>
 	<view class="content">
 		<!-- 如果页面中的cell高度是固定不变的，则不需要设置cell-height-mode，如果页面中高度是动态改变的，则设置cell-height-mode="dynamic" -->
