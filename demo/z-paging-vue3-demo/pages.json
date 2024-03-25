@@ -187,7 +187,7 @@
 		{
 			"path": "pages/virtual-list-no-inner-demo/virtual-list-no-inner-demo",
 			"style": {
-				"navigationBarTitleText": "虚拟列表演示(不使用内置列表)",
+				"navigationBarTitleText": "虚拟列表演示(非内置列表写法)",
 				"enablePullDownRefresh": false
 			}
 

@@ -37,17 +37,17 @@ export default {
 		{
 			title: '虚拟列表演示(一般写法)',
 			file: 'virtual-list-demo',
-			subTitle: '采用内部for循环slot实现，写法较为简单，在非微信小程序平台兼容性良好'
+			subTitle: '写法简单，通过slot=cell插入所需cell，页面中无直接的for循环，在vue2中兼容性良好'
 		},
 		{
 			title: '虚拟列表演示(非内置列表写法)',
 			file: 'virtual-list-no-inner-demo',
-			subTitle: '监听虚拟列表数组实时变化并渲染，兼顾兼容性和写法简便性，在vue3全平台和vue2+非微信小程序中兼容良好'
+			subTitle: '写法较简单，在页面中对当前需要渲染的虚拟列表数据进行for循环，在vue3中兼容性良好'
 		},
 		{
 			title: '虚拟列表演示(兼容写法)',
 			file: 'virtual-list-compatibility-demo',
-			subTitle: '在z-paging组件内部渲染cell，在vue2全平台和vue3+非微信小程序中兼容良好。写法比较麻烦'
+			subTitle: '写法麻烦，而且需要手动修改`z-paging`源码，所有渲染cell写在相同组件内，不易维护，在vue2中兼容性很好，但非必须不建议使用'
 		},
 		{
 			title: '滚动吸附效果演示',

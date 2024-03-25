@@ -1,6 +1,6 @@
 <!-- 虚拟列表演示(兼容写法)(vue) -->
 <!-- 使用虚拟列表兼容写法时必须手动在z-paging的源代码z-paging.vue中搜索zp-public-virtual-cell并打开相关注释 -->
-<!-- 在vue3+微信小程序中会出现滚动列表莫名触发底部加载更多的问题，在vue2全平台和vue3+非微信小程序中兼容良好。写法比较麻烦 -->
+<!-- 写法麻烦，而且需要手动修改z-paging源码，所有渲染cell写在相同组件内，不易维护，在vue2中兼容性很好，但非必须不建议使用 -->
 <template>
 	<view class="content">
 		<!-- 如果页面中的cell高度是固定不变的，则不需要设置cell-height-mode，如果页面中高度是动态改变的，则设置cell-height-mode="dynamic" -->
