@@ -42,6 +42,11 @@
 | :----------------------------------------------------------: | :----------------------------------------------------------: |
 | ![](https://z-paging.zxlee.cn/public/img/z-paging-demo7.gif) | ![](https://z-paging.zxlee.cn/public/img/z-paging-demo8.gif) |
 
+|                       下拉进入二楼演示                       |                       在弹窗内使用演示                       |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+| ![](https://z-paging.zxlee.cn/public/img/z-paging-demo9.gif) | ![](https://z-paging.zxlee.cn/public/img/z-paging-demo10.gif) |
+
+
 ### 在线demo体验地址：
 
 * [https://demo.z-paging.zxlee.cn](https://demo.z-paging.zxlee.cn)

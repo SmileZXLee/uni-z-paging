@@ -188,6 +188,11 @@ export default {
 			type: [Number, String],
 			default: u.gc('refresherF2Duration', 200)
 		},
+		// 下拉进入二楼状态松手后是否弹出二楼，默认为是
+		showRefresherF2: {
+			type: Boolean,
+			default: u.gc('showRefresherF2', true)
+		},
 		// 设置自定义下拉刷新下拉时实际下拉位移与用户下拉距离的比值，默认为0.75，即代表若用户下拉10px，则实际位移为7.5px(nvue无效)
 		refresherPullRate: {
 			type: Number,
@@ -665,8 +670,10 @@ export default {
 		},
 		// 处理进入二楼
 		_handleGoF2() {
-			if (this.showF2) return;
-			this.$emit('goF2');
+			if (this.showF2 || !this.refresherF2Enabled) return;
+			this.$emit('refresherF2Change', 'go');
+			
+			if (!this.showRefresherF2) return;
 			// #ifndef APP-NVUE
 			this.f2Transform = `translateY(${-this.superContentHeight}px)`;
 			this.showF2 = true;
@@ -700,8 +707,10 @@ export default {
 		},
 		// 处理退出二楼
 		_handleCloseF2() {
-			if (!this.showF2) return;
-			this.$emit('closeF2');
+			if (!this.showF2 || !this.refresherF2Enabled) return;
+			this.$emit('refresherF2Change', 'close');
+			
+			if (!this.showRefresherF2) return;
 			// #ifndef APP-NVUE
 			this.f2Transform = `translateY(${-this.superContentHeight}px)`;
 			// #endif

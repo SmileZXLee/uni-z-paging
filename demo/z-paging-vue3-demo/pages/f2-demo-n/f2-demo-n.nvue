@@ -1,5 +1,6 @@
 <!-- 下拉进入二楼演示(nvue) -->
 <template>
+	<!-- 下楼进入二楼建议在pages.json中隐藏系统导航栏，使用自定义导航栏，避免二楼被系统导航栏盖住 -->
 	<z-paging ref="paging" v-model="dataList" refresher-f2-enabled @query="queryList">
 		<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 		<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->

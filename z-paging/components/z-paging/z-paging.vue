@@ -19,7 +19,7 @@ by ZXLee
 		<view v-if="cssSafeAreaInsetBottom===-1" class="zp-safe-area-inset-bottom"></view>
 		<!-- #endif -->
 		<!-- 二楼view -->
-		<view v-if="showF2" @touchmove.stop.prevent class="zp-f2-content" :style="[{'transform': f2Transform, 'transition': `transform .2s linear`, 'height': superContentHeight + 'px', 'z-index': f2ZIndex}]">
+		<view v-if="showF2 && showRefresherF2" @touchmove.stop.prevent class="zp-f2-content" :style="[{'transform': f2Transform, 'transition': `transform .2s linear`, 'height': superContentHeight + 'px', 'z-index': f2ZIndex}]">
 			<slot name="f2"/>
 		</view>
 		<!-- 顶部固定的slot -->
@@ -181,7 +181,7 @@ by ZXLee
 	<!-- #ifdef APP-NVUE -->
 	<component ref="z-paging-content" :is="finalNvueSuperListIs" :style="[finalPagingStyle]" :class="{'z-paging-content-fixed':fixed&&!usePageScroll}" :scrollable="false">
 		<!-- 二楼view -->
-		<view v-if="showF2" ref="zp-n-f2" class="zp-f2-content" @touchmove.stop.prevent :style="[{'height': superContentHeight + 'px', 'width': nRefresherWidth + 'px', 'opacity': nF2Opacity}]">
+		<view v-if="showF2 && showRefresherF2" ref="zp-n-f2" class="zp-f2-content" @touchmove.stop.prevent :style="[{'height': superContentHeight + 'px', 'width': nRefresherWidth + 'px', 'opacity': nF2Opacity}]">
 			<slot name="f2"/>
 		</view>
 		<!-- 顶部固定的slot -->
