@@ -64,7 +64,7 @@
 	.custom-f2-bottom-text {
 		color: white;
 		font-weight: bold;
-		font-size: 28rpx;
+		font-size: 32rpx;
 	}
 	.custom-f2-list {
 		display: flex;
