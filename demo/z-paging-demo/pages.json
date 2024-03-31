@@ -254,7 +254,8 @@
 		{
 			"path" : "pages/f2-demo-n/f2-demo-n",
 			"style" : 
-			{
+			{	
+				"navigationStyle": "custom",
 				"navigationBarTitleText" : "下拉进入二楼演示(nvue)",
 				"enablePullDownRefresh" : false
 			}

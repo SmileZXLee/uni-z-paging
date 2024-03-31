@@ -4,6 +4,9 @@
 			<!-- #ifndef APP-NVUE -->
 			<u-navbar title="我的小程序" title-color="white" title-bold :is-back="false" :background="{background: 'rgba(0,0,0,0)'}"></u-navbar>
 			<!-- #endif -->
+			<!-- #ifdef APP-NVUE -->
+			<n-navbar title="我的小程序" light :show-back="false"></n-navbar>
+			<!-- #endif -->
 			<view class="custom-f2-list">
 				<view class="custom-f2-item" v-for="index of 16" :key="index">
 					<image class="custom-f2-item-img" src="/static/duola.jpg" mode=""></image>
