@@ -54,17 +54,13 @@
 
 ### 预览
 
-|                 自定义下拉刷新效果演示                  |                      滑动切换选项卡+吸顶演示                       |
-| :----------------------------------------------------------: | :----------------------------------------------------------: |
-| ![](https://z-paging.zxlee.cn/public/img/z-paging-demo5.gif) | ![](https://z-paging.zxlee.cn/public/img/z-paging-demo6.gif) |
+|                    自定义下拉刷新效果演示                    |                   滑动切换选项卡+吸顶演示                    | 聊天记录模式演示                                             |
+| :----------------------------------------------------------: | :----------------------------------------------------------: | ------------------------------------------------------------ |
+| ![](https://z-paging.zxlee.cn/public/img/z-paging-demo5.gif) | ![](https://z-paging.zxlee.cn/public/img/z-paging-demo6.gif) | ![](https://z-paging.zxlee.cn/public/img/z-paging-demo7.gif) |
 
-|                   聊天记录模式演示                    |                    虚拟列表(流畅渲染1万+条)演示                     |
-| :----------------------------------------------------------: | :----------------------------------------------------------: |
-| ![](https://z-paging.zxlee.cn/public/img/z-paging-demo7.gif) | ![](https://z-paging.zxlee.cn/public/img/z-paging-demo8.gif) |
-
-|                       下拉进入二楼演示                       |                       在弹窗内使用演示                       |
-| :----------------------------------------------------------: | :----------------------------------------------------------: |
-| ![](https://z-paging.zxlee.cn/public/img/z-paging-demo9.gif) | ![](https://z-paging.zxlee.cn/public/img/z-paging-demo10.gif) |
+|                 虚拟列表(流畅渲染1万+条)演示                 |                       下拉进入二楼演示                       | 在弹窗内使用演示                                             |
+| :----------------------------------------------------------: | :----------------------------------------------------------: | ------------------------------------------------------------ |
+| ![](https://z-paging.zxlee.cn/public/img/z-paging-demo8.gif) | ![](https://z-paging.zxlee.cn/public/img/z-paging-demo9.gif) | ![](https://z-paging.zxlee.cn/public/img/z-paging-demo10.gif) |
 
 ### 在线demo体验地址：
 
