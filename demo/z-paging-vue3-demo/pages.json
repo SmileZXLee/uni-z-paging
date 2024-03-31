@@ -241,6 +241,24 @@
 				"navigationBarTitleText" : "聊天记录模式+虚拟列表演示",
 				"enablePullDownRefresh" : false
 			}
+		},
+		{
+			"path" : "pages/f2-demo/f2-demo",
+			"style" : 
+			{	
+				"navigationStyle": "custom",
+				"navigationBarTitleText" : "",
+				"enablePullDownRefresh" : false
+			}
+		},
+		{
+			"path" : "pages/f2-demo-n/f2-demo-n",
+			"style" : 
+			{	
+				"navigationStyle": "custom",
+				"navigationBarTitleText" : "",
+				"enablePullDownRefresh" : false
+			}
 		}
 	],
 	"globalStyle": {

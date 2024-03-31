@@ -5,7 +5,7 @@
 			<view class="u-navbar-inner" :style="[navbarInnerStyle]">
 				<view class="u-back-wrap" v-if="isBack" @tap="goBack">
 					<view class="u-icon-wrap">
-						
+						<image src="/static/back.png" style="width: 36rpx;height: 36rpx;"></image>
 					</view>
 					<view class="u-icon-wrap u-back-text u-line-1" v-if="backText" :style="[backTextStyle]">{{ backText }}</view>
 				</view>
@@ -109,7 +109,7 @@
 			// 标题的宽度，如果需要自定义右侧内容，且右侧内容很多时，可能需要减少这个宽度，单位rpx
 			titleWidth: {
 				type: [String, Number],
-				default: '250'
+				default: '280'
 			},
 			// 标题的颜色
 			titleColor: {

@@ -6,20 +6,18 @@
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
 			<template #top>
-				<u-navbar title="下拉进入二楼" title-color="black" title-bold :is-fixed="false"></u-navbar>
+				<u-navbar title="下拉进入二楼演示" title-color="black" title-bold :is-fixed="false"></u-navbar>
 				<z-tabs :list="tabList" @change="tabChange" />
 			</template>
 			<!-- 自定义松手显示二楼view（非必须，可根据具体需求定制） -->
 			<template #refresherF2>
 				<view class="refresher-f2-view">
-					松手可以进入二楼哦 (*╹▽╹*)
+					<text class="refresher-f2-view-text">松手可以进入二楼哦 (*╹▽╹*)</text>
 				</view>
 			</template>
 			<!-- 自定义需要插入二楼的view，建议将插入二楼的view设置高度100%以铺满容器高度 -->
 			<template #f2>
-				<view style="height: 100%;background-color: blue;">
-					<custom-f2 @closeF2="onCloseF2"/>
-				</view>
+				<custom-f2 @closeF2="onCloseF2"/>
 			</template>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<view class="item" v-for="(item,index) in dataList" :key="index" @click="itemClick(item,index)">
@@ -108,10 +106,12 @@
 		text-align: center;
 		background-color: #007AFF;
 		font-weight: bold;
-		color: white;
 		padding: 20rpx;
 		margin: 0rpx 30rpx;
 		border-radius: 100px;
+	}
+	.refresher-f2-view-text {
+		color: white;
 		font-size: 26rpx;
 	}
 </style>
