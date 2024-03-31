@@ -59,7 +59,8 @@ export default {
 			pageScrollTop: -1,
 			scrollEnable: true,
 			privateScrollWithAnimation: -1,
-			cacheScrollNodeHeight: -1
+			cacheScrollNodeHeight: -1,
+			superContentHeight: 0,
 		}
 	},
 	watch: {
@@ -419,6 +420,13 @@ export default {
 				}
 			} catch (e) {
 				callback(null, null);
+			}
+		},
+		// 更新缓存中z-paging整个内容容器高度
+		async _updateCachedSuperContentHeight() {
+			const superContentNode = await this._getNodeClientRect('.z-paging-content');
+			if (superContentNode) {
+				this.superContentHeight = superContentNode[0].height;
 			}
 		},
 		// scrollTop改变时触发

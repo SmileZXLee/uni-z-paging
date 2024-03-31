@@ -18,6 +18,10 @@ by ZXLee
 		<!-- #ifndef APP-PLUS -->
 		<view v-if="cssSafeAreaInsetBottom===-1" class="zp-safe-area-inset-bottom"></view>
 		<!-- #endif -->
+		<!-- 二楼view -->
+		<view v-if="showF2" @touchmove.stop.prevent class="zp-f2-content" :style="[{'transform': f2Transform, 'transition': `transform .2s linear`, 'height': superContentHeight + 'px', 'z-index': f2ZIndex}]">
+			<slot name="f2"/>
+		</view>
 		<!-- 顶部固定的slot -->
 		<slot v-if="!usePageScroll&&zSlots.top" name="top" />
 		<view class="zp-page-top" @touchmove.stop.prevent v-else-if="usePageScroll&&zSlots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
@@ -52,7 +56,7 @@ by ZXLee
 						<view class="zp-paging-main" :style="[scrollViewInStyle,{'transform': finalRefresherTransform,'transition': refresherTransition}]"
 						<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 						:change:prop="pagingWxs.propObserver" :prop="wxsPropType"
-						:data-refresherThreshold="finalRefresherThreshold" :data-isIos="isIos"
+						:data-refresherThreshold="finalRefresherThreshold" :data-refresherF2Enabled="refresherF2Enabled" :data-refresherF2Threshold="finalRefresherF2Threshold" :data-isIos="isIos"
 						:data-loading="loading||isRefresherInComplete" :data-useChatRecordMode="useChatRecordMode" 
 						:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="wxsPageScrollTop"
 						:data-scrollTop="wxsScrollTop" :data-refresherMaxAngle="refresherMaxAngle" :data-refresherNoTransform="refresherNoTransform"
@@ -68,12 +72,13 @@ by ZXLee
 									<view v-if="useRefresherStatusBarPlaceholder" class="zp-custom-refresher-status-bar-placeholder" :style="[{'height': `${statusBarHeight}px`}]" />
 									<!-- 下拉刷新view -->
 									<view class="zp-custom-refresher-slot-view">
-										<slot v-if="!(zSlots.refresherComplete&&refresherStatus===R.Complete)" :refresherStatus="refresherStatus" name="refresher" />
+										<slot v-if="!(zSlots.refresherComplete&&refresherStatus===R.Complete)&&!(zSlots.refresherF2&&refresherStatus===R.GoF2)" :refresherStatus="refresherStatus" name="refresher" />
 									</view>
 									<slot v-if="zSlots.refresherComplete&&refresherStatus===R.Complete" name="refresherComplete" />
+									<slot v-else-if="zSlots.refresherF2&&refresherStatus===R.GoF2" name="refresherF2" />
 									<z-paging-refresh ref="refresh" v-else-if="!showCustomRefresher" class="zp-custom-refresher-refresh" :style="[{'height': `${finalRefresherThreshold - finalRefresherThresholdPlaceholder}px`}]" :status="refresherStatus"
 										:defaultThemeStyle="finalRefresherThemeStyle" :defaultText="finalRefresherDefaultText"
-										:pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText"
+										:pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText" :goF2Text="finalRefresherGoF2Text"
 										:defaultImg="refresherDefaultImg" :pullingImg="refresherPullingImg" :refreshingImg="refresherRefreshingImg" :completeImg="refresherCompleteImg" :refreshingAnimated="refresherRefreshingAnimated"
 										:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey" :updateTimeTextMap="finalRefresherUpdateTimeTextMap"
 										:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle" :unit="unit" />
@@ -174,7 +179,11 @@ by ZXLee
 	</view>
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
-	<component :is="finalNvueSuperListIs" :style="[finalPagingStyle]" :class="{'z-paging-content-fixed':fixed&&!usePageScroll}" :scrollable="false">
+	<component ref="z-paging-content" :is="finalNvueSuperListIs" :style="[finalPagingStyle]" :class="{'z-paging-content-fixed':fixed&&!usePageScroll}" :scrollable="false">
+		<!-- 二楼view -->
+		<view v-if="showF2" ref="zp-n-f2" class="zp-f2-content" @touchmove.stop.prevent :style="[{'height': superContentHeight + 'px', 'width': nRefresherWidth + 'px', 'opacity': nF2Opacity}]">
+			<slot name="f2"/>
+		</view>
 		<!-- 顶部固定的slot -->
 		<view ref="zp-page-top" v-if="zSlots.top" :class="{'zp-page-top':usePageScroll}" :style="[usePageScroll?{'top':`${windowTop}px`,'z-index':topZIndex}:{}]">
 			<slot name="top" />
@@ -198,9 +207,10 @@ by ZXLee
 						<view v-if="useRefresherStatusBarPlaceholder" class="zp-custom-refresher-status-bar-placeholder" :style="[{'height': `${statusBarHeight}px`}]" />
 						<!-- 下拉刷新view -->
 						<slot v-if="zSlots.refresherComplete&&refresherStatus===R.Complete" name="refresherComplete" />
+						<slot v-else-if="zSlots.refresherF2&&refresherStatus===R.GoF2" name="refresherF2" />
 						<slot v-else-if="(nScopedSlots?nScopedSlots:zSlots).refresher" :refresherStatus="refresherStatus" name="refresher" />
 						<z-paging-refresh ref="refresh" v-else :status="refresherStatus" :defaultThemeStyle="finalRefresherThemeStyle"
-							:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText"
+							:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText" :goF2Text="finalRefresherGoF2Text"
 							:defaultImg="refresherDefaultImg" :pullingImg="refresherPullingImg" :refreshingImg="refresherRefreshingImg" :completeImg="refresherCompleteImg" :refreshingAnimated="refresherRefreshingAnimated"
 							:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey" :updateTimeTextMap="finalRefresherUpdateTimeTextMap"
 							:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle" :unit="unit" />
@@ -211,9 +221,10 @@ by ZXLee
 					<view v-if="useRefresherStatusBarPlaceholder" class="zp-custom-refresher-status-bar-placeholder" :style="[{'height': `${statusBarHeight}px`}]" />
 					<!-- 下拉刷新view -->
 					<slot v-if="zSlots.refresherComplete&&refresherStatus===R.Complete" name="refresherComplete" />
+					<slot v-else-if="zSlots.refresherF2&&refresherStatus===R.GoF2" name="refresherF2" />
 					<slot v-else-if="(nScopedSlots?nScopedSlots:$slots).refresher" :refresherStatus="R.Loading" name="refresher" />
 					<z-paging-refresh ref="refresh" v-else :status="R.Loading" :defaultThemeStyle="finalRefresherThemeStyle"
-						:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText" 
+						:defaultText="finalRefresherDefaultText" :pullingText="finalRefresherPullingText" :refreshingText="finalRefresherRefreshingText" :completeText="finalRefresherCompleteText" :goF2Text="finalRefresherGoF2Text"
 						:defaultImg="refresherDefaultImg" :pullingImg="refresherPullingImg" :refreshingImg="refresherRefreshingImg" :completeImg="refresherCompleteImg" :refreshingAnimated="refresherRefreshingAnimated"
 						:showUpdateTime="showRefresherUpdateTime" :updateTimeKey="refresherUpdateTimeKey" :updateTimeTextMap="finalRefresherUpdateTimeTextMap"
 						:imgStyle="refresherImgStyle" :titleStyle="refresherTitleStyle" :updateTimeStyle="refresherUpdateTimeStyle" :unit="unit" />

@@ -50,6 +50,10 @@ export default {
 				yesterday: t('zp.refresherUpdateTime.yesterday')
 			};
 		},
+		// 最终的继续下拉进入二楼文字
+		finalRefresherGoF2Text() {
+			return this._getI18nText('zp.refresher.f2', this.refresherGoF2Text);
+		},
 		// 最终的底部加载更多默认状态文字
 		finalLoadingMoreDefaultText() {
 			return this._getI18nText('zp.loadingMore.default', this.loadingMoreDefaultText);

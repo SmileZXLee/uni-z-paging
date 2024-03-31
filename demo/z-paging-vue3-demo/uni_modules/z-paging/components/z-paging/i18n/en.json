@@ -3,6 +3,7 @@
 	"zp.refresher.pulling": "Release to refresh",
 	"zp.refresher.refreshing": "Refreshing...",
 	"zp.refresher.complete": "Refresh succeeded",
+	"zp.refresher.f2": "Refresh to enter 2f",
 	
 	"zp.loadingMore.default": "Click to load more",
 	"zp.loadingMore.loading": "Loading...",

@@ -3,6 +3,9 @@ import u from '.././z-paging-utils'
 import c from '.././z-paging-constant'
 import Enum from '.././z-paging-enum'
 
+// #ifdef APP-NVUE
+const weexAnimation = weex.requireModule('animation');
+// #endif
 export default {
 	props: {
 		// 下拉刷新的主题样式，支持black，white，默认black
@@ -100,6 +103,11 @@ export default {
 			type: [String, Object],
 			default: u.gc('refresherCompleteText', null)
 		},
+		// 自定义继续下拉进入二楼文字
+		refresherGoF2Text: {
+			type: [String, Object],
+			default: u.gc('refresherGoF2Text', null)
+		},
 		// 自定义下拉刷新默认状态下的图片
 		refresherDefaultImg: {
 			type: String,
@@ -165,6 +173,21 @@ export default {
 			type: Number,
 			default: u.gc('refresherOutRate', 0.65)
 		},
+		// 是否开启下拉进入二楼功能，默认为否
+		refresherF2Enabled: {
+			type: Boolean,
+			default: u.gc('refresherF2Enabled', false)
+		},
+		// 下拉进入二楼阈值，默认为200rpx
+		refresherF2Threshold: {
+			type: [Number, String],
+			default: u.gc('refresherF2Threshold', '200rpx')
+		},
+		// 下拉进入二楼动画时间，单位为毫秒，默认为200毫秒
+		refresherF2Duration: {
+			type: [Number, String],
+			default: u.gc('refresherF2Duration', 200)
+		},
 		// 设置自定义下拉刷新下拉时实际下拉位移与用户下拉距离的比值，默认为0.75，即代表若用户下拉10px，则实际位移为7.5px(nvue无效)
 		refresherPullRate: {
 			type: Number,
@@ -180,7 +203,7 @@ export default {
 			type: String,
 			default: u.gc('refresherUpdateTimeKey', 'default')
 		},
-		// 下拉刷新时下拉到“松手立即刷新”状态时是否使手机短振动，默认为否（h5无效）
+		// 下拉刷新时下拉到“松手立即刷新”或“松手进入二楼”状态时是否使手机短振动，默认为否（h5无效）
 		refresherVibrate: {
 			type: Boolean,
 			default: u.gc('refresherVibrate', false)
@@ -222,6 +245,8 @@ export default {
 			showCustomRefresher: false,
 			doRefreshAnimateAfter: false,
 			isRefresherInComplete: false,
+			showF2: false,
+			f2Transform: '',
 			pullDownTimeStamp: 0,
 			moveDis: 0,
 			oldMoveDis: 0,
@@ -245,7 +270,7 @@ export default {
 		},
 		refresherStatus(newVal) {
 			newVal === Enum.Refresher.Loading && this._cleanRefresherEndTimeout();
-			this.refresherVibrate && newVal === Enum.Refresher.ReleaseToRefresh && this._doVibrateShort();
+			this.refresherVibrate && (newVal === Enum.Refresher.ReleaseToRefresh || newVal === Enum.Refresher.GoF2) && this._doVibrateShort();
 			this.$emit('refresherStatusChange', newVal);
 			this.$emit('update:refresherStatus', newVal);
 		},
@@ -278,6 +303,9 @@ export default {
 			}
 			if (idDefault && this.customRefresherHeight > 0) return this.customRefresherHeight + this.finalRefresherThresholdPlaceholder;
 			return u.convertToPx(refresherThreshold) + this.finalRefresherThresholdPlaceholder;
+		},
+		finalRefresherF2Threshold() {
+			return u.convertToPx(u.addUnit(this.refresherF2Threshold, this.unit));
 		},
 		finalRefresherThresholdPlaceholder() {
 			return this.useRefresherStatusBarPlaceholder ? this.statusBarHeight : 0;
@@ -344,6 +372,10 @@ export default {
 		// 手动更新自定义下拉刷新view高度
 		updateCustomRefresherHeight() {
 			u.delay(() => this.$nextTick(this._updateCustomRefresherHeight));
+		},
+		// 关闭二楼
+		closeF2() {
+			this._handleCloseF2();
 		},
 		// 自定义下拉刷新被触发
 		_onRefresh(fromScrollView = false, isUserPullDown = true) {
@@ -465,7 +497,14 @@ export default {
 			this.isTouchmoving = true;
 			this.isTouchEnded = false;
 			// 更新下拉刷新状态
-			this.refresherStatus = moveDis >= this.finalRefresherThreshold ? Enum.Refresher.ReleaseToRefresh : this.refresherStatus = Enum.Refresher.Default;
+			// 下拉刷新距离超过阈值
+			if (moveDis >= this.finalRefresherThreshold) {
+				// 如果开启了下拉进入二楼并且下拉刷新距离超过进入二楼阈值，则当前下拉刷新状态为松手进入二楼，否则为松手立即刷新
+				this.refresherStatus = this.refresherF2Enabled && moveDis >= this.finalRefresherF2Threshold ? Enum.Refresher.GoF2 : Enum.Refresher.ReleaseToRefresh;
+			} else {
+				// 下拉刷新距离未超过阈值，显示默认状态
+				this.refresherStatus = Enum.Refresher.Default;
+			}
 			// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 			// this.scrollEnable = false;
 			// 通过transform控制下拉刷新view垂直偏移
@@ -497,17 +536,24 @@ export default {
 			this.refresherReachMaxAngle = true;
 			this.isTouchEnded = true;
 			const refresherThreshold = this.finalRefresherThreshold;
-			if (moveDis >= refresherThreshold && this.refresherStatus === Enum.Refresher.ReleaseToRefresh) {
-				// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
-				this.refresherTransform = `translateY(${refresherThreshold}px)`;
-				this.refresherTransition = 'transform .1s linear';
-				// #endif
-				u.delay(() => {
-					this._emitTouchmove({ pullingDistance: refresherThreshold, dy: this.moveDis - refresherThreshold });
-				}, 0.1);
-				this.moveDis = refresherThreshold;
-				this.refresherStatus = Enum.Refresher.Loading;
-				this._doRefresherLoad();
+			if (moveDis >= refresherThreshold && (this.refresherStatus === Enum.Refresher.ReleaseToRefresh || this.refresherStatus === Enum.Refresher.GoF2)) {
+				// 如果是松手进入二楼状态，则触发进入二楼
+				if (this.refresherStatus === Enum.Refresher.GoF2) {
+					this._handleGoF2();
+					this._refresherEnd();
+				} else {
+					// 如果是松手立即刷新状态，则触发下拉刷新
+					// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
+					this.refresherTransform = `translateY(${refresherThreshold}px)`;
+					this.refresherTransition = 'transform .1s linear';
+					// #endif
+					u.delay(() => {
+						this._emitTouchmove({ pullingDistance: refresherThreshold, dy: this.moveDis - refresherThreshold });
+					}, 0.1);
+					this.moveDis = refresherThreshold;
+					this.refresherStatus = Enum.Refresher.Loading;
+					this._doRefresherLoad();
+				}
 			} else {
 				this._refresherEnd();
 				this.isTouchmovingTimeout = u.delay(() => {
@@ -616,6 +662,64 @@ export default {
 				u.delay(() => this.loading = false, shouldEndLoadingDelay ? c.delayTime : 0);
 				isUserPullDown && this._onRestore();
 			}
+		},
+		// 处理进入二楼
+		_handleGoF2() {
+			if (this.showF2) return;
+			this.$emit('goF2');
+			// #ifndef APP-NVUE
+			this.f2Transform = `translateY(${-this.superContentHeight}px)`;
+			this.showF2 = true;
+			u.delay(() => {
+				this.f2Transform = 'translateY(0px)';
+			}, 100, 'f2ShowDelay')
+			// #endif
+			
+			// #ifdef APP-NVUE
+			this.showF2 = true;
+			this.$nextTick(() => {
+				weexAnimation.transition(this.$refs['zp-n-f2'], {
+					styles: { transform: `translateY(${-this.superContentHeight}px)` },
+					duration: 0,
+					timingFunction: 'linear',
+					needLayout: true,
+					delay: 0
+				})
+				this.nF2Opacity = 1;
+			})
+			u.delay(() => {
+				weexAnimation.transition(this.$refs['zp-n-f2'], {
+					styles: { transform: 'translateY(0px)' },
+					duration: this.refresherF2Duration,
+					timingFunction: 'linear',
+					needLayout: true,
+					delay: 0
+				})
+			}, 10, 'f2GoDelay')
+			// #endif
+		},
+		// 处理退出二楼
+		_handleCloseF2() {
+			if (!this.showF2) return;
+			this.$emit('closeF2');
+			// #ifndef APP-NVUE
+			this.f2Transform = `translateY(${-this.superContentHeight}px)`;
+			// #endif
+			
+			// #ifdef APP-NVUE
+			weexAnimation.transition(this.$refs['zp-n-f2'], {
+				styles: { transform: `translateY(${-this.superContentHeight}px)` },
+				duration: this.refresherF2Duration,
+				timingFunction: 'linear',
+				needLayout: true,
+				delay: 0
+			})
+			// #endif
+			
+			u.delay(() => {
+				this.showF2 = false;
+				this.nF2Opacity = 0;
+			}, this.refresherF2Duration, 'f2CloseDelay')
 		},
 		// 模拟用户手动触发下拉刷新
 		_doRefresherRefreshAnimate() {

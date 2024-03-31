@@ -172,6 +172,11 @@ export default {
 			type: Number,
 			default: u.gc('contentZIndex', 10)
 		},
+		// z-paging二楼的z-index，默认为100
+		f2ZIndex: {
+			type: Number,
+			default: u.gc('f2ZIndex', 100)
+		},
 		// 使用页面滚动时，是否在不满屏时自动填充满屏幕，默认为是
 		autoFullHeight: {
 			type: Boolean,
@@ -217,6 +222,8 @@ export default {
 			this.loaded = true;
 			// 更新fixed模式下z-paging的布局，主要是更新windowTop、windowBottom
 			u.delay(this.updateFixedLayout);
+			// 更新缓存中z-paging整个内容容器高度
+			this._updateCachedSuperContentHeight();
 		})
 		// 初始化页面滚动模式下slot="top"、slot="bottom"高度
 		this.updatePageScrollTopHeight();
@@ -242,8 +249,8 @@ export default {
 		this.finalUseVirtualList && this._virtualListInit();
 		// #endif
 		// #ifndef APP-PLUS
-		// 非app平台中，在通过获取css设置的底部安全区域占位view高度设置bottom距离后，更新页面滚动底部高度
 		this.$nextTick(() => {
+			// 非app平台中，在通过获取css设置的底部安全区域占位view高度设置bottom距离后，更新页面滚动底部高度
 			setTimeout(() => {
 				this._getCssSafeAreaInsetBottom(() => this.safeAreaInsetBottom && this.updatePageScrollBottomHeight());
 			}, delay)

@@ -35,6 +35,11 @@ export default {
 			subTitle: 'z-paging的局部滚动'
 		},
 		{
+			title: '下拉进入二楼演示',
+			file: 'f2-demo',
+			subTitle: ''
+		},
+		{
 			title: '虚拟列表演示(一般写法)',
 			file: 'virtual-list-demo',
 			subTitle: '写法简单，通过slot=cell插入所需cell，页面中无直接的for循环，在vue2中兼容性良好'
@@ -138,6 +143,11 @@ export default {
 		{
 			title: '使用页面滚动演示(nvue)',
 			file: 'page-default-demo-n',
+			subTitle: ''
+		},
+		{
+			title: '下拉进入二楼演示(nvue)',
+			file: 'f2-demo-n',
 			subTitle: ''
 		},
 		{

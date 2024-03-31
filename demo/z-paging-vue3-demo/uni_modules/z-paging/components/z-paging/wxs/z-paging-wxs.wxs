@@ -56,6 +56,8 @@ function touchmove(e, ownerIns) {
 	var ins = _getIns(ownerIns);
 	var dataset = ins.getDataset();
 	var refresherThreshold = dataset.refresherthreshold;
+	var refresherF2Threshold = dataset.refresherf2threshold;
+	var refresherF2Enabled = _isTrue(dataset.refresherf2enabled);
 	var isIos = _isTrue(dataset.isios);
 	var state = ins.getState();
 	var watchTouchDirectionChange = _isTrue(dataset.watchtouchdirectionchange);
@@ -107,7 +109,7 @@ function touchmove(e, ownerIns) {
 	var oldIsTouchmoving = _isTrue(dataset.oldistouchmoving);
 	var hasTouchmove = _isTrue(dataset.hastouchmove);
 	var isTouchmoving = state.isTouchmoving;
-	state.refresherStatus = moveDis >= refresherThreshold ? 1 : 0;
+	state.refresherStatus = moveDis >= refresherThreshold ? (refresherF2Enabled && moveDis > refresherF2Threshold ? 'goF2' : 'releaseToRefresh') : 'default';
 	if (!isTouchmoving) {
 		state.isTouchmoving = true;
 		isTouchmoving = true;
@@ -117,7 +119,7 @@ function touchmove(e, ownerIns) {
 	}
 	// 如果需要实时监听下拉位置偏移，则需要实时通知js层，此操作会使wxs层与js层频繁通信从而导致在一些性能较差设备中下拉刷新卡顿
 	if (hasTouchmove) {
-		ownerIns.callMethod('_handleWxsPullingDown', { moveDis:moveDis, diffDis:moveDisObj.diffDis });
+		ownerIns.callMethod('_handleWxsPullingDown', { moveDis: moveDis, diffDis: moveDisObj.diffDis });
 	}
 	// 在下拉刷新状态改变时通知js层
 	if (oldRefresherStatus == undefined || oldRefresherStatus != state.refresherStatus || oldIsTouchmoving != isTouchmoving) {
@@ -145,9 +147,9 @@ function touchend(e, ownerIns) {
 	if (!state.isTouchmoving) return;
 	var oldRefresherStatus = state.refresherStatus;
 	var oldMoveDis = state.moveDis;
-	var refresherThreshold = ins.getDataset().refresherthreshold
+	var refresherThreshold = ins.getDataset().refresherthreshold;
 	var moveDis = _getMoveDis(e, ins).currentDis;
-	if (!(moveDis >= refresherThreshold && oldRefresherStatus === 1)) {
+	if (!(moveDis >= refresherThreshold && oldRefresherStatus === 'releaseToRefresh')) {
 		state.isTouchmoving = false;
 	}
 	// 通知js层touch结束

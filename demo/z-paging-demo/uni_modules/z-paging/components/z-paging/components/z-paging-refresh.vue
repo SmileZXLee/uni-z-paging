@@ -50,7 +50,7 @@
 				}
 			};
 		},
-		props: ['status', 'defaultThemeStyle', 'defaultText', 'pullingText', 'refreshingText', 'completeText', 'defaultImg', 'pullingImg', 
+		props: ['status', 'defaultThemeStyle', 'defaultText', 'pullingText', 'refreshingText', 'completeText', 'goF2Text', 'defaultImg', 'pullingImg', 
 			'refreshingImg', 'completeImg', 'refreshingAnimated', 'showUpdateTime', 'updateTimeKey', 'imgStyle', 'titleStyle', 'updateTimeStyle', 'updateTimeTextMap', 'unit'
 		],
 		computed: {
@@ -60,7 +60,7 @@
 			// 当前状态数组
 			statusTextArr() {
 				this.updateTime();
-				return [this.defaultText, this.pullingText, this.refreshingText, this.completeText];
+				return [this.defaultText, this.pullingText, this.refreshingText, this.completeText, this.goF2Text];
 			},
 			// 当前状态文字
 			currentTitle() {
@@ -85,16 +85,18 @@
 				if (status === R.Default) {
 					if (!!this.defaultImg) return this.defaultImg;
 					return this.zTheme.arrow[this.ts];
-				} else if (status  === R.ReleaseToRefresh) {
+				} else if (status === R.ReleaseToRefresh) {
 					if (!!this.pullingImg) return this.pullingImg;
 					if (!!this.defaultImg) return this.defaultImg;
 					return this.zTheme.arrow[this.ts];
-				} else if (status  === R.Loading) {
+				} else if (status === R.Loading) {
 					if (!!this.refreshingImg) return this.refreshingImg;
 					return this.zTheme.flower[this.ts];;
-				} else if (status  === R.Complete) {
+				} else if (status === R.Complete) {
 					if (!!this.completeImg) return this.completeImg;
 					return this.zTheme.success[this.ts];;
+				} else if (status === R.GoF2) {
+					return this.zTheme.arrow[this.ts];
 				}
 				return '';
 			},

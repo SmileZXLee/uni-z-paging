@@ -28,6 +28,14 @@
 	right: 0;
 }
 
+.zp-f2-content {
+	width: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	background-color: white;
+}
+
 .zp-page-top, .zp-page-bottom {
 	/* #ifndef APP-NVUE */
 	width: auto;
@@ -38,7 +46,7 @@
 	z-index: 999;
 }
 
-.zp-page-left,.zp-page-right {
+.zp-page-left, .zp-page-right {
 	/* #ifndef APP-NVUE */
 	height: 100%;
 	/* #endif */

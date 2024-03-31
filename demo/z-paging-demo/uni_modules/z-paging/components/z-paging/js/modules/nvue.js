@@ -67,6 +67,7 @@ export default {
 			nShowRefresherRevealHeight: 0,
 			nOldShowRefresherRevealHeight: -1,
 			nRefresherWidth: uni.upx2px(750),
+			nF2Opacity: 0
 		}
 	},
 	computed: {
@@ -141,16 +142,33 @@ export default {
 		// 下拉刷新刷新中
 		_nOnRrefresh() {
 			if (this.nShowRefresherReveal) return;
+			// 进入刷新状态
 			this.nRefresherLoading = true;
-			this.refresherStatus = Enum.Refresher.Loading;
-			this._doRefresherLoad();
+			if (this.refresherStatus === Enum.Refresher.GoF2) {
+				this._handleGoF2();
+				this.$nextTick(() => {
+					this._nRefresherEnd();
+				})
+			} else {
+				this.refresherStatus = Enum.Refresher.Loading;
+				this._doRefresherLoad();
+			}
+			
 		},
 		// 下拉刷新下拉中
 		_nOnPullingdown(e) {
 			if (this.refresherStatus === Enum.Refresher.Loading || (this.isIos && !this.nListIsDragging)) return;
 			this._emitTouchmove(e);
 			const { viewHeight, pullingDistance } = e;
-			this.refresherStatus = pullingDistance >= viewHeight ? Enum.Refresher.ReleaseToRefresh : Enum.Refresher.Default;
+			// 更新下拉刷新状态
+			// 下拉刷新距离超过阈值
+			if (pullingDistance >= viewHeight) {
+				// 如果开启了下拉进入二楼并且下拉刷新距离超过进入二楼阈值，则当前下拉刷新状态为松手进入二楼，否则为松手立即刷新
+				this.refresherStatus = this.refresherF2Enabled && pullingDistance >= this.finalRefresherF2Threshold + viewHeight ? Enum.Refresher.GoF2 : Enum.Refresher.ReleaseToRefresh;
+			} else {
+				// 下拉刷新距离未超过阈值，显示默认状态
+				this.refresherStatus = Enum.Refresher.Default;
+			}
 		},
 		// 下拉刷新结束
 		_nRefresherEnd(doEnd = true) {
