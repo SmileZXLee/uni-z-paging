@@ -7,12 +7,14 @@
 			<!-- #ifdef APP-NVUE -->
 			<n-navbar title="我的小程序" light :show-back="false"></n-navbar>
 			<!-- #endif -->
-			<view class="custom-f2-list">
-				<view class="custom-f2-item" v-for="index of 16" :key="index">
-					<image class="custom-f2-item-img" src="/static/duola.jpg" mode=""></image>
-					<text class="custom-f2-item-title">小程序{{index}}</text>
+			<scroll-view scroll-y class="custom-f2-list-container">
+				<view class="custom-f2-list">
+					<view class="custom-f2-item" v-for="index of 16" :key="index">
+						<image class="custom-f2-item-img" src="/static/duola.jpg" mode=""></image>
+						<text class="custom-f2-item-title">小程序{{index}}</text>
+					</view>
 				</view>
-			</view>
+			</scroll-view>
 		</view>
 		<view class="custom-f2-bottom" @click="onCloseF2Click">
 			<text class="custom-f2-bottom-text">回到首页</text>
@@ -49,6 +51,7 @@
 	}
 	.custom-f2-main {
 		flex: 1;
+		overflow: hidden;
 	}
 	.custom-f2-bottom {
 		background-color: #35364f;
@@ -65,6 +68,13 @@
 		color: white;
 		font-weight: bold;
 		font-size: 32rpx;
+	}
+	.custom-f2-list-container {
+		height: 100%;
+		
+		/* #ifdef APP-NVUE */
+		flex: 1;
+		/* #endif */
 	}
 	.custom-f2-list {
 		display: flex;

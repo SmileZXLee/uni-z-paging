@@ -159,12 +159,13 @@ export default {
 		_nOnPullingdown(e) {
 			if (this.refresherStatus === Enum.Refresher.Loading || (this.isIos && !this.nListIsDragging)) return;
 			this._emitTouchmove(e);
-			const { viewHeight, pullingDistance } = e;
+			let { viewHeight, pullingDistance } = e;
 			// 更新下拉刷新状态
 			// 下拉刷新距离超过阈值
 			if (pullingDistance >= viewHeight) {
 				// 如果开启了下拉进入二楼并且下拉刷新距离超过进入二楼阈值，则当前下拉刷新状态为松手进入二楼，否则为松手立即刷新
-				this.refresherStatus = this.refresherF2Enabled && pullingDistance >= this.finalRefresherF2Threshold + viewHeight ? Enum.Refresher.GoF2 : Enum.Refresher.ReleaseToRefresh;
+				// (pullingDistance - viewHeight) + this.finalRefresherThreshold 不等同于pullingDistance，此处是为了兼容不同平台下拉相同距离pullingDistance不一致的问题，pullingDistance仅与viewHeight互相关联
+				this.refresherStatus = this.refresherF2Enabled && (pullingDistance - viewHeight) + this.finalRefresherThreshold >= this.finalRefresherF2Threshold ? Enum.Refresher.GoF2 : Enum.Refresher.ReleaseToRefresh;
 			} else {
 				// 下拉刷新距离未超过阈值，显示默认状态
 				this.refresherStatus = Enum.Refresher.Default;
