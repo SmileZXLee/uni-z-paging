@@ -15,7 +15,7 @@
 					<text class="refresher-f2-view-text">松手可以进入二楼哦 (*╹▽╹*)</text>
 				</view>
 			</template>
-			<!-- 自定义需要插入二楼的view，建议将插入二楼的view设置高度100%以铺满容器高度 -->
+			<!-- 自定义需要插入二楼的view，建议将插入二楼的view设置高度flex:1以铺满容器高度 -->
 			<template #f2>
 				<custom-f2 @closeF2="onCloseF2"/>
 			</template>
