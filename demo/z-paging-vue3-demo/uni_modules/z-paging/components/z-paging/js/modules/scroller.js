@@ -88,7 +88,7 @@ export default {
 		},
 		finalScrollTop(newVal) {
 			this.renderPropScrollTop = newVal < 6 ? 0 : 10;
-		},
+		}
 	},
 	computed: {
 		finalScrollWithAnimation() {
@@ -109,8 +109,15 @@ export default {
 		finalScrollTop() {
 			return this.usePageScroll ? this.pageScrollTop : this.oldScrollTop;
 		},
+		// 当前是否是旧版webview
 		finalIsOldWebView() {
 			return this.isOldWebView && !this.usePageScroll;
+		},
+		// 当前scroll-view/list-view是否允许滚动
+		finalScrollable() {
+			return this.scrollable && !this.usePageScroll && this.scrollEnable 
+			&& (this.refresherCompleteScrollable ? true : this.refresherStatus !== Enum.Refresher.Complete)
+			&& (this.refresherRefreshingScrollable ? true : this.refresherStatus !== Enum.Refresher.Loading);
 		}
 	},
 	methods: {
