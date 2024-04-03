@@ -82,7 +82,7 @@
   <img src="https://contrib.rocks/image?repo=SmileZXLee/uni-z-paging" />
 </a>
 
-### 感谢Star
+### 感谢Star支持
 
 [![Stargazers repo roster for @SmileZXLee/uni-z-paging](https://reporoster.com/stars/SmileZXLee/uni-z-paging)](https://github.com/SmileZXLee/uni-z-paging/stargazers)
 
