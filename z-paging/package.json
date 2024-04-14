@@ -10,12 +10,13 @@
     "分页器",
     "nvue",
     "虚拟列表"
-],
+  ],
   "repository": "https://github.com/SmileZXLee/uni-z-paging",
+  "types": "global.d.ts",
   "engines": {
     "HBuilderX": "^3.0.7"
   },
-"dcloudext": {
+  "dcloudext": {
     "sale": {
       "regular": {
         "price": "0.00"
@@ -68,18 +69,18 @@
           "百度": "y",
           "字节跳动": "y",
           "QQ": "y",
-		  "钉钉": "y",
-		  "快手": "y",
-		  "飞书": "y",
-		  "京东": "y"
+          "钉钉": "y",
+          "快手": "y",
+          "飞书": "y",
+          "京东": "y"
         },
         "快应用": {
           "华为": "y",
           "联盟": "y"
         },
         "Vue": {
-            "vue2": "y",
-            "vue3": "y"
+          "vue2": "y",
+          "vue3": "y"
         }
       }
     }
