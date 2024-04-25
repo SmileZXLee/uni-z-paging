@@ -59,6 +59,11 @@ export default {
 			type: String,
 			default: u.gc('cellHeightMode', Enum.CellHeightMode.Fixed)
 		},
+		// 固定的cell高度，cellHeightMode=fixed才有效，若设置了值，则不计算第一个cell高度而使用设置的cell高度
+		fixedCellHeight: {
+			type: [Number, String],
+			default: u.gc('fixedCellHeight', 0)
+		},
 		// 虚拟列表列数，默认为1。常用于每行有多列的情况，例如每行有2列数据，需要将此值设置为2
 		virtualListCol: {
 			type: [Number, String],
@@ -140,6 +145,9 @@ export default {
 		},
 		finalVirtualPageHeight(){
 			return this.virtualPageHeight > 0 ? this.virtualPageHeight : this.windowHeight;
+		},
+		finalFixedCellHeight() {
+			return u.convertToPx(this.fixedCellHeight);
 		},
 		virtualRangePageHeight(){
 			return this.finalVirtualPageHeight * this.preloadPage;
@@ -243,21 +251,26 @@ export default {
 		},
 		// cellHeightMode为fixed时获取第一个cell高度
 		_updateFixedCellHeight() {
-			this.$nextTick(() => {
-				u.delay(() => {
-					this._getNodeClientRect(`#zp-id-${0}`,this.finalUseInnerList).then(cellNode => {
-						if (!cellNode) {
-							if (this.getCellHeightRetryCount.fixed > 10) return;
-							this.getCellHeightRetryCount.fixed ++;
-							// 如果获取第一个cell的节点信息失败，则重试（不超过10次）
-							this._updateFixedCellHeight();
-						} else {
-							this.virtualCellHeight = cellNode[0].height;
-							this._updateVirtualScroll(this.oldScrollTop);
-						}
-					});
-				}, c.delayTime, 'updateFixedCellHeightDelay');
-			})
+			if (!this.finalFixedCellHeight) {
+				this.$nextTick(() => {
+					u.delay(() => {
+						this._getNodeClientRect(`#zp-id-${0}`,this.finalUseInnerList).then(cellNode => {
+							console.log(cellNode);
+							if (!cellNode) {
+								if (this.getCellHeightRetryCount.fixed > 10) return;
+								this.getCellHeightRetryCount.fixed ++;
+								// 如果获取第一个cell的节点信息失败，则重试（不超过10次）
+								this._updateFixedCellHeight();
+							} else {
+								this.virtualCellHeight = cellNode[0].height;
+								this._updateVirtualScroll(this.oldScrollTop);
+							}
+						});
+					}, c.delayTime, 'updateFixedCellHeightDelay');
+				})
+			} else {
+				this.virtualCellHeight = this.finalFixedCellHeight;
+			}
 		},
 		// cellHeightMode为dynamic时获取每个cell高度
 		_updateDynamicCellHeight(list, dataFrom = 'bottom') {
