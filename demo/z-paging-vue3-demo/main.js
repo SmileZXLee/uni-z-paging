@@ -32,7 +32,20 @@ uni.$zp = {
 // 【方案二】 在文件 z-paging/config/index.js中进行配置，但是需要注意更新插件时要避免被覆盖。
 */
 
-
+// 若不使用:fetch无需进行下方配置
+// 可以对全局:fetch的请求参数和响应进行拦截和统一处理，默认请求参数为{ pageNo, pageSize }，将响应结果直接当作分页数组。如非默认情况，请使用下方示例处理
+import ZPInterceptor from '@/uni_modules/z-paging/components/z-paging/js/z-paging-interceptor'
+// 处理z-paging fetch写法拦截，handleFetchParams用于拦截请求入参，返回最终入参对象。handleFetchResult用于拦截请求结果，自行处理请求结束后操作，务必调用complete或complete相关方法
+// 支持链式调用
+ZPInterceptor.handleFetchParams((parmas, extraParams) => {
+	return { pageNo: parmas.pageNo, pageSize: parmas.pageSize, ...extraParams} ;
+}).handleFetchResult((fetchResult, paging) => {
+	fetchResult.then(res => {
+		paging.complete(res.data.list);
+	}).catch(err => {
+		paging.complete(false);
+	})
+})
 
 // #ifndef VUE3
 import Vue from 'vue'

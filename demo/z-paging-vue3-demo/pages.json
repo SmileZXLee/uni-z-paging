@@ -144,7 +144,7 @@
 		}, {
 			"path": "pages/minimalism-demo/minimalism-demo",
 			"style": {
-				"navigationBarTitleText": "极简写法演示",
+				"navigationBarTitleText": "极简写法演示①",
 				"enablePullDownRefresh": false
 			}
 
@@ -247,7 +247,7 @@
 			"style" : 
 			{	
 				"navigationStyle": "custom",
-				"navigationBarTitleText" : "",
+				"navigationBarTitleText" : "下拉进入二楼演示",
 				"enablePullDownRefresh" : false
 			}
 		},
@@ -256,7 +256,15 @@
 			"style" : 
 			{	
 				"navigationStyle": "custom",
-				"navigationBarTitleText" : "",
+				"navigationBarTitleText" : "下拉进入二楼演示(nvue)",
+				"enablePullDownRefresh" : false
+			}
+		},
+		{
+			"path" : "pages/minimalism-fetch-demo/minimalism-fetch-demo",
+			"style" : 
+			{
+				"navigationBarTitleText" : "极简写法演示②",
 				"enablePullDownRefresh" : false
 			}
 		}

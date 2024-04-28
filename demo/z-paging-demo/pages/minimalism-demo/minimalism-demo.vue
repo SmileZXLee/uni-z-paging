@@ -7,7 +7,7 @@
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<template #top>
 				<view class="notice">
-					<view>最大程度简化重复代码，具体写法和说明请查阅demo源码</view>
+					<view>全局设置v-model和@query的绑定对象名，具体写法和说明请查阅demo源码</view>
 				</view>
 				<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
 				<z-tabs :list="tabList" @change="tabChange" />

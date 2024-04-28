@@ -110,9 +110,14 @@ export default {
 			subTitle: '将request.js中的loadingTime修改为2000可更直观体验'
 		},
 		{
-			title: '极简写法演示',
+			title: '极简写法演示①',
 			file: 'minimalism-demo',
-			subTitle: '此写法可省略重复的v-model和@query'
+			subTitle: '全局设置v-model和@query的绑定对象名，减少重复代码'
+		},
+		{
+			title: '极简写法演示②',
+			file: 'minimalism-fetch-demo',
+			subTitle: '使用fetch直接传入分页请求代替@query，减少重复代码'
 		},
 		{
 			title: '内置列表模式演示',

@@ -11,7 +11,7 @@ const showLog = false;
 /* 这个js仅用于在demo中模拟网络请求，请勿导入或修改此文件。实际项目中在queryList中调用自己的请求即可 */
 
 // 查询普通列表数据
-function queryList(data) {
+export function queryList(data) {
 	const listCount = 24;
 	return _queryList(data, listCount);
 }
