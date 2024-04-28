@@ -53,6 +53,16 @@ export default {
 			type: String,
 			default: u.gc('autowireQueryName', '')
 		},
+		// 获取分页数据Function，功能与@query类似。若设置了fetch则@query将不再触发
+		fetch: {
+			type: Function,
+			default: u.gc('fetch', null, true)
+		},
+		// fetch的附加参数，fetch配置后有效
+		fetchParams: {
+			type: Object,
+			default: u.gc('fetchParams', null)
+		},
 		// z-paging mounted后自动调用reload方法(mounted后自动调用接口)，默认为是
 		auto: {
 			type: Boolean,
@@ -686,7 +696,19 @@ export default {
 			this.queryFrom = from;
 			this.requestTimeStamp = u.getTime();
 			const [lastItem] = this.realTotalData.slice(-1);
-			this.$emit('query', ...interceptor._handleQuery(pageNo, pageSize, from, lastItem || null));
+			if (this.fetch) {
+				const fetchParams = interceptor._handleFetchParams({pageNo, pageSize, from, lastItem: lastItem || null}, this.fetchParams);
+				const fetchResult = this.fetch(fetchParams);
+				if (!interceptor._handleFetchResult(fetchResult, this, fetchParams)) {
+					u.isPromise(fetchResult) ? fetchResult.then(res => {
+						this.complete(res);
+					}).catch(err => {
+						this.complete(false);
+					}) : this.complete(fetchResult)
+				}
+			} else {
+				this.$emit('query', ...interceptor._handleQuery(pageNo, pageSize, from, lastItem || null));
+			}
 		},
 		// 触发数据改变promise
 		_callDataPromise(success, totalList) {

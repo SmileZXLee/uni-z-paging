@@ -9,9 +9,9 @@ let configLoaded = false;
 const timeoutMap = {};
 
 // 获取默认配置信息
-function gc(key, defaultValue) {
+function gc(key, defaultValue, isFunc = false) {
 	// 这里return一个函数以解决在vue3+appvue中，props默认配置读取在main.js之前执行导致uni.$zp全局配置无效的问题。相当于props的default中传入一个带有返回值的函数
-	return () => {
+	const configFunc = () => {
 		// 处理z-paging全局配置
 		_handleDefaultConfig();
 		// 如果全局配置不存在，则返回默认值
@@ -19,7 +19,9 @@ function gc(key, defaultValue) {
 		const value = config[key];
 		// 如果全局配置存在但对应的配置项不存在，则返回默认值；反之返回配置项
 		return value === undefined ? defaultValue : value;
-	}
+	};
+	// 如果props本身不是function，则返回function，反之返回原本的值
+	return !isFunc ? configFunc : configFunc();
 }
 
 // 获取最终的touch位置
@@ -147,6 +149,10 @@ function wait(ms) {
 	});
 }
 
+function isPromise(func) {
+	return Object.prototype.toString.call(func) === '[object Promise]';
+}
+
 // 添加单位
 function addUnit(value, unit) {
 	if (Object.prototype.toString.call(value) === '[object String]') {
@@ -247,5 +253,6 @@ export default {
 	consoleErr,
 	delay,
 	wait,
+	isPromise,
 	addUnit
 };
