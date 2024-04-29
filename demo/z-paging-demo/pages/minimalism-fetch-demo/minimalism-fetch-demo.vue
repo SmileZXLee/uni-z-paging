@@ -1,4 +1,5 @@
 <!-- 使用fetch的极简写法演示(vue) -->
+<!-- 请注意，在main.js中已经对fetch的请求和响应作了统一处理，默认将响应结果直接当作分页数组。请留意！！！ -->
 <template>
 	<view class="content">
 		<!-- 通过:fetch直接传入列表请求函数即可，默认会调用对应请求参数并且给它传{pageNo, pageSize}两个参数 -->
