@@ -255,7 +255,6 @@ export default {
 				this.$nextTick(() => {
 					u.delay(() => {
 						this._getNodeClientRect(`#zp-id-${0}`,this.finalUseInnerList).then(cellNode => {
-							console.log(cellNode);
 							if (!cellNode) {
 								if (this.getCellHeightRetryCount.fixed > 10) return;
 								this.getCellHeightRetryCount.fixed ++;
@@ -343,6 +342,9 @@ export default {
 				let item = list[i];
 				if (!item || Object.prototype.toString.call(item) !== '[object Object]') {
 					item = { item };
+				}
+				if (item[c.listCellIndexUniqueKey]) {
+					item = u.deepCopy(item);
 				}
 				item[cellIndexKey] = currentItemIndex + i;
 				item[c.listCellIndexUniqueKey] = `${this.virtualListKey}-${item[cellIndexKey]}`;

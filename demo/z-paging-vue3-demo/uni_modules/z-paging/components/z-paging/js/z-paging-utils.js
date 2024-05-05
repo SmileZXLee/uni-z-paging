@@ -149,6 +149,7 @@ function wait(ms) {
 	});
 }
 
+// 是否是promise
 function isPromise(func) {
 	return Object.prototype.toString.call(func) === '[object Promise]';
 }
@@ -164,6 +165,18 @@ function addUnit(value, unit) {
 		value = tempValue;
 	}
 	return unit === 'rpx' ? value + 'rpx' : (value / 2) + 'px';
+}
+
+// 深拷贝
+function deepCopy(obj) {
+	if (typeof obj !== 'object' || obj === null) return obj;
+	let newObj = Array.isArray(obj) ? [] : {};
+	for (let key in obj) {
+		if (obj.hasOwnProperty(key)) {
+			newObj[key] = deepCopy(obj[key]);
+		}
+	}
+	return newObj;
 }
 
 // ------------------ 私有方法 ------------------------
@@ -254,5 +267,6 @@ export default {
 	delay,
 	wait,
 	isPromise,
-	addUnit
+	addUnit,
+	deepCopy
 };
