@@ -63,7 +63,6 @@
 				fetchResult.then(res => {
 					paging.complete(res.data.list);
 				}).catch(err => {
-					console.log(err)
 					paging.complete(false);
 				})
 			})
