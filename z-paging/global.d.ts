@@ -295,7 +295,7 @@ declare interface ZPagingInstance<T> {
 
     /**
      * 滚动到指定view
-     * - nvue中有效
+     * - nvue或虚拟列表中有效
      * - 在nvue中的cell必须设置 :ref="`z-paging-${index}`"
      *
      * @param index 需要滚动到的view的index(第几个)
