@@ -167,10 +167,10 @@ export default {
 			type: Number,
 			default: u.gc('superContentZIndex', 1)
 		},
-		// z-paging内容容器部分的z-index，默认为10
+		// z-paging内容容器部分的z-index，默认为1
 		contentZIndex: {
 			type: Number,
-			default: u.gc('contentZIndex', 10)
+			default: u.gc('contentZIndex', 1)
 		},
 		// z-paging二楼的z-index，默认为100
 		f2ZIndex: {
@@ -220,10 +220,12 @@ export default {
 			// 初始化z-paging高度
 			!this.usePageScroll && this.autoHeight && this._setAutoHeight();
 			this.loaded = true;
-			// 更新fixed模式下z-paging的布局，主要是更新windowTop、windowBottom
-			u.delay(this.updateFixedLayout);
-			// 更新缓存中z-paging整个内容容器高度
-			this._updateCachedSuperContentHeight();
+			u.delay(() => {
+				// 更新fixed模式下z-paging的布局，主要是更新windowTop、windowBottom
+				this.updateFixedLayout();
+				// 更新缓存中z-paging整个内容容器高度
+				this._updateCachedSuperContentHeight();
+			});
 		})
 		// 初始化页面滚动模式下slot="top"、slot="bottom"高度
 		this.updatePageScrollTopHeight();
