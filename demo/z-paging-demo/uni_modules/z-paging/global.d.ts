@@ -1,7 +1,6 @@
+type _Arrayable<T> = T | T[];
+
 declare global {
-
-    type Arrayable<T> = T | T[];
-
     /**
      * z-paging返回数据
      *
@@ -40,7 +39,7 @@ declare global {
     /**
      * z-paging组件实例
      */
-    interface ZPagingInstance<T> {
+    interface ZPagingInstance<T = any> {
         /**
          * 重新加载分页数据，pageNo恢复为默认值，相当于下拉刷新的效果
          *
@@ -128,7 +127,7 @@ declare global {
          * @param [scrollToTop=true] 是否滚动到顶部，不填默认为true
          * @param [animate=true] 是否使用动画滚动到顶部
          */
-        addDataFromTop: (data: Arrayable<T>, scrollToTop?: boolean, animate?: boolean) => void;
+        addDataFromTop: (data: _Arrayable<T>, scrollToTop?: boolean, animate?: boolean) => void;
 
         /**
          * 【不推荐】重新设置列表数据，调用此方法不会影响pageNo和pageSize，也不会触发请求
@@ -247,7 +246,7 @@ declare global {
          * @param [scrollToBottom=true] 是否滚动到底部
          * @param [animate=true] 是否使用动画滚动到底部
          */
-        addChatRecordData: (data: Arrayable<T>, scrollToBottom?: boolean, animate?: boolean) => void;
+        addChatRecordData: (data: _Arrayable<T>, scrollToBottom?: boolean, animate?: boolean) => void;
 
         /**
          * 滚动到顶部
