@@ -206,7 +206,7 @@ export default {
 		this.renderJsIgnore;
 		if (!this.createdReload && !this.refresherOnly && this.auto) {
 			// 开始预加载
-			this.$nextTick(this._preReload);
+			u.delay(() => this.$nextTick(this._preReload), 0);
 		}
 		// 如果开启了列表缓存，在初始化的时候通过缓存数据填充列表数据
 		this.finalUseCache && this._setListByLocalCache();
