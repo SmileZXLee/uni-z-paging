@@ -93,9 +93,7 @@ export default {
 	computed: {
 		finalScrollWithAnimation() {
 			if (this.privateScrollWithAnimation !== -1) {
-				const scrollWithAnimation = this.privateScrollWithAnimation === 1;
-				this.privateScrollWithAnimation = -1;
-				return scrollWithAnimation;
+				return this.privateScrollWithAnimation === 1;
 			}
 			return this.scrollWithAnimation;
 		},
@@ -224,7 +222,7 @@ export default {
 		},
 		// 更新z-paging内置scroll-view的scrollTop
 		updateScrollViewScrollTop(scrollTop, animate = true) {
-			this.privateScrollWithAnimation = animate ? 1 : 0;
+			this._updatePrivateScrollWithAnimation(animate);
 			this.scrollTop = this.oldScrollTop;
 			this.$nextTick(() => {
 				this.scrollTop = scrollTop;
@@ -284,7 +282,7 @@ export default {
 				});
 				return;
 			}
-			this.privateScrollWithAnimation = animate ? 1 : 0;
+			this._updatePrivateScrollWithAnimation(animate);
 			this.scrollTop = this.oldScrollTop;
 			this.$nextTick(() => {
 				this.scrollTop = 0;
@@ -316,7 +314,7 @@ export default {
 				return;
 			}
 			try {
-				this.privateScrollWithAnimation = animate ? 1 : 0;
+				this._updatePrivateScrollWithAnimation(animate);
 				const pagingContainerNode = await this._getNodeClientRect('.zp-paging-container');
 				const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
 				const pagingContainerH = pagingContainerNode ? pagingContainerNode[0].height : 0;
@@ -383,7 +381,7 @@ export default {
 		},
 		// 滚动到指定位置
 		_scrollToY(y, offset = 0, animate = false, addScrollTop = false) {
-			this.privateScrollWithAnimation = animate ? 1 : 0;
+			this._updatePrivateScrollWithAnimation(animate);
 			u.delay(() => {
 				if (this.usePageScroll) {
 					if (addScrollTop && this.pageScrollTop !== -1) {
@@ -414,6 +412,14 @@ export default {
 			const scrollDiff = e.detail.scrollHeight - this.oldScrollTop;
 			// 在非ios平台滚动中，再次验证一下是否滚动到了底部。因为在一些安卓设备中，有概率滚动到底部不触发@scrolltolower事件，因此添加双重检测逻辑
 			!this.isIos && this._checkScrolledToBottom(scrollDiff);
+		},
+		// 更新内置的scroll-view是否启用滚动动画
+		_updatePrivateScrollWithAnimation(animate) {
+			this.privateScrollWithAnimation = animate ? 1 : 0;
+			u.delay(() => this.$nextTick(() => {
+				// 在滚动结束后将滚动动画状态设置回初始状态
+				this.privateScrollWithAnimation = -1;
+			}), 100, 'updateScrollWithAnimationDelay')
 		},
 		// 检测scrollView是否要铺满屏幕
 		_doCheckScrollViewShouldFullHeight(totalData) {
