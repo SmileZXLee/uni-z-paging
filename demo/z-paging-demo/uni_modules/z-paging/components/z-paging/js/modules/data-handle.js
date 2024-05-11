@@ -56,7 +56,7 @@ export default {
 		// 获取分页数据Function，功能与@query类似。若设置了fetch则@query将不再触发
 		fetch: {
 			type: Function,
-			default: u.gc('fetch', null, true)
+			default: null
 		},
 		// fetch的附加参数，fetch配置后有效
 		fetchParams: {
