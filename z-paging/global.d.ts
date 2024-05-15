@@ -226,6 +226,13 @@ declare global {
         didDeleteVirtualListCell: (index: number) => void;
 
         /**
+         * 手动触发虚拟列表渲染更新，可用于解决例如修改了虚拟列表数组中元素，但展示未更新的情况
+         *
+         * @since 2.7.10
+         */
+        updateVirtualListRender: () => void;
+		
+        /**
          * 设置本地分页，请求结束(成功或者失败)调用此方法，将请求的结果传递给z-paging作分页处理
          * - 若调用了此方法，则上拉加载更多时内部会自动分页，不会触发@query所绑定的事件
          *

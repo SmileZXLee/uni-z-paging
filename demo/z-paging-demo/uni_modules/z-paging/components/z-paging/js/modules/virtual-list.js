@@ -103,18 +103,8 @@ export default {
 	},
 	watch: {
 		// 监听总数据的改变，刷新虚拟列表布局
-		realTotalData(newVal) {
-			// #ifndef APP-NVUE
-			if (this.finalUseVirtualList) {
-				this.updateVirtualListFromDataChange = true;
-				this.$nextTick(() => {
-					this.getCellHeightRetryCount.fixed = 0;
-					!newVal.length && this._resetDynamicListState(!this.isUserPullDown);
-					newVal.length && this.cellHeightMode === Enum.CellHeightMode.Fixed && this.isFirstPage && this._updateFixedCellHeight();
-					this._updateVirtualScroll(this.oldScrollTop);
-				})
-			}
-			// #endif
+		realTotalData() {
+			this.updateVirtualListRender();
 		},
 		// 监听虚拟列表渲染数组的改变并emit
 		virtualList(newVal){
@@ -234,6 +224,23 @@ export default {
 			}
 			// 将当前cell的高度信息从高度缓存数组中删除
 			this.virtualHeightCacheList.splice(index, 1);
+		},
+		// 手动触发虚拟列表渲染更新，可用于解决例如修改了虚拟列表数组中元素，但展示未更新的情况
+		updateVirtualListRender() {
+			// #ifndef APP-NVUE
+			if (this.finalUseVirtualList) {
+				this.updateVirtualListFromDataChange = true;
+				this.$nextTick(() => {
+					this.getCellHeightRetryCount.fixed = 0;
+					if (this.realTotalData.length) {
+						this.cellHeightMode === Enum.CellHeightMode.Fixed && this.isFirstPage && this._updateFixedCellHeight()
+					} else {
+						this._resetDynamicListState(!this.isUserPullDown);
+					}
+					this._updateVirtualScroll(this.oldScrollTop);
+				})
+			}
+			// #endif
 		},
 		// 初始化虚拟列表
 		_virtualListInit() {

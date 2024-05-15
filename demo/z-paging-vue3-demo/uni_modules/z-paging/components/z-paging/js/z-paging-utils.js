@@ -32,7 +32,7 @@ function getTouch(e) {
 	} else if (e.datail && e.datail != {}) {
 		touch = e.datail;
 	} else {
-		return {touchX: 0, touchY: 0}
+		return { touchX: 0, touchY: 0 }
 	}
 	return {
 		touchX: touch.clientX,
