@@ -271,12 +271,14 @@ export default {
 			if (this.pageNo >= this.defaultPageNo && this.loadingStatus !== Enum.More.NoMore) {
 				this.pageNo ++;
 				this._startLoading(false);
-				// 如果是本地分页，则在组件内部对数据进行分页处理，不触发@query事件
 				if (this.isLocalPaging) {
+					// 如果是本地分页，则在组件内部对数据进行分页处理，不触发@query事件
 					this._localPagingQueryList(this.pageNo, this.defaultPageSize, this.localPagingLoadingTime, res => {
 						this.completeByTotal(res, this.totalLocalPagingList.length);
+						this.queryFrom = Enum.QueryFrom.LoadingMore;
 					})
 				} else {
+					// emit @query相关加载更多事件
 					this._emitQuery(this.pageNo, this.defaultPageSize, Enum.QueryFrom.LoadingMore);
 					this._callMyParentQuery();
 				}
