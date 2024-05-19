@@ -30,6 +30,11 @@ export default {
 			subTitle: ''
 		},
 		{
+			title: '延迟加载列表演示',
+			file: 'load-delay-demo',
+			subTitle: '自行控制z-paging列表加载时机，例如先获取tabs数据然后再触发列表加载'
+		},
+		{
 			title: '在弹窗内使用z-paging演示',
 			file: 'popup-demo',
 			subTitle: 'z-paging的局部滚动'

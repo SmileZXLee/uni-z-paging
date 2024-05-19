@@ -267,6 +267,13 @@
 				"navigationBarTitleText" : "极简写法演示②",
 				"enablePullDownRefresh" : false
 			}
+		},
+		{
+			"path" : "pages/load-delay-demo/load-delay-demo",
+			"style" : 
+			{
+				"navigationBarTitleText" : "延迟加载列表演示"
+			}
 		}
 	],
 	"globalStyle": {

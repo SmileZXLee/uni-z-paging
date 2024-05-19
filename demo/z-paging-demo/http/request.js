@@ -34,6 +34,15 @@ function queryChatListLong(data) {
 	return _queryList(data, listCount, false, false, true);
 }
 
+// 查询tabs数据
+export function queryTabs(data) {
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+			resolve(['测试1','测试2','测试3','测试4']);
+		}, loadingTime)
+	})
+}
+
 function _queryList(data, listCount, showNews = false ,random = false, showChat = false) {
 	if (!data.pageNo || !data.pageSize) {
 		return _callQueryResult([]);
@@ -108,7 +117,6 @@ function _callQueryResult(arg) {
 			});
 		}, loadingTime)
 	})
-
 }
 
 function getNews(random) {
@@ -130,5 +138,6 @@ export default {
 	queryList,
 	queryListLong,
 	queryChatList,
-	queryChatListLong
+	queryChatListLong,
+	queryTabs
 }

@@ -1,9 +1,11 @@
-<!-- 普通模式演示(vue) -->
+<!-- 延迟加载列表演示(vue) -->
 <template>
-    <z-paging ref="paging" v-model="dataList" @query="queryList">
+	<!-- 通过:auto="false"禁止默认的自动加载列表行为 -->
+    <z-paging ref="paging" v-model="dataList" :auto="false" @query="queryList">
 		<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 		<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
 		<template #top>
+			<view class="header">此demo禁止了默认的自动加载列表行为，将在请求获取tabs数据后触发列表加载</view>
 			<z-tabs :list="tabList" @change="tabsChange" />
 		</template>
 		<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
@@ -17,16 +19,25 @@
 
 <script setup>
 	import { ref } from 'vue';
+	import { onLoad } from '@dcloudio/uni-app';
 	import request from '/http/request.js';
 	
 	
     const paging = ref(null);
 	
 	const tabIndex = ref(0);
-	const tabList = ref(['测试1','测试2','测试3','测试4']);
+	const tabList = ref([]);
 	// v-model绑定的这个变量不要在分页请求结束中自己赋值！！！
     const dataList = ref([]);
 	
+	onLoad(() => {
+		// 请求tabs数据
+		request.queryTabs().then(tabs => {
+			tabList.value = tabs;
+			// 触发加载z-paging列表
+			paging.value.reload();
+		})
+	})
 	
 	const tabsChange = (index) => {
 		tabIndex.value = index;
@@ -83,5 +94,12 @@
 		height: 1px;
 		width: 100%;
 		background-color: #eeeeee;
+	}
+	
+	.header{
+		background-color: red;
+		font-size: 24rpx;
+		padding: 20rpx;
+		color: white;
 	}
 </style>
