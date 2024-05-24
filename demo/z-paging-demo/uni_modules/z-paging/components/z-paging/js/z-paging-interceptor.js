@@ -64,18 +64,25 @@ function _getApp(){
 	// #endif
 }
 
+// 是否可以访问globalData
+function _hasGlobalData() {
+	return _getApp() && _getApp().globalData;
+}
+
 // 添加处理函数
 function _addHandleByKey(key, callback) {
 	try {
 		setTimeout(function() {
-			_getApp().globalData[`zp_handle${key}Callback`] = callback;
+			if (_hasGlobalData()) {
+				_getApp().globalData[`zp_handle${key}Callback`] = callback;
+			}
 		}, 1);
 	} catch (_) {}
 }
 
 // 获取处理回调函数
 function _getHandleByKey(key) {
-	return _getApp().globalData[`zp_handle${key}Callback`];
+	return _hasGlobalData() ? _getApp().globalData[`zp_handle${key}Callback`] : null;
 }
 
 export default {
