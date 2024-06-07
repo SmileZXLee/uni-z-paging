@@ -669,7 +669,7 @@ export default {
 				}, refresherCompleteDelay);
 			}
 			if (setLoading) {
-				u.delay(() => this.loading = false, shouldEndLoadingDelay ? c.delayTime : 0);
+				u.delay(() => this.loading = false, shouldEndLoadingDelay ? 10 : 0);
 				isUserPullDown && this._onRestore();
 			}
 		},
