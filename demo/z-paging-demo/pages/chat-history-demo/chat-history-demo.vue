@@ -15,10 +15,16 @@
 			</template>
 			<!-- #endif -->
 			
-			<!-- style="transform: scaleY(-1)"必须写，否则会导致列表倒置（必须写在for循环标签上，不得写在容器上）！！！ -->
-			<!-- 注意不要直接在chat-item组件标签上设置style，因为在微信小程序中是无效的，请包一层view -->
-			<view v-for="(item,index) in dataList" :key="index" style="transform: scaleY(-1)">
-				<chat-item :item="item"></chat-item>
+			<!-- for循环渲染聊天记录列表 -->
+			<view v-for="(item,index) in dataList" :key="index" style="position: relative;">
+				<!-- 如果要给聊天item添加长按的popup，请在popup标签上写style="transform: scaleY(-1);"，注意style="transform: scaleY(-1);"不要写在最外层，否则可能导致popup被其他聊天item盖住 -->
+				<!-- <view class="popup" style="transform: scaleY(-1);">popUp</view> -->
+				
+				<!-- style="transform: scaleY(-1)"必须写，否则会导致列表倒置 -->
+				<!-- 注意不要直接在chat-item组件标签上设置style，因为在微信小程序中是无效的，请包一层view -->
+				<view style="transform: scaleY(-1);">
+					<chat-item :item="item"></chat-item>
+				</view>
 			</view>
 			<!-- 底部聊天输入框 -->
 			<template #bottom>
@@ -89,5 +95,13 @@
 		font-size: 20rpx;
 		padding: 20rpx;
 		color: white;
+	}
+	.popup {
+		position: absolute;
+		top: -20px;
+		height: 200rpx;
+		width: 400rpx;
+		background-color: red;
+		z-index: 1000;
 	}
 </style>
