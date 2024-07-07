@@ -23,6 +23,11 @@
 							<text v-if="item.title.indexOf('nvue')!==-1" style="background-color: #01c301;">{{item.file + '.nvue'}}</text>
 							<text v-else-if="item.title.indexOf('vue3')!==-1" style="background-color: #f96027;">{{item.file + '.vue'}}</text>
 							<text v-else>{{item.file + '.vue'}}</text>
+							
+							<view v-if="showSourceViewBtn" class="demo-item-file-source" @click.stop="sourceViewClick(item)">
+								<text>查看源码</text>
+								<image src="../../static/github.png"></image>
+							</view>
 						</view>
 					</view>
 					<image class="demo-item-more-img" src="../../static/more_icon.png"></image>
@@ -47,6 +52,15 @@
 			// #ifdef APP-PLUS
 			this.list = this.list.concat(indexList.listNvue);
 			// #endif
+			console.log(window.location.host)
+		},
+		computed: {
+			showSourceViewBtn() {
+				// #ifdef H5
+				return window.location.host === 'demo.z-paging.zxlee.cn';
+				// #endif
+				return false;
+			}
 		},
 		methods: {
 			// 下拉刷新被触发
@@ -57,6 +71,15 @@
 					this.$refs.paging.complete();
 				}, 1500)
 			},
+			// 点击了查看源码
+			sourceViewClick(item) {
+				const sourcePrefix = 'https://github.com/SmileZXLee/uni-z-paging/tree/main/demo/z-paging-demo/pages';
+				const url = `${sourcePrefix}/${item.file}/${item.file}${item.title.indexOf('nvue') !== -1 ? '.nvue' : '.vue'}`;
+				// #ifdef H5
+				window.open(url);
+				// #endif
+			},
+			// 点击了item
 			itemClick(item) {
 				uni.navigateTo({
 					url: `../${item.file}/${item.file}`
@@ -97,13 +120,36 @@
 		font-size: 26rpx;
 		color: #666666;
 	}
+	
+	.demo-item-file {
+		display: flex;
+		align-items: center;
+	}
 
-	.demo-item-file>text {
+	.demo-item-file > text {
 		background-color: #007AFF;
 		color: white;
 		font-size: 24rpx;
 		padding: 5rpx 10rpx;
 		border-radius: 8rpx;
+	}
+	.demo-item-file-source {
+		margin-left: 10rpx;
+		background-color: #fc0c52;
+		font-size: 24rpx;
+		padding: 5rpx 10rpx;
+		border-radius: 8rpx;
+		display: flex;
+		align-items: center;
+	}
+	.demo-item-file-source > text {
+		color: white;
+		font-size: 24rpx;
+	}
+	.demo-item-file-source > image {
+		width: 26rpx;
+		height: 26rpx;
+		margin-left: 5rpx;
 	}
 
 	.demo-nvue-tip {
