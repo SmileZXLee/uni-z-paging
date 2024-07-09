@@ -240,7 +240,9 @@ export default {
 		},
 		// 当滚动到底部时
 		_onScrollToLower(e) {
-			(!e.detail || !e.detail.direction || e.detail.direction === 'bottom') && this._onLoadingMore(this.useChatRecordMode ? 'click' : 'toBottom')
+			(!e.detail || !e.detail.direction || e.detail.direction === 'bottom') 
+			&& this.toBottomLoadingMoreEnabled
+			&& this._onLoadingMore(this.useChatRecordMode ? 'click' : 'toBottom')
 		},
 		// 滚动到顶部
 		_scrollToTop(animate = true, isPrivate = true) {

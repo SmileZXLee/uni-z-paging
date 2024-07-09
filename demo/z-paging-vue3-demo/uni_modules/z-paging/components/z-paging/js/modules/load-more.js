@@ -184,7 +184,7 @@ export default {
 	methods: {
 		// 页面滚动到底部时通知z-paging进行进一步处理
 		pageReachBottom() {
-			!this.useChatRecordMode && this._onLoadingMore('toBottom');
+			!this.useChatRecordMode && this.toBottomLoadingMoreEnabled && this._onLoadingMore('toBottom');
 		},
 		// 手动触发上拉加载更多(非必须，可依据具体需求使用)
 		doLoadMore(type) {
