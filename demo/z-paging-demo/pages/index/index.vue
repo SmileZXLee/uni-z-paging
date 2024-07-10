@@ -52,7 +52,6 @@
 			// #ifdef APP-PLUS
 			this.list = this.list.concat(indexList.listNvue);
 			// #endif
-			console.log(window.location.host)
 		},
 		computed: {
 			showSourceViewBtn() {
