@@ -349,7 +349,7 @@ export default {
 			return this.refresherTriggered;
 		},
 		showRefresher() {
-			const showRefresher = this.finalRefresherEnabled && this.useCustomRefresher;
+			const showRefresher = this.finalRefresherEnabled || this.useCustomRefresher && !this.useChatRecordMode;
 			// #ifndef APP-NVUE
 			this.active && this.customRefresherHeight === -1 && showRefresher && this.updateCustomRefresherHeight();
 			// #endif
