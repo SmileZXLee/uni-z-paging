@@ -1,9 +1,11 @@
-<!-- 虚拟列表演示(内置列表写法)(vue) -->
+<!-- 虚拟列表+吸顶演示(内置列表写法)(vue) -->
 
 <!-- 请注意1：内置列表写法在微信小程序中部分较高版本调试库会报More than one slot named "cell" are found...的警告并导致开发者工具卡顿，将基础库版本调到2.18.0以下即可。因线上没有控制台打印，因此不会影响线上版本。 -->
 <!-- 在微信小程序中如果是vue2推荐使用虚拟列表兼容写法(virtual-list-compatibility-demo)，如果是vue3推荐使用虚拟列表非内置列表写法(virtual-list-no-inner-demo.vue) -->
 <!-- 写法简单，通过slot=cell插入所需cell，页面中无直接的for循环，在vue2中兼容性良好 -->
 <!-- 在各平台兼容性请查阅https://z-paging.zxlee.cn/module/virtual-list.html -->
+
+<!-- 吸顶部分逻辑更改主要是通过监听@virtualTopHeightChange="virtualTopHeightChange"动态设置吸顶top：<view style="z-index: 100;position: sticky;" :style="[{ top: -virtualTopHeight + 'px' }]">  -->
 <template>
 	<view class="content">
 		<!-- 如果页面中的cell高度是固定不变的，则不需要设置cell-height-mode，如果页面中高度是动态改变的，则设置cell-height-mode="dynamic" -->
@@ -13,7 +15,8 @@
 				<view style="font-size: 40rpx;font-weight: 700;">这是一个banner</view>
 				<view style="font-size: 24rpx;margin-top: 5rpx;">下方tab滚动时可吸附在顶部</view>
 			</view>
-			<view style="z-index: 100;position: sticky;" :style="[{top:-topHeight + 'px'}]">
+			<!-- 重要！此处吸顶的top需要根据虚拟列表顶部占位高度变化，:style="[{ top: -virtualTopHeight + 'px' }]"必须写！ -->
+			<view style="z-index: 100;position: sticky;" :style="[{ top: -virtualTopHeight + 'px' }]">
 				<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
 				<z-tabs :list="tabList" @change="tabChange" />
 			</view>
@@ -43,7 +46,8 @@
 			return {
 				tabList: ['cell高度相同','cell高度不同'],
 				tabIndex: 0,
-				topHeight: 0,
+				// 记录当前虚拟列表顶部占位高度
+				virtualTopHeight: 0,
 			}
 		},
 		methods: {
@@ -52,8 +56,9 @@
 				// 当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
 				this.$refs.paging.reload();
 			},
-			virtualTopHeightChange(topHeight) {
-				this.topHeight = topHeight;
+			// 监听虚拟列表顶部占位高度变化
+			virtualTopHeightChange(virtualTopHeight) {
+				this.virtualTopHeight = virtualTopHeight;
 			},
 			queryList(pageNo, pageSize) {
 				// 组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
@@ -82,6 +87,15 @@
 </script>
 
 <style scoped>
+	.banner-view {
+		background-color: #007AFF;
+		color: white;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+	
 	.item {
 		position: relative;
 		display: flex;

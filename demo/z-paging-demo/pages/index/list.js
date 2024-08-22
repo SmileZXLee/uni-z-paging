@@ -60,6 +60,11 @@ export default {
 			subTitle: '写法麻烦，而且需要手动修改`z-paging`源码，所有渲染cell写在相同组件内，不易维护，在vue2中兼容性很好，但非必须不建议使用'
 		},
 		{
+			title: '虚拟列表+吸顶演示(一般写法)',
+			file: 'virtual-list-sticky-demo',
+			subTitle: '其他虚拟列表+吸顶写法与一般写法类似，主要是通过监听@virtualTopHeightChange，动态设置吸顶top'
+		},
+		{
 			title: '滚动吸附效果演示',
 			file: 'sticky-demo',
 			subTitle: ''

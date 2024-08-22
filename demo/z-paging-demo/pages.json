@@ -274,6 +274,13 @@
 			{
 				"navigationBarTitleText" : "延迟加载列表演示"
 			}
+		},
+		{
+			"path" : "pages/virtual-list-sticky-demo/virtual-list-sticky-demo",
+			"style" : 
+			{
+				"navigationBarTitleText" : "虚拟列表+吸顶演示(一般写法)"
+			}
 		}
 	],
 	"globalStyle": {
