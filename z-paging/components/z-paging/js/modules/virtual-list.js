@@ -110,6 +110,10 @@ export default {
 		virtualList(newVal){
 			this.$emit('update:virtualList', newVal);
 			this.$emit('virtualListChange', newVal);
+		},
+		// 监听虚拟列表顶部占位高度改变并emit
+		virtualPlaceholderTopHeight(newVal) {
+			this.$emit('virtualTopHeightChange', newVal);
 		}
 	},
 	computed: {
