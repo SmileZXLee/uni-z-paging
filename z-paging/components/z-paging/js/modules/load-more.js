@@ -179,7 +179,11 @@ export default {
 		// 是否显示自定义状态下的底部加载更多
 		showLoadingMoreCustom() {
 			return this._showLoadingMore('Custom');
-		}
+		},
+		// 底部加载更多固定高度
+		loadingMoreFixedHeight() {
+			return u.addUnit('80rpx', this.unit);
+		},
 	},
 	methods: {
 		// 页面滚动到底部时通知z-paging进行进一步处理

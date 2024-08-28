@@ -261,7 +261,7 @@ by ZXLee
 						</view>
 					</template>
 					
-					<view :style="nLoadingMoreFixedHeight?{height:loadingMoreCustomStyle&&loadingMoreCustomStyle.height?loadingMoreCustomStyle.height:'80rpx'}:{}">
+					<view :style="nLoadingMoreFixedHeight?{height:loadingMoreCustomStyle&&loadingMoreCustomStyle.height?loadingMoreCustomStyle.height:loadingMoreFixedHeight}:{}">
 						<slot v-if="showLoadingMoreDefault" name="loadingMoreDefault" />
 						<slot v-else-if="showLoadingMoreLoading" name="loadingMoreLoading" />
 						<slot v-else-if="showLoadingMoreNoMore" name="loadingMoreNoMore" />
