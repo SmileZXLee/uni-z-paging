@@ -511,7 +511,9 @@ export default {
 					const localPageNo = this.defaultPageNo;
 					const localPageSize = this.queryFrom !== Enum.QueryFrom.Refresh ? this.defaultPageSize : this.currentRefreshPageSize;
 					this._localPagingQueryList(localPageNo, localPageSize, 0, res => {
-						this.completeByTotal(res, this.totalLocalPagingList.length);
+						u.delay(() => {
+							this.completeByTotal(res, this.totalLocalPagingList.length);;
+						}, 0)
 					})
 				} else {
 					// 如果当前不是本地分页，则按照正常分页逻辑进行数据处理&emit数据
