@@ -170,7 +170,7 @@ by ZXLee
 		<!-- 点击返回顶部view -->
 		<view v-if="showBackToTopClass" :class="finalBackToTopClass" :style="[finalBackToTopStyle]" @click.stop="_backToTopClick">
 			<slot v-if="zSlots.backToTop" name="backToTop" />
-			<image v-else class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop" />
+			<image v-else class="zp-back-to-top-img" :class="{'zp-back-to-top-img-inversion': useChatRecordMode&&!backToTopImg.length}" :src="backToTopImg.length?backToTopImg:base64BackToTop" />
 		</view>
 		<!-- 全屏Loading(铺满z-paging并固定) -->
 		<view v-if="showLoading&&zSlots.loading&&loadingFullFixed" class="zp-loading-fixed">
@@ -298,7 +298,7 @@ by ZXLee
 		<!-- 点击返回顶部view -->
 		<view v-if="showBackToTopClass" :class="finalBackToTopClass" :style="[finalBackToTopStyle]" @click.stop="_backToTopClick">
 			<slot v-if="zSlots.backToTop" name="backToTop" />
-			<image v-else class="zp-back-to-top-img" :src="backToTopImg.length?backToTopImg:base64BackToTop" />
+			<image v-else class="zp-back-to-top-img" :class="{'zp-back-to-top-img-inversion': useChatRecordMode&&!backToTopImg.length}" :src="backToTopImg.length?backToTopImg:base64BackToTop" />
 		</view>
 		<!-- 全屏Loading(铺满z-paging并固定) -->
 		<view v-if="showLoading&&zSlots.loading&&loadingFullFixed" class="zp-loading-fixed">

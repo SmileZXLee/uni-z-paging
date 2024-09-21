@@ -193,6 +193,10 @@
 	z-index: 999;
 }
 
+.zp-back-to-top-img-inversion {
+	transform: rotate(180deg);
+}
+
 .zp-empty-view {
 	/* #ifdef APP-NVUE */
 	height: 100%;

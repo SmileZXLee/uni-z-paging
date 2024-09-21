@@ -89,10 +89,10 @@ export default {
 				!callbacked && this._handleToTop();
 			})
 		},
-		// 处理滚动到顶部
+		// 处理滚动到顶部（聊天记录模式中为滚动到底部）
 		_handleToTop() {
 			!this.backToTopWithAnimate && this._checkShouldShowBackToTop(0);
-			this.scrollToTop(this.backToTopWithAnimate);
+			!this.useChatRecordMode ? this.scrollToTop(this.backToTopWithAnimate) : this.scrollToBottom(this.backToTopWithAnimate);
 		},
 		// 判断是否要显示返回顶部按钮
 		_checkShouldShowBackToTop(scrollTop) {
