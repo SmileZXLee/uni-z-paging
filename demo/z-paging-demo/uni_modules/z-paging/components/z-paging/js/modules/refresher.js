@@ -615,7 +615,9 @@ export default {
 		// 下拉刷新结束
 		_refresherEnd(shouldEndLoadingDelay = true, fromAddData = false, isUserPullDown = false, setLoading = true) {
 			if (this.loadingType === Enum.LoadingType.Refresher) {
+				// 计算当前下拉刷新结束需要延迟的时间
 				const refresherCompleteDelay = (fromAddData && (isUserPullDown || this.showRefresherWhenReload)) ? this.refresherCompleteDelay : 0;
+				// 如果延迟时间大于0，则展示刷新结束状态，否则直接展示默认状态
 				const refresherStatus = refresherCompleteDelay > 0 ? Enum.Refresher.Complete : Enum.Refresher.Default;
 				if (this.finalShowRefresherWhenReload) {
 					const stackCount = this.refresherRevealStackCount;
@@ -624,7 +626,12 @@ export default {
 				}
 				this._cleanRefresherEndTimeout();
 				this.refresherEndTimeout = u.delay(() => {
+					// 更新下拉刷新状态
 					this.refresherStatus = refresherStatus;
+					// 如果当前下拉刷新状态不是刷新结束，则认为其不在刷新结束状态
+					if (refresherStatus !== Enum.Refresher.Complete) {
+						this.isRefresherInComplete = false;
+					}
 				}, this.refresherStatus !== Enum.Refresher.Default && refresherStatus === Enum.Refresher.Default ? this.refresherCompleteDuration : 0);
 				
 				// #ifndef APP-NVUE
