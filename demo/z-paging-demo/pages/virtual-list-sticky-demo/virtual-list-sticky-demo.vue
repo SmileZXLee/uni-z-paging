@@ -18,7 +18,7 @@
 			<!-- 重要！此处吸顶的top需要根据虚拟列表顶部占位高度变化，:style="[{ top: -virtualTopHeight + 'px' }]"必须写！ -->
 			<view style="z-index: 100;position: sticky;" :style="[{ top: -virtualTopHeight + 'px' }]">
 				<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-				<z-tabs :list="tabList" @change="tabChange" />
+				<z-tabs :list="tabList" @change="tabsChange" />
 			</view>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内，放在所有cell上方的用slot="header"插入，放在所有cell下方的用slot="footer"插入 -->
 			
@@ -51,7 +51,7 @@
 			}
 		},
 		methods: {
-			tabChange(index) {
+			tabsChange(index) {
 				this.tabIndex = index;
 				// 当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
 				this.$refs.paging.reload();

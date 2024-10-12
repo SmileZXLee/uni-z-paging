@@ -7,7 +7,7 @@
 			<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
 			<template #top>
 				<u-navbar title="下拉进入二楼演示" title-color="black" title-bold :is-fixed="false"></u-navbar>
-				<z-tabs :list="tabList" @change="tabChange" />
+				<z-tabs :list="tabList" @change="tabsChange" />
 			</template>
 			<!-- 自定义松手显示二楼view（非必须，可根据具体需求定制） -->
 			<template #refresherF2>
@@ -40,7 +40,7 @@
 			}
 		},
 		methods: {
-			tabChange(index) {
+			tabsChange(index) {
 				this.tabIndex = index;
 				// 当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
 				this.$refs.paging.reload();

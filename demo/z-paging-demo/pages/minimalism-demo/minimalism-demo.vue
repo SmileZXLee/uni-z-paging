@@ -10,7 +10,7 @@
 					<view>全局设置v-model和@query的绑定对象名，具体写法和说明请查阅demo源码</view>
 				</view>
 				<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-				<z-tabs :list="tabList" @change="tabChange" />
+				<z-tabs :list="tabList" @change="tabsChange" />
 			</template>
 			<!-- 如果希望其他view跟着页面滚动，可以放在z-paging标签内 -->
 			<view class="item" v-for="(item,index) in zList" :key="index" @click="itemClick(item)">
@@ -32,7 +32,7 @@
 			}
 		},
 		methods: {
-			tabChange(index) {
+			tabsChange(index) {
 				this.tabIndex = index;
 				// 当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
 				this.$refs.paging.reload();

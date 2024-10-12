@@ -14,7 +14,7 @@
 		<!-- 需要固定在顶部不滚动的view放在slot="top"的view中 -->
 		<template #top>
 			<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-			<z-tabs ref="tabs" :list="tabList" :current="current" @change="tabChange" />
+			<z-tabs ref="tabs" :list="tabList" :current="current" @change="tabsChange" />
 		</template>
 		<!-- 因swiper与swiper-item无法封装在不同组件中，因此这边依然需要设置swiper包裹swiper-item -->
 		<swiper style="height: 100%;" :current="current" @transition="swiperTransition" @animationfinish="swiperAnimationfinish">
@@ -44,7 +44,7 @@
 		},
 		methods: {
 			// tabs通知swiper切换
-			tabChange(index) {
+			tabsChange(index) {
 				this.current = index;
 			},
 			// swiper滑动中

@@ -11,7 +11,7 @@
 			<!-- 小程序中直接修改组件style为position: sticky;无效，需要在组件外层套一层view -->
 			<view style="z-index: 100;position: sticky;top :0;">
 				<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-				<z-tabs :list="tabList" @change="tabChange" />
+				<z-tabs :list="tabList" @change="tabsChange" />
 			</view>
 			<!-- 自定义下拉刷新view -->
 			<template #refresher>
@@ -38,7 +38,7 @@
 			}
 		},
 		methods: {
-			tabChange(index) {
+			tabsChange(index) {
 				this.tabIndex = index;
 				// 当切换tab时请调用组件的reload方法，请勿直接调用：queryList方法！！
 				this.$refs.paging.reload();

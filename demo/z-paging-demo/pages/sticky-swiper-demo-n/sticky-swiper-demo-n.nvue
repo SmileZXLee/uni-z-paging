@@ -20,7 +20,7 @@
 			<view :style="'height:' + pageHeight + 'px'">
 				<!-- 吸顶view -->
 				<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-				<z-tabs ref="tabs" :list="tabList" :current="current" @change="tabChange" />
+				<z-tabs ref="tabs" :list="tabList" :current="current" @change="tabsChange" />
 				<!-- swiper -->
 				<swiper class="swiper" :current="current" @change="swiperChange" @transition="swiperTransition" @animationfinish="swiperAnimationfinish">
 					<swiper-item class="swiper-item" v-for="(item, index) in tabList" :key="index">
@@ -85,7 +85,7 @@
 				});
 			},
 			// tabs通知swiper切换
-			tabChange(index) {
+			tabsChange(index) {
 				this.current = index;
 			},
 			// swiper change时触发

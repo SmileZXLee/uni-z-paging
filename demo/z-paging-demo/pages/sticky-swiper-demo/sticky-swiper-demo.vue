@@ -19,7 +19,7 @@
 				<!-- 小程序中直接修改组件style为position: sticky;无效，需要在组件外层套一层view -->
 				<view style="z-index: 100;position: sticky;top :0;">
 					<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
-					<z-tabs ref="tabs" :list="tabList" :current="current" @change="tabChange" />
+					<z-tabs ref="tabs" :list="tabList" :current="current" @change="tabsChange" />
 				</view>
 				<swiper class="swiper" :current="current" @transition="swiperTransition" @animationfinish="swiperAnimationfinish">
 					<swiper-item class="swiper-item" v-for="(item, index) in tabList" :key="index">
@@ -90,7 +90,7 @@
 				this.$refs.pagePaging.scrollToY(this.headerHeight);
 			},
 			// tabs通知swiper切换
-			tabChange(index) {
+			tabsChange(index) {
 				this.current = index;
 			},
 			// swiper滑动中
