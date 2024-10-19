@@ -7,7 +7,7 @@
 <template>
 	<view class="content">
 		<!-- 如果页面中的cell高度是固定不变的，则不需要设置cell-height-mode，如果页面中高度是动态改变的，则设置cell-height-mode="dynamic" -->
-		<z-paging ref="paging" use-virtual-list :cell-height-mode="tabIndex===0?'fixed':'dynamic'" @query="queryList" @virtualTopHeightChange="virtualTopHeightChange">
+		<z-paging ref="paging" use-virtual-list :cell-height-mode="tabIndex===0?'fixed':'dynamic'" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<template #top>
 				<view class="header">列表总数据量：10万条</view>
@@ -40,7 +40,6 @@
 			return {
 				tabList: ['cell高度相同','cell高度不同'],
 				tabIndex: 0,
-				topHeight: 0,
 			}
 		},
 		methods: {
@@ -48,9 +47,6 @@
 				this.tabIndex = index;
 				// 当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
 				this.$refs.paging.reload();
-			},
-			virtualTopHeightChange(topHeight) {
-				this.topHeight = topHeight;
 			},
 			queryList(pageNo, pageSize) {
 				// 组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用

@@ -44,6 +44,10 @@
         	{
         		"launchtype" : "remote"
         	},
+        	"quickapp-union" : 
+        	{
+        		"launchtype" : "remote"
+        	},
         	"quickapp-webview-huawei" : 
         	{
         		"launchtype" : "remote"

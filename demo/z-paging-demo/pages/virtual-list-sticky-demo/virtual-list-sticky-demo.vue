@@ -5,18 +5,16 @@
 <!-- 写法简单，通过slot=cell插入所需cell，页面中无直接的for循环，在vue2中兼容性良好 -->
 <!-- 在各平台兼容性请查阅https://z-paging.zxlee.cn/module/virtual-list.html -->
 
-<!-- 吸顶部分逻辑更改主要是通过监听@virtualTopHeightChange="virtualTopHeightChange"动态设置吸顶top：<view style="z-index: 100;position: sticky;" :style="[{ top: -virtualTopHeight + 'px' }]">  -->
 <template>
 	<view class="content">
 		<!-- 如果页面中的cell高度是固定不变的，则不需要设置cell-height-mode，如果页面中高度是动态改变的，则设置cell-height-mode="dynamic" -->
-		<z-paging ref="paging" use-virtual-list :cell-height-mode="tabIndex===0?'fixed':'dynamic'" @query="queryList" @virtualTopHeightChange="virtualTopHeightChange">
+		<z-paging ref="paging" use-virtual-list :cell-height-mode="tabIndex===0?'fixed':'dynamic'" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<view class="banner-view" style="height: 250rpx;">
 				<view style="font-size: 40rpx;font-weight: 700;">这是一个banner</view>
 				<view style="font-size: 24rpx;margin-top: 5rpx;">下方tab滚动时可吸附在顶部</view>
 			</view>
-			<!-- 重要！此处吸顶的top需要根据虚拟列表顶部占位高度变化，:style="[{ top: -virtualTopHeight + 'px' }]"必须写！ -->
-			<view style="z-index: 100;position: sticky;" :style="[{ top: -virtualTopHeight + 'px' }]">
+			<view style="z-index: 100;position: sticky;top: 0px">
 				<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
 				<z-tabs :list="tabList" @change="tabsChange" />
 			</view>
@@ -46,8 +44,6 @@
 			return {
 				tabList: ['cell高度相同','cell高度不同'],
 				tabIndex: 0,
-				// 记录当前虚拟列表顶部占位高度
-				virtualTopHeight: 0,
 			}
 		},
 		methods: {
@@ -55,10 +51,6 @@
 				this.tabIndex = index;
 				// 当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
 				this.$refs.paging.reload();
-			},
-			// 监听虚拟列表顶部占位高度变化
-			virtualTopHeightChange(virtualTopHeight) {
-				this.virtualTopHeight = virtualTopHeight;
 			},
 			queryList(pageNo, pageSize) {
 				// 组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
