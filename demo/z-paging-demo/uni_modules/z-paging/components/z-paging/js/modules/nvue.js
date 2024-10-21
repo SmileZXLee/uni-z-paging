@@ -66,7 +66,7 @@ export default {
 			nLoadingMoreFixedHeight: false,
 			nShowRefresherRevealHeight: 0,
 			nOldShowRefresherRevealHeight: -1,
-			nRefresherWidth: uni.upx2px(750),
+			nRefresherWidth: u.rpx2px(750),
 			nF2Opacity: 0
 		}
 	},

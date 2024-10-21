@@ -142,7 +142,7 @@
 			// 导航栏是否固定在顶部
 			isFixed: {
 				type: Boolean,
-				default: true
+				default: false
 			},
 			// 是否沉浸式，允许fixed定位后导航栏塌陷，仅fixed定位下生效
 			immersive: {
@@ -195,17 +195,17 @@
 			titleStyle() {
 				let style = {};
 				// #ifndef MP
-				style.left = (systemInfo.windowWidth - uni.upx2px(this.titleWidth)) / 2 + 'px';
-				style.right = (systemInfo.windowWidth - uni.upx2px(this.titleWidth)) / 2 + 'px';
+				style.left = (systemInfo.windowWidth - this.rpx2px(this.titleWidth)) / 2 + 'px';
+				style.right = (systemInfo.windowWidth - this.rpx2px(this.titleWidth)) / 2 + 'px';
 				// #endif
 				// #ifdef MP
 				// 此处是为了让标题显示区域即使在小程序有右侧胶囊的情况下也能处于屏幕的中间，是通过绝对定位实现的
 				let rightButtonWidth = systemInfo.windowWidth - menuButtonInfo.left;
-				style.left = (systemInfo.windowWidth - uni.upx2px(this.titleWidth)) / 2 + 'px';
-				style.right = rightButtonWidth - (systemInfo.windowWidth - uni.upx2px(this.titleWidth)) / 2 + rightButtonWidth +
+				style.left = (systemInfo.windowWidth - this.rpx2px(this.titleWidth)) / 2 + 'px';
+				style.right = rightButtonWidth - (systemInfo.windowWidth - this.rpx2px(this.titleWidth)) / 2 + rightButtonWidth +
 					'px';
 				// #endif
-				style.width = uni.upx2px(this.titleWidth) + 'px';
+				style.width = this.rpx2px(this.titleWidth) + 'px';
 				return style;
 			},
 			// 转换字符数值为真正的数值
@@ -233,6 +233,16 @@
 				} else {
 					uni.navigateBack();
 				}
+			},
+			// rpx => px，兼容鸿蒙
+			rpx2px(rpx) {
+				// #ifdef APP-HARMONY
+				const screenWidth = uni.getSystemInfoSync().screenWidth;
+				return (screenWidth * Number.parseFloat(rpx)) / 750;
+				// #endif
+				// #ifndef APP-HARMONY
+				return this.rpx2px(rpx);
+				// #endif
 			}
 		}
 	};

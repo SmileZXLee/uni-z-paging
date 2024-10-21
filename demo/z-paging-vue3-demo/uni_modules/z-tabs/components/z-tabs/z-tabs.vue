@@ -47,6 +47,11 @@
 	const weexDom = weex.requireModule('dom');
 	const weexAnimation = weex.requireModule('animation');
 	// #endif
+	
+	// #ifdef APP-HARMONY
+	let screenWidth = 0;
+	// #endif
+	
 	import zTabsConfig from './config/index'
 	
 	//获取默认配置信息
@@ -108,9 +113,9 @@
 				barCalcedWidth: 0,
 				pxBarWidth: 0,
 				scrollLeft: 0,
-				tabsSuperWidth: uni.upx2px(750),
-				tabsWidth: uni.upx2px(750),
-				tabsHeight: uni.upx2px(80),
+				tabsSuperWidth: this.rpx2px(750),
+				tabsWidth: this.rpx2px(750),
+				tabsHeight: this.rpx2px(80),
 				tabsLeft: 0,
 				tabsContainerWidth: 0,
 				itemNodeInfos: [],
@@ -349,6 +354,19 @@
 			}
 		},
 		methods: {
+			// rpx => px，兼容鸿蒙
+			rpx2px(rpx) {
+				// #ifdef APP-HARMONY
+				if (!screenWidth) {
+					screenWidth = uni.getSystemInfoSync().screenWidth;
+				}
+				return (screenWidth * Number.parseFloat(rpx)) / 750;
+				// #endif
+				// #ifndef APP-HARMONY
+				return uni.upx2px(rpx);
+				// #endif
+			},
+			
 			//根据swiper的@transition实时更新底部dot位置
 			setDx(dx) {
 				if (!this.shouldSetDx) return;
@@ -487,7 +505,7 @@
 						if (nodeRes) {
 							node = nodeRes[0];
 							offset = this.currentScrollLeft;
-							this.tabsHeight = Math.max(node.height + uni.upx2px(28), this.tabsHeight);
+							this.tabsHeight = Math.max(node.height + this.rpx2px(28), this.tabsHeight);
 							tabsContainerWidth = 0;
 							for(let i = 0;i < this.itemNodeInfos.length;i++){
 								let oldNode = this.itemNodeInfos[i];
@@ -592,7 +610,7 @@
 			_convertTextToPx(text) {
 				const dataType = Object.prototype.toString.call(text);
 				if (dataType === '[object Number]') {
-					return uni.upx2px(text);
+					return this.rpx2px(text);
 				}
 				let isRpx = false;
 				if (text.indexOf('rpx') !== -1 || text.indexOf('upx') !== -1) {
@@ -601,10 +619,10 @@
 				} else if (text.indexOf('px') !== -1) {
 					text = text.replace('px', '');
 				} else {
-					text = uni.upx2px(text);
+					text = this.rpx2px(text);
 				}
 				if (!isNaN(text)) {
-					if (isRpx) return Number(uni.upx2px(text));
+					if (isRpx) return Number(this.rpx2px(text));
 					return Number(text);
 				}
 				return 0;

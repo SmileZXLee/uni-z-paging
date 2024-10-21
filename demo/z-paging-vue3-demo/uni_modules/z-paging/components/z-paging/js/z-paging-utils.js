@@ -8,6 +8,10 @@ let config = null;
 let configLoaded = false;
 const timeoutMap = {};
 
+// #ifdef APP-HARMONY
+let screenWidth = 0;
+// #endif
+
 // 获取默认配置信息
 function gc(key, defaultValue) {
 	// 这里return一个函数以解决在vue3+appvue中，props默认配置读取在main.js之前执行导致uni.$zp全局配置无效的问题。相当于props的default中传入一个带有返回值的函数
@@ -119,10 +123,23 @@ function convertToPx(text) {
 		text = text.replace('px', '');
 	}
 	if (!isNaN(text)) {
-		if (isRpx) return Number(uni.upx2px(text));
+		if (isRpx) return Number(rpx2px(text));
 		return Number(text);
 	}
 	return 0;
+}
+
+// rpx => px，兼容鸿蒙
+function rpx2px(rpx) {
+	// #ifdef APP-HARMONY
+	if (!screenWidth) {
+		screenWidth = uni.getSystemInfoSync().screenWidth;
+	}
+	return (screenWidth * Number.parseFloat(rpx)) / 750;
+	// #endif
+	// #ifndef APP-HARMONY
+	return uni.upx2px(rpx);
+	// #endif
 }
 
 // 获取当前时间
@@ -266,5 +283,6 @@ export default {
 	wait,
 	isPromise,
 	addUnit,
-	deepCopy
+	deepCopy,
+	rpx2px
 };

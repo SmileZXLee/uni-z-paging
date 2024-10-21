@@ -67,8 +67,8 @@
 			heightChanged(height){
 				if(height === 0){
 					// 默认swiper高度为屏幕可用高度-tabsView高度-slot="top"内view的高度
-					// 注意：uni.upx2px(80)不是固定的，它等于slot="top"内view的高度，如果slot="top"内view的高度不为80rpx，则需要修改这个值
-					height = uni.getSystemInfoSync().windowHeight - uni.upx2px(80);
+					// 注意：this.rpx2px(80)不是固定的，它等于slot="top"内view的高度，如果slot="top"内view的高度不为80rpx，则需要修改这个值
+					height = uni.getSystemInfoSync().windowHeight - this.rpx2px(80);
 				}
 				this.swiperHeight = height;
 			},
@@ -78,6 +78,17 @@
 					this.$refs.swiperList[this.current].clear();
 				}
 				this.current = current;
+			},
+			
+			// rpx => px，兼容鸿蒙
+			rpx2px(rpx) {
+				// #ifdef APP-HARMONY
+				const screenWidth = uni.getSystemInfoSync().screenWidth;
+				return (screenWidth * Number.parseFloat(rpx)) / 750;
+				// #endif
+				// #ifndef APP-HARMONY
+				return uni.upx2px(rpx);
+				// #endif
 			}
 		}
 	}
