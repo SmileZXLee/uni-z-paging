@@ -1,11 +1,11 @@
 # z-tabs
 
-[![version](https://img.shields.io/badge/version-0.2.5-blue)](https://github.com/SmileZXLee/uni-z-tabs)
+[![version](https://img.shields.io/badge/version-0.3.0-blue)](https://github.com/SmileZXLee/uni-z-tabs)
 [![license](https://img.shields.io/github/license/SmileZXLee/uni-z-tabs)](https://en.wikipedia.org/wiki/MIT_License)
 
 ***
 
-### 反馈qq群(点击加群)：[790460711](https://jq.qq.com/?_wv=1027&k=vU2fKZZH)
+### 反馈qq群(点击加群)：[371624008](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=avPmibADf2TNi4LxkIwjCE5vbfXpa-r1&authKey=dQ%2FVDAR87ONxI4b32Py%2BvmXbhnopjHN7%2FJPtdsqJdsCPFZB6zDQ17L06Uh0kITUZ&noverify=0&group_code=371624008)
 
 ***
 
@@ -102,6 +102,8 @@ npm update @zxlee/z-tabs
 | bg-color            | z-tabs背景色                                                 | String         | white   | -      |
 | tabs-style          | z-tabs样式                                                   | Object         | {}      | -      |
 | init-trigger-change | 初始化时是否自动触发change事件                               | Boolean        | true    | false  |
+| unit                | z-tabs中布局的单位，默认为rpx                                | String         | rpx     | px     |
+
 
 
 ### events
