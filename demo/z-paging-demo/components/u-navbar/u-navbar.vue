@@ -241,7 +241,7 @@
 				return (screenWidth * Number.parseFloat(rpx)) / 750;
 				// #endif
 				// #ifndef APP-HARMONY
-				return this.rpx2px(rpx);
+				return uni.upx2px(rpx);
 				// #endif
 			}
 		}
