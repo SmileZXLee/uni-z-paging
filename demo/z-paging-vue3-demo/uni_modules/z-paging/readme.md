@@ -26,7 +26,8 @@
 ### 反馈qq群
 * 官方1群`已满`：[790460711](https://jq.qq.com/?_wv=1027&k=vU2fKZZH)
 
-* 官方2群：[371624008](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=avPmibADf2TNi4LxkIwjCE5vbfXpa-r1&authKey=dQ%2FVDAR87ONxI4b32Py%2BvmXbhnopjHN7%2FJPtdsqJdsCPFZB6zDQ17L06Uh0kITUZ&noverify=0&group_code=371624008)
+* 官方2群`已满`：[371624008](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=avPmibADf2TNi4LxkIwjCE5vbfXpa-r1&authKey=dQ%2FVDAR87ONxI4b32Py%2BvmXbhnopjHN7%2FJPtdsqJdsCPFZB6zDQ17L06Uh0kITUZ&noverify=0&group_code=371624008)
+* 官方3群：[343409055](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=sIaNqiCMIjxGQVksjytCw6R8DSiibHR7&authKey=pp995q8ZzFtl5F2xUwvvceP24QTcguWW%2FRVoDnMa8JZF4L2DmS%2B%2FV%2F5sYrcgPsmW&noverify=0&group_code=343409055)
  
 *** 
 

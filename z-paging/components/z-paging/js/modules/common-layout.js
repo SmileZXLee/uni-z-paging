@@ -82,7 +82,7 @@ export default {
 			})
 		},
 		// 获取节点尺寸
-		_getNodeClientRect(select, inDom = true, scrollOffset = false) {
+		_getNodeClientRect(select, inDom = true, scrollOffset = false, inParent = false) {
 			if (this.isReadyDestroy) {
 				return Promise.resolve(false);
 			};
@@ -106,7 +106,8 @@ export default {
 			//#ifdef MP-ALIPAY
 			inDom = false;
 			//#endif
-			let res = !!inDom ? uni.createSelectorQuery().in(inDom === true ? this : inDom) : uni.createSelectorQuery();
+			const inDomObj = inParent ? this.$parent : this;
+			let res = inDom || inParent ? uni.createSelectorQuery().in(inDomObj) : uni.createSelectorQuery();
 			scrollOffset ? res.select(select).scrollOffset() : res.select(select).boundingClientRect();
 			return new Promise((resolve, reject) => {
 				res.exec(data => {

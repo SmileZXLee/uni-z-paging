@@ -10,7 +10,7 @@ by ZXLee
 <!-- 文档地址：https://z-paging.zxlee.cn -->
 <!-- github地址：https://github.com/SmileZXLee/uni-z-paging -->
 <!-- dcloud地址：https://ext.dcloud.net.cn/plugin?id=3935 -->
-<!-- 反馈QQ群：790460711(已满)、371624008 -->
+<!-- 反馈QQ群：343409055 -->
 
 <template name="z-paging">
 	<!-- #ifndef APP-NVUE -->

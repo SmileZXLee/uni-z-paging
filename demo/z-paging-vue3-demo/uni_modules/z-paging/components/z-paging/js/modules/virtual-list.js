@@ -166,7 +166,7 @@ export default {
 				while (retryCount <= 10) {
 					await u.wait(c.delayTime);
 					
-					const cellNode = await this._getNodeClientRect(`#zp-id-${item[cellIndexKey]}`, this.finalUseInnerList);
+					const cellNode = await this._getVirtualCellNodeByIndex(item[cellIndexKey]);
 					// 如果获取当前cell的节点信息失败，则重试（不超过10次）
 					if (!cellNode) {
 						retryCount ++;
@@ -200,7 +200,7 @@ export default {
 			if (this.cellHeightMode !== Enum.CellHeightMode.Dynamic) return;
 			const currentNode = this.virtualHeightCacheList[index];
 			this.$nextTick(() => {
-				this._getNodeClientRect(`#zp-id-${index}`, this.finalUseInnerList).then(cellNode => {
+				this._getVirtualCellNodeByIndex(index).then(cellNode => {
 					// 更新当前cell的高度
 					const cellNodeHeight = cellNode ? cellNode[0].height : 0;
 					const heightDis = cellNodeHeight - currentNode.height;
@@ -252,6 +252,7 @@ export default {
 				u.delay(() => {
 					// 获取虚拟列表滚动区域的高度
 					this._getNodeClientRect('.zp-scroll-view').then(node => {
+						console.log(node);
 						if (node) {
 							this.pagingOrgTop = node[0].top;
 							this.virtualPageHeight = node[0].height;
@@ -265,7 +266,7 @@ export default {
 			if (!this.finalFixedCellHeight) {
 				this.$nextTick(() => {
 					u.delay(() => {
-						this._getNodeClientRect(`#zp-id-${0}`,this.finalUseInnerList).then(cellNode => {
+						this._getVirtualCellNodeByIndex(0).then(cellNode => {
 							if (!cellNode) {
 								if (this.getCellHeightRetryCount.fixed > 10) return;
 								this.getCellHeightRetryCount.fixed ++;
@@ -291,7 +292,7 @@ export default {
 			this.$nextTick(() => {
 				u.delay(async () => {
 					for (let i = 0; i < list.length; i++) {
-						const cellNode = await this._getNodeClientRect(`#zp-id-${list[i][this.virtualCellIndexKey]}`, this.finalUseInnerList);
+						const cellNode = await this._getVirtualCellNodeByIndex(list[i][this.virtualCellIndexKey]);
 						const currentHeight = cellNode ? cellNode[0].height : 0;
 						if (!cellNode) {
 							if (this.getCellHeightRetryCount.dynamic <= 10) {
@@ -507,6 +508,20 @@ export default {
 					});
 				})
 			}
+		},
+		// 获取对应index的虚拟列表cell节点信息
+		_getVirtualCellNodeByIndex(index) {
+			let inParent = false;
+			// 在vue3+(微信小程序或QQ小程序)中，使用非内置列表写法时，若z-paging在swiper-item内存在无法获取slot插入的cell高度的问题
+			// 通过uni.createSelectorQuery().in(this.$parent)来解决此问题
+			// #ifdef VUE3
+			// #ifdef MP-WEIXIN || MP-QQ
+			if (this.forceCloseInnerList) {
+				inParent = true;
+			}
+			// #endif
+			// #endif
+			return this._getNodeClientRect(`#zp-id-${index}`, this.finalUseInnerList, false, inParent);
 		},
 		// 处理使用内置列表时点击了cell事件
 		_innerCellClick(item, index) {
