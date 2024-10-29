@@ -74,6 +74,11 @@ export default {
 			type: [Number, String],
 			default: u.gc('virtualScrollFps', 80)
 		},
+		// 虚拟列表cell id的前缀，适用于一个页面有多个虚拟列表的情况，用以区分不同虚拟列表cell的id，注意：请勿传数字或以数字开头的字符串。如设置为list1，则cell的id应为：list1-zp-id-${item.zp_index}
+		virtualCellIdPrefix: {
+			type: String,
+			default: u.gc('virtualCellIdPrefix', '')
+		},
 	},
 	data() {
 		return {
@@ -143,12 +148,16 @@ export default {
 		finalFixedCellHeight() {
 			return u.convertToPx(this.fixedCellHeight);
 		},
+		fianlVirtualCellIdPrefix() {
+			const prefix = this.virtualCellIdPrefix ? this.virtualCellIdPrefix + '-' : '';
+			return prefix + 'zp-id';
+		},
 		virtualRangePageHeight(){
 			return this.finalVirtualPageHeight * this.preloadPage;
 		},
 		virtualScrollDisTimeStamp() {
 			return 1000 / this.virtualScrollFps;
-		},
+		}
 	},
 	methods: {
 		// 在使用动态高度虚拟列表时，若在列表数组中需要插入某个item，需要调用此方法；item:需要插入的item，index:插入的cell位置，若index为2，则插入的item在原list的index=1之后，index从0开始
@@ -252,7 +261,6 @@ export default {
 				u.delay(() => {
 					// 获取虚拟列表滚动区域的高度
 					this._getNodeClientRect('.zp-scroll-view').then(node => {
-						console.log(node);
 						if (node) {
 							this.pagingOrgTop = node[0].top;
 							this.virtualPageHeight = node[0].height;
@@ -521,7 +529,7 @@ export default {
 			}
 			// #endif
 			// #endif
-			return this._getNodeClientRect(`#zp-id-${index}`, this.finalUseInnerList, false, inParent);
+			return this._getNodeClientRect(`#${this.fianlVirtualCellIdPrefix}-${index}`, this.finalUseInnerList, false, inParent);
 		},
 		// 处理使用内置列表时点击了cell事件
 		_innerCellClick(item, index) {
