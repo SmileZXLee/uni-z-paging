@@ -341,7 +341,7 @@ export default {
 		_setCellIndex(list, dataFrom = 'bottom') {
 			let currentItemIndex = 0;
 			const cellIndexKey = this.virtualCellIndexKey;
-			([Enum.QueryFrom.Refresh, Enum.QueryFrom.Reload].indexOf(this.queryFrom) >= 0) && this._resetDynamicListState();
+			dataFrom === 'bottom' && ([Enum.QueryFrom.Refresh, Enum.QueryFrom.Reload].indexOf(this.queryFrom) >= 0) && this._resetDynamicListState();
 			if (this.totalData.length) {
 				if (dataFrom === 'bottom') {
 					currentItemIndex = this.realTotalData.length;
