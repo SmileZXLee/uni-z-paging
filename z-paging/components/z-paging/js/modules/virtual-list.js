@@ -342,7 +342,7 @@ export default {
 			let currentItemIndex = 0;
 			const cellIndexKey = this.virtualCellIndexKey;
 			dataFrom === 'bottom' && ([Enum.QueryFrom.Refresh, Enum.QueryFrom.Reload].indexOf(this.queryFrom) >= 0) && this._resetDynamicListState();
-			if (this.totalData.length && this.queryFrom === Enum.QueryFrom.LoadingMore) {
+			if (this.totalData.length && this.queryFrom !== Enum.QueryFrom.Refresh) {
 				if (dataFrom === 'bottom') {
 					currentItemIndex = this.realTotalData.length;
 					const lastItem = this.realTotalData.length ? this.realTotalData.slice(-1)[0] : null;
