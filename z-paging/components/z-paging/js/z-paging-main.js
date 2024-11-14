@@ -218,7 +218,10 @@ export default {
 			// 初始化systemInfo
 			this.systemInfo = uni.getSystemInfoSync();
 			// 初始化z-paging高度
-			!this.usePageScroll && this.autoHeight && this._setAutoHeight();
+			!this.usePageScroll && this.autoHeight  && this._setAutoHeight();
+			// #ifdef MP-KUAISHOU
+			this._setFullScrollViewInHeight();
+			// #endif
 			this.loaded = true;
 			u.delay(() => {
 				// 更新fixed模式下z-paging的布局，主要是更新windowTop、windowBottom
@@ -408,10 +411,7 @@ export default {
 		},
 		// 设置z-paging高度
 		async _setAutoHeight(shouldFullHeight = true, scrollViewNode = null) {
-			let heightKey = 'min-height';
-			// #ifndef APP-NVUE
-			heightKey = 'min-height';
-			// #endif
+			const heightKey = 'min-height';
 			try {
 				if (shouldFullHeight) {
 					// 如果需要铺满全屏，则计算当前全屏可是区域的高度
@@ -432,6 +432,16 @@ export default {
 				}
 			} catch (e) {}
 		},
+		// #ifdef MP-KUAISHOU
+		// 设置scroll-view内容器的最小高度等于scroll-view的高度(为了解决在快手小程序中内容较少时scroll-view内容器高度无法铺满scroll-view的问题)
+		_setFullScrollViewInHeight() {
+			try {
+				// 如果需要铺满全屏，则计算当前全屏可是区域的高度
+				const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
+				scrollViewNode && this.$set(this.scrollViewInStyle, 'min-height', scrollViewNode[0].height + 'px');
+			} catch (e) {}
+		},
+		// #endif
 		// 组件销毁后续处理
 		_handleUnmounted() {
 			this.active = false;
