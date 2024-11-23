@@ -1,0 +1,26 @@
+{
+  "name": "@uview-plus/types",
+  "version": "3.2.5",
+  "description": "types for uview-plus",
+  "main": "index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ijry/uview-plus.git"
+  },
+  "keywords": [
+    "uview-plus"
+  ],
+  "author": "jry",
+  "license": "MIT",
+  "types": "./index.d.ts",
+  "bugs": {
+    "url": "https://github.com/ijry/uview-plus/issues"
+  },
+  "homepage": "https://github.com/ijry/uview-plus#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  }
+}

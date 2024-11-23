@@ -1,9 +1,9 @@
 // [z-paging]枚举
 
 export default {
-	// 当前加载类型 0.下拉刷新 1.上拉加载更多
+	// 当前加载类型 refresher:下拉刷新 load-more:上拉加载更多
 	LoadingType: {
-		Refresher: 'Refresher',
+		Refresher: 'refresher',
 		LoadMore: 'load-more'
 	},
 	// 下拉刷新状态 default:默认状态 release-to-refresh:松手立即刷新 loading:刷新中 complete:刷新结束 go-f2:松手进入二楼
@@ -14,7 +14,7 @@ export default {
 		Complete: 'complete',
 		GoF2: 'go-f2'
 	},
-	// 底部加载更多状态 0.默认状态 1.加载中 2.没有更多数据 3.加载失败
+	// 底部加载更多状态 default:默认状态 loading:加载中 no-more:没有更多数据 fail:加载失败
 	More: {
 		Default: 'default',
 		Loading: 'loading',
