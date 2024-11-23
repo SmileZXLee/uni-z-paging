@@ -3,30 +3,30 @@
 export default {
 	// 当前加载类型 0.下拉刷新 1.上拉加载更多
 	LoadingType: {
-		Refresher: 0,
-		LoadingMore: 1
+		Refresher: 'Refresher',
+		LoadMore: 'load-more'
 	},
-	// 下拉刷新状态 0.默认状态 1.松手立即刷新 2.刷新中 3.刷新结束 4.松手进入二楼
+	// 下拉刷新状态 default:默认状态 release-to-refresh:松手立即刷新 loading:刷新中 complete:刷新结束 go-f2:松手进入二楼
 	Refresher: {
-		Default: 0,
-		ReleaseToRefresh: 1,
-		Loading: 2,
-		Complete: 3,
-		GoF2: 4
+		Default: 'default',
+		ReleaseToRefresh: 'release-to-refresh',
+		Refreshing: 'refreshing',
+		Complete: 'complete',
+		GoF2: 'go-f2'
 	},
 	// 底部加载更多状态 0.默认状态 1.加载中 2.没有更多数据 3.加载失败
 	More: {
-		Default: 0,
-		Loading: 1,
-		NoMore: 2,
-		Fail: 3
+		Default: 'default',
+		Loading: 'loading',
+		NoMore: 'no-more',
+		Fail: 'fail'
 	},
-	// @query触发来源 0.用户主动下拉刷新 1.通过reload触发 2.通过refresh触发 3.通过滚动到底部加载更多或点击底部加载更多触发
+	// @query触发来源 user-pull-down:用户主动下拉刷新 reload:通过reload触发 refresh:通过refresh触发 load-more:通过滚动到底部加载更多或点击底部加载更多触发
 	QueryFrom: {
-		UserPullDown: 0,
-		Reload: 1,
-		Refresh: 2,
-		LoadingMore: 3
+		UserPullDown: 'user-pull-down',
+		Reload: 'reload',
+		Refresh: 'refresh',
+		LoadMore: 'load-more'
 	},
 	// 虚拟列表cell高度模式
 	CellHeightMode: {

@@ -398,7 +398,7 @@ export default {
 				}
 				// #endif
 				// #ifdef APP-NVUE
-				this.refresherStatus = Enum.Refresher.Loading;
+				this.refresherStatus = Enum.Refresher.Refreshing;
 				this.refresherRevealStackCount ++;
 				u.delay(() => {
 					this._getNodeClientRect('zp-n-refresh-container', false).then((node) => {
@@ -540,7 +540,7 @@ export default {
 				this._callDataPromise(false);
 				this.loadingStatus = Enum.More.Fail;
 				this.isHandlingRefreshToPage = false;
-				if (this.loadingType === Enum.LoadingType.LoadingMore) {
+				if (this.loadingType === Enum.LoadingType.LoadMore) {
 					this.pageNo --;
 				}
 			}

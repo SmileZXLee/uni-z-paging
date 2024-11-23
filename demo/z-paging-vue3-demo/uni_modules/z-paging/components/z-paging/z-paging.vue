@@ -4,8 +4,8 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-v2.8.0 (2024-10-22)
-by ZXLee
+v2.8.1 (2024-11-24)
+@author ZXLee <admin@zxlee.cn>
 -->
 <!-- 文档地址：https://z-paging.zxlee.cn -->
 <!-- github地址：https://github.com/SmileZXLee/uni-z-paging -->

@@ -4,7 +4,7 @@
 		<view :class="showUpdateTime?'zp-r-container zp-r-container-padding':'zp-r-container'">
 			<view class="zp-r-left">
 				<!-- 非加载中(继续下拉刷新、松手立即刷新状态图片) -->
-				<image v-if="status!==R.Loading" :class="leftImageClass" :style="[leftImageStyle,imgStyle]" :src="leftImageSrc" />
+				<image v-if="status!==R.Refreshing" :class="leftImageClass" :style="[leftImageStyle,imgStyle]" :src="leftImageSrc" />
 				<!-- 加载状态图片 -->
 				<!-- #ifndef APP-NVUE -->
 				<image v-else :class="{'zp-line-loading-image':refreshingAnimated,'zp-r-left-image':true,'zp-r-left-image-pre-size-rpx':unit==='rpx','zp-r-left-image-pre-size-px':unit==='px'}" :style="[leftImageStyle,imgStyle]" :src="leftImageSrc" />
@@ -57,14 +57,21 @@
 			ts() {
 				return this.defaultThemeStyle;
 			},
-			// 当前状态数组
-			statusTextArr() {
+			// 当前状态Map
+			statusTextMap() {
 				this.updateTime();
-				return [this.defaultText, this.pullingText, this.refreshingText, this.completeText, this.goF2Text];
+				const { R, defaultText, pullingText, refreshingText, completeText, goF2Text } = this;
+				return {
+					[R.Default]: defaultText,
+					[R.ReleaseToRefresh]: pullingText,
+					[R.Refreshing]: refreshingText,
+					[R.Complete]: completeText,
+					[R.GoF2]: goF2Text,
+				};
 			},
 			// 当前状态文字
 			currentTitle() {
-				return this.statusTextArr[this.status] || this.defaultText;
+				return this.statusTextMap[this.status] || this.defaultText;
 			},
 			// 左侧图片class
 			leftImageClass() {
@@ -89,7 +96,7 @@
 					if (!!this.pullingImg) return this.pullingImg;
 					if (!!this.defaultImg) return this.defaultImg;
 					return this.zTheme.arrow[this.ts];
-				} else if (status === R.Loading) {
+				} else if (status === R.Refreshing) {
 					if (!!this.refreshingImg) return this.refreshingImg;
 					return this.zTheme.flower[this.ts];;
 				} else if (status === R.Complete) {

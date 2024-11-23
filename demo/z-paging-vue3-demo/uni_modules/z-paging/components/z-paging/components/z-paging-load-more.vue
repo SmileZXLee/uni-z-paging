@@ -55,8 +55,12 @@
 			},
 			// 底部加载更多文字
 			ownLoadingMoreText() {
-				const statusTextArr = [this.c.defaultText,this.c.loadingText,this.c.noMoreText,this.c.failText];
-				return statusTextArr[this.finalStatus];
+				return {
+				    [this.M.Default]: this.c.defaultText,
+				    [this.M.Loading]: this.c.loadingText,
+				    [this.M.NoMore]: this.c.noMoreText,
+				    [this.M.Fail]: this.c.failText,
+				}[this.finalStatus];
 			},
 			// 底部加载更多状态
 			finalStatus() {

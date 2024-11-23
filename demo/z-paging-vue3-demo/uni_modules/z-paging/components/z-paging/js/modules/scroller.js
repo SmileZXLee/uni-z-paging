@@ -115,7 +115,7 @@ export default {
 		finalScrollable() {
 			return this.scrollable && !this.usePageScroll && this.scrollEnable 
 			&& (this.refresherCompleteScrollable ? true : this.refresherStatus !== Enum.Refresher.Complete)
-			&& (this.refresherRefreshingScrollable ? true : this.refresherStatus !== Enum.Refresher.Loading);
+			&& (this.refresherRefreshingScrollable ? true : this.refresherStatus !== Enum.Refresher.Refreshing);
 		}
 	},
 	methods: {

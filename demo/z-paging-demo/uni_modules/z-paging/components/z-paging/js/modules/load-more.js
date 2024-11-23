@@ -279,15 +279,15 @@ export default {
 					// 如果是本地分页，则在组件内部对数据进行分页处理，不触发@query事件
 					this._localPagingQueryList(this.pageNo, this.defaultPageSize, this.localPagingLoadingTime, res => {
 						this.completeByTotal(res, this.totalLocalPagingList.length);
-						this.queryFrom = Enum.QueryFrom.LoadingMore;
+						this.queryFrom = Enum.QueryFrom.LoadMore;
 					})
 				} else {
 					// emit @query相关加载更多事件
-					this._emitQuery(this.pageNo, this.defaultPageSize, Enum.QueryFrom.LoadingMore);
+					this._emitQuery(this.pageNo, this.defaultPageSize, Enum.QueryFrom.LoadMore);
 					this._callMyParentQuery();
 				}
 				// 设置当前加载状态为底部加载更多状态
-				this.loadingType = Enum.LoadingType.LoadingMore;
+				this.loadingType = Enum.LoadingType.LoadMore;
 			}
 		},
 		// (预处理)判断当没有更多数据且分页内容未超出z-paging时是否显示没有更多数据的view
