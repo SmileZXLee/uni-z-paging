@@ -50,8 +50,6 @@ export default {
 	data() {
 		return {
 			// --------------静态资源---------------
-			base64Arrow: zStatic.base64Arrow,
-			base64Flower: zStatic.base64Flower,
 			base64BackToTop: zStatic.base64BackToTop,
 
 			// -------------全局数据相关--------------
