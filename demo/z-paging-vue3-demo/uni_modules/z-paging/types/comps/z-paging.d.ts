@@ -227,7 +227,8 @@ declare interface ZPagingProps {
   defaultPageSize?: number | string
 
   /**
-   * z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认铺满屏幕，页面中的view请放在z-paging标签内，需要固定在顶部的view使用slot="top"包住，需要固定在底部的view使用slot="bottom"包住。
+   * z-paging是否使用fixed布局
+   * - 若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认铺满屏幕，页面中的view请放在z-paging标签内，需要固定在顶部的view使用slot="top"包住，需要固定在底部的view使用slot="bottom"包住
    * @default true
    * @since 1.5.6
    */
@@ -273,17 +274,20 @@ declare interface ZPagingProps {
   pagingStyle?: Record<string, any>
 
   /**
-   * z-paging的高度，优先级低于paging-style中设置的height，传字符串，如100px、100rpx、100%
+   * z-paging的高度，优先级低于paging-style中设置的height
+   * - 传字符串，如100px、100rpx、100%
    */
   height?: string
 
   /**
-   * z-paging的宽度，优先级低于paging-style中设置的width，传字符串，如100px、100rpx、100%
+   * z-paging的宽度，优先级低于paging-style中设置的width
+   * - 传字符串，如100px、100rpx、100%
    */
   width?: string
 
   /**
-   * z-paging的最大宽度，优先级低于paging-style中设置的max-width。默认为空，也就是铺满窗口宽度，若设置了特定值则会自动添加margin: 0 auto
+   * z-paging的最大宽度，优先级低于paging-style中设置的max-width
+   * - 默认为空，也就是铺满窗口宽度，若设置了特定值则会自动添加margin: 0 auto
    */
   maxWidth?: string
 
@@ -377,13 +381,14 @@ declare interface ZPagingProps {
   auto?: boolean
 
   /**
-   * reload 时自动滚动到顶部 (如果 reload 时 list 被清空导致占位消失，也可能会自动返回到顶部，因此如果是这种情况还需要将 autoCleanListWhenReload 设置为 false)
+   * reload 时自动滚动到顶部
+   * - 如果reload时list被清空导致占位消失，也可能会自动返回到顶部，因此如果是这种情况还需要将autoCleanListWhenReload设置为false
    * @default true
    */
   autoScrollToTopWhenReload?: boolean
 
   /**
-   * reload 时立即自动清空原 list，若立即自动清空，则在 reload 之后、请求回调之前页面是空白的
+   * reload时立即自动清空原list若立即自动清空，则在reload之后、请求回调之前页面是空白的
    * @default true
    */
   autoCleanListWhenReload?: boolean
@@ -396,14 +401,15 @@ declare interface ZPagingProps {
   showRefresherWhenReload?: boolean
 
   /**
-   * 列表刷新时自动显示加载更多 view，且为加载中状态 (仅初始设置有效，不可动态修改)
+   * 列表刷新时自动显示加载更多view，且为加载中状态 (仅初始设置有效，不可动态修改)
    * @default false
    * @since 1.7.2
    */
   showLoadingMoreWhenReload?: boolean
 
   /**
-   * 组件 created 时立即触发 reload (可解决一些情况下先看到页面再看到 loading 的问题)。auto 为 true 时有效。为否时将在 mounted+nextTick 后触发 reload
+   * 组件 created 时立即触发 reload (可解决一些情况下先看到页面再看到 loading 的问题)
+   * - auto 为 true 时有效。为否时将在 mounted+nextTick 后触发 reload
    * @default false
    * @since 2.2.3
    */
@@ -431,13 +437,15 @@ declare interface ZPagingProps {
   useRefresherStatusBarPlaceholder?: boolean
 
   /**
-   * 是否只使用下拉刷新，设置为true后将关闭mounted自动请求数据、关闭滚动到底部加载更多，强制隐藏空数据图
+   * 是否只使用下拉刷新
+   * - 设置为true后将关闭mounted自动请求数据、关闭滚动到底部加载更多，强制隐藏空数据图
    * @default false
    */
   refresherOnly?: boolean
 
   /**
-   * 是否使用自定义的下拉刷新，默认为是，即使用z-paging的下拉刷新。设置为false即代表使用uni scroll-view自带的下拉刷新，h5、App、微信小程序以外的平台不支持uni scroll-view自带的下拉刷新
+   * 是否使用自定义的下拉刷新，默认为是，即使用z-paging的下拉刷新
+   * - 设置为false即代表使用uni scroll-view自带的下拉刷新，h5、App、微信小程序以外的平台不支持uni scroll-view自带的下拉刷新
    * @default true
    */
   useCustomRefresher?: boolean
@@ -485,25 +493,29 @@ declare interface ZPagingProps {
   showRefresherUpdateTime?: boolean
 
   /**
-   * 自定义下拉刷新默认状态下的文字(支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置)
+   * 自定义下拉刷新默认状态下的文字
+   * - 支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置
    * @default '继续下拉刷新'
    */
   refresherDefaultText?: string | _I18nText
 
   /**
-   * 自定义下拉刷新松手立即刷新状态下的文字(支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置)
+   * 自定义下拉刷新松手立即刷新状态下的文字
+   * - 支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置
    * @default '松开立即刷新'
    */
   refresherPullingText?: string | _I18nText
 
   /**
-   * 自定义下拉刷新刷新中状态下的文字(支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置)
+   * 自定义下拉刷新刷新中状态下的文字
+   * - 支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置
    * @default '正在刷新...'
    */
   refresherRefreshingText?: string | _I18nText
 
   /**
-   * 自定义下拉刷新刷新结束状态下的文字(支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置)
+   * 自定义下拉刷新刷新结束状态下的文字
+   * - 支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置
    * @default '刷新成功'
    * @since 2.0.6
    */
@@ -683,7 +695,8 @@ declare interface ZPagingProps {
   loadingMoreEnabled?: boolean
 
   /**
-   * 距底部/右边多远时，触发 scrolltolower 事件，默认单位为px。支持传100、"100px"或"100rpx"
+   * 距底部/右边多远时，触发 scrolltolower 事件，默认单位为px
+   * - 支持传100、"100px"或"100rpx"
    * @default '100rpx'
    */
   lowerThreshold?: number | string
@@ -701,7 +714,8 @@ declare interface ZPagingProps {
   loadingMoreThemeStyle?: string
 
   /**
-   * 自定义底部加载更多样式；如：{'background':'red'} (此属性无法修改文字样式，修改文字样式请使用下方的`loading-more-title-custom-style`)
+   * 自定义底部加载更多样式；如：{'background':'red'} 
+   * - 此属性无法修改文字样式，修改文字样式请使用loading-more-title-custom-style
    */
   loadingMoreCustomStyle?: Record<string, any>
 
@@ -717,56 +731,65 @@ declare interface ZPagingProps {
   loadingMoreLoadingIconCustomStyle?: Record<string, any>
 
   /**
-   * 自定义底部加载更多加载中动画图标类型，可选flower或circle，默认为flower (nvue不支持)
+   * 自定义底部加载更多加载中动画图标类型
+   * - 可选flower或circle，默认为flower (nvue不支持)
    * @default 'flower'
    */
   loadingMoreLoadingIconType?: 'flower' | 'circle'
 
   /**
-   * 自定义底部加载更多加载中动画图标图片，若设置则使用自定义的动画图标，loading-more-loading-icon-type将无效 (nvue无效)
+   * 自定义底部加载更多加载中动画图标图片
+   * - 若设置则使用自定义的动画图标，loading-more-loading-icon-type将无效 (nvue无效)
    */
   loadingMoreLoadingIconCustomImage?: string
 
   /**
-   * 底部加载更多加载中view是否展示旋转动画 (loading-more-loading-icon-custom-image有值时有效，nvue无效)
+   * 底部加载更多加载中view是否展示旋转动画
+   * - loading-more-loading-icon-custom-image有值时有效，nvue无效
    * @default true
    * @since 1.9.4
    */
   loadingMoreLoadingAnimated?: boolean
 
   /**
-   * 滑动到底部"默认"文字 (支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置)
+   * 滑动到底部"默认"文字
+   * - 支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置
    * @default '点击加载更多'
    */
   loadingMoreDefaultText?: string | _I18nText
 
   /**
-   * 滑动到底部"加载中"文字 (支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置)
+   * 滑动到底部"加载中"文字 
+   * - 支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置
    * @default '正在加载...'
    */
   loadingMoreLoadingText?: string | _I18nText
 
   /**
-   * 滑动到底部"没有更多"文字 (支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置)
+   * 滑动到底部"没有更多"文字 
+   * - 支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置
    * @default '没有更多了'
    */
   loadingMoreNoMoreText?: string | _I18nText
 
   /**
-   * 滑动到底部"加载失败"文字 (支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置)
+   * 滑动到底部"加载失败"文字 
+   * - 支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置
    * @default '加载失败，点击重新加载'
    */
   loadingMoreFailText?: string | _I18nText
 
   /**
-   * 当没有更多数据且分页内容未超出z-paging时是否隐藏没有更多数据的view (nvue不支持，nvue中请使用`hide-no-more-by-limit`控制)
+   * 当没有更多数据且分页内容未超出z-paging时是否隐藏没有更多数据的view 
+   * - nvue不支持，nvue中请使用hide-no-more-by-limit控制
    * @default false
    * @since 2.4.3
    */
   hideNoMoreInside?: boolean
 
   /**
-   * 当没有更多数据且分页数组长度少于这个值时，隐藏没有更多数据的view，默认为0，代表不限制。此属性优先级高于`hide-no-more-inside`
+   * 当没有更多数据且分页数组长度少于这个值时，隐藏没有更多数据的view
+   * - 默认为0，代表不限制。此属性优先级高于`hide-no-more-inside`
    * @default 0
    * @since 2.4.3
    */
@@ -780,7 +803,8 @@ declare interface ZPagingProps {
   insideMore?: boolean
 
   /**
-   * 滑动到底部状态为默认状态时，以加载中的状态展示。若设置为是，可避免滚动到底部看到默认状态然后立刻变为加载中状态的问题，但分页数量未超过一屏时，不会显示【点击加载更多】
+   * 滑动到底部状态为默认状态时，以加载中的状态展示
+   * - 若设置为是，可避免滚动到底部看到默认状态然后立刻变为加载中状态的问题，但分页数量未超过一屏时，不会显示【点击加载更多】
    * @default false
    * @since 2.2.0
    */
@@ -817,45 +841,52 @@ declare interface ZPagingProps {
   hideEmptyView?: boolean
 
   /**
-   * 空数据图片是否铺满z-paging，默认为否，即填充满z-paging内列表(滚动区域)部分。若设置为否，则为填铺满整个z-paging
+   * 空数据图片是否铺满z-paging
+   * - 默认为否，即填充满z-paging内列表(滚动区域)部分。若设置为否，则为填铺满整个z-paging
    * @default false
    * @since 2.0.3
    */
   emptyViewFixed?: boolean
 
   /**
-   * 空数据图片是否垂直居中，默认为是，若设置为否即为从空数据容器顶部开始显示 (empty-view-fixed为false时有效)
+   * 空数据图片是否垂直居中
+   * - 默认为是，若设置为否即为从空数据容器顶部开始显示 (empty-view-fixed为false时有效)
    * @default true
    * @since 2.0.6
    */
   emptyViewCenter?: boolean
 
   /**
-   * 空数据图描述文字 (支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置)
+   * 空数据图描述文字 
+   * - 支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置
    * @default '没有数据哦~'
    */
   emptyViewText?: string | _I18nText
 
   /**
-   * 空数据图图片，默认使用z-paging内置的图片。建议使用绝对路径，开头不要添加"@"，请以"/"开头
+   * 空数据图图片，默认使用z-paging内置的图片
+   * - 建议使用绝对路径，开头不要添加"@"，请以"/"开头
    */
   emptyViewImg?: string
 
   /**
-   * 空数据图“加载失败”图片，默认使用z-paging内置的图片。建议使用绝对路径，开头不要添加"@"，请以"/"开头
+   * 空数据图“加载失败”图片，默认使用z-paging内置的图片
+   * - 建议使用绝对路径，开头不要添加"@"，请以"/"开头
    * @since 1.6.7
    */
   emptyViewErrorImg?: string
 
   /**
-   * 空数据图点击重新加载文字 (支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置)
+   * 空数据图点击重新加载文字 
+   * - 支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置
    * @default '重新加载'
    * @since 1.6.7
    */
   emptyViewReloadText?: string | _I18nText
 
   /**
-   * 空数据图“加载失败”描述文字 (支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置)
+   * 空数据图“加载失败”描述文字 
+   * - 支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置
    * @default '很抱歉，加载失败'
    * @since 1.6.7
    */
@@ -921,21 +952,24 @@ declare interface ZPagingProps {
   autoHideLoadingAfterFirstLoaded?: boolean
 
   /**
-   * loading slot的父view是否铺满屏幕并固定。设置为true后，插入的loading的父view会铺满全屏。注意：插入的loading需要设置height:100%（nvue为flex:1）才可铺满全屏。loading内的view从导航栏顶部开始，会被导航栏盖住，请妥善处理。
+   * loading slot的父view是否铺满屏幕并固定
+   * - 设置为true后，插入的loading的父view会铺满全屏。注意：插入的loading需要设置height:100%（nvue为flex:1）才可铺满全屏。loading内的view从导航栏顶部开始，会被导航栏盖住，请妥善处理。
    * @default false
    * @since 2.0.9
    */
   loadingFullFixed?: boolean
 
   /**
-   * 是否自动显示系统Loading：即uni.showLoading。若开启则将在刷新列表时（调用reload、refresh时）显示。下拉刷新和滚动到底部加载更多不会显示。
+   * 是否自动显示系统Loading：即uni.showLoading
+   * - 若开启则将在刷新列表时（调用reload、refresh时）显示。下拉刷新和滚动到底部加载更多不会显示。
    * @default false
    * @since 2.3.7
    */
   autoShowSystemLoading?: boolean
 
   /**
-   * 显示系统Loading时显示的文字。支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置。
+   * 显示系统Loading时显示的文字
+   * - 支持直接传字符串或形如：{'en':'英文','zh-Hans':'简体中文','zh-Hant':'繁体中文'}的i18n配置
    * @default '加载中...'
    * @since 2.3.7
    */
@@ -956,13 +990,15 @@ declare interface ZPagingProps {
   autoShowBackToTop?: boolean
 
   /**
-   * 点击返回顶部按钮显示/隐藏的阈值(滚动距离)，默认单位为px。(支持传100、"100px"或"100rpx")
+   * 点击返回顶部按钮显示/隐藏的阈值(滚动距离)，默认单位为px
+   * - 支持传100、"100px"或"100rpx"
    * @default 400rpx
    */
   backToTopThreshold?: number | string
 
   /**
-   * 点击返回顶部按钮的自定义图片地址。(建议使用绝对路径，开头不要添加"@"，请以"/"开头)
+   * 点击返回顶部按钮的自定义图片地址
+   * - 建议使用绝对路径，开头不要添加"@"，请以"/"开头
    * @default 'z-paging内置的图片'
    */
   backToTopImg?: string
@@ -974,7 +1010,8 @@ declare interface ZPagingProps {
   backToTopWithAnimate?: boolean
 
   /**
-   * 点击返回顶部按钮与底部的距离，默认单位为px。(支持传100、"100px"或"100rpx")
+   * 点击返回顶部按钮与底部的距离，默认单位为px
+   * - 支持传100、"100px"或"100rpx"
    * @default 160rpx
    */
   backToTopBottom?: number | string
@@ -986,7 +1023,8 @@ declare interface ZPagingProps {
 
   // ******************** 虚拟列表&内置列表配置 ********************
   /**
-   * 是否使用虚拟列表。使用页面滚动或nvue时，不支持虚拟列表。在nvue中z-paging内置了list组件，效果与虚拟列表类似，并且可以提供更好的性能。
+   * 是否使用虚拟列表
+   * - 使用页面滚动或nvue时，不支持虚拟列表。在nvue中z-paging内置了list组件，效果与虚拟列表类似，并且可以提供更好的性能
    * @default false
    */
   useVirtualList?: boolean
@@ -1005,7 +1043,7 @@ declare interface ZPagingProps {
   extraData?: Record<string, any>
 
   /**
-   * 虚拟列表cell高度模式，默认为`fixed`，也就是每个cell高度完全相同，将以第一个cell高度为准进行计算。
+   * 虚拟列表cell高度模式，默认为fixed，也就是每个cell高度完全相同，将以第一个cell高度为准进行计算。
    * @default 'fixed'
    */
   cellHeightMode?: 'fixed' | 'dynamic'
@@ -1017,7 +1055,8 @@ declare interface ZPagingProps {
   preloadPage?: number | string
 
   /**
-   * 固定的cell高度，`cell-height-mode=fixed`才有效，若设置了值，则不计算第一个cell高度而使用设置的cell高度。默认单位为px。(支持传100、"100px"或"100rpx")
+   * 固定的cell高度，`cell-height-mode=fixed`才有效，若设置了值，则不计算第一个cell高度而使用设置的cell高度。默认单位为px
+   * - 支持传100、"100px"或"100rpx"
    * @since 2.7.8
    */
   fixedCellHeight?: number | string
@@ -1148,7 +1187,8 @@ declare interface ZPagingProps {
   scrollX?: boolean;
 
   /**
-   * iOS设备上滚动到顶部时是否允许回弹效果。关闭回弹效果后可使滚动到顶部后立即下拉可立即触发下拉刷新，但是有吸顶view时滚动到顶部时可能出现抖动。
+   * iOS设备上滚动到顶部时是否允许回弹效果
+   * - 关闭回弹效果后可使滚动到顶部后立即下拉可立即触发下拉刷新，但是有吸顶view时滚动到顶部时可能出现抖动
    * @default false
    */
   scrollToTopBounceEnabled?: boolean;
@@ -1209,8 +1249,8 @@ declare interface ZPagingProps {
 
   /**
    * 是否隐藏 nvue 列表底部的 tagView，此 view 用于标识滚动到底部位置。
-   * 若隐藏则滚动到底部功能将失效。
-   * 在 nvue 中实现吸顶+swiper 功能时需将最外层 z-paging 的此属性设置为 true。
+   * - 若隐藏则滚动到底部功能将失效。
+   * - 在 nvue 中实现吸顶+swiper 功能时需将最外层 z-paging 的此属性设置为 true。
    * @default false
    * @since 2.0.4
    */
