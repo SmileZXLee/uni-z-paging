@@ -1,5 +1,12 @@
 import { AllowedComponentProps, VNodeProps } from './_common'
 
+type _Arrayable<T> = T | T[];
+
+/**
+ * i18n配置信息
+ */
+type _I18nText = Partial<Record<'en' | 'zh-Hans' | 'zh-Hant', string>>;
+
 declare global {
   namespace ZPagingEnums {
     /**
@@ -155,7 +162,7 @@ declare global {
     interface RefresherSlotProps {
       /** 下拉刷新状态：default:默认状态 release-to-refresh:松手立即刷新 loading:刷新中 complete:刷新结束 go-f2:松手进入二楼 */
       refresherStatus: ZPagingEnums.RefresherStatus; 
-    };
+    }
 
     /**
      * 空数据图Slot的props
@@ -163,7 +170,7 @@ declare global {
     interface EmptySlotProps {
       /** 是否加载失败: 加载失败，false: 加载成功) */
       isLoadFailed: boolean; 
-    };
+    }
 
     /**
      * 虚拟列表&内置列表中cell Slot的props
@@ -173,7 +180,7 @@ declare global {
       item: any; 
       /** 当前index */
       index: number; 
-    };
+    }
 
     /**
      * 聊天记录加载中Slot的props
@@ -181,15 +188,21 @@ declare global {
     interface ChatLoadingSlotProps {
       /** 底部加载更多状态：default:默认状态 loading:加载中 no-more:没有更多数据 fail:加载失败 */
       loadingMoreStatus: ZPagingEnums.LoadMoreStatus; 
-    };
+    }
   }
+
+  /**
+     * 虚拟列表数据项
+     *
+     * @since 2.7.7
+     */
+  type ZPagingVirtualItem<T> = T & {
+    /**
+     * 元素真实索引
+     */
+    zp_index: number;
+  };
 }
-
-/**
- * i18n配置信息
- */
-type _I18nText = Partial<Record<'en' | 'zh-Hans' | 'zh-Hant', string>>;
-
 
 // ****************************** Props ******************************
 declare interface ZPagingProps {
@@ -428,13 +441,6 @@ declare interface ZPagingProps {
    * @default true
    */
   useCustomRefresher?: boolean
-
-  /**
-   * 列表刷新时自动显示下拉刷新view
-   * @default false
-   * @since 1.7.2
-   */
-  showRefresherWhenReload?: boolean
 
   /**
    * 用户下拉刷新时是否触发reload方法
@@ -687,13 +693,6 @@ declare interface ZPagingProps {
    * @default true
    */
   toBottomLoadingMoreEnabled?: boolean
-
-  /**
-   * 列表刷新时自动显示加载更多view，且为加载中状态 (仅初始设置有效，不可动态修改)
-   * @default false
-   * @since 1.7.2
-   */
-  showLoadingMoreWhenReload?: boolean
 
   /**
    * 底部加载更多的主题样式，支持black，white
@@ -1656,10 +1655,11 @@ declare interface _ZPagingRef<T = any> {
    * 刷新列表数据，pageNo和pageSize不会重置，列表数据会重新从服务端获取
    *
    * @since 2.0.4
-   * @returns {Promise<ZPagingParams.ReturnData<T>>} 一个 Promise，解析为分页数据对象：
-   * - `success` (boolean): 操作是否成功。
-   * - `data` (T[]): 分页数据列表。
-   * - `total` (number): 数据的总条目数。
+   * @returns {Promise<ZPagingParams.ReturnData<T>>} Promise，当前最新分页结果：
+   * - resolve 操作成功
+   * - - `totalList` (T[]): 当前总列表
+   * - - `noMore` (boolean): 是否没有更多数据
+   * - reject 操作失败
    */
   refresh: () => Promise<ZPagingParams.ReturnData<T>>;
 
@@ -1668,10 +1668,11 @@ declare interface _ZPagingRef<T = any> {
    *
    * @since 2.5.9
    * @param page 目标页数
-   * @returns {Promise<ZPagingParams.ReturnData<T>>} 一个 Promise，解析为分页数据对象：
-   * - `success` (boolean): 操作是否成功。
-   * - `data` (T[]): 分页数据列表。
-   * - `total` (number): 数据的总条目数。
+   * @returns {Promise<ZPagingParams.ReturnData<T>>} Promise，当前最新分页结果：
+   * - resolve 操作成功
+   * - - `totalList` (T[]): 当前总列表
+   * - - `noMore` (boolean): 是否没有更多数据
+   * - reject 操作失败
    */
   refreshToPage: (page: number) => Promise<ZPagingParams.ReturnData<T>>;
 
@@ -1681,10 +1682,11 @@ declare interface _ZPagingRef<T = any> {
    *
    * @param [data] 请求结果数组
    * @param [success=true] 是否请求成功
-   * @returns {Promise<ZPagingParams.ReturnData<T>>} 一个 Promise，解析为分页数据对象：
-   * - `success` (boolean): 操作是否成功。
-   * - `data` (T[]): 分页数据列表。
-   * - `total` (number): 数据的总条目数。
+   * @returns {Promise<ZPagingParams.ReturnData<T>>} Promise，当前最新分页结果：
+   * - resolve 操作成功
+   * - - `totalList` (T[]): 当前总列表
+   * - - `noMore` (boolean): 是否没有更多数据
+   * - reject 操作失败
    */
   complete: (data?: T[] | false, success?: boolean) => Promise<ZPagingParams.ReturnData<T>>;
 
@@ -1696,10 +1698,11 @@ declare interface _ZPagingRef<T = any> {
    * @param data 请求结果数组
    * @param total 列表总长度
    * @param [success=true] 是否请求成功
-   * @returns {Promise<ZPagingParams.ReturnData<T>>} 一个 Promise，解析为分页数据对象：
-   * - `success` (boolean): 操作是否成功。
-   * - `data` (T[]): 分页数据列表。
-   * - `total` (number): 数据的总条目数。
+   * @returns {Promise<ZPagingParams.ReturnData<T>>} Promise，当前最新分页结果：
+   * - resolve 操作成功
+   * - - `totalList` (T[]): 当前总列表
+   * - - `noMore` (boolean): 是否没有更多数据
+   * - reject 操作失败
    */
   completeByTotal: (data: T[], total: number, success?: boolean) => Promise<ZPagingParams.ReturnData<T>>;
 
@@ -1711,10 +1714,11 @@ declare interface _ZPagingRef<T = any> {
    * @param data 请求结果数组
    * @param noMore 是否没有更多数据
    * @param [success=true] 是否请求成功
-   * @returns {Promise<ZPagingParams.ReturnData<T>>} 一个 Promise，解析为分页数据对象：
-   * - `success` (boolean): 操作是否成功。
-   * - `data` (T[]): 分页数据列表。
-   * - `total` (number): 数据的总条目数。
+   * @returns {Promise<ZPagingParams.ReturnData<T>>} Promise，当前最新分页结果：
+   * - resolve 操作成功
+   * - - `totalList` (T[]): 当前总列表
+   * - - `noMore` (boolean): 是否没有更多数据
+   * - reject 操作失败
    */
   completeByNoMore: (data: T[], noMore: boolean, success?: boolean) => Promise<ZPagingParams.ReturnData<T>>;
 
@@ -1724,10 +1728,11 @@ declare interface _ZPagingRef<T = any> {
    *
    * @since 2.6.3
    * @param cause 请求失败原因
-   * @returns {Promise<ZPagingParams.ReturnData<T>>} 一个 Promise，解析为分页数据对象：
-   * - `success` (boolean): 操作是否成功。
-   * - `data` (T[]): 分页数据列表。
-   * - `total` (number): 数据的总条目数。
+   * @returns {Promise<ZPagingParams.ReturnData<T>>} Promise，当前最新分页结果：
+   * - resolve 操作成功
+   * - - `totalList` (T[]): 当前总列表
+   * - - `noMore` (boolean): 是否没有更多数据
+   * - reject 操作失败
    */
   completeByError: (cause: string) => Promise<ZPagingParams.ReturnData<T>>;
 
@@ -1739,10 +1744,11 @@ declare interface _ZPagingRef<T = any> {
    * @param data 请求结果数组
    * @param key dataKey，需与:data-key绑定的一致
    * @param [success=true] 是否请求成功
-   * @returns {Promise<ZPagingParams.ReturnData<T>>} 一个 Promise，解析为分页数据对象：
-   * - `success` (boolean): 操作是否成功。
-   * - `data` (T[]): 分页数据列表。
-   * - `total` (number): 数据的总条目数。
+   * @returns {Promise<ZPagingParams.ReturnData<T>>} Promise，当前最新分页结果：
+   * - resolve 操作成功
+   * - - `totalList` (T[]): 当前总列表
+   * - - `noMore` (boolean): 是否没有更多数据
+   * - reject 操作失败
    */
   completeByKey: (data: T[], key: string, success?: boolean) => Promise<ZPagingParams.ReturnData<T>>;
 
@@ -1876,10 +1882,11 @@ declare interface _ZPagingRef<T = any> {
    *
    * @param data 请求结果数组
    * @param [success=true] 是否请求成功
-   * @returns {Promise<ZPagingParams.ReturnData<T>>} 一个 Promise，解析为分页数据对象：
-   * - `success` (boolean): 操作是否成功。
-   * - `data` (T[]): 分页数据列表。
-   * - `total` (number): 数据的总条目数。
+   * @returns {Promise<ZPagingParams.ReturnData<T>>} Promise，当前最新分页结果：
+   * - resolve 操作成功
+   * - - `totalList` (T[]): 当前总列表
+   * - - `noMore` (boolean): 是否没有更多数据
+   * - reject 操作失败
    */
   setLocalPaging: (data: T[], success?: boolean) => Promise<ZPagingParams.ReturnData<T>>;
 

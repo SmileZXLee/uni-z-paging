@@ -22,3 +22,6 @@ declare module 'z-paging' {
 declare type ZPagingRef = typeof import('./comps/z-paging')['ZPagingRef']
 declare type ZPagingSwiperRef = typeof import('./comps/z-paging-swiper')['ZPagingSwiperRef']
 declare type ZPagingSwiperItemRef = typeof import('./comps/z-paging-swiper-item')['ZPagingSwiperItemRef']
+
+// 兼容v2.8.1之前的旧版本
+declare type ZPagingInstance = typeof import('./comps/z-paging')['ZPagingRef']
