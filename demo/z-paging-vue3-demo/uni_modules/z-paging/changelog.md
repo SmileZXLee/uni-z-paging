@@ -1,3 +1,5 @@
+## 2.8.2（2024-11-25）
+1.`优化` types中`ZPagingRef`和`ZPagingInstance`支持泛型。  
 ## 2.8.1（2024-11-24）
 1.`新增` 完整的`props`、`slots`、`methods`、`events`的typescript types声明，可在ts中获得绝佳的代码提示体验。  
 2.`新增` `virtual-cell-id-prefix`：虚拟列表cell id的前缀，适用于一个页面有多个虚拟列表的情况，用以区分不同虚拟列表cell的id。  

@@ -1075,6 +1075,13 @@ declare interface ZPagingProps {
   virtualScrollFps?: number | string
 
   /**
+   * 虚拟列表cell id的前缀，适用于一个页面有多个虚拟列表的情况，用以区分不同虚拟列表cell的id
+   * - 注意：请勿传数字或以数字开头的字符串。如设置为list1，则cell的id应为：list1-zp-id-${item.zp_index}
+   * @since 2.8.1
+   */
+  virtualCellIdPrefix?: string
+
+  /**
    * 是否在z-paging内部循环渲染列表(使用内置列表)。
    * @default false
    */
@@ -2055,4 +2062,8 @@ declare interface _ZPaging {
 
 export declare const ZPaging: _ZPaging
 
-export declare const ZPagingRef: _ZPagingRef
+declare global {
+  interface ZPagingRef<T = any> extends _ZPagingRef<T> {}
+  // 兼容v2.8.1之前的旧版本
+  interface ZPagingInstance<T = any> extends _ZPagingRef<T> {}
+}

@@ -4,7 +4,7 @@
     <img alt="logo" src="https://z-paging.zxlee.cn/img/title-logo.png" height="100" style="margin-bottom: 50px;" />
 </p>
 
-[![version](https://img.shields.io/badge/version-2.8.1-blue)](https://github.com/SmileZXLee/uni-z-paging) [![license](https://img.shields.io/github/license/SmileZXLee/uni-z-paging)](https://en.wikipedia.org/wiki/MIT_License)
+[![version](https://img.shields.io/badge/version-2.8.2-blue)](https://github.com/SmileZXLee/uni-z-paging) [![license](https://img.shields.io/github/license/SmileZXLee/uni-z-paging)](https://en.wikipedia.org/wiki/MIT_License)
 <img height="0" width="0" src="https://api.z-notify.zxlee.cn/v1/public/statistics/8293556910106066944/addOnly?from=uni" />
 
 `z-paging-x`现已支持uniapp x，持续完善中，插件地址👉🏻 [https://ext.dcloud.net.cn/plugin?name=z-paging-x](https://ext.dcloud.net.cn/plugin?name=z-paging-x)  
