@@ -2,7 +2,7 @@
 
 export default {
 	// 当前版本号
-	version: '2.8.2',
+	version: '2.8.3',
 	// 延迟操作的通用时间
 	delayTime: 100,
 	// 请求失败时候全局emit使用的key

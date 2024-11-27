@@ -163,6 +163,10 @@ export default {
 		// 在使用动态高度虚拟列表时，若在列表数组中需要插入某个item，需要调用此方法；item:需要插入的item，index:插入的cell位置，若index为2，则插入的item在原list的index=1之后，index从0开始
 		doInsertVirtualListItem(item, index) {
 			if (this.cellHeightMode !== Enum.CellHeightMode.Dynamic) return;
+			this.realTotalData.splice(index, 0, item);
+			// #ifdef VUE3
+			this.realTotalData = [...this.realTotalData];
+			// #endif
 			this.virtualItemInsertedCount ++;
 			if (!item || Object.prototype.toString.call(item) !== '[object Object]') {
 				item = { item };
