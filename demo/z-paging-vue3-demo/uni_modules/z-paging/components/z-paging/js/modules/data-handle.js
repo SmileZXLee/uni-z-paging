@@ -473,14 +473,10 @@ export default {
 			if (!isLocal && tempIsUserPullDown && this.isFirstPage) {
 				this.isUserPullDown = false;
 			}
-			if (!this.isFirstPage) {
-				this.listRendering = true;
-				this.$nextTick(() => {
-					u.delay(() => this.listRendering = false);
-				})
-			} else {
-				this.listRendering = false;
-			}
+			this.listRendering = true;
+			this.$nextTick(() => {
+				u.delay(() => this.listRendering = false);
+			})
 			let dataTypeRes = this._checkDataType(data, success, isLocal);
 			data = dataTypeRes.data;
 			success = dataTypeRes.success;
