@@ -3,6 +3,7 @@
 <!-- 请注意1：内置列表写法在微信小程序中部分较高版本调试库会报More than one slot named "cell" are found...的警告并导致开发者工具卡顿，将基础库版本调到2.18.0以下即可。因线上没有控制台打印，因此不会影响线上版本。 -->
 <!-- 在微信小程序中如果是vue2推荐使用虚拟列表兼容写法(virtual-list-compatibility-demo)，如果是vue3推荐使用虚拟列表非内置列表写法(virtual-list-no-inner-demo.vue) -->
 <!-- 写法简单，通过slot=cell插入所需cell，页面中无直接的for循环，在vue2中兼容性良好 -->
+<!-- 在vue2中的虚拟列表顶部占位方案使用的为transformY方案，因此在虚拟列表+吸顶情况下可能出现吸顶view跳动，请使用@virtualTopHeightChange监听顶部占位高度，并动态设置position: sticky;top: 顶部占位高度 -->
 <!-- 在各平台兼容性请查阅https://z-paging.zxlee.cn/module/virtual-list.html -->
 
 <template>

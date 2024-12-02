@@ -152,6 +152,12 @@ export default {
 			const prefix = this.virtualCellIdPrefix ? this.virtualCellIdPrefix + '-' : '';
 			return prefix + 'zp-id';
 		},
+		finalPlaceholderTopHeightStyle() {
+			// #ifdef VUE2
+			return { transform: this.virtualPlaceholderTopHeight > 0 ? `translateY(${this.virtualPlaceholderTopHeight}px)` : 'none' };
+			// #endif
+			return {};
+		},
 		virtualRangePageHeight(){
 			return this.finalVirtualPageHeight * this.preloadPage;
 		},

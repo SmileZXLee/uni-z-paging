@@ -88,9 +88,11 @@ v2.8.3 (2024-11-27)
 								<!-- 全屏Loading -->
 								<slot v-if="showLoading&&zSlots.loading&&!loadingFullFixed" name="loading" />
 								<!-- 主体内容 -->
-								<view class="zp-paging-container-content" :style="[finalPagingContentStyle]">
+								<view class="zp-paging-container-content" :style="[finalPlaceholderTopHeightStyle,finalPagingContentStyle]">
+									<!-- #ifdef VUE3 -->
 									<!-- 虚拟列表顶部占位view -->
 									<view v-if="useVirtualList" class="zp-virtual-placeholder" :style="[{height:virtualPlaceholderTopHeight+'px'}]"/>
+									<!-- #endif -->
 									<slot />
 									<!-- 内置列表&虚拟列表 -->
 									<template v-if="finalUseInnerList">
