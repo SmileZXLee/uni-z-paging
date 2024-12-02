@@ -21,7 +21,7 @@
 				const statusTextMap = {
 					'default': '哎呀，用点力继续下拉！',
 					'release-to-refresh': '拉疼我啦，松手刷新~~',
-					'refreshing': '正在努力刷新中...',
+					'loading': '正在努力刷新中...',
 					'complete': '刷新成功啦~'
 				};
 				return statusTextMap[this.status];

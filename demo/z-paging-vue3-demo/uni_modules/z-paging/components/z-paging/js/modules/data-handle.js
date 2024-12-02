@@ -398,7 +398,7 @@ export default {
 				}
 				// #endif
 				// #ifdef APP-NVUE
-				this.refresherStatus = Enum.Refresher.Refreshing;
+				this.refresherStatus = Enum.Refresher.Loading;
 				this.refresherRevealStackCount ++;
 				u.delay(() => {
 					this._getNodeClientRect('zp-n-refresh-container', false).then((node) => {

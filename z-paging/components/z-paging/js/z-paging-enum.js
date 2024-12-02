@@ -10,7 +10,7 @@ export default {
 	Refresher: {
 		Default: 'default',
 		ReleaseToRefresh: 'release-to-refresh',
-		Refreshing: 'refreshing',
+		Loading: 'loading',
 		Complete: 'complete',
 		GoF2: 'go-f2'
 	},

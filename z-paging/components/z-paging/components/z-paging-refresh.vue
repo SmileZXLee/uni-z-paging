@@ -4,7 +4,7 @@
 		<view :class="showUpdateTime?'zp-r-container zp-r-container-padding':'zp-r-container'">
 			<view class="zp-r-left">
 				<!-- 非加载中(继续下拉刷新、松手立即刷新状态图片) -->
-				<image v-if="status!==R.Refreshing" :class="leftImageClass" :style="[leftImageStyle,imgStyle]" :src="leftImageSrc" />
+				<image v-if="status!==R.Loading" :class="leftImageClass" :style="[leftImageStyle,imgStyle]" :src="leftImageSrc" />
 				<!-- 加载状态图片 -->
 				<!-- #ifndef APP-NVUE -->
 				<image v-else :class="{'zp-line-loading-image':refreshingAnimated,'zp-r-left-image':true,'zp-r-left-image-pre-size-rpx':unit==='rpx','zp-r-left-image-pre-size-px':unit==='px'}" :style="[leftImageStyle,imgStyle]" :src="leftImageSrc" />
@@ -64,7 +64,7 @@
 				return {
 					[R.Default]: defaultText,
 					[R.ReleaseToRefresh]: pullingText,
-					[R.Refreshing]: refreshingText,
+					[R.Loading]: refreshingText,
 					[R.Complete]: completeText,
 					[R.GoF2]: goF2Text,
 				};
@@ -96,7 +96,7 @@
 					if (!!this.pullingImg) return this.pullingImg;
 					if (!!this.defaultImg) return this.defaultImg;
 					return this.zTheme.arrow[this.ts];
-				} else if (status === R.Refreshing) {
+				} else if (status === R.Loading) {
 					if (!!this.refreshingImg) return this.refreshingImg;
 					return this.zTheme.flower[this.ts];;
 				} else if (status === R.Complete) {

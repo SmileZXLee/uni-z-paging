@@ -150,14 +150,14 @@ export default {
 					this._nRefresherEnd();
 				})
 			} else {
-				this.refresherStatus = Enum.Refresher.Refreshing;
+				this.refresherStatus = Enum.Refresher.Loading;
 				this._doRefresherLoad();
 			}
 			
 		},
 		// 下拉刷新下拉中
 		_nOnPullingdown(e) {
-			if (this.refresherStatus === Enum.Refresher.Refreshing || (this.isIos && !this.nListIsDragging)) return;
+			if (this.refresherStatus === Enum.Refresher.Loading || (this.isIos && !this.nListIsDragging)) return;
 			this._emitTouchmove(e);
 			let { viewHeight, pullingDistance } = e;
 			// 更新下拉刷新状态
@@ -202,7 +202,7 @@ export default {
 				}, this.refresherCompleteDuration);
 			}
 			if (stackCount > 1) {
-				this.refresherStatus = Enum.Refresher.Refreshing;
+				this.refresherStatus = Enum.Refresher.Loading;
 			}
 			
 			const duration = animate ? 200 : 0;

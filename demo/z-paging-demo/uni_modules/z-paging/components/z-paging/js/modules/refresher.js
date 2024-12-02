@@ -279,7 +279,7 @@ export default {
 			immediate: true
 		},
 		refresherStatus(newVal) {
-			newVal === Enum.Refresher.Refreshing && this._cleanRefresherEndTimeout();
+			newVal === Enum.Refresher.Loading && this._cleanRefresherEndTimeout();
 			this.refresherVibrate && (newVal === Enum.Refresher.ReleaseToRefresh || newVal === Enum.Refresher.GoF2) && this._doVibrateShort();
 			this.$emit('refresherStatusChange', newVal);
 			this.$emit('update:refresherStatus', newVal);
@@ -561,7 +561,7 @@ export default {
 						this._emitTouchmove({ pullingDistance: refresherThreshold, dy: this.moveDis - refresherThreshold });
 					}, 0.1);
 					this.moveDis = refresherThreshold;
-					this.refresherStatus = Enum.Refresher.Refreshing;
+					this.refresherStatus = Enum.Refresher.Loading;
 					this._doRefresherLoad();
 				}
 			} else {
@@ -762,14 +762,14 @@ export default {
 			this.wxsPropType = 'begin' + u.getTime();
 			// #endif
 			this.moveDis = this.finalRefresherThreshold;
-			this.refresherStatus = Enum.Refresher.Refreshing;
+			this.refresherStatus = Enum.Refresher.Loading;
 			this.isTouchmoving = true;
 			this.isTouchmovingTimeout && clearTimeout(this.isTouchmovingTimeout);
 			this._doRefresherLoad(false);
 		},
 		// 触发下拉刷新
 		_doRefresherLoad(isUserPullDown = true) {
-			this._onRefresh(false,isUserPullDown);
+			this._onRefresh(false, isUserPullDown);
 			this.loading = true;
 		},
 		// #ifndef APP-PLUS || MP-WEIXIN || MP-QQ || H5
