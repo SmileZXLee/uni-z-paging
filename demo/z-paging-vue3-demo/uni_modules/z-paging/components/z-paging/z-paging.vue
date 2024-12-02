@@ -100,7 +100,7 @@ v2.8.3 (2024-11-27)
 										<view class="zp-list-container" :style="[innerListStyle]">
 											<template v-if="finalUseVirtualList">
 												<view class="zp-list-cell" :style="[innerCellStyle]" :id="`${fianlVirtualCellIdPrefix}-${item[virtualCellIndexKey]}`" v-for="(item,index) in virtualList" :key="item['zp_unique_index']" @click="_innerCellClick(item,virtualTopRangeIndex+index)">
-													<view v-if="useCompatibilityMode">使用兼容模式请在组件源码z-paging.vue第101行中注释这一行，并打开下面一行注释</view>
+													<view v-if="useCompatibilityMode">使用兼容模式请在组件源码z-paging.vue第103行中注释这一行，并打开下面一行注释</view>
 													<!-- <zp-public-virtual-cell v-if="useCompatibilityMode" :extraData="extraData" :item="item" :index="virtualTopRangeIndex+index" /> -->
 													<slot v-else name="cell" :item="item" :index="virtualTopRangeIndex+index"/>
 												</view>

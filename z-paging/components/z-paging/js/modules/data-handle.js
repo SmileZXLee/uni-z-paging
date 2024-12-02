@@ -8,7 +8,7 @@ export default {
 	props: {
 		// 自定义初始的pageNo，默认为1
 		defaultPageNo: {
-			type: [Number, String],
+			type: Number,
 			default: u.gc('defaultPageNo', 1),
 			observer: function(newVal) {
 				this.pageNo = newVal;
@@ -16,7 +16,7 @@ export default {
 		},
 		// 自定义pageSize，默认为10
 		defaultPageSize: {
-			type: [Number, String],
+			type: Number,
 			default: u.gc('defaultPageSize', 10),
 			validator: (value) => {
 				if (value <= 0) u.consoleErr('default-page-size必须大于0！');

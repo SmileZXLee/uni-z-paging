@@ -217,14 +217,14 @@ declare interface ZPagingProps {
    * 自定义初始的pageNo(从第几页开始)
    * @default 1
    */
-  defaultPageNo?: number | string
+  defaultPageNo?: number
 
   /**
    * 自定义pageSize(每页显示多少条)
    * - 必须和后端的pageSize一致，例如后端分页的pageSize为15，此属性必须改为15
    * @default 10
    */
-  defaultPageSize?: number | string
+  defaultPageSize?: number
 
   /**
    * z-paging是否使用fixed布局
@@ -344,7 +344,7 @@ declare interface ZPagingProps {
    * 为保证数据一致，设置当前tab切换时的标识key，并在complete中传递相同key，若二者不一致，则complete将不会生效
    * @since 1.6.4
    */
-  dataKey?: number | Record<string, any>
+  dataKey?: number | string | Record<string, any>
 
   /**
    * 【极简写法】自动注入的list名，可自动修改父view(包含ref="paging")中对应name的list值
@@ -1359,7 +1359,7 @@ declare interface ZPagingProps {
    * @param pageSize 每页多少条
    * @param from query的触发来源：user-pull-down:用户主动下拉刷新 reload:通过reload触发 refresh:通过refresh触发 load-more:通过滚动到底部加载更多或点击底部加载更多触发
    */
-  onQuery?: (pageNo: number | string, pageSize: number | string, from: ZPagingEnums.QueryFrom) => void
+  onQuery?: (pageNo: number, pageSize: number, from: ZPagingEnums.QueryFrom) => void
 
   /**
    * 分页渲染的数组改变时触发
