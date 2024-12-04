@@ -12,10 +12,8 @@
 	
 	const props = defineProps({
 		status: {
-			type: Number,
-			default: function() {
-				return 0;
-			},
+			type: String,
+			default: '',
 		},
 	});
 	

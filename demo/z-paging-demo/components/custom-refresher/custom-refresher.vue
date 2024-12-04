@@ -30,9 +30,7 @@
 		props: {
 			status: {
 				type: String,
-				default: function() {
-					return 0;
-				},
+				default: '',
 			},
 		}
 	}
