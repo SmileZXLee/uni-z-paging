@@ -364,7 +364,7 @@ declare interface ZPagingProps {
    * 获取分页数据Function，功能与@query类似。若设置了fetch则@query将不再触发。
    * @since 2.7.8
    */
-  fetch?: () => void
+  fetch?: (...args: any[]) => any;
 
   /**
    * fetch的附加参数，fetch配置后有效

@@ -38,7 +38,7 @@ import ZPInterceptor from '@/uni_modules/z-paging/components/z-paging/js/z-pagin
 // 处理z-paging fetch写法拦截，handleFetchParams用于拦截请求入参，返回最终入参对象。handleFetchResult用于拦截请求结果，自行处理请求结束后操作，务必调用complete或complete相关方法
 // 支持链式调用
 ZPInterceptor.handleFetchParams((parmas, extraParams) => {
-	return { pageNo: parmas.pageNo, pageSize: parmas.pageSize, ...extraParams} ;
+	return { pageNo: parmas.pageNo, pageSize: parmas.pageSize, ...extraParams };
 }).handleFetchResult((fetchResult, paging) => {
 	fetchResult.then(res => {
 		paging.complete(res.data.list);
