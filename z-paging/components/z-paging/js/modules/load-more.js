@@ -244,7 +244,7 @@ export default {
 				}
 			}
 		},
-		// 触发加载更多时调用,from:toBottom-滑动到底部触发；1、click-点击加载更多触发
+		// 触发加载更多时调用,from:toBottom-滑动到底部触发；click-点击加载更多触发
 		_onLoadingMore(from = 'click') {
 			// 如果是ios并且是滚动到底部的，则在滚动到底部时候尝试将列表设置为禁止滚动然后设置为允许滚动，以禁止底部bounce的效果
 			if (this.isIos && from === 'toBottom' && !this.scrollToBottomBounceEnabled && this.scrollEnable) {

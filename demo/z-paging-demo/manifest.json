@@ -76,5 +76,10 @@
             "base" : ""
         }
     },
-    "vueVersion" : "3"
+    "vueVersion" : "3",
+    "app-harmony" : {
+        "distribute" : {
+            "bundleName" : "cn.zxlee.zpaging"
+        }
+    }
 }

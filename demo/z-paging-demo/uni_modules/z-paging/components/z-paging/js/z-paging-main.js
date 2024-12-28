@@ -432,7 +432,7 @@ export default {
 		},
 		// #ifdef MP-KUAISHOU
 		// 设置scroll-view内容器的最小高度等于scroll-view的高度(为了解决在快手小程序中内容较少时scroll-view内容器高度无法铺满scroll-view的问题)
-		_setFullScrollViewInHeight() {
+		async _setFullScrollViewInHeight() {
 			try {
 				// 如果需要铺满全屏，则计算当前全屏可是区域的高度
 				const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
