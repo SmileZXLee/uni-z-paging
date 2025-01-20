@@ -284,7 +284,7 @@ v2.8.3 (2024-11-27)
 						@reload="_emptyViewReload" @viewClick="_emptyViewClick" />
 					</view>
 				</component>
-				<component is="header" v-if="!hideNvueBottomTag" ref="zp-n-list-bottom-tag" class="zp-n-list-bottom-tag"></component>
+				<component :is="nViewIs" v-if="!hideNvueBottomTag" ref="zp-n-list-bottom-tag" class="zp-n-list-bottom-tag"></component>
 			</component>
 			<view v-if="zSlots.right" class="zp-page-right">
 				<slot name="right" />

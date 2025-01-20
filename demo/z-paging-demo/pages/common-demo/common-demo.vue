@@ -1,7 +1,7 @@
 <!-- 普通模式演示(vue) -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" v-model="dataList" @query="queryList">
+		<z-paging ref="paging" :loading-more-enabled="false" v-model="dataList" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
 			<template #top>
@@ -29,9 +29,7 @@
 		},
 		methods: {
 			tabsChange(index) {
-				this.tabIndex = index;
-				// 当切换tab或搜索时请调用组件的reload方法，请勿直接调用：queryList方法！！
-				this.$refs.paging.reload();
+				this.$refs.paging.scrollToBottom();
 			},
 			queryList(pageNo, pageSize) {
 				// 组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
@@ -39,7 +37,7 @@
 				// 模拟请求服务器获取分页数据，请替换成自己的网络请求
 				const params = {
 					pageNo: pageNo,
-					pageSize: pageSize,
+					pageSize: 20,
 					type: this.tabIndex + 1
 				}
 				this.$request.queryList(params).then(res => {
