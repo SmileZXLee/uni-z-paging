@@ -420,7 +420,12 @@ export default {
 						let scrollViewHeight = this.windowHeight - scrollViewTop;
 						scrollViewHeight -= finalScrollBottomNode ? finalScrollBottomNode[0].height : 0;
 						const additionHeight = u.convertToPx(this.autoHeightAddition);
-						const finalHeight = scrollViewHeight + additionHeight - (this.insideMore ? 1 : 0) + 'px !important';
+						// 在支付宝小程序中，添加!important会导致min-height失效，因此在支付宝小程序中需要去掉
+						let importantSuffix =  ' !important';
+						// #ifdef MP-ALIPAY
+						importantSuffix = '';
+						// #endif
+						const finalHeight = scrollViewHeight + additionHeight - (this.insideMore ? 1 : 0) + 'px' + importantSuffix;
 						this.$set(this.scrollViewStyle, heightKey, finalHeight);
 						this.$set(this.scrollViewInStyle, heightKey, finalHeight);
 					}
