@@ -53,6 +53,8 @@ export default {
 		return {
 			scrollTop: 0,
 			oldScrollTop: 0,
+			scrollLeft: 0,
+			oldScrollLeft: 0,
 			scrollViewStyle: {},
 			scrollViewContainerStyle: {},
 			scrollViewInStyle: {},
@@ -166,17 +168,24 @@ export default {
 				this._scrollIntoViewByNodeTop(nodeTop, offset, animate);
 			})
 		},
-		// 滚动到指定位置(vue中有效)。y为与顶部的距离，单位为px；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
+		// y轴滚动到指定位置(vue中有效)。y为与顶部的距离，单位为px；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
 		scrollToY(y, offset, animate) {
 			this.scrollTop = this.oldScrollTop;
 			this.$nextTick(() => {
 				this._scrollToY(y, offset, animate);
 			})
 		},
+		// x轴滚动到指定位置(非页面滚动且在vue中有效)。x为与左侧的距离，单位为px；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
+		scrollToX(x, offset, animate) {
+			this.scrollLeft = this.oldScrollLeft;
+			this.$nextTick(() => {
+				this._scrollToX(x, offset, animate);
+			})
+		},
 		// 滚动到指定view(nvue中和虚拟列表中有效)。index为需要滚动的view的index(第几个，从0开始)；offset为偏移量，单位为px；animate为是否展示滚动动画，默认为否
 		scrollIntoViewByIndex(index, offset, animate) {
 			if (index >= this.realTotalData.length) {
-				u.consoleErr('当前滚动的index超出已渲染列表长度，请先通过refreshToPage加载到对应index页并等待渲染成功后再调用此方法！')
+				u.consoleErr('当前滚动的index超出已渲染列表长度，请先通过refreshToPage加载到对应index页并等待渲染成功后再调用此方法！');
 				return;
 			}
 			this.$nextTick(() => {
@@ -381,7 +390,7 @@ export default {
 				this._scrollToY(nodeTop, offset, animate, true);
 			}
 		},
-		// 滚动到指定位置
+		// y轴滚动到指定位置
 		_scrollToY(y, offset = 0, animate = false, addScrollTop = false) {
 			this._updatePrivateScrollWithAnimation(animate);
 			u.delay(() => {
@@ -402,14 +411,26 @@ export default {
 				}
 			}, 10)
 		},
+		// x轴滚动到指定位置
+		_scrollToX(x, offset = 0, animate = false) {
+			this._updatePrivateScrollWithAnimation(animate);
+			u.delay(() => {
+				if (!this.usePageScroll) {
+					this.scrollLeft = x - offset;
+				} else {
+					u.consoleErr('使用页面滚动时不支持scrollToX');
+				}
+			}, 10)
+		},
 		// scroll-view滚动中
 		_scroll(e) {
 			this.$emit('scroll', e);
-			const scrollTop = e.detail.scrollTop;
+			const { scrollTop, scrollLeft } = e.detail;
 			// #ifndef APP-NVUE
 			this.finalUseVirtualList && this._updateVirtualScroll(scrollTop, this.oldScrollTop - scrollTop);
 			// #endif
 			this.oldScrollTop = scrollTop;
+			this.oldScrollLeft = scrollLeft;
 			// 滚动区域内容的总高度 - 当前滚动的scrollTop = 当前滚动区域的顶部与内容底部的距离
 			const scrollDiff = e.detail.scrollHeight - this.oldScrollTop;
 			// 在非ios平台滚动中，再次验证一下是否滚动到了底部。因为在一些安卓设备中，有概率滚动到底部不触发@scrolltolower事件，因此添加双重检测逻辑

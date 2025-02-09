@@ -34,7 +34,7 @@ v2.8.3 (2024-11-27)
 			<view :class="{'zp-scroll-view-container':true,'zp-absoulte':finalIsOldWebView}" :style="[scrollViewContainerStyle]">
 				<scroll-view
 					ref="zp-scroll-view" :class="{'zp-scroll-view':true,'zp-scroll-view-absolute':!usePageScroll,'zp-scroll-view-hide-scrollbar':!showScrollbar}" :style="[chatRecordRotateStyle]"
-					:scroll-top="scrollTop" :scroll-x="scrollX"
+					:scroll-top="scrollTop" :scroll-left="scrollLeft" :scroll-x="scrollX"
 					:scroll-y="finalScrollable" :enable-back-to-top="finalEnableBackToTop"
 					:show-scrollbar="showScrollbar" :scroll-with-animation="finalScrollWithAnimation"
 					:scroll-into-view="scrollIntoView" :lower-threshold="finalLowerThreshold" :upper-threshold="5"
