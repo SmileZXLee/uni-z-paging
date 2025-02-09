@@ -1989,15 +1989,25 @@ declare interface _ZPagingRef<T = any> {
   scrollIntoViewByNodeTop: (top: number, offset?: number, animate?: boolean) => void;
 
   /**
-   * 滚动到指定view
+   * y轴滚动到指定位置
    * - vue中有效
    * - 与scrollIntoViewByNodeTop的不同之处在于，scrollToY传入的是view相对于屏幕的top值，而scrollIntoViewByNodeTop传入的top值并非是固定的，通过uni.createSelectorQuery()获取到的top会因列表滚动而改变
    *
-   * @param top 需要滚动到的view的top值，单位为px
+   * @param y 与顶部的距离，单位为px
    * @param [offset=0] 偏移量，单位为px
    * @param [animate=false] 是否有动画效果
    */
-  scrollToY: (top: number, offset?: number, animate?: boolean) => void;
+  scrollToY: (y: number, offset?: number, animate?: boolean) => void;
+
+  /**
+   * x轴滚动到指定位置
+   * - 非页面滚动且在vue中有效
+   *
+   * @param x 与左侧的距离，单位为px
+   * @param [offset=0] 偏移量，单位为px
+   * @param [animate=false] 是否有动画效果
+   */
+  scrollToX: (x: number, offset?: number, animate?: boolean) => void;
 
   /**
    * 滚动到指定view
