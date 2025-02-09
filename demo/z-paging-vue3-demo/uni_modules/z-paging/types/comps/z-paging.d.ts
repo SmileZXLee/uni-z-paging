@@ -1993,6 +1993,7 @@ declare interface _ZPagingRef<T = any> {
    * - vue中有效
    * - 与scrollIntoViewByNodeTop的不同之处在于，scrollToY传入的是view相对于屏幕的top值，而scrollIntoViewByNodeTop传入的top值并非是固定的，通过uni.createSelectorQuery()获取到的top会因列表滚动而改变
    *
+   * @since 2.1.0
    * @param y 与顶部的距离，单位为px
    * @param [offset=0] 偏移量，单位为px
    * @param [animate=false] 是否有动画效果
@@ -2003,6 +2004,7 @@ declare interface _ZPagingRef<T = any> {
    * x轴滚动到指定位置
    * - 非页面滚动且在vue中有效
    *
+   * @since 2.8.5
    * @param x 与左侧的距离，单位为px
    * @param [offset=0] 偏移量，单位为px
    * @param [animate=false] 是否有动画效果
