@@ -405,7 +405,7 @@ export default {
 			this.isUserReload = !isUserPullDown;
 			this._startLoading(true);
 			this.refresherTriggered = true;
-			if(this.reloadWhenRefresh && isUserPullDown){
+			if (this.reloadWhenRefresh && isUserPullDown) {
 				this.useChatRecordMode ? this._onLoadingMore('click') : this._reload(false, false, isUserPullDown);
 			}
 		},
