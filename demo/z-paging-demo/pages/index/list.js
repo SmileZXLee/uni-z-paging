@@ -95,6 +95,11 @@ export default {
 			subTitle: '滚动到顶部加载更多无闪动'
 		},
 		{
+			title: '聊天记录模式流式输出演示',
+			file: 'chat-history-stream-demo',
+			subTitle: '滚动到顶部加载更多无闪动+流式输出回复(类似chatGPT对话)'
+		},
+		{
 			title: '聊天记录模式+虚拟列表演示',
 			file: 'chat-history-virtual-demo',
 			subTitle: '滚动到顶部加载更多无闪动+支持虚拟列表'

@@ -11,7 +11,7 @@
 			<view class="emoji-container">
 				<image class="emoji-img" :src="`/static/${emojiType || 'emoji'}.png`" @click="emojiChange"></image>
 			</view>
-			<view class="chat-input-send" @click="sendClick">
+			<view :class="{'chat-input-send': true, 'chat-input-send-disabled': !sendEnabled}" @click="sendClick">
 				<text class="chat-input-send-text">发送</text>
 			</view>
 		</view>
@@ -31,6 +31,12 @@
 <script>
 	export default {
 		name:"chat-input-bar",
+		props: {
+			disabled: {
+				type: Boolean,
+				default: false
+			}
+		},
 		data() {
 			return {
 				msg: '',
@@ -42,6 +48,11 @@
 				// 当前表情/键盘点击后的切换类型，为空字符串代表展示表情logo但是不展示不展示表情面板（如果不需要切换表情面板则不用写）
 				emojiType: '',
 			};
+		},
+		computed: {
+			sendEnabled() {
+				return !this.disabled && this.msg.length;
+			}
 		},
 		methods: {
 			// 更新了键盘高度（如果不需要切换表情面板则不用写）
@@ -78,7 +89,7 @@
 			
 			// 点击了发送按钮
 			sendClick() {
-				if (!this.msg.length) return;
+				if (!this.sendEnabled) return;
 				this.$emit('send', this.msg);
 				this.msg = '';
 			}
@@ -129,6 +140,9 @@
 		/* #endif */
 		justify-content: center;
 		align-items: center;
+	}
+	.chat-input-send-disabled {
+		background-color: #bbbbbb;
 	}
 	.chat-input-send-text {
 		color: white;

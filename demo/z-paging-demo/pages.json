@@ -243,6 +243,14 @@
 			}
 		},
 		{
+			"path" : "pages/chat-history-stream-demo/chat-history-stream-demo",
+			"style" : 
+			{
+				"navigationBarTitleText" : "聊天记录模式流式输出演示",
+				"enablePullDownRefresh" : false
+			}
+		},
+		{
 			"path" : "pages/f2-demo/f2-demo",
 			"style" : 
 			{	
