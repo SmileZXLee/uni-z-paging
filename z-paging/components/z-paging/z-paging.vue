@@ -315,7 +315,7 @@ v2.8.5 (2025-02-09)
 	import pagingRenderjs from './wxs/z-paging-renderjs.js';
 	/**
 	 * z-paging 分页组件
-	 * @description z-paging 分页组件，高性能，全平台兼容。支持虚拟列表，分页全自动处理
+	 * @description z-paging 分页组件，高性能，全平台兼容。支持自定义下拉刷新、上拉加载更多、虚拟列表、下拉进入二楼、自动管理空数据图、无闪动聊天分页、本地分页、全自动分页等
 	 * @tutorial https://z-paging.zxlee.cn
 	 * @property {Array} value 父组件v-model所绑定的list的值，默认为[]
 	 * @property {Number|String} defaultPageNo 自定义初始的pageNo，默认为1

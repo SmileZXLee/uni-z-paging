@@ -535,17 +535,17 @@ export default {
 		},
 		// 获取对应index的虚拟列表cell节点信息
 		_getVirtualCellNodeByIndex(index) {
-			let inParent = false;
+			let inDom = this.finalUseInnerList;
 			// 在vue3+(微信小程序或QQ小程序)中，使用非内置列表写法时，若z-paging在swiper-item内存在无法获取slot插入的cell高度的问题
 			// 通过uni.createSelectorQuery().in(this.$parent)来解决此问题
 			// #ifdef VUE3
 			// #ifdef MP-WEIXIN || MP-QQ
-			if (this.forceCloseInnerList) {
-				inParent = this.virtualInSwiperSlot;
+			if (this.forceCloseInnerList && this.virtualInSwiperSlot) {
+				inDom = this.$parent;
 			}
 			// #endif
 			// #endif
-			return this._getNodeClientRect(`#${this.fianlVirtualCellIdPrefix}-${index}`, this.finalUseInnerList, false, inParent);
+			return this._getNodeClientRect(`#${this.fianlVirtualCellIdPrefix}-${index}`, inDom);
 		},
 		// 处理使用内置列表时点击了cell事件
 		_innerCellClick(item, index) {

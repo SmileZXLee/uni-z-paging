@@ -82,7 +82,7 @@ export default {
 			})
 		},
 		// 获取节点尺寸
-		_getNodeClientRect(select, inDom = true, scrollOffset = false, inParent = false) {
+		_getNodeClientRect(select, inDom = true, scrollOffset = false) {
 			if (this.isReadyDestroy) {
 				return Promise.resolve(false);
 			};
@@ -106,8 +106,13 @@ export default {
 			//#ifdef MP-ALIPAY
 			inDom = false;
 			//#endif
-			const inDomObj = inParent ? this.$parent : this;
-			let res = inDom || inParent ? uni.createSelectorQuery().in(inDomObj) : uni.createSelectorQuery();
+			
+			/*
+			inDom可能是true、false，也可能是具体的dom节点
+			如果inDom不为false，则使用uni.createSelectorQuery().in()进行查询，如果inDom为true，则in中的是this，否则in中的为具体的dom
+			如果inDom为false，则使用uni.createSelectorQuery()进行查询
+			*/
+			let res = !!inDom ? uni.createSelectorQuery().in(inDom === true ? this : inDom) : uni.createSelectorQuery();
 			scrollOffset ? res.select(select).scrollOffset() : res.select(select).boundingClientRect();
 			return new Promise((resolve, reject) => {
 				res.exec(data => {
