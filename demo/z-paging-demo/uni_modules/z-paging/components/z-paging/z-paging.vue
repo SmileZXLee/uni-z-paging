@@ -528,6 +528,7 @@ v2.8.5 (2025-02-09)
 	}
 </script>
 
+<script src="./js/z-paging-main.js" />
 <!-- #ifndef APP-NVUE -->
 <!-- #ifdef APP-PLUS || MP-WEIXIN || MP-QQ || H5 -->
 <script src="./wxs/z-paging-wxs.wxs" module="pagingWxs" lang="wxs"></script>
