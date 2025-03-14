@@ -28,6 +28,15 @@
 <script>
 	import commonLayoutModule from '../z-paging/js/modules/common-layout'
 	
+	/**
+	 * z-paging-swiper 组件
+	 * @description 在 swiper 中使用 z-paging 时（左右滑动切换列表），在根节点使用 z-paging-swiper，其相当于一个 view 容器，默认铺满全屏，可免计算高度直接插入 swiper 的视图容器。
+	 * @tutorial https://z-paging.zxlee.cn/api/sub-components/main.html#z-paging-swiper配置
+	 * @property {Boolean} fixed 是否使用 fixed 布局，默认为 true
+	 * @property {Boolean} safeAreaInsetBottom 是否开启底部安全区域适配，默认为 false
+	 * @property {Object} swiperStyle z-paging-swiper 样式，默认为 {}
+	 * @example <z-paging-swiper :safeAreaInsetBottom="true"></z-paging-swiper>
+	 */
 	export default {
 		name: "z-paging-swiper",
 		mixins: [commonLayoutModule],

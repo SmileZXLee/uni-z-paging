@@ -17,6 +17,26 @@
 
 <script>
 	import zStatic from '../z-paging/js/z-paging-static'
+	
+	/**
+	 * z-paging-empty-view 空数据组件
+	 * @description 通用的 z-paging 空数据组件
+	 * @tutorial https://z-paging.zxlee.cn/api/sub-components/main.html#z-paging-empty-view配置
+	 * @property {Boolean} emptyViewFixed 空数据图片是否铺满 z-paging，默认为 false。若设置为 true，则为填充满 z-paging 的剩余部分
+	 * @property {String} emptyViewText 空数据图描述文字，默认为 '没有数据哦~'
+	 * @property {String} emptyViewImg 空数据图图片，默认使用 z-paging 内置的图片 (建议使用绝对路径，开头不要添加 "@"，请以 "/" 开头)
+	 * @property {String} emptyViewReloadText 空数据图点击重新加载文字，默认为 '重新加载'
+	 * @property {Object} emptyViewStyle 空数据图样式，可设置空数据 view 的 top 等，如: empty-view-style="{'top':'100rpx'}" (如果空数据图不是 fixed 布局，则此处是 margin-top)，默认为 {}
+	 * @property {Object} emptyViewImgStyle 空数据图 img 样式，默认为 {}
+	 * @property {Object} emptyViewTitleStyle 空数据图描述文字样式，默认为 {}
+	 * @property {Object} emptyViewReloadStyle 空数据图重新加载按钮样式，默认为 {}
+	 * @property {Boolean} showEmptyViewReload 是否显示空数据图重新加载按钮(无数据时)，默认为 false
+	 * @property {Boolean} isLoadFailed 是否是加载失败，默认为 false
+	 * @property {String} unit 空数据图中布局的单位，默认为 'rpx'
+	 * @event {Function} reload 点击了重新加载按钮
+	 * @event {Function} viewClick 点击了空数据图 view
+	 * @example <z-paging-empty-view empty-view-text="暂无数据" />
+	 */
 	export default {
 		name: "z-paging-empty-view",
 		data() {

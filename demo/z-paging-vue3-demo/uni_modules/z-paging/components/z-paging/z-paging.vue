@@ -311,30 +311,211 @@ v2.8.5 (2025-02-09)
 	</component>
 	<!-- #endif -->
 </template>
-<!-- #ifndef APP-NVUE -->
-<!-- #ifdef APP-PLUS || MP-WEIXIN || MP-QQ || H5 -->
-<script src="./wxs/z-paging-wxs.wxs" module="pagingWxs" lang="wxs"></script>
-<!-- #endif -->
-<!-- #endif -->
-
 <script module="pagingRenderjs" lang="renderjs">
 	import pagingRenderjs from './wxs/z-paging-renderjs.js';
 	/**
 	 * z-paging 分页组件
-	 * @description 高性能，全平台兼容。支持虚拟列表，支持nvue、vue3
+	 * @description z-paging 分页组件，高性能，全平台兼容。支持虚拟列表，分页全自动处理
 	 * @tutorial https://z-paging.zxlee.cn
-	 * @notice 以下仅为部分常用属性、方法和事件，完整文档请查阅z-paging官网
-	 * @property {Number|String} default-page-no 自定义初始的pageNo，默认为1
-	 * @property {Number|String} default-page-size 自定义pageSize，默认为10
-	 * @property {Object} paging-style 设置z-paging的style，部分平台(如微信小程序)无法直接修改组件的style，可使用此属性代替
+	 * @property {Array} value 父组件v-model所绑定的list的值，默认为[]
+	 * @property {Number|String} defaultPageNo 自定义初始的pageNo，默认为1
+	 * @property {Number|String} defaultPageSize 自定义pageSize(每页显示多少条)，默认为10
+	 * @property {Boolean} fixed z-paging是否使用fixed布局，默认为true
+	 * @property {Boolean} safeAreaInsetBottom 是否开启底部安全区域适配，默认为false
+	 * @property {Boolean} useSafeAreaPlaceholder 开启底部安全区域适配后，是否使用placeholder形式实现，默认为false
+	 * @property {Boolean} usePageScroll 使用页面滚动，默认为false
+	 * @property {Boolean} autoFullHeight 使用页面滚动时，是否在不满屏时自动填充满屏幕，默认为true
+	 * @property {String} defaultThemeStyle loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认为black
+	 * @property {Object} pagingStyle 设置z-paging的style，部分平台(如微信小程序)无法直接修改组件的style，可使用此属性代替
 	 * @property {String} height z-paging的高度，优先级低于pagingStyle中设置的height，传字符串，如100px、100rpx、100%
 	 * @property {String} width z-paging的宽度，优先级低于pagingStyle中设置的width，传字符串，如100px、100rpx、100%
-	 * @property {Boolean} use-page-scroll 使用页面滚动，默认为否
-	 * @property {Boolean} use-virtual-list 是否使用虚拟列表，默认为否
-	 * @property {Boolean} fixed z-paging是否使用fixed布局，若使用fixed布局，则z-paging的父view无需固定高度，z-paging高度默认为100%，默认为是(当使用内置scroll-view滚动时有效)
-	 * @property {Boolean} auto [z-paging]mounted后是否自动调用reload方法(mounted后自动调用接口)，默认为是
-	 * @property {Boolean} use-chat-record-mode 使用聊天记录模式，默认为否
-	 * @event {Function} query 下拉刷新或滚动到底部时会自动触发此方法。z-paging加载时也会触发(若要禁止，请设置:auto="false")。pageNo和pageSize会自动计算好，直接传给服务器即可。
+	 * @property {String} maxWidth z-paging的最大宽度，优先级低于pagingStyle中设置的max-width，默认为空
+	 * @property {String} bgColor z-paging的背景色(为css中的background，因此也可以设置渐变，背景图片等)，优先级低于pagingStyle中设置的background-color
+	 * @property {Boolean} watchTouchDirectionChange 是否监听列表触摸方向改变，默认为false
+	 * @property {Number|String} delay 调用complete后延迟处理的时间，单位为毫秒，优先级高于min-delay，默认为0
+	 * @property {Number|String} minDelay 触发@query后最小延迟处理的时间，单位为毫秒，优先级低于delay，默认为0
+	 * @property {Boolean} callNetworkReject 请求失败是否触发reject，默认为true
+	 * @property {String} unit z-paging中默认布局的单位，默认为rpx
+	 * @property {Boolean} concat 自动拼接complete中传过来的数组，默认为true
+	 * @property {Number|String|Object} dataKey 为保证数据一致，设置当前tab切换时的标识key，并在complete中传递相同key，若二者不一致，则complete将不会生效
+	 * @property {String} autowireListName 【极简写法】自动注入的list名，可自动修改父view(包含ref="paging")中对应name的list值
+	 * @property {String} autowireQueryName 【极简写法】自动注入的query名，可自动调用父view(包含ref="paging")中的query方法
+	 * @property {Function} fetch 【极简写法】获取分页数据Function，功能与@query类似。若设置了fetch则@query将不再触发
+	 * @property {Object} fetchParams fetch的附加参数，fetch配置后有效
+	 * @property {Boolean} auto [z-paging]mounted后是否自动调用reload方法(mounted后自动调用接口)，默认为true
+	 * @property {Boolean} autoScrollToTopWhenReload reload时自动滚动到顶部，默认为true
+	 * @property {Boolean} autoCleanListWhenReload reload时立即自动清空原list，默认为true
+	 * @property {Boolean} showRefresherWhenReload 列表刷新时自动显示下拉刷新view，默认为false
+	 * @property {Boolean} showLoadingMoreWhenReload 列表刷新时自动显示加载更多view，且为加载中状态，默认为false
+	 * @property {Boolean} createdReload 组件created时立即触发reload，默认为false
+	 * @property {Boolean} refresherEnabled 是否开启下拉刷新，默认为true
+	 * @property {Number|String} refresherThreshold 设置自定义下拉刷新阈值，默认单位为px，默认为80rpx
+	 * @property {Boolean} useRefresherStatusBarPlaceholder 是否开启下拉刷新状态栏占位，默认为false
+	 * @property {Boolean} refresherOnly 是否只使用下拉刷新，默认为false
+	 * @property {Boolean} useCustomRefresher 是否使用自定义的下拉刷新，默认为true
+	 * @property {Boolean} reloadWhenRefresh 用户下拉刷新时是否触发reload方法，默认为true
+	 * @property {String} refresherThemeStyle 下拉刷新的主题样式，支持black，white，默认为black
+	 * @property {Object} refresherImgStyle 自定义下拉刷新中左侧图标的样式
+	 * @property {Object} refresherTitleStyle 自定义下拉刷新中右侧状态描述文字的样式
+	 * @property {Object} refresherUpdateTimeStyle 自定义下拉刷新中右侧最后更新时间文字的样式
+	 * @property {Boolean} watchRefresherTouchmove 是否实时监听下拉刷新中进度，并通过@refresherTouchmove传递给父组件，默认为false
+	 * @property {Boolean} showRefresherUpdateTime 是否显示最后更新时间，默认为false
+	 * @property {String|Object} refresherDefaultText 自定义下拉刷新默认状态下的文字
+	 * @property {String|Object} refresherPullingText 自定义下拉刷新松手立即刷新状态下的文字
+	 * @property {String|Object} refresherRefreshingText 自定义下拉刷新刷新中状态下的文字
+	 * @property {String|Object} refresherCompleteText 自定义下拉刷新刷新结束状态下的文字
+	 * @property {String} refresherDefaultImg 自定义下拉刷新默认状态下的图片
+	 * @property {String} refresherPullingImg 自定义下拉刷新松手立即刷新状态下的图片
+	 * @property {String} refresherRefreshingImg 自定义下拉刷新刷新中状态下的图片
+	 * @property {String} refresherCompleteImg 自定义下拉刷新刷新结束状态下的图片
+	 * @property {Boolean} refresherRefreshingAnimated 自定义下拉刷新刷新中状态下是否展示旋转动画，默认为true
+	 * @property {Boolean} refresherEndBounceEnabled 是否开启自定义下拉刷新刷新结束回弹动画效果，默认为true
+	 * @property {String} refresherDefaultStyle 设置系统下拉刷新默认样式，支持设置black，white，none，默认为black
+	 * @property {String} refresherBackground 设置自定义下拉刷新区域背景颜色，默认为#FFFFFF00
+	 * @property {String} refresherFixedBackground 设置固定的自定义下拉刷新区域背景颜色，默认为#FFFFFF00
+	 * @property {Number|String} refresherFixedBacHeight 设置固定的自定义下拉刷新区域高度，默认为0
+	 * @property {Number|String} refresherDefaultDuration 设置自定义下拉刷新默认状态下回弹动画时间，单位为毫秒，默认为100
+	 * @property {Number|String} refresherCompleteDelay 自定义下拉刷新结束以后延迟收回的时间，单位为毫秒，默认为0
+	 * @property {Number|String} refresherCompleteDuration 自定义下拉刷新结束收回动画时间，单位为毫秒，默认为300
+	 * @property {Boolean} refresherVibrate 下拉刷新时下拉到“松手立即刷新”状态时是否使手机短振动，默认为false
+	 * @property {Boolean} refresherRefreshingScrollable 自定义下拉刷新刷新中状态是否允许列表滚动，默认为true
+	 * @property {Boolean} refresherCompleteScrollable 自定义下拉刷新结束状态下是否允许列表滚动，默认为false
+	 * @property {Number} refresherOutRate 设置自定义下拉刷新下拉超出阈值后继续下拉位移衰减的比例，默认为0.65
+	 * @property {Boolean} refresherF2Enabled 是否开启下拉进入二楼功能，默认为false
+	 * @property {Number|String} refresherF2Threshold 下拉进入二楼阈值，默认为200rpx
+	 * @property {Number|String} refresherF2Duration 下拉进入二楼动画时间，单位为毫秒，默认为200
+	 * @property {Boolean} showRefresherF2 下拉进入二楼状态松手后是否弹出二楼，默认为true
+	 * @property {Number} refresherPullRate 设置自定义下拉刷新下拉时实际下拉位移与用户下拉距离的比值，默认为0.75
+	 * @property {Number|String} refresherFps 自定义下拉刷新下拉帧率，默认为40
+	 * @property {Number|String} refresherMaxAngle 自定义下拉刷新允许触发的最大下拉角度，默认为40度
+	 * @property {Boolean} refresherAngleEnableChangeContinued 自定义下拉刷新的角度由未达到最大角度变到达到最大角度时，是否继续下拉刷新手势，默认为false
+	 * @property {Boolean} refresherNoTransform 下拉刷新时是否禁止下拉刷新view跟随用户触摸竖直移动，默认为false
+	 * @property {Boolean} loadingMoreEnabled 是否启用加载更多数据(含滑动到底部加载更多数据和点击加载更多数据)，默认为true
+	 * @property {Number|String} lowerThreshold 距底部/右边多远时，触发scrolltolower事件，默认单位为px，默认为100rpx
+	 * @property {Boolean} toBottomLoadingMoreEnabled 是否启用滑动到底部加载更多数据，默认为true
+	 * @property {String} loadingMoreThemeStyle 底部加载更多的主题样式，支持black，white，默认为black
+	 * @property {Object} loadingMoreCustomStyle 自定义底部加载更多样式
+	 * @property {Object} loadingMoreTitleCustomStyle 自定义底部加载更多文字样式
+	 * @property {Object} loadingMoreLoadingIconCustomStyle 自定义底部加载更多加载中动画样式
+	 * @property {String} loadingMoreLoadingIconType 自定义底部加载更多加载中动画图标类型，可选flower或circle，默认为flower
+	 * @property {String} loadingMoreLoadingIconCustomImage 自定义底部加载更多加载中动画图标图片
+	 * @property {Boolean} loadingMoreLoadingAnimated 底部加载更多加载中view是否展示旋转动画，默认为true
+	 * @property {String|Object} loadingMoreDefaultText 滑动到底部"默认"文字
+	 * @property {String|Object} loadingMoreLoadingText 滑动到底部"加载中"文字
+	 * @property {String|Object} loadingMoreNoMoreText 滑动到底部"没有更多"文字
+	 * @property {String|Object} loadingMoreFailText 滑动到底部"加载失败"文字
+	 * @property {Boolean} hideNoMoreInside 当没有更多数据且分页内容未超出z-paging时是否隐藏没有更多数据的view，默认为false
+	 * @property {Number} hideNoMoreByLimit 当没有更多数据且分页数组长度少于这个值时，隐藏没有更多数据的view，默认为0
+	 * @property {Boolean} insideMore 当分页未满一屏时，是否自动加载更多，默认为false
+	 * @property {Boolean} loadingMoreDefaultAsLoading 滑动到底部状态为默认状态时，以加载中的状态展示，默认为false
+	 * @property {Boolean} showLoadingMoreNoMoreView 是否显示没有更多数据的view，默认为true
+	 * @property {Boolean} showDefaultLoadingMoreText 是否显示默认的加载更多text，默认为true
+	 * @property {Boolean} showLoadingMoreNoMoreLine 是否显示没有更多数据的分割线，默认为true
+	 * @property {Object} loadingMoreNoMoreLineCustomStyle 自定义底部没有更多数据的分割线样式
+	 * @property {Boolean} hideEmptyView 是否强制隐藏空数据图，默认为false
+	 * @property {Boolean} emptyViewFixed 空数据图片是否铺满z-paging，默认为false
+	 * @property {Boolean} emptyViewCenter 空数据图片是否垂直居中，默认为true
+	 * @property {String|Object} emptyViewText 空数据图描述文字
+	 * @property {String} emptyViewImg 空数据图图片
+	 * @property {String} emptyViewErrorImg 空数据图“加载失败”图片
+	 * @property {String|Object} emptyViewReloadText 空数据图点击重新加载文字
+	 * @property {String|Object} emptyViewErrorText 空数据图“加载失败”描述文字
+	 * @property {Object} emptyViewSuperStyle 空数据图父view样式
+	 * @property {Object} emptyViewStyle 空数据图样式
+	 * @property {Object} emptyViewImgStyle 空数据图img样式
+	 * @property {Object} emptyViewTitleStyle 空数据图描述文字样式
+	 * @property {Object} emptyViewReloadStyle 空数据图重新加载按钮样式
+	 * @property {Boolean} showEmptyViewReload 是否显示空数据图重新加载按钮(无数据时)，默认为false
+	 * @property {Boolean} showEmptyViewReloadWhenError 加载失败时是否显示空数据图重新加载按钮，默认为true
+	 * @property {Boolean} autoHideEmptyViewWhenLoading 加载中时是否自动隐藏空数据图，默认为true
+	 * @property {Boolean} autoHideEmptyViewWhenPull 用户下拉列表触发下拉刷新加载中时是否自动隐藏空数据图，默认为true
+	 * @property {Boolean} autoHideLoadingAfterFirstLoaded 第一次加载后自动隐藏loading slot，默认为true
+	 * @property {Boolean} loadingFullFixed loading slot的父view是否铺满屏幕并固定，默认为false
+	 * @property {Boolean} autoShowSystemLoading 是否自动显示系统Loading：即uni.showLoading，默认为false
+	 * @property {String|Object} systemLoadingText 显示系统Loading时显示的文字
+	 * @property {Boolean} systemLoadingMask 显示系统Loading时是否显示透明蒙层，防止触摸穿透，默认为true
+	 * @property {Boolean} autoShowBackToTop 自动显示点击返回顶部按钮，默认为false
+	 * @property {Number|String} backToTopThreshold 点击返回顶部按钮显示/隐藏的阈值(滚动距离)，默认单位为px，默认为400rpx
+	 * @property {String} backToTopImg 点击返回顶部按钮的自定义图片地址
+	 * @property {Boolean} backToTopWithAnimate 点击返回顶部按钮返回到顶部时是否展示过渡动画，默认为true
+	 * @property {Number|String} backToTopBottom 点击返回顶部按钮与底部的距离，默认单位为px，默认为160rpx
+	 * @property {Object} backToTopStyle 点击返回顶部按钮的自定义样式
+	 * @property {Boolean} useVirtualList 是否使用虚拟列表，默认为false
+	 * @property {Boolean} useCompatibilityMode 在使用虚拟列表时，是否使用兼容模式，默认为false
+	 * @property {Object} extraData 使用兼容模式时传递的附加数据
+	 * @property {String} cellHeightMode 虚拟列表cell高度模式，默认为fixed
+	 * @property {Number|String} preloadPage 预加载的列表可视范围(列表高度)页数，默认为12
+	 * @property {Number|String} fixedCellHeight 固定的cell高度，`cell-height-mode=fixed`才有效，默认为空
+	 * @property {Number|String} virtualListCol 虚拟列表列数，默认为1
+	 * @property {Number|String} virtualScrollFps 虚拟列表scroll取样帧率，默认为80
+	 * @property {String} virtualCellIdPrefix 虚拟列表cell id的前缀
+	 * @property {Boolean} useInnerList 是否在z-paging内部循环渲染列表(使用内置列表)，默认为false
+	 * @property {Boolean} forceCloseInnerList 强制关闭inner-list，默认为false
+	 * @property {Boolean} virtualInSwiperSlot 虚拟列表是否使用swiper-item包裹，默认为false
+	 * @property {String} cellKeyName 内置列表cell的key名称(仅nvue有效)
+	 * @property {Object} innerListStyle innerList样式
+	 * @property {Object} innerCellStyle innerCell样式
+	 * @property {Number|String} localPagingLoadingTime 本地分页时上拉加载更多延迟时间，单位为毫秒，默认为200
+	 * @property {Boolean} useChatRecordMode 使用聊天记录模式，默认为false
+	 * @property {Boolean} autoHideKeyboardWhenChat 使用聊天记录模式时是否自动隐藏键盘，默认为true
+	 * @property {Boolean} autoAdjustPositionWhenChat 使用聊天记录模式中键盘弹出时是否自动调整slot="bottom"高度，默认为true
+	 * @property {Boolean} autoToBottomWhenChat 使用聊天记录模式中键盘弹出时是否自动滚动到底部，默认为false
+	 * @property {String} chatAdjustPositionOffset 使用聊天记录模式中键盘弹出时占位高度偏移距离，默认为0px
+	 * @property {Boolean} showChatLoadingWhenReload 使用聊天记录模式中`reload`时是否显示`chatLoading`，默认为false
+	 * @property {String} bottomBgColor `bottom`的背景色，默认透明
+	 * @property {Boolean} chatLoadingMoreDefaultAsLoading 在聊天记录模式中滑动到顶部状态为默认状态时，是否以加载中的状态展示，默认为true
+	 * @property {Boolean} showScrollbar 控制是否出现滚动条，默认为true
+	 * @property {Boolean} scrollable 是否可以滚动，使用内置scroll-view和nvue时有效，默认为true
+	 * @property {Boolean} scrollX 是否允许横向滚动，默认为false
+	 * @property {Boolean} scrollToTopBounceEnabled iOS设备上滚动到顶部时是否允许回弹效果，默认为false
+	 * @property {Boolean} scrollToBottomBounceEnabled iOS设备上滚动到底部时是否允许回弹效果，默认为true
+	 * @property {Boolean} scrollWithAnimation 在设置滚动条位置时使用动画过渡，默认为false
+	 * @property {String} scrollIntoView 值应为某子元素id（id不能以数字开头）。设置哪个方向可滚动，则在哪个方向滚动到该元素
+	 * @property {Boolean} enableBackToTop iOS点击顶部状态栏、安卓双击标题栏时，滚动条返回顶部，默认为true
+	 * @property {String} nvueListIs nvue中修改列表类型，默认为list
+	 * @property {Object} nvueWaterfallConfig waterfall配置，仅在nvue中且nvueListIs=waterfall时有效
+	 * @property {Boolean} nvueBounce nvue控制是否回弹效果，iOS不支持动态修改，默认为true
+	 * @property {Boolean} nvueFastScroll nvue中通过代码滚动到顶部/底部时，是否加快动画效果，默认为false
+	 * @property {String} nvueListId nvue中list的id
+	 * @property {Boolean} hideNvueBottomTag 是否隐藏nvue列表底部的tagView，默认为false
+	 * @property {Boolean} nvuePagingEnabled 设置nvue中是否按分页模式(类似竖向swiper)显示List，默认为false
+	 * @property {Number} offsetAccuracy nvue中控制onscroll事件触发的频率，默认为空
+	 * @property {Boolean} useCache 是否使用缓存，默认为false
+	 * @property {String} cacheKey 使用缓存时缓存的key
+	 * @property {String} cacheMode 缓存模式，默认为default
+	 * @property {Number} topZIndex slot="top"的view的z-index，默认为99
+	 * @property {Number} superContentZIndex z-paging内容容器父view的z-index，默认为1
+	 * @property {Number} contentZIndex z-paging内容容器部分的z-index，默认为1
+	 * @property {Number} emptyViewZIndex 空数据view的z-index，默认为9
+	 * @property {Boolean} autoHeight z-paging是否自动高度，默认为false
+	 * @property {Number|String} autoHeightAddition z-paging自动高度时的附加高度，默认为0px
+	 * @event {Function} input 父组件v-model所绑定的list的值改变时触发此事件
+	 * @event {Function} query 下拉刷新或滚动到底部时会自动触发此方法
+	 * @event {Function} listChange 分页渲染的数组改变时触发
+	 * @event {Function} refresherStatusChange 自定义下拉刷新状态改变
+	 * @event {Function} refresherTouchstart 自定义下拉刷新下拉开始
+	 * @event {Function} refresherTouchmove 自定义下拉刷新下拉拖动中
+	 * @event {Function} refresherTouchend 自定义下拉刷新下拉结束
+	 * @event {Function} refresherF2Change 下拉进入二楼状态改变
+	 * @event {Function} refresh 自定义下拉刷新被触发
+	 * @event {Function} restore 自定义下拉刷新被复位
+	 * @event {Function} loadingStatusChange 自定义下拉刷新状态改变
+	 * @event {Function} emptyViewReload 点击了空数据图中的重新加载按钮
+	 * @event {Function} emptyViewClick 点击了空数据图view
+	 * @event {Function} isLoadFailedChange z-paging请求失败状态改变
+	 * @event {Function} backToTopClick 点击了返回顶部按钮
+	 * @event {Function} virtualListChange 虚拟列表当前渲染的数组改变时触发
+	 * @event {Function} innerCellClick 使用虚拟列表或内置列表时点击了cell
+	 * @event {Function} virtualPlaceholderTopHeight 虚拟列表顶部占位高度改变
+	 * @event {Function} hidedKeyboard 在聊天记录模式下，触摸列表隐藏了键盘
+	 * @event {Function} keyboardHeightChange 键盘高度改变
+	 * @event {Function} scroll z-paging列表滚动时触发
+	 * @event {Function} scrollTopChange scrollTop改变时触发
+	 * @event {Function} scrolltolower z-paging内置的scroll-view滚动底部时触发
+	 * @event {Function} scrolltoupper z-paging内置的scroll-view滚动顶部时触发
+	 * @event {Function} scrollend z-paging内置的list滚动结束时触发
+	 * @event {Function} contentHeightChanged z-paging中内容高度改变时触发
+	 * @event {Function} touchDirectionChange 监听列表触摸方向改变
 	 * @example <z-paging ref="paging" v-model="dataList" @query="queryList"></z-paging>
 	 */
 	export default {
@@ -346,7 +527,13 @@ v2.8.5 (2025-02-09)
 		// #endif
 	}
 </script>
-<script src="./js/z-paging-main.js" />
+
+<!-- #ifndef APP-NVUE -->
+<!-- #ifdef APP-PLUS || MP-WEIXIN || MP-QQ || H5 -->
+<script src="./wxs/z-paging-wxs.wxs" module="pagingWxs" lang="wxs"></script>
+<!-- #endif -->
+<!-- #endif -->
+
 	
 <style scoped>
 	@import "./css/z-paging-main.css";
