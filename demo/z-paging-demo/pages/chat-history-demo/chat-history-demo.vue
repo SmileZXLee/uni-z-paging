@@ -70,7 +70,7 @@
 				this.$refs.inputBar.hidedKeyboard();
 			},
 			// 发送新消息
-			doSend(msg){
+			doSend(msg) {
 				uni.showLoading({
 					title: '发送中...'
 				})
