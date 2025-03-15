@@ -415,7 +415,7 @@ export default {
 			this.$emit('onRestore');
 			this.$emit('Restore');
 		},
-		// #ifndef APP-PLUS || MP-WEIXIN || MP-QQ || H5
+		// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
 		// touch开始
 		_refresherTouchstart(e) {
 			this._handleListTouchstart();
@@ -439,8 +439,8 @@ export default {
 			this._cleanRefresherEndTimeout();
 		},
 		
-		// 非app-ios/android或微信小程序或QQ小程序或h5平台，使用js控制下拉刷新
-		// #ifndef APP-IOS || APP-ANDROID || MP-WEIXIN || MP-QQ || H5
+		// 非app-vue或微信小程序或QQ小程序或h5平台，使用js控制下拉刷新
+		// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
 		// touch中
 		_refresherTouchmove(e) {
 			const currentTimeStamp = u.getTime();
@@ -515,7 +515,7 @@ export default {
 				// 下拉刷新距离未超过阈值，显示默认状态
 				this.refresherStatus = Enum.Refresher.Default;
 			}
-			// #ifndef APP-PLUS || MP-WEIXIN || MP-QQ  || H5
+			// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 			// this.scrollEnable = false;
 			// 通过transform控制下拉刷新view垂直偏移
 			this.refresherTransform = `translateY(${moveDis}px)`;
@@ -523,7 +523,7 @@ export default {
 			// #endif
 			this.moveDis = moveDis;
 		},
-		// #ifndef APP-PLUS || MP-WEIXIN || MP-QQ || H5
+		// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
 		// touch结束
 		_refresherTouchend(e) {
 			// 下拉刷新用户手离开屏幕，允许列表滚动
@@ -553,7 +553,7 @@ export default {
 					this._refresherEnd();
 				} else {
 					// 如果是松手立即刷新状态，则触发下拉刷新
-					// #ifndef APP-PLUS || MP-WEIXIN || MP-QQ || H5
+					// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
 					this.refresherTransform = `translateY(${refresherThreshold}px)`;
 					this.refresherTransition = 'transform .1s linear';
 					// #endif
@@ -584,7 +584,7 @@ export default {
 		_handleScrollViewBounce({ bounce }) {
 			if (!this.usePageScroll && !this.scrollToTopBounceEnabled) {
 				if (this.wxsScrollTop <= 5) {
-					// #ifdef APP-PLUS || MP-WEIXIN || MP-QQ || H5
+					// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
 					this.refresherTransition = '';
 					// #endif
 					this.scrollEnable = bounce;
@@ -647,11 +647,11 @@ export default {
 						animateDuration = this.refresherEndBounceEnabled ? this.refresherCompleteDuration / 1000 : this.refresherCompleteDuration / 3000;
 					}
 					this.refresherTransition = `transform ${fromAddData ? animateDuration : this.refresherDefaultDuration / 1000}s ${animateType}`;
-					// #ifndef APP-PLUS || MP-WEIXIN || MP-QQ  || H5
+					// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 					this.refresherTransform = 'translateY(0px)';
 					this.currentDis = 0;
 					// #endif
-					// #ifdef APP-PLUS || MP-WEIXIN || MP-QQ || H5
+					// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
 					this.wxsPropType = this.refresherTransition + 'end' + u.getTime();
 					// #endif
 					// #ifdef APP-NVUE
@@ -755,10 +755,10 @@ export default {
 			}
 			// #endif
 			this.refresherRevealStackCount ++;
-			// #ifndef APP-PLUS || MP-WEIXIN || MP-QQ  || H5
+			// #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5
 			this.refresherTransform = `translateY(${this.finalRefresherThreshold}px)`;
 			// #endif
-			// #ifdef APP-PLUS || MP-WEIXIN || MP-QQ || H5
+			// #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5
 			this.wxsPropType = 'begin' + u.getTime();
 			// #endif
 			this.moveDis = this.finalRefresherThreshold;
@@ -772,7 +772,7 @@ export default {
 			this._onRefresh(false, isUserPullDown);
 			this.loading = true;
 		},
-		// #ifndef APP-PLUS || MP-WEIXIN || MP-QQ || H5
+		// #ifndef APP-VUE || MP-WEIXIN || MP-QQ || H5
 		// 获取处理后的moveDis
 		_getFinalRefresherMoveDis(moveDis) {
 			let diffDis = moveDis - this.oldCurrentMoveDis;

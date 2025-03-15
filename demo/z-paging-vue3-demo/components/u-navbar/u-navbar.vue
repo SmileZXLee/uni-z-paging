@@ -234,15 +234,9 @@
 					uni.navigateBack();
 				}
 			},
-			// rpx => px，兼容鸿蒙
+			// rpx => px
 			rpx2px(rpx) {
-				// #ifdef APP-HARMONY
-				const screenWidth = uni.getSystemInfoSync().screenWidth;
-				return (screenWidth * Number.parseFloat(rpx)) / 750;
-				// #endif
-				// #ifndef APP-HARMONY
 				return uni.upx2px(rpx);
-				// #endif
 			}
 		}
 	};

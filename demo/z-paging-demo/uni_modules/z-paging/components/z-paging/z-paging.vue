@@ -44,17 +44,17 @@ v2.8.5 (2025-02-09)
 					@scrolltoupper="_onScrollToUpper" @refresherrestore="_onRestore" @refresherrefresh="_onRefresh(true)"
 					>	
 					<view class="zp-paging-touch-view"
-					<!-- #ifndef APP-PLUS || MP-WEIXIN || MP-QQ  || H5 -->
+					<!-- #ifndef APP-VUE || MP-WEIXIN || MP-QQ  || H5 -->
 					@touchstart="_refresherTouchstart" @touchmove="_refresherTouchmove" @touchend="_refresherTouchend" @touchcancel="_refresherTouchend"
 					<!-- #endif -->
-					<!-- #ifdef APP-PLUS || MP-WEIXIN || MP-QQ || H5 -->
+					<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 					@touchstart="pagingWxs.touchstart" @touchmove="pagingWxs.touchmove" @touchend="pagingWxs.touchend" @touchcancel="pagingWxs.touchend"
 					@mousedown="pagingWxs.mousedown" @mousemove="pagingWxs.mousemove" @mouseup="pagingWxs.mouseup" @mouseleave="pagingWxs.mouseleave"
 					<!-- #endif -->
 					>	
 						<view v-if="finalRefresherFixedBacHeight>0" class="zp-fixed-bac-view" :style="[{'background': refresherFixedBackground,'height': `${finalRefresherFixedBacHeight}px`}]"></view>
 						<view class="zp-paging-main" :style="[scrollViewInStyle,{'transform': finalRefresherTransform,'transition': refresherTransition}]"
-						<!-- #ifdef APP-PLUS || MP-WEIXIN || MP-QQ || H5 -->
+						<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 						:change:prop="pagingWxs.propObserver" :prop="wxsPropType"
 						:data-refresherThreshold="finalRefresherThreshold" :data-refresherF2Enabled="refresherF2Enabled" :data-refresherF2Threshold="finalRefresherF2Threshold" :data-isIos="isIos"
 						:data-loading="loading||isRefresherInComplete" :data-useChatRecordMode="useChatRecordMode" 
@@ -63,7 +63,7 @@ v2.8.5 (2025-02-09)
 						:data-refresherAecc="refresherAngleEnableChangeContinued" :data-usePageScroll="usePageScroll" :data-watchTouchDirectionChange="watchTouchDirectionChange"
 						:data-oldIsTouchmoving="isTouchmoving" :data-refresherOutRate="finalRefresherOutRate" :data-refresherPullRate="finalRefresherPullRate" :data-hasTouchmove="hasTouchmove"
 						<!-- #endif -->
-						<!-- #ifdef APP-PLUS || H5 -->
+						<!-- #ifdef APP-VUE || H5 -->
 						:change:renderPropIsIosAndH5="pagingRenderjs.renderPropIsIosAndH5Change" :renderPropIsIosAndH5="isIosAndH5"
 						<!-- #endif -->
 						>	
@@ -520,19 +520,15 @@ v2.8.5 (2025-02-09)
 	 */
 	export default {
 		name:"z-paging",
-		// #ifndef APP-NVUE
-		// #ifdef APP-PLUS || H5
+		// #ifdef APP-VUE || H5
 		mixins: [pagingRenderjs],
-		// #endif
 		// #endif
 	}
 </script>
 
 <script src="./js/z-paging-main.js" />
-<!-- #ifndef APP-NVUE -->
-<!-- #ifdef APP-PLUS || MP-WEIXIN || MP-QQ || H5 -->
+<!-- #ifdef APP-VUE || MP-WEIXIN || MP-QQ || H5 -->
 <script src="./wxs/z-paging-wxs.wxs" module="pagingWxs" lang="wxs"></script>
-<!-- #endif -->
 <!-- #endif -->
 
 	
