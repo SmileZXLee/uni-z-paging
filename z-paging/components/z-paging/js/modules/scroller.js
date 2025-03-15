@@ -241,7 +241,7 @@ export default {
 		
 		// 当滚动到顶部时
 		_onScrollToUpper() {
-			this.$emit('scrolltoupper');
+			this._emitScrollEvent('scrolltoupper');
 			this.$emit('scrollTopChange', 0);
 			this.$nextTick(() => {
 				this.oldScrollTop = 0;
@@ -435,6 +435,15 @@ export default {
 			const scrollDiff = e.detail.scrollHeight - this.oldScrollTop;
 			// 在非ios平台滚动中，再次验证一下是否滚动到了底部。因为在一些安卓设备中，有概率滚动到底部不触发@scrolltolower事件，因此添加双重检测逻辑
 			!this.isIos && this._checkScrolledToBottom(scrollDiff);
+		},
+		// emit scrolltolower/scrolltoupper事件
+		_emitScrollEvent(type) {
+		    const reversedType = type === 'scrolltolower' ? 'scrolltoupper' : 'scrolltolower';
+		    const eventType = this.useChatRecordMode && !this.isChatRecordModeAndNotInversion
+		        ? reversedType
+		        : type;
+		    
+		    this.$emit(eventType);
 		},
 		// 更新内置的scroll-view是否启用滚动动画
 		_updatePrivateScrollWithAnimation(animate) {

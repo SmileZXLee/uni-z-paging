@@ -30,11 +30,6 @@ declare global {
     type LoadMoreStatus = 'default' | 'loading' | 'no-more' | 'fail';
 
     /**
-     * 内置的scroll-view滚动底部时的来源(toBottom滚动到底部；click点击了加载更多view)
-     */
-    type ScrolltolowerFrom = 'toBottom' | 'click';
-
-    /**
      * 列表触摸的方向，top代表用户将列表向上移动(scrollTop不断减小)，bottom代表用户将列表向下移动(scrollTop不断增大)
      */
     type TouchDirection = 'top' | 'bottom';
@@ -1513,13 +1508,12 @@ declare interface ZPagingProps {
   onScrollTopChange?: (scrollTop: number) => void
 
   /**
-   * z-paging内置的scroll-view滚动底部时触发
-   * @param from 来源(toBottom滚动到底部；click点击了加载更多view)
+   * z-paging内置的scroll-view/list-view/waterfall滚动底部时触发
    */
-  onScrolltolower?: (from: ZPagingEnums.ScrolltolowerFrom) => void
+  onScrolltolower?: () => void
 
   /**
-   * z-paging内置的scroll-view滚动顶部时触发
+   * z-paging内置的scroll-view/list-view/waterfall滚动顶部时触发
    */
   onScrolltoupper?: () => void
 

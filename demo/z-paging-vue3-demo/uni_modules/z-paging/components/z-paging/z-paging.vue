@@ -511,8 +511,8 @@ v2.8.5 (2025-02-09)
 	 * @event {Function} keyboardHeightChange 键盘高度改变
 	 * @event {Function} scroll z-paging列表滚动时触发
 	 * @event {Function} scrollTopChange scrollTop改变时触发
-	 * @event {Function} scrolltolower z-paging内置的scroll-view滚动底部时触发
-	 * @event {Function} scrolltoupper z-paging内置的scroll-view滚动顶部时触发
+	 * @event {Function} scrolltolower z-paging内置的scroll-view/list-view/waterfall滚动底部时触发
+	 * @event {Function} scrolltoupper z-paging内置的scroll-view/list-view/waterfall滚动顶部时触发
 	 * @event {Function} scrollend z-paging内置的list滚动结束时触发
 	 * @event {Function} contentHeightChanged z-paging中内容高度改变时触发
 	 * @event {Function} touchDirectionChange 监听列表触摸方向改变

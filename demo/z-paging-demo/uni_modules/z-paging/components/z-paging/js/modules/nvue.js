@@ -138,6 +138,19 @@ export default {
 		// 列表滚动结束
 		_nOnScrollend(e) {
 			this.$emit('scrollend', e);
+			
+			// 判断是否滚动到顶部了
+			if (e?.contentOffset?.y >= 0) {
+				this._emitScrollEvent('scrolltoupper');
+			}
+			// 判断是否滚动到底部了
+			this._getNodeClientRect('.zp-n-list').then(node => {
+				if (node) {
+					if (e?.contentSize?.height + e?.contentOffset?.y <= node[0].height) {
+						this._emitScrollEvent('scrolltolower');
+					}
+				}
+			})
 		},
 		// 下拉刷新刷新中
 		_nOnRrefresh() {
