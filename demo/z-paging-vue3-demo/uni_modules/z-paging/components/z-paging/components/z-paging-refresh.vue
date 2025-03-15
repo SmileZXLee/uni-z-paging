@@ -39,7 +39,6 @@
 		data() {
 			return {
 				R: Enum.Refresher,
-				isIos: uni.getSystemInfoSync().platform === 'ios',
 				refresherTimeText: '',
 				zTheme: {
 					title: { white: '#efefef', black: '#555555' },
@@ -51,7 +50,7 @@
 			};
 		},
 		props: ['status', 'defaultThemeStyle', 'defaultText', 'pullingText', 'refreshingText', 'completeText', 'goF2Text', 'defaultImg', 'pullingImg', 
-			'refreshingImg', 'completeImg', 'refreshingAnimated', 'showUpdateTime', 'updateTimeKey', 'imgStyle', 'titleStyle', 'updateTimeStyle', 'updateTimeTextMap', 'unit'
+			'refreshingImg', 'completeImg', 'refreshingAnimated', 'showUpdateTime', 'updateTimeKey', 'imgStyle', 'titleStyle', 'updateTimeStyle', 'updateTimeTextMap', 'unit', 'isIos'
 		],
 		computed: {
 			ts() {

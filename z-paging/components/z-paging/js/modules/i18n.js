@@ -7,18 +7,12 @@ import u from '.././z-paging-utils'
 import c from '.././z-paging-constant'
 import interceptor from '../z-paging-interceptor'
 
-const language = uni.getSystemInfoSync().language;
 export default {
-	data() {
-		return {
-			language
-		}
-	},
 	computed: {
 		finalLanguage() {
 			try {
 				const local = uni.getLocale();
-				const language = this.language;
+				const language = this.systemInfo.appLanguage;
 				return local === 'auto' ? interceptor._handleLanguage2Local(language, this._language2Local(language)) : local;
 			} catch (e) {
 				// 如果获取系统本地语言异常，则默认返回中文，uni.getLocale在部分低版本HX或者cli中可能报找不到的问题

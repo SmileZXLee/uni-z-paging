@@ -24,8 +24,7 @@ import virtualListModule from './modules/virtual-list'
 
 import Enum from './z-paging-enum'
 
-const systemInfo = uni.getSystemInfoSync();
-
+const systemInfo = u.getSystemInfoSync();
 export default {
 	name: "z-paging",
 	components: {
@@ -214,7 +213,7 @@ export default {
 		// #endif
 		this.$nextTick(() => {
 			// 初始化systemInfo
-			this.systemInfo = uni.getSystemInfoSync();
+			this.systemInfo = u.getSystemInfoSync();
 			// 初始化z-paging高度
 			!this.usePageScroll && this.autoHeight  && this._setAutoHeight();
 			// #ifdef MP-KUAISHOU

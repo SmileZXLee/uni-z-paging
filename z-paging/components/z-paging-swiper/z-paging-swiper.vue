@@ -66,7 +66,7 @@
 		},
 		mounted() {
 			this.$nextTick(() => {
-				this.systemInfo = uni.getSystemInfoSync();
+				this.systemInfo = this._getSystemInfoSync();
 				setTimeout(this.updateFixedLayout, 100)
 			})
 			// #ifndef APP-PLUS

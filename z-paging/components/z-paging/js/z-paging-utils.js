@@ -6,6 +6,7 @@ import c from './z-paging-constant'
 const storageKey = 'Z-PAGING-REFRESHER-TIME-STORAGE-KEY';
 let config = null;
 let configLoaded = false;
+let cachedSystemInfo = null;
 const timeoutMap = {};
 
 // 获取默认配置信息
@@ -130,6 +131,30 @@ function rpx2px(rpx) {
 	return uni.upx2px(rpx);
 }
 
+// 同步获取系统信息，兼容不同平台
+function getSystemInfoSync(useCache = false) {
+	if (useCache && cachedSystemInfo) {
+		return cachedSystemInfo;
+	}
+	// 目前只用到了deviceInfo、appBaseInfo和windowInfo中的信息，因此仅整合这两个信息数据
+	const infoTypes = ['DeviceInfo', 'AppBaseInfo', 'WindowInfo'];
+	const { deviceInfo, appBaseInfo, windowInfo } = infoTypes.reduce((acc, key) => {
+		const method = `get${key}`;
+		if (uni[method] && uni.canIUse(method)) {
+			acc[key.charAt(0).toLowerCase() + key.slice(1)] = uni[method]();
+		}
+		return acc;
+	}, {});
+	// 如果deviceInfo、appBaseInfo和windowInfo都可以从各自专属的api中获取，则整合它们的数据
+	if (deviceInfo && appBaseInfo && windowInfo) {
+		cachedSystemInfo = { ...deviceInfo, ...appBaseInfo, ...windowInfo };
+	} else {
+		// 使用uni.getSystemInfoSync兜底，确保能获取到最终的系统信息
+		cachedSystemInfo = uni.getSystemInfoSync();
+	}
+	return cachedSystemInfo;
+}
+
 // 获取当前时间
 function getTime() {
 	return (new Date()).getTime();
@@ -137,12 +162,12 @@ function getTime() {
 
 // 获取z-paging实例id，随机生成10位数字+字母
 function getInstanceId() {
-    const s = [];
-    const hexDigits = "0123456789abcdef";
-    for (let i = 0; i < 10; i++) {
-        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-    }
-    return s.join('') + getTime();
+	const s = [];
+	const hexDigits = "0123456789abcdef";
+	for (let i = 0; i < 10; i++) {
+		s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+	}
+	return s.join('') + getTime();
 }
 
 // 等待一段时间
@@ -197,8 +222,8 @@ function _handleDefaultConfig() {
 	}
 	// 将config中的短横线写法全部转为驼峰写法，使得读取配置时可以直接通过key去匹配，而非读取每个配置时候再去转，减少不必要的性能开支
 	config = config ? Object.keys(config).reduce((result, key) => {
-	    result[_toCamelCase(key)] = config[key];
-	    return result;
+		result[_toCamelCase(key)] = config[key];
+		return result;
 	}, {}) : null;
 	configLoaded = true;
 }
@@ -252,7 +277,7 @@ function _toKebab(value) {
 
 // 短横线转驼峰
 function _toCamelCase(value) {
-    return value.replace(/-([a-z])/g, (_, group1) => group1.toUpperCase());
+	return value.replace(/-([a-z])/g, (_, group1) => group1.toUpperCase());
 }
 
 
@@ -272,5 +297,6 @@ export default {
 	isPromise,
 	addUnit,
 	deepCopy,
-	rpx2px
+	rpx2px,
+	getSystemInfoSync
 };
