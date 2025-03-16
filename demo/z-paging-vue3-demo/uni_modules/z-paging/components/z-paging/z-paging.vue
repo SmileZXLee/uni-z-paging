@@ -4,7 +4,7 @@
   / /_____| |_) | (_| | (_| | | | | | (_| |
  /___|    | .__/ \__,_|\__, |_|_| |_|\__, |
           |_|          |___/         |___/ 
-v2.8.5 (2025-02-09)
+v2.8.6 (2025-03-16)
 @author ZXLee <admin@zxlee.cn>
 -->
 <!-- 文档地址：https://z-paging.zxlee.cn -->
@@ -315,7 +315,7 @@ v2.8.5 (2025-02-09)
 	import pagingRenderjs from './wxs/z-paging-renderjs.js';
 	/**
 	 * z-paging 分页组件
-	 * @description z-paging 分页组件，高性能，全平台兼容。支持自定义下拉刷新、上拉加载更多、虚拟列表、下拉进入二楼、自动管理空数据图、无闪动聊天分页、本地分页、全自动分页等
+	 * @description z-paging 分页组件，高性能，全平台兼容。支持自定义下拉刷新、上拉加载更多、虚拟列表、下拉进入二楼、自动管理空数据图、全自动分页、无闪动聊天分页、本地分页等，也支持作为基本布局容器使用
 	 * @tutorial https://z-paging.zxlee.cn
 	 * @property {Array} value 父组件v-model所绑定的list的值，默认为[]
 	 * @property {Number|String} defaultPageNo 自定义初始的pageNo，默认为1
@@ -490,7 +490,7 @@ v2.8.5 (2025-02-09)
 	 * @property {Boolean} autoHeight z-paging是否自动高度，默认为false
 	 * @property {Number|String} autoHeightAddition z-paging自动高度时的附加高度，默认为0px
 	 * @event {Function} input 父组件v-model所绑定的list的值改变时触发此事件
-	 * @event {Function} query 下拉刷新或滚动到底部时会自动触发此方法
+	 * @event {Function} query 下拉刷新或滚动到底部时会自动触发此方法。z-paging加载时也会触发(若要禁止，请设置:auto="false")。pageNo和pageSize会自动计算好，直接传给服务器即可。
 	 * @event {Function} listChange 分页渲染的数组改变时触发
 	 * @event {Function} refresherStatusChange 自定义下拉刷新状态改变
 	 * @event {Function} refresherTouchstart 自定义下拉刷新下拉开始
