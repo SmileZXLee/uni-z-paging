@@ -1,3 +1,14 @@
+## 2.8.6（2025-03-17）
+1.`新增` 聊天记录模式流式输出（类似chatGPT回答）演示demo。  
+2.`新增` z-paging及其公共子组件支持`HBuilderX`代码文档提示。  
+3.`新增` props：`virtual-in-swiper-slot`，用以解决vue3+(微信小程序或QQ小程序)中，使用非内置列表写法时，若z-paging在`swiper-item`中存在的无法获取slot插入的cell高度进而导致虚拟列表失败的问题。  
+4.`新增` `@scrolltolower`和@`scrolltoupper`支持nvue。  
+5.`修复` 由`v2.8.1`引出的方法`scrollIntoViewById`在微信小程序+vue3中无效的问题。  
+6.`修复` 由`v2.8.1`引出的在子组件内使用z-paging虚拟列表无效的问题。  
+7.`修复` 在微信小程序中基础库版本较高时`wx.getSystemInfoSync is deprecated`警告。  
+8.`优化` 提升下拉刷新在鸿蒙Next中的性能。  
+9.`优化` `@scrolltolower`和`@scrolltoupper`在倒置的聊天记录模式下的触发逻辑。  
+10.`优化` 其他细节调整。  
 ## 2.8.5（2025-02-09）
 1.`新增` 方法`scrollToX`，支持控制x轴滚动到指定位置。  
 2.`修复` 快手小程序中报错`await isn't allowed in non-async function`的问题。  
