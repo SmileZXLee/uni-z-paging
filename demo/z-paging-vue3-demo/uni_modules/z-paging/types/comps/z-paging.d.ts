@@ -1954,6 +1954,13 @@ declare interface _ZPagingRef<T = any> {
    */
   addChatRecordData: (data: _Arrayable<T>, scrollToBottom?: boolean, animate?: boolean) => void;
 
+  /**
+   * 手动添加键盘高度变化监听
+   * 
+   * @since 2.8.7
+   */
+  addKeyboardHeightChangeListener: () => void;
+
   // ******************** 滚动到指定位置方法 ********************
   /**
    * 滚动到顶部
