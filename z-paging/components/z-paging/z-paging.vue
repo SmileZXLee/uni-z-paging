@@ -201,7 +201,7 @@ v2.8.6 (2025-03-17)
 			<view v-if="zSlots.left" class="zp-page-left">
 				<slot name="left" />
 			</view>
-			<component :is="finalNvueListIs" ref="zp-n-list" :id="nvueListId" :style="[{'flex': 1,'top':isIos?'0px':'-1px'},usePageScroll?scrollViewStyle:{},chatRecordRotateStyle]" :alwaysScrollableVertical="true"
+			<component :is="finalNvueListIs" ref="zp-n-list" :id="nvueListId" :style="[{'flex': 1,'top':isIos?'0px':'-1px'},usePageScroll?scrollViewStyle:{},chatRecordRotateStyle,nWaterfallSizeStyle]" :alwaysScrollableVertical="true"
 				:fixFreezing="nFixFreezing" :show-scrollbar="showScrollbar" :loadmoreoffset="finalLowerThreshold" :enable-back-to-top="enableBackToTop"
 				:scrollable="finalScrollable" :bounce="nvueBounce" :column-count="nWaterfallColumnCount" :column-width="nWaterfallColumnWidth"
 				:column-gap="nWaterfallColumnGap" :left-gap="nWaterfallLeftGap" :right-gap="nWaterfallRightGap" :pagingEnabled="nvuePagingEnabled" :offset-accuracy="offsetAccuracy"

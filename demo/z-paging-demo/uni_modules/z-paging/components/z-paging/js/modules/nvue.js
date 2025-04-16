@@ -96,6 +96,19 @@ export default {
 		nWaterfallRightGap() {
 			return this._nGetWaterfallConfig('right-gap', 0);
 		},
+		nWaterfallWidth() {
+			return this._nGetWaterfallConfig('water-width', 0);
+		},
+		nWaterfallHeight() {
+			return this._nGetWaterfallConfig('water-height', 0);
+		},
+		nWaterfallSizeStyle(){
+			const waterfallWidth = this.nWaterfallWidth;
+			const waterfallHeight = this.nWaterfallHeight;
+			if (waterfallWidth!== 0 && waterfallHeight !== 0) {
+				return{'width':waterfallWidth,'height':waterfallHeight}
+			}
+		},
 		nViewIs() {
 			const is = this.finalNvueListIs;
 			return is === 'scroller' || is === 'view' ? 'view' : is === 'waterfall' ? 'header' : 'cell';
