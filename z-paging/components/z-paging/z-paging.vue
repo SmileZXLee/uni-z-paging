@@ -140,7 +140,10 @@ v2.8.6 (2025-03-17)
 									<slot v-else-if="loadingStatus===M.Fail&&zSlots.loadingMoreFail&&showLoadingMore&&loadingMoreEnabled&&!useChatRecordMode" name="loadingMoreFail" />
 									<z-paging-load-more @doClick="_onLoadingMore('click')" v-else-if="showLoadingMore&&showDefaultLoadingMoreText&&!(loadingStatus===M.NoMore&&!showLoadingMoreNoMoreView)&&loadingMoreEnabled&&!useChatRecordMode" :zConfig="zLoadMoreConfig" />
 									<!-- #endif -->
-									<view v-if="safeAreaInsetBottom&&useSafeAreaPlaceholder&&!useChatRecordMode" class="zp-safe-area-placeholder" :style="[{height:safeAreaBottom+'px'}]" />
+									<!-- 底部安全区域useSafeAreaPlaceholder模式占位，此时占位不再固定在底部而是跟随页面一起滚动 -->
+									<!-- 如果底部slot=bottom存在，占位区域会插入在slot=bottom下方，不再跟随页面滚动，因此这里就没必要显示了 -->
+									<!-- 聊天记录模式因为列表倒置，此处不需要显示底部安全区域，另行处理 -->
+									<view v-if="safeAreaInsetBottom&&finalUseSafeAreaPlaceholder&&!useChatRecordMode" class="zp-safe-area-placeholder" :style="[{height:safeAreaBottom+'px'}]" />
 								</view>
 								<!-- 空数据图 -->
 								<view v-if="showEmpty" :class="{'zp-empty-view':true,'zp-empty-view-center':emptyViewCenter}" :style="[emptyViewSuperStyle,chatRecordRotateStyle]">
@@ -161,10 +164,21 @@ v2.8.6 (2025-03-17)
 		</view>
 		<!-- 底部固定的slot -->
 		<view class="zp-page-bottom-container" :style="{'background': bottomBgColor}">
-			<slot v-if="!usePageScroll&&zSlots.bottom" name="bottom" />
-			<view class="zp-page-bottom" @touchmove.stop.prevent v-else-if="usePageScroll&&zSlots.bottom" :style="[{'bottom': `${windowBottom}px`}]">
-				<slot name="bottom" />
-			</view>
+			<template v-if="zSlots.bottom">
+				<!-- 非页面滚动底部插槽(父容器开启flex，中间列表设置了flex:1，通过中间列表撑开固定在底部) -->
+				<slot v-if="!usePageScroll" name="bottom" />
+				<!-- 页面滚动底部插槽(通过position: fixed固定在底部) -->
+				<view v-else class="zp-page-bottom" @touchmove.stop.prevent :style="[{'bottom': `${windowBottom}px`, 'background': bottomBgColor}]">
+					<slot name="bottom" />
+					<!-- 页面滚动底部安全区域占位(仅slot=bottom存在时展示在slot=bottom插入的view下方，当slot=bottom不存在时，通过控制容器的marginBottom设置底部安全区域间距) -->
+					<view v-if="safeAreaInsetBottom" :style="[{height:safeAreaBottom+'px'}]" />
+				</view>
+			</template>
+			<!-- 非页面滚动底部安全区域占位(无论slot=bottom是否存在)-->
+			<!-- 如果useSafeAreaPlaceholder开启了并且slot=bottom不存在就不显示这个占位view了，因为此时useSafeAreaPlaceholder会是跟随滚动的状态 -->
+			<!-- 聊天记录模式因为列表倒置，此处不需要显示底部安全区域，另行处理 -->
+			<view v-if="safeAreaInsetBottom&&!usePageScroll&&!(finalUseSafeAreaPlaceholder)&&!useChatRecordMode" :style="[{height:safeAreaBottom+'px'}]" />
+			
 			<!-- 聊天记录模式底部占位 -->
 			<template v-if="useChatRecordMode&&autoAdjustPositionWhenChat">
 				<view :style="[{height:chatRecordModeSafeAreaBottom+'px'}]" />
@@ -271,7 +285,10 @@ v2.8.6 (2025-03-17)
 						<slot v-else-if="showLoadingMoreNoMore" name="loadingMoreNoMore" />
 						<slot v-else-if="showLoadingMoreFail" name="loadingMoreFail" />
 						<z-paging-load-more @doClick="_onLoadingMore('click')" v-else-if="showLoadingMoreCustom" :zConfig="zLoadMoreConfig" />
-						<view v-if="safeAreaInsetBottom&&useSafeAreaPlaceholder&&!useChatRecordMode" class="zp-safe-area-placeholder" :style="[{height:safeAreaBottom+'px'}]" />
+						<!-- 底部安全区域useSafeAreaPlaceholder模式占位，此时占位不再固定在底部而是跟随页面一起滚动 -->
+						<!-- 如果底部slot=bottom存在，占位区域会插入在slot=bottom下方，不再跟随页面滚动，因此这里就没必要显示了 -->
+						<!-- 聊天记录模式因为列表倒置，此处不需要显示底部安全区域，另行处理 -->
+						<view v-if="safeAreaInsetBottom&&finalUseSafeAreaPlaceholder&&!useChatRecordMode" class="zp-safe-area-placeholder" :style="[{height:safeAreaBottom+'px'}]" />
 					</view>
 				</component>
 				<!-- 空数据图 -->
@@ -293,6 +310,11 @@ v2.8.6 (2025-03-17)
 		<!-- 底部固定的slot -->
 		<view class="zp-page-bottom-container" :style="{'background': bottomBgColor}">
 			<slot name="bottom" />
+			<!-- 非页面滚动底部安全区域占位(无论slot=bottom是否存在)-->
+			<!-- 如果useSafeAreaPlaceholder开启了并且slot=bottom不存在就不显示这个占位view了，因为此时useSafeAreaPlaceholder会是跟随滚动的状态 -->
+			<!-- 聊天记录模式因为列表倒置，此处不需要显示底部安全区域，另行处理 -->
+			<view v-if="safeAreaInsetBottom&&!usePageScroll&&!(finalUseSafeAreaPlaceholder)&&!useChatRecordMode" :style="[{height:safeAreaBottom+'px'}]" />
+			
 			<!-- 聊天记录模式底部占位 -->
 			<template v-if="useChatRecordMode&&autoAdjustPositionWhenChat">
 				<view :style="[{height:chatRecordModeSafeAreaBottom+'px'}]" />

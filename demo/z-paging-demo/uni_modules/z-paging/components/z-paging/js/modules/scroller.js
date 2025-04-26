@@ -521,7 +521,9 @@ export default {
 			this._doCheckScrollViewShouldFullHeight(this.realTotalData);
 			const node = `.zp-page-${type}`;
 			const marginText = `margin${type.slice(0,1).toUpperCase() + type.slice(1)}`;
-			let safeAreaInsetBottomAdd = this.safeAreaInsetBottom;
+			// 是否设置底部安全区域间距，仅当开启底部安全区域并且slot=bottom不存在的时候才处理，如果slot=bottom存在则直接在bottom底部插入占位view
+			// 如果useSafeAreaPlaceholder为true，这里也不需要额外通过marginBottom设置底部安全区域了
+			const safeAreaInsetBottomAdd = this.safeAreaInsetBottom && !this.zSlots.bottom && !this.useSafeAreaPlaceholder;
 			this.$nextTick(() => {
 				let delayTime = 0;
 				// #ifdef MP-BAIDU || APP-NVUE

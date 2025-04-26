@@ -320,7 +320,10 @@ export default {
 			}
 			return this.pagingContentStyle;
 		},
-		
+		// 最终的当前开启安全区域适配后，是否使用placeholder形式实现。如果slot=bottom存在，则应当交由固定在底部的view处理，因此需排除此情况
+		finalUseSafeAreaPlaceholder() {
+			return this.useSafeAreaPlaceholder && !this.zSlots.bottom;
+		},
 		renderJsIgnore() {
 			if ((this.usePageScroll && this.useChatRecordMode) || (!this.refresherEnabled && this.scrollable) || !this.useCustomRefresher) {
 				this.$nextTick(() => {
@@ -335,12 +338,7 @@ export default {
 		},
 		windowBottom() {
 			if (!this.systemInfo) return 0;
-			let windowBottom = this.systemInfo.windowBottom || 0;
-			// 如果开启底部安全区域适配并且不使用placeholder的形式体现并且不是聊天记录模式（因为聊天记录模式在keyboardHeight计算初已添加了底部安全区域），在windowBottom添加底部安全区域高度
-			if (this.safeAreaInsetBottom && !this.useSafeAreaPlaceholder && !this.useChatRecordMode) {
-				windowBottom += this.safeAreaBottom;
-			}
-			return windowBottom;
+			return this.systemInfo.windowBottom || 0;
 		},
 		isIosAndH5() {
 			// #ifndef H5
