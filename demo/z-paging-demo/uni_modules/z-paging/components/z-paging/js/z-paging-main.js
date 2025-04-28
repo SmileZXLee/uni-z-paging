@@ -184,6 +184,11 @@ export default {
 			type: Boolean,
 			default: u.gc('watchTouchDirectionChange', false)
 		},
+		// 是否只使用基础布局，设置为true后将关闭mounted自动请求数据、关闭下拉刷新和滚动到底部加载更多，强制隐藏空数据图。默认为否
+		layoutOnly: {
+			type: Boolean,
+			default: u.gc('layoutOnly', false)
+		},
 		// z-paging中布局的单位，默认为rpx
 		unit: {
 			type: String,
@@ -192,7 +197,7 @@ export default {
 	},
 	created() {
 		// 组件创建时，检测是否开始加载状态
-		if (this.createdReload && !this.refresherOnly && this.auto) {
+		if (this.createdReload && !this.isOnly && this.auto) {
 			this._startLoading();
 			this.$nextTick(this._preReload);
 		}
@@ -201,7 +206,7 @@ export default {
 		this.active = true;
 		this.wxsPropType = u.getTime().toString();
 		this.renderJsIgnore;
-		if (!this.createdReload && !this.refresherOnly && this.auto) {
+		if (!this.createdReload && !this.isOnly && this.auto) {
 			// 开始预加载
 			u.delay(() => this.$nextTick(this._preReload), 0);
 		}
@@ -237,8 +242,10 @@ export default {
 				this.isTouchmoving = true;
 			})
 		}
-		// 监听uni.$emit中全局emit的complete error等事件
-		this._onEmit();
+		if (!this.layoutOnly) {
+			// 监听uni.$emit中全局emit的complete error等事件
+			this._onEmit();
+		}
 		// #ifdef APP-NVUE
 		if (!this.isIos && !this.useChatRecordMode) {
 			this.nLoadingMoreFixedHeight = true;
@@ -340,12 +347,17 @@ export default {
 			if (!this.systemInfo) return 0;
 			return this.systemInfo.windowBottom || 0;
 		},
+		// 是否是ios+h5
 		isIosAndH5() {
 			// #ifndef H5
 			return false;
 			// #endif
 			return this.isIos;
-		}
+		},
+		// 是否是只使用基础布局或者只使用下拉刷新
+		isOnly() {
+			return this.layoutOnly || this.refresherOnly;
+		},
 	},
 	methods: {
 		// 当前版本号
@@ -445,7 +457,9 @@ export default {
 		// 组件销毁后续处理
 		_handleUnmounted() {
 			this.active = false;
-			this._offEmit();
+			if (!this.layoutOnly) {
+				this._offEmit();
+			}
 			// 取消监听键盘高度变化事件（H5、百度小程序、抖音小程序、飞书小程序、QQ小程序、快手小程序不支持）
 			// #ifndef H5 || MP-BAIDU || MP-TOUTIAO || MP-QQ || MP-KUAISHOU
 			this.useChatRecordMode && uni.offKeyboardHeightChange(this._handleKeyboardHeightChange);

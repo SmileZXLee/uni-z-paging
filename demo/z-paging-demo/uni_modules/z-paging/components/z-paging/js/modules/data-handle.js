@@ -613,7 +613,7 @@ export default {
 					this.totalData = [...this.totalData, ...newVal];
 					// 此处是为了解决在微信小程序中，在某些情况下滚动到底部加载更多后滚动位置直接变为最底部的问题，因此需要通过代码强制滚动回加载更多前的位置
 					// #ifdef MP-WEIXIN
-					if (!this.isIos && !this.refresherOnly && !this.usePageScroll && newVal.length) {
+					if (!this.isIos && !this.isOnly && !this.usePageScroll && newVal.length) {
 						this.loadingMoreTimeStamp = u.getTime();
 						this.$nextTick(() => {
 							this.scrollToY(currentScrollTop);
