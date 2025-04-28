@@ -14,6 +14,7 @@
 			</template>
 			
 			<!-- :id="`zp-id-${item.zp_index}`"和:key="item.zp_index" 必须写，必须写！！！！ -->
+			<!-- :id="`zp-id-${item.zp_index}`"必须这么写，不能改动 -->
 			<!-- 这里for循环的index不是数组中真实的index了，请使用item.zp_index获取真实的index -->
 			<view class="item" :id="`zp-id-${item.zp_index}`" :key="item.zp_index" v-for="(item,index) in virtualList" @click="itemClick(item,item.zp_index)">
 				<image class="item-image" mode="aspectFit" src="@/static/boji1.png"></image>
