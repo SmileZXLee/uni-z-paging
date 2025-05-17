@@ -157,7 +157,8 @@ export default {
 			listRendering: false,
 			isHandlingRefreshToPage: false,
 			isFirstPageAndNoMore: false,
-			totalDataChangeThrow: true
+			totalDataChangeThrow: true,
+			addDataFromTopBufferedInsert: u.useBufferedInsert(this._addDataFromTop)
 		}
 	},
 	computed: {
@@ -299,17 +300,10 @@ export default {
 		},
 		// 从顶部添加数据，不会影响分页的pageNo和pageSize
 		addDataFromTop(data, toTop = true, toTopWithAnimate = true) {
-			// 数据是否拼接到顶部，如果是聊天记录模式并且列表没有倒置，则应该拼接在底部
-			let addFromTop = !this.isChatRecordModeAndNotInversion;
-			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : (addFromTop ? data.reverse() : data);
-			// #ifndef APP-NVUE
-			this.finalUseVirtualList && this._setCellIndex(data, 'top')
-			// #endif
-			
-			this.totalData = addFromTop ? [...data, ...this.totalData] : [...this.totalData, ...data];
-			if (toTop) {
-				u.delay(() => this.useChatRecordMode ? this.scrollToBottom(toTopWithAnimate) : this.scrollToTop(toTopWithAnimate));
-			}
+			// 如果使用了虚拟列表，则需要对短时间内的大量数据进行整合然后一次性添加，避免设置虚拟列表cellIndex时候key冲突的问题，否则正常调用
+			(this.finalUseVirtualList ? this.addDataFromTopBufferedInsert : this._addDataFromTop)(
+				data, toTop, toTopWithAnimate
+			);
 		},
 		// 重新设置列表数据，调用此方法不会影响pageNo和pageSize，也不会触发请求。适用场景：当需要删除列表中某一项时，将删除对应项后的数组通过此方法传递给z-paging。(当出现类似的需要修改列表数组的场景时，请使用此方法，请勿直接修改page中:list.sync绑定的数组)
 		resetTotalData(data) {
@@ -658,6 +652,20 @@ export default {
 			const finalPageNoIndex = Math.min(totalPagingList.length, pageNoIndex + pageSize);
 			const resultPagingList = totalPagingList.splice(pageNoIndex, finalPageNoIndex - pageNoIndex);
 			u.delay(() => callback(resultPagingList), localPagingLoadingTime)
+		},
+		// 从顶部添加数据，不会影响分页的pageNo和pageSize
+		_addDataFromTop(data, toTop = true, toTopWithAnimate = true) {
+			// 数据是否拼接到顶部，如果是聊天记录模式并且列表没有倒置，则应该拼接在底部
+			let addFromTop = !this.isChatRecordModeAndNotInversion;
+			data = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : (addFromTop ? data.reverse() : data);
+			// #ifndef APP-NVUE
+			this.finalUseVirtualList && this._setCellIndex(data, 'top')
+			// #endif
+			
+			this.totalData = addFromTop ? [...data, ...this.totalData] : [...this.totalData, ...data];
+			if (toTop) {
+				u.delay(() => this.useChatRecordMode ? this.scrollToBottom(toTopWithAnimate) : this.scrollToTop(toTopWithAnimate));
+			}
 		},
 		// 存储列表缓存数据
 		_saveLocalCache(data) {

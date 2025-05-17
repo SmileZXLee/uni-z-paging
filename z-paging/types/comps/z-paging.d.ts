@@ -298,6 +298,14 @@ declare interface ZPagingProps {
    * @since 2.3.0
    */
   watchTouchDirectionChange?: boolean
+  
+  /**
+   * 是否只使用基础布局
+   * - 设置为true后将关闭mounted自动请求数据、关闭下拉刷新和滚动到底部加载更多，强制隐藏空数据图
+   * @default false
+   * @since 2.8.7
+   */
+  layoutOnly?: boolean
 
   /**
    * 调用complete后延迟处理的时间，单位为毫秒，优先级高于min-delay

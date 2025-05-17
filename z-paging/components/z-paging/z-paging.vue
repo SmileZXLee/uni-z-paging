@@ -58,7 +58,7 @@ v2.8.6 (2025-03-17)
 						:change:prop="pagingWxs.propObserver" :prop="wxsPropType"
 						:data-refresherThreshold="finalRefresherThreshold" :data-refresherF2Enabled="refresherF2Enabled" :data-refresherF2Threshold="finalRefresherF2Threshold" :data-isIos="isIos"
 						:data-loading="loading||isRefresherInComplete" :data-useChatRecordMode="useChatRecordMode" 
-						:data-refresherEnabled="refresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="wxsPageScrollTop"
+						:data-refresherEnabled="finalRefresherEnabled" :data-useCustomRefresher="useCustomRefresher" :data-pageScrollTop="wxsPageScrollTop"
 						:data-scrollTop="wxsScrollTop" :data-refresherMaxAngle="refresherMaxAngle" :data-refresherNoTransform="refresherNoTransform"
 						:data-refresherAecc="refresherAngleEnableChangeContinued" :data-usePageScroll="usePageScroll" :data-watchTouchDirectionChange="watchTouchDirectionChange"
 						:data-oldIsTouchmoving="isTouchmoving" :data-refresherOutRate="finalRefresherOutRate" :data-refresherPullRate="finalRefresherPullRate" :data-hasTouchmove="hasTouchmove"
@@ -267,7 +267,7 @@ v2.8.6 (2025-03-17)
 					<slot name="loading" />
 				</component>
 				<!-- 上拉加载更多view -->
-				<component :is="nViewIs" v-if="!refresherOnly&&loadingMoreEnabled&&!showEmpty">
+				<component :is="nViewIs" v-if="!isOnly&&loadingMoreEnabled&&!showEmpty">
 					<!-- 聊天记录模式加载更多loading（滚动到顶部加载更多或无更多数据时显示） -->
 					<template v-if="useChatRecordMode&&realTotalData.length>=defaultPageSize&&(loadingStatus!==M.NoMore||zSlots.chatNoMore)&&realTotalData.length&&isChatRecordModeAndInversion">
 						<view :style="[chatRecordRotateStyle]">
@@ -354,6 +354,7 @@ v2.8.6 (2025-03-17)
 	 * @property {String} maxWidth z-paging的最大宽度，优先级低于pagingStyle中设置的max-width，默认为空
 	 * @property {String} bgColor z-paging的背景色(为css中的background，因此也可以设置渐变，背景图片等)，优先级低于pagingStyle中设置的background-color
 	 * @property {Boolean} watchTouchDirectionChange 是否监听列表触摸方向改变，默认为false
+	 * @property {Boolean} layoutOnly 是否只使用基础布局，设置为true后将关闭mounted自动请求数据、关闭下拉刷新和滚动到底部加载更多，强制隐藏空数据图。默认为否
 	 * @property {Number|String} delay 调用complete后延迟处理的时间，单位为毫秒，优先级高于min-delay，默认为0
 	 * @property {Number|String} minDelay 触发@query后最小延迟处理的时间，单位为毫秒，优先级低于delay，默认为0
 	 * @property {Boolean} callNetworkReject 请求失败是否触发reject，默认为true

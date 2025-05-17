@@ -108,7 +108,7 @@ export default {
 		},
 		// 是否展示空数据图
 		showEmpty() {
-			if (this.refresherOnly || this.hideEmptyView || this.realTotalData.length) return false;
+			if (this.isOnly || this.hideEmptyView || this.realTotalData.length) return false;
 			if (this.autoHideEmptyViewWhenLoading) {
 				if (this.isAddedData && !this.firstPageLoaded && !this.loading) return true;
 			} else {

@@ -207,6 +207,25 @@ function deepCopy(obj) {
 	return newObj;
 }
 
+// 对短时间内重复插入的数据进行整合，并一次性插入
+function useBufferedInsert(fn, delay = 50) {
+	let buffer = [];
+	let timer = null;
+	let latestArgs = [];
+	return function insertBuffered(data, ...args) {
+		const newData = Object.prototype.toString.call(data) !== '[object Array]' ? [data] : data;
+		buffer.push(...newData);
+		latestArgs = args;
+		if (!timer) {
+			timer = setTimeout(() => {
+				fn(buffer.length === 1 ? buffer[0] : buffer, ...latestArgs);
+				buffer = [];
+				timer = null;
+			}, buffer.length === 1 ? 10 : delay);
+		}
+	};
+}
+
 // ------------------ 私有方法 ------------------------
 // 处理全局配置
 function _handleDefaultConfig() {
@@ -298,5 +317,6 @@ export default {
 	addUnit,
 	deepCopy,
 	rpx2px,
-	getSystemInfoSync
+	getSystemInfoSync,
+	useBufferedInsert
 };

@@ -298,7 +298,7 @@ export default {
 			return u.addUnit(this.refresherThreshold, this.unit);
 		},
 		finalRefresherEnabled() {
-			if (this.useChatRecordMode) return false;
+			if (this.layoutOnly || this.useChatRecordMode) return false;
 			if (this.privateRefresherEnabled === -1) return this.refresherEnabled;
 			return this.privateRefresherEnabled === 1;
 		},
@@ -546,7 +546,7 @@ export default {
 			this.refresherReachMaxAngle = true;
 			this.isTouchEnded = true;
 			const refresherThreshold = this.finalRefresherThreshold;
-			if (moveDis >= refresherThreshold && (this.refresherStatus === Enum.Refresher.ReleaseToRefresh || this.refresherStatus === Enum.Refresher.GoF2)) {
+			if (moveDis >= refresherThreshold && [Enum.Refresher.ReleaseToRefresh, Enum.Refresher.GoF2].indexOf(this.refresherStatus) >= 0) {
 				// 如果是松手进入二楼状态，则触发进入二楼
 				if (this.refresherStatus === Enum.Refresher.GoF2) {
 					this._handleGoF2();
@@ -793,7 +793,7 @@ export default {
 		// 判断touch手势是否要触发
 		_touchDisabled() {
 			const checkOldScrollTop = this.oldScrollTop > 5;
-			return this.loading || this.isRefresherInComplete || this.useChatRecordMode || !this.refresherEnabled || !this.useCustomRefresher ||(this.usePageScroll && this.useCustomRefresher && this.pageScrollTop > 10) || (!(this.usePageScroll && this.useCustomRefresher) && checkOldScrollTop);
+			return this.loading || this.isRefresherInComplete || this.useChatRecordMode || this.layoutOnly || !this.refresherEnabled || !this.useCustomRefresher || (this.usePageScroll && this.useCustomRefresher && this.pageScrollTop > 10) || (!(this.usePageScroll && this.useCustomRefresher) && checkOldScrollTop);
 		},
 		// #endif
 		// 更新自定义下拉刷新view高度
