@@ -23,10 +23,12 @@ v2.8.6 (2025-03-17)
 			<slot name="f2"/>
 		</view>
 		<!-- 顶部固定的slot -->
-		<slot v-if="!usePageScroll&&zSlots.top" name="top" />
-		<view class="zp-page-top" @touchmove.stop.prevent v-else-if="usePageScroll&&zSlots.top" :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
-			<slot name="top" />
-		</view>
+		<template v-if="zSlots.top">
+			<slot v-if="!usePageScroll" name="top" />
+			<view v-else class="zp-page-top" @touchmove.stop.prevent :style="[{'top':`${windowTop}px`,'z-index':topZIndex}]">
+				<slot name="top" />
+			</view>
+		</template>
 		<view :class="{'zp-view-super':true,'zp-scroll-view-super':!usePageScroll}" :style="[finalScrollViewStyle]">
 			<view v-if="zSlots.left" :class="{'zp-page-left':true,'zp-absoulte':finalIsOldWebView}">
 				<slot name="left" />

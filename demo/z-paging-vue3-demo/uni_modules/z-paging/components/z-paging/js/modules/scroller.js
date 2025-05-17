@@ -367,11 +367,19 @@ export default {
 					}
 					return;
 					// #endif
-					this._getNodeClientRect('#' + sel.replace('#', ''), this.$parent).then((node) => {
+					// 获取指定view的节点信息
+					this._getNodeClientRect('#' + sel.replace('#', ''), false).then((node) => {
 						if (node) {
-							let nodeTop = node[0].top;
-							this._scrollIntoViewByNodeTop(nodeTop, offset, animate);
-							finishCallback && finishCallback();
+							// 获取zp-scroll-view-container的节点信息
+							this._getNodeClientRect('.zp-scroll-view-container').then((svContainerNode) => {
+								if (svContainerNode) {
+									// 滚动的top为指定view的top减zp-scroll-view-container的top，因为指定view的top是相对于整个窗口的，需要考虑相对的位置关系
+									this._scrollIntoViewByNodeTop(node[0].top - svContainerNode[0].top, offset, animate);
+									finishCallback && finishCallback();
+								}
+							});
+						} else {
+							u.consoleErr(`无法获取${sel}的节点信息，请检查！`);
 						}
 					});
 				});
@@ -438,12 +446,9 @@ export default {
 		},
 		// emit scrolltolower/scrolltoupper事件
 		_emitScrollEvent(type) {
-		    const reversedType = type === 'scrolltolower' ? 'scrolltoupper' : 'scrolltolower';
-		    const eventType = this.useChatRecordMode && !this.isChatRecordModeAndNotInversion
-		        ? reversedType
-		        : type;
-		    
-		    this.$emit(eventType);
+			const reversedType = type === 'scrolltolower' ? 'scrolltoupper' : 'scrolltolower';
+			const eventType = this.useChatRecordMode && !this.isChatRecordModeAndNotInversion ? reversedType : type;
+			this.$emit(eventType);
 		},
 		// 更新内置的scroll-view是否启用滚动动画
 		_updatePrivateScrollWithAnimation(animate) {

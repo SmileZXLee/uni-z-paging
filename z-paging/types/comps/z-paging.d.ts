@@ -1986,7 +1986,6 @@ declare interface _ZPagingRef<T = any> {
 
   /**
    * 滚动到指定view
-   * - vue中有效，若此方法无效，请使用scrollIntoViewByNodeTop
    *
    * @param id 需要滚动到的view的id值，不包含"#"
    * @param [offset=0] 偏移量，单位为px
