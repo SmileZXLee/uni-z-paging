@@ -1848,6 +1848,13 @@ declare interface _ZPagingRef<T = any> {
    * @since 2.6.1
    */
   updateCustomRefresherHeight: () => void;
+  
+  /**
+   * 手动进入二楼
+   *
+   * @since 2.8.7
+   */
+  goF2: () => void;
 
   /**
    * 手动关闭二楼

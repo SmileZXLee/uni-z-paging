@@ -383,6 +383,10 @@ export default {
 		updateCustomRefresherHeight() {
 			u.delay(() => this.$nextTick(this._updateCustomRefresherHeight));
 		},
+		// 进入二楼
+		goF2() {
+			this._handleGoF2();
+		},
 		// 关闭二楼
 		closeF2() {
 			this._handleCloseF2();
