@@ -89,7 +89,6 @@ export default {
 	data() {
 		return {
 			virtualListKey: u.getInstanceId(),
-			virtualPageHeight: 0,
 			virtualCellHeight: 0,
 			virtualScrollTimeStamp: 0,
 			
@@ -108,7 +107,6 @@ export default {
 				fixed: 0,
 				dynamic: 0
 			},
-			pagingOrgTop: -1,
 			updateVirtualListFromDataChange: false
 		}
 	},
@@ -149,7 +147,7 @@ export default {
 			return this.cellKeyName;
 		},
 		finalVirtualPageHeight(){
-			return this.virtualPageHeight > 0 ? this.virtualPageHeight : this.windowHeight;
+			return this.scrollViewHeight > 0 ? this.scrollViewHeight : this.windowHeight;
 		},
 		finalFixedCellHeight() {
 			return u.convertToPx(this.fixedCellHeight);
@@ -270,20 +268,6 @@ export default {
 				})
 			}
 			// #endif
-		},
-		// 初始化虚拟列表
-		_virtualListInit() {
-			this.$nextTick(() => {
-				u.delay(() => {
-					// 获取虚拟列表滚动区域的高度
-					this._getNodeClientRect('.zp-scroll-view').then(node => {
-						if (node) {
-							this.pagingOrgTop = node[0].top;
-							this.virtualPageHeight = node[0].height;
-						}
-					});
-				});
-			})
 		},
 		// cellHeightMode为fixed时获取第一个cell高度
 		_updateFixedCellHeight() {

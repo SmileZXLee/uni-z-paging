@@ -60,6 +60,8 @@ export default {
 			checkScrolledToBottomTimeOut: null,
 			cacheTopHeight: -1,
 			statusBarHeight: systemInfo.statusBarHeight,
+			scrollViewHeight: 0,
+			pagingOrgTop: -1,
 
 			// --------------状态&判断---------------
 			insideOfPaging: -1,
@@ -221,15 +223,14 @@ export default {
 			this.systemInfo = u.getSystemInfoSync();
 			// 初始化z-paging高度
 			!this.usePageScroll && this.autoHeight  && this._setAutoHeight();
-			// #ifdef MP-KUAISHOU
-			this._setFullScrollViewInHeight();
-			// #endif
 			this.loaded = true;
 			u.delay(() => {
 				// 更新fixed模式下z-paging的布局，主要是更新windowTop、windowBottom
 				this.updateFixedLayout();
 				// 更新缓存中z-paging整个内容容器高度
 				this._updateCachedSuperContentHeight();
+				// 更新z-paging中scroll-view高度
+				this._updateScrollViewHeight();
 			});
 		})
 		// 初始化页面滚动模式下slot="top"、slot="bottom"高度
@@ -252,10 +253,6 @@ export default {
 		}
 		// 在nvue中更新nvue下拉刷新view容器的宽度，而不是写死默认的750rpx，需要考虑列表宽度不是铺满屏幕的情况
 		this._nUpdateRefresherWidth();
-		// #endif
-		// #ifndef APP-NVUE
-		// 虚拟列表模式时，初始化数据
-		this.finalUseVirtualList && this._virtualListInit();
 		// #endif
 		// #ifndef APP-PLUS
 		this.$nextTick(() => {
@@ -444,16 +441,19 @@ export default {
 				}
 			} catch (e) {}
 		},
-		// #ifdef MP-KUAISHOU
-		// 设置scroll-view内容器的最小高度等于scroll-view的高度(为了解决在快手小程序中内容较少时scroll-view内容器高度无法铺满scroll-view的问题)
-		async _setFullScrollViewInHeight() {
-			try {
-				// 如果需要铺满全屏，则计算当前全屏可是区域的高度
-				const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
-				scrollViewNode && this.$set(this.scrollViewInStyle, 'min-height', scrollViewNode[0].height + 'px');
-			} catch (e) {}
+		// 更新scroll-view高度
+		async _updateScrollViewHeight() {
+			const scrollViewNode = await this._getNodeClientRect('.zp-scroll-view');
+			if (scrollViewNode) {
+				const scrollViewNodeHeight = scrollViewNode[0].height;
+				this.scrollViewHeight = scrollViewNodeHeight;
+				this.pagingOrgTop =  scrollViewNode[0].top;
+				// 设置scroll-view内容器的最小高度等于scroll-view的高度(为了解决在快手小程序中内容较少时scroll-view内容器高度无法铺满scroll-view的问题)
+				// #ifdef MP-KUAISHOU
+				this.$set(this.scrollViewInStyle, 'min-height', scrollViewNodeHeight + 'px');
+				// #endif
+			}
 		},
-		// #endif
 		// 组件销毁后续处理
 		_handleUnmounted() {
 			this.active = false;
