@@ -186,6 +186,11 @@ export default {
 			type: Boolean,
 			default: u.gc('watchTouchDirectionChange', false)
 		},
+		// 是否监听列表滚动方向改变，默认为否
+		watchScrollDirectionChange: {
+			type: Boolean,
+			default: u.gc('watchScrollDirectionChange', false)
+		},
 		// 是否只使用基础布局，设置为true后将关闭mounted自动请求数据、关闭下拉刷新和滚动到底部加载更多，强制隐藏空数据图。默认为否
 		layoutOnly: {
 			type: Boolean,

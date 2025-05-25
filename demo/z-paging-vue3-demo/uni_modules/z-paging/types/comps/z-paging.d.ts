@@ -33,6 +33,11 @@ declare global {
      * 列表触摸的方向，top代表用户将列表向上移动(scrollTop不断减小)，bottom代表用户将列表向下移动(scrollTop不断增大)
      */
     type TouchDirection = 'top' | 'bottom';
+
+    /**
+     * 列表滚动的方向，top代表用户将列表向上移动(scrollTop不断减小)，bottom代表用户将列表向下移动(scrollTop不断增大)
+     */
+    type ScrollDirection = 'top' | 'bottom';
   }
 
   namespace ZPagingParams {
@@ -298,6 +303,13 @@ declare interface ZPagingProps {
    * @since 2.3.0
    */
   watchTouchDirectionChange?: boolean
+
+  /**
+   * 是否监听列表滚动方向改变
+   * @default false
+   * @since 2.8.7
+   */
+  watchScrollDirectionChange?: boolean
   
   /**
    * 是否只使用基础布局
@@ -1549,6 +1561,15 @@ declare interface ZPagingProps {
    * @since 2.3.0
    */
   onTouchDirectionChange?: (direction: ZPagingEnums.TouchDirection) => void
+
+  /**
+   * 监听列表滚动方向改变
+   * - 页面滚动无效
+   * - 必须同时设置:watch-scroll-direction-change="true"
+   * @param direction 列表滚动的方向，top代表用户将列表向上移动(scrollTop不断减小)，bottom代表用户将列表向下移动(scrollTop不断增大)
+   * @since 2.8.7
+   */
+  onScrollDirectionChange?: (direction: ZPagingEnums.ScrollDirection) => void
 }
 
 

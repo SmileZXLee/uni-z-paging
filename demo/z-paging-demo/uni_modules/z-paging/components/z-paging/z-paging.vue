@@ -356,6 +356,7 @@ v2.8.6 (2025-03-17)
 	 * @property {String} maxWidth z-paging的最大宽度，优先级低于pagingStyle中设置的max-width，默认为空
 	 * @property {String} bgColor z-paging的背景色(为css中的background，因此也可以设置渐变，背景图片等)，优先级低于pagingStyle中设置的background-color
 	 * @property {Boolean} watchTouchDirectionChange 是否监听列表触摸方向改变，默认为false
+	 * @property {Boolean} watchScrollDirectionChange 是否监听列表滚动方向改变，默认为false
 	 * @property {Boolean} layoutOnly 是否只使用基础布局，设置为true后将关闭mounted自动请求数据、关闭下拉刷新和滚动到底部加载更多，强制隐藏空数据图。默认为否
 	 * @property {Number|String} delay 调用complete后延迟处理的时间，单位为毫秒，优先级高于min-delay，默认为0
 	 * @property {Number|String} minDelay 触发@query后最小延迟处理的时间，单位为毫秒，优先级低于delay，默认为0
@@ -540,7 +541,8 @@ v2.8.6 (2025-03-17)
 	 * @event {Function} scrolltoupper z-paging内置的scroll-view/list-view/waterfall滚动顶部时触发
 	 * @event {Function} scrollend z-paging内置的list滚动结束时触发
 	 * @event {Function} contentHeightChanged z-paging中内容高度改变时触发
-	 * @event {Function} touchDirectionChange 监听列表触摸方向改变
+	 * @event {Function} touchDirectionChange 监听列表触摸方向改变(nvue无效)
+	 * @event {Function} scrollDirectionChange 监听列表滚动方向改变(页面滚动无效)
 	 * @example <z-paging ref="paging" v-model="dataList" @query="queryList"></z-paging>
 	 */
 	export default {

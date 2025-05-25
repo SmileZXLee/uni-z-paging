@@ -438,29 +438,32 @@ export default {
 			this.$emit('scroll', e);
 			const { scrollTop, scrollLeft, scrollHeight } = e.detail;
 			
-			// 计算scroll-view滚动方向，正常情况下上次滚动的oldScrollTop大于当前scrollTop即为向上滚动，反之为向下滚动
-			let direction = this.oldScrollTop > scrollTop ? 'top' : 'bottom';
-			// 此处为解决在iOS中，滚动到顶部因bounce的影响回弹导致滚动方向为bottom的问题：如果滚动到顶部了并且scrollTop小于顶部滚动区域，则强制设置direction为top
-			if (scrollTop <= 0) {
-				direction = 'top';
-			}
-			// 此处为解决在iOS中，滚动到底部因bounce的影响回弹导致滚动方向为top的问题：如果滚动到底部了并且scrollTop超过底部滚动区域，则强制设置direction为bottom
-			if (scrollTop > this.lastScrollHeight - this.scrollViewHeight - 1) {
-				direction = 'bottom';
-			}
-			// emit 列表滚动方向改变事件
-			if (direction !== this.lastScrollDirection) {
-				this.$emit('scrollDirectionChange', direction);
-				this.lastScrollDirection = direction;
-			}
-			// 当scrollHeight变化时，需要延迟100毫秒设置lastScrollHeight，如果直接根据scrollHeight的话，因为此时数据还未改变，会导致滚动方向从bottom变为top
-			if (this.lastScrollHeight !== scrollHeight && !this.setContentHeightPending) {
-				// 因此处会多次触发，因此加个标识确保在延时期间仅触发一次
-				this.setContentHeightPending = true;
-				u.delay(() => {
-					this.lastScrollHeight = scrollHeight;
-					this.setContentHeightPending = false;
-				})
+			if (this.watchScrollDirectionChange) {
+				// 计算scroll-view滚动方向，正常情况下上次滚动的oldScrollTop大于当前scrollTop即为向上滚动，反之为向下滚动
+				let direction = this.oldScrollTop > scrollTop ? 'top' : 'bottom';
+				// 此处为解决在iOS中，滚动到顶部因bounce的影响回弹导致滚动方向为bottom的问题：如果滚动到顶部了并且scrollTop小于顶部滚动区域，则强制设置direction为top
+				// 此外发现在h5中下拉刷新时direction有概率被判断为bottom(oldScrollTop > scrollTop)，因为下拉刷新时会禁止scroll-view滚动，则以此为依据强制设置direction为top
+				if (scrollTop <= 0 || !this.scrollEnable) {
+					direction = 'top';
+				}
+				// 此处为解决在iOS中，滚动到底部因bounce的影响回弹导致滚动方向为top的问题：如果滚动到底部了并且scrollTop超过底部滚动区域，则强制设置direction为bottom
+				if (scrollTop > this.lastScrollHeight - this.scrollViewHeight - 1 && this.scrollEnable) {
+					direction = 'bottom';
+				}
+				// emit 列表滚动方向改变事件
+				if (direction !== this.lastScrollDirection) {
+					this.$emit('scrollDirectionChange', direction);
+					this.lastScrollDirection = direction;
+				}
+				// 当scrollHeight变化时，需要延迟100毫秒设置lastScrollHeight，如果直接根据scrollHeight的话，因为此时数据还未改变，会导致滚动方向从bottom变为top
+				if (this.lastScrollHeight !== scrollHeight && !this.setContentHeightPending) {
+					// 因此处会多次触发，因此加个标识确保在延时期间仅触发一次
+					this.setContentHeightPending = true;
+					u.delay(() => {
+						this.lastScrollHeight = scrollHeight;
+						this.setContentHeightPending = false;
+					})
+				}
 			}
 			
 			// #ifndef APP-NVUE
