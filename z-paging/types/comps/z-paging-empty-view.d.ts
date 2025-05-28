@@ -32,23 +32,23 @@ declare interface ZPagingEmptyViewProps {
    * 空数据图样式，可设置空数据view的top等
    * - 如果空数据图不是fixed布局，则此处是`margin-top`
    */
-  emptyViewStyle?: Record<string, any>;
+  emptyViewStyle?: Partial<CSSStyleDeclaration>;
 
   /**
    * 空数据图img样式
    */
-  emptyViewImgStyle?: Record<string, any>;
+  emptyViewImgStyle?: Partial<CSSStyleDeclaration>;
 
   /**
    * 空数据图描述文字样式
    */
-  emptyViewTitleStyle?: Record<string, any>;
+  emptyViewTitleStyle?: Partial<CSSStyleDeclaration>;
 
   /**
    * 空数据图重新加载按钮样式
    * @since 1.6.7
    */
-  emptyViewReloadStyle?: Record<string, any>;
+  emptyViewReloadStyle?: Partial<CSSStyleDeclaration>;
 
   /**
    * 是否显示空数据图重新加载按钮(无数据时)

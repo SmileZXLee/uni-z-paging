@@ -17,7 +17,7 @@ declare interface ZPagingSwiperProps {
   /**
    * z-paging-swiper样式
    */
-  swiperStyle?: Record<string, any>
+  swiperStyle?: Partial<CSSStyleDeclaration>
 }
 
 

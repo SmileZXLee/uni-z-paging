@@ -60,7 +60,7 @@ declare interface ZPagingSwiperItemProps {
   /**
    * innerList样式
    */
-  innerListStyle?: Record<string, any>
+  innerListStyle?: Partial<CSSStyleDeclaration>
 }
 
 // ****************************** Methods ******************************

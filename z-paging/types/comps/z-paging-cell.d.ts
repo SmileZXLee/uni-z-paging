@@ -5,7 +5,7 @@ declare interface ZPagingCellProps {
   /**
    * z-paging-cell样式
    */
-  cellStyle?: Record<string, any>
+  cellStyle?: Partial<CSSStyleDeclaration>
 }
 
 // ****************************** Slots ******************************

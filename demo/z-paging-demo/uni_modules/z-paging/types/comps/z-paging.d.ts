@@ -271,7 +271,7 @@ declare interface ZPagingProps {
   /**
    * 设置z-paging的style，部分平台(如微信小程序)无法直接修改组件的style，可使用此属性代替。
    */
-  pagingStyle?: Record<string, any>
+  pagingStyle?: Partial<CSSStyleDeclaration>
 
   /**
    * 设置z-paging的class，优先级低于pagingStyle和height、width、maxWidth、bgColor
@@ -486,18 +486,18 @@ declare interface ZPagingProps {
   /**
    * 自定义下拉刷新中左侧图标的样式
    */
-  refresherImgStyle?: Record<string, any>
+  refresherImgStyle?: Partial<CSSStyleDeclaration>
 
   /**
    * 自定义下拉刷新中右侧状态描述文字的样式
    */
-  refresherTitleStyle?: Record<string, any>
+  refresherTitleStyle?: Partial<CSSStyleDeclaration>
 
   /**
    * 自定义下拉刷新中右侧最后更新时间文字的样式
    * - show-refresher-update-time为true时有效
    */
-  refresherUpdateTimeStyle?: Record<string, any>
+  refresherUpdateTimeStyle?: Partial<CSSStyleDeclaration>
 
   /**
    * 是否实时监听下拉刷新中进度，并通过@refresherTouchmove传递给父组件
@@ -738,18 +738,18 @@ declare interface ZPagingProps {
    * 自定义底部加载更多样式；如：{'background':'red'} 
    * - 此属性无法修改文字样式，修改文字样式请使用loading-more-title-custom-style
    */
-  loadingMoreCustomStyle?: Record<string, any>
+  loadingMoreCustomStyle?: Partial<CSSStyleDeclaration>
 
   /**
    * 自定义底部加载更多文字样式；如：{'color':'red'}
    * @since 2.1.7
    */
-  loadingMoreTitleCustomStyle?: Record<string, any>
+  loadingMoreTitleCustomStyle?: Partial<CSSStyleDeclaration>
 
   /**
    * 自定义底部加载更多加载中动画样式
    */
-  loadingMoreLoadingIconCustomStyle?: Record<string, any>
+  loadingMoreLoadingIconCustomStyle?: Partial<CSSStyleDeclaration>
 
   /**
    * 自定义底部加载更多加载中动画图标类型
@@ -852,7 +852,7 @@ declare interface ZPagingProps {
   /**
    * 自定义底部没有更多数据的分割线样式
    */
-  loadingMoreNoMoreLineCustomStyle?: Record<string, any>
+  loadingMoreNoMoreLineCustomStyle?: Partial<CSSStyleDeclaration>
 
   // ******************** 空数据与加载失败配置 ********************
   /**
@@ -915,28 +915,28 @@ declare interface ZPagingProps {
   /**
    * 空数据图父view样式
    */
-  emptyViewSuperStyle?: Record<string, any>
+  emptyViewSuperStyle?: Partial<CSSStyleDeclaration>
 
   /**
    * 空数据图样式，可设置空数据view的top等，如：:empty-view-style="{'top':'100rpx'}"
    */
-  emptyViewStyle?: Record<string, any>
+  emptyViewStyle?: Partial<CSSStyleDeclaration>
 
   /**
    * 空数据图img样式
    */
-  emptyViewImgStyle?: Record<string, any>
+  emptyViewImgStyle?: Partial<CSSStyleDeclaration>
 
   /**
    * 空数据图描述文字样式
    */
-  emptyViewTitleStyle?: Record<string, any>
+  emptyViewTitleStyle?: Partial<CSSStyleDeclaration>
 
   /**
    * 空数据图重新加载按钮样式
    * @since 1.6.7
    */
-  emptyViewReloadStyle?: Record<string, any>
+  emptyViewReloadStyle?: Partial<CSSStyleDeclaration>
 
   /**
    * 是否显示空数据图重新加载按钮(无数据时)
@@ -1040,7 +1040,7 @@ declare interface ZPagingProps {
   /**
    * 点击返回顶部按钮的自定义样式
    */
-  backToTopStyle?: Record<string, any>
+  backToTopStyle?: Partial<CSSStyleDeclaration>
 
   // ******************** 虚拟列表&内置列表配置 ********************
   /**
@@ -1132,13 +1132,13 @@ declare interface ZPagingProps {
   /**
    * innerList样式
    */
-  innerListStyle?: Record<string, any>
+  innerListStyle?: Partial<CSSStyleDeclaration>
 
   /**
    * innerCell样式
    * @since 2.2.8
    */
-  innerCellStyle?: Record<string, any>
+  innerCellStyle?: Partial<CSSStyleDeclaration>
 
   // ******************** 本地分页配置 ********************
   /**
