@@ -96,6 +96,11 @@ export default {
 			type: Object,
 			default: u.gc('pagingStyle', {}),
 		},
+		// 设置z-paging的class，优先级低于pagingStyle和height、width、maxWidth、bgColor
+		pagingClass: {
+			type: [String, Array, Object],
+			default: u.gc('pagingClass', ''),
+		},
 		// z-paging的高度，优先级低于pagingStyle中设置的height；传字符串，如100px、100rpx、100%
 		height: {
 			type: String,

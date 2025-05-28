@@ -14,7 +14,7 @@ v2.8.6 (2025-03-17)
 
 <template name="z-paging">
 	<!-- #ifndef APP-NVUE -->
-	<view :class="{'z-paging-content':true,'z-paging-content-full':!usePageScroll,'z-paging-content-fixed':!usePageScroll&&fixed,'z-paging-content-page':usePageScroll,'z-paging-reached-top':renderPropScrollTop<1,'z-paging-use-chat-record-mode':useChatRecordMode}" :style="[finalPagingStyle]">
+	<view :class="[{'z-paging-content':true,'z-paging-content-full':!usePageScroll,'z-paging-content-fixed':!usePageScroll&&fixed,'z-paging-content-page':usePageScroll,'z-paging-reached-top':renderPropScrollTop<1,'z-paging-use-chat-record-mode':useChatRecordMode}, pagingClass]" :style="[finalPagingStyle]">
 		<!-- #ifndef APP-PLUS -->
 		<view v-if="cssSafeAreaInsetBottom===-1" class="zp-safe-area-inset-bottom"></view>
 		<!-- #endif -->
@@ -199,7 +199,7 @@ v2.8.6 (2025-03-17)
 	</view>
 	<!-- #endif -->
 	<!-- #ifdef APP-NVUE -->
-	<component ref="z-paging-content" :is="finalNvueSuperListIs" :style="[finalPagingStyle]" :class="{'z-paging-content-fixed':fixed&&!usePageScroll}" :scrollable="false">
+	<component ref="z-paging-content" :is="finalNvueSuperListIs" :style="[finalPagingStyle]" :class="[{'z-paging-content-fixed':fixed&&!usePageScroll}, pagingClass]" :scrollable="false">
 		<!-- 二楼view -->
 		<view v-if="showF2 && showRefresherF2" ref="zp-n-f2" class="zp-f2-content" @touchmove.stop.prevent :style="[{'height': superContentHeight + 'px', 'width': nRefresherWidth + 'px', 'opacity': nF2Opacity}]">
 			<slot name="f2"/>
@@ -441,6 +441,7 @@ v2.8.6 (2025-03-17)
 	 * @property {Boolean} autoFullHeight 使用页面滚动时，是否在不满屏时自动填充满屏幕，默认为true
 	 * @property {String} defaultThemeStyle loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认为black
 	 * @property {Object} pagingStyle 设置z-paging的style，部分平台(如微信小程序)无法直接修改组件的style，可使用此属性代替
+	 * @property {String|Array|Object} pagingClass 设置z-paging的class，优先级低于pagingStyle和height、width、maxWidth、bgColor
 	 * @property {String} height z-paging的高度，优先级低于pagingStyle中设置的height，传字符串，如100px、100rpx、100%
 	 * @property {String} width z-paging的宽度，优先级低于pagingStyle中设置的width，传字符串，如100px、100rpx、100%
 	 * @property {String} maxWidth z-paging的最大宽度，优先级低于pagingStyle中设置的max-width，默认为空

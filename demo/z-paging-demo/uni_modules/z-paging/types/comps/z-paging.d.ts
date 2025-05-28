@@ -274,6 +274,12 @@ declare interface ZPagingProps {
   pagingStyle?: Record<string, any>
 
   /**
+   * 设置z-paging的class，优先级低于pagingStyle和height、width、maxWidth、bgColor
+   * @since 2.8.7
+   */
+  pagingClass?: string | string[] | Record<string, boolean>
+
+  /**
    * z-paging的高度，优先级低于paging-style中设置的height
    * - 传字符串，如100px、100rpx、100%
    */
