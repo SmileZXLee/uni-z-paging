@@ -2,7 +2,7 @@
   "id": "z-paging",
   "name": "z-paging",
   "displayName": "【z-paging下拉刷新、上拉加载】高性能，全平台兼容。支持虚拟列表，分页全自动处理",
-  "version": "2.8.6",
+  "version": "2.8.7",
   "description": "超简单、低耦合！使用wxs+renderjs实现。支持自定义下拉刷新、上拉加载更多、虚拟列表、下拉进入二楼、自动管理空数据图、无闪动聊天分页、本地分页、国际化等数百项配置",
   "keywords": [
     "下拉刷新",

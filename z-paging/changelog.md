@@ -1,3 +1,13 @@
+## 2.8.7（2025-05-30）
+1.`新增` props：`layout-only`，支持仅使用基础布局。  
+2.`新增` `goF2`方法，支持手动触发进入二楼。  
+3.`新增` `@scrollDirectionChange`事件，支持监听列表滚动方向改变。  
+4.`新增` props：`paging-class`，支持直接设置`z-paging`的`class`。  
+5.`新增` `addKeyboardHeightChangeListener`方法，支持手动添加键盘高度变化监听。  
+6.`修复` `scrollIntoViewById`方法在存在`slot=top`或局部区域滚动时，滚动的位置不准确的问题。  
+7.`优化` 重构底部安全区域处理逻辑，修改为占位view的方式，处理方案更灵活并支持自定义底部安全区域颜色。  
+8.`优化` 兼容在`nvue`+`vue3`中使用`waterfall`。  
+9.`优化` 规范`types`中对`style`类型的约束。  
 ## 2.8.6（2025-03-17）
 1.`新增` 聊天记录模式流式输出（类似chatGPT回答）演示demo。  
 2.`新增` z-paging及其公共子组件支持`HBuilderX`代码文档提示。  
