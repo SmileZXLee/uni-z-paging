@@ -619,8 +619,8 @@ export default {
 		// 下拉刷新结束
 		_refresherEnd(shouldEndLoadingDelay = true, fromAddData = false, isUserPullDown = false, setLoading = true) {
 			if (this.loadingType === Enum.LoadingType.Refresher) {
-				// 计算当前下拉刷新结束需要延迟的时间
-				const refresherCompleteDelay = (fromAddData && (isUserPullDown || this.showRefresherWhenReload)) ? this.refresherCompleteDelay : 0;
+				// 计算当前下拉刷新结束需要延迟的时间(用户主动下拉刷新或reload时显示下拉刷新view才需要计算延迟时间)
+				const refresherCompleteDelay = (fromAddData && (isUserPullDown || this.finalShowRefresherWhenReload)) ? this.refresherCompleteDelay : 0;
 				// 如果延迟时间大于0，则展示刷新结束状态，否则直接展示默认状态
 				const refresherStatus = refresherCompleteDelay > 0 ? Enum.Refresher.Complete : Enum.Refresher.Default;
 				if (this.finalShowRefresherWhenReload) {
