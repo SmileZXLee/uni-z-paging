@@ -302,6 +302,13 @@ export default {
 				this.scrollTop = 0;
 				this.oldScrollTop = this.scrollTop;
 			});
+			u.delay(() => {
+				this.scrollTop = this.oldScrollTop;
+				this.$nextTick(() => {
+					this.scrollTop = 0;
+					this.oldScrollTop = this.scrollTop;
+				});
+			}, 500)
 		},
 		// 滚动到底部
 		async _scrollToBottom(animate = true) {
