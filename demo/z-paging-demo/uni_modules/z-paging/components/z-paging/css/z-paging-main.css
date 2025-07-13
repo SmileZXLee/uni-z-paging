@@ -52,6 +52,10 @@
 	/* #endif */
 }
 
+.zp-right {
+	right: 0;
+}
+
 .zp-scroll-view-super {
 	flex: 1;
 	overflow: hidden;
