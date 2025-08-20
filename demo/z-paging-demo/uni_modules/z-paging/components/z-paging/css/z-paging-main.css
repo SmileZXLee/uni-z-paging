@@ -222,7 +222,6 @@
 }
 
 .zp-safe-area-inset-bottom {
-	position: absolute;
 	/* #ifndef APP-PLUS */
 	height: env(safe-area-inset-bottom);
 	/* #endif */
