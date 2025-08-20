@@ -2,7 +2,8 @@
 
 <template>
 	<view class="chat-input-bar-container">
-		<view class="chat-input-bar">
+		<!-- @touchmove.stop.prevent用于阻止touchmove冒泡，避免键盘弹出后触摸底部输入框区域还可以往上滚动的问题 -->
+		<view class="chat-input-bar" @touchmove.stop.prevent>
 			<view class="chat-input-container">
 				<!-- :adjust-position="false"必须设置，防止键盘弹窗自动上顶，交由z-paging内部处理 -->
 				<input :focus="focus" class="chat-input" v-model="msg" :adjust-position="false" confirm-type="send" type="text" placeholder="请输入内容" @confirm="sendClick" />
