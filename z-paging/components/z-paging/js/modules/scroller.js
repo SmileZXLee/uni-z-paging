@@ -48,6 +48,11 @@ export default {
 			type: String,
 			default: u.gc('scrollIntoView', '')
 		},
+		// z-paging是否使用swiper-item或其他父组件包裹，默认为否，此属性为了解决vue3+(微信小程序或QQ小程序)中，scrollIntoViewById和scrollIntoViewByIndex因无法获取节点信息导致滚动到指定view无效的问题
+		inSwiperSlot: {
+			type: Boolean,
+			default: false
+		},
 	},
 	data() {
 		return {
@@ -378,7 +383,17 @@ export default {
 					return;
 					// #endif
 					// 获取指定view的节点信息
-					this._getNodeClientRect('#' + sel.replace('#', ''), false).then((node) => {
+					let inDom = false;
+					// 在vue3+(微信小程序或QQ小程序)中，无法获取节点信息导致滚动到指定view无效的问题
+					// 通过uni.createSelectorQuery().in(this.$parent)来解决此问题
+					// #ifdef VUE3
+					// #ifdef MP-WEIXIN || MP-QQ
+					if (this.inSwiperSlot) {
+						inDom = this.$parent;
+					}
+					// #endif
+					// #endif
+					this._getNodeClientRect('#' + sel.replace('#', ''), inDom).then((node) => {
 						if (node) {
 							// 获取zp-scroll-view-container的节点信息
 							this._getNodeClientRect('.zp-scroll-view-container').then((svContainerNode) => {

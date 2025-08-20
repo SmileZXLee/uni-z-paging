@@ -1116,12 +1116,20 @@ declare interface ZPagingProps {
   forceCloseInnerList?: boolean
 
   /**
-   * 虚拟列表是否使用swiper-item包裹，默认为否，此属性为了解决vue3+(微信小程序或QQ小程序)中，使用非内置列表写法时，若z-paging在swiper-item内存在无法获取slot插入的cell高度进而导致虚拟列表失败的问题
+   * 虚拟列表是否使用swiper-item或其他父组件包裹，默认为否，此属性为了解决vue3+(微信小程序或QQ小程序)中，使用非内置列表写法时，若z-paging在swiper-item内存在无法获取slot插入的cell高度进而导致虚拟列表失败的问题
    * - 仅vue3+(微信小程序或QQ小程序)+非内置列表写法虚拟列表有效，其他情况此属性设置任何值都无效，所以如果您在swiper-item内使用z-paging的非内置虚拟列表写法，将此属性设置为true即可
    * @default false
    * @since 2.8.6
    */
   virtualInSwiperSlot?: boolean
+
+  /**
+   * z-paging是否使用swiper-item或其他父组件包裹，默认为否，此属性为了解决vue3+(微信小程序或QQ小程序)中，scrollIntoViewById和scrollIntoViewByIndex因无法获取节点信息导致滚动到指定view无效的问题
+   * - 仅vue3+(微信小程序或QQ小程序)且需要调用scrollIntoViewById或scrollIntoViewByIndex方法时有效，其他情况此属性设置任何值都无效
+   * @default false
+   * @since 2.8.8
+   */
+  inSwiperSlot?: boolean
 
   /**
    * 内置列表cell的key名称(仅nvue有效，在nvue中开启use-inner-list时必须填此项)

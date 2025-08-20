@@ -585,7 +585,8 @@ v2.8.7 (2025-05-30)
 	 * @property {String} virtualCellIdPrefix 虚拟列表cell id的前缀
 	 * @property {Boolean} useInnerList 是否在z-paging内部循环渲染列表(使用内置列表)，默认为false
 	 * @property {Boolean} forceCloseInnerList 强制关闭inner-list，默认为false
-	 * @property {Boolean} virtualInSwiperSlot 虚拟列表是否使用swiper-item包裹，默认为false
+	 * @property {Boolean} virtualInSwiperSlot 虚拟列表是否使用swiper-item或其他父组件包裹，默认为false
+	 * @property {Boolean} inSwiperSlot z-paging是否使用swiper-item或其他父组件包裹，默认为否
 	 * @property {String} cellKeyName 内置列表cell的key名称(仅nvue有效)
 	 * @property {Object} innerListStyle innerList样式
 	 * @property {Object} innerCellStyle innerCell样式
