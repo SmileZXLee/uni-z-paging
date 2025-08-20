@@ -183,7 +183,9 @@ export default {
 	},
 	watch: {
 		totalData(newVal, oldVal) {
-			this._totalDataChange(newVal, oldVal, this.totalDataChangeThrow);
+			// 触发totalData改变事件时是否触发emit列表更新事件，如果是从缓存中设置则必须触发，否则根据totalDataChangeThrow的规则判断
+			const eventThrow = this.isSettingCacheList ? true : this.totalDataChangeThrow;
+			this._totalDataChange(newVal, oldVal, eventThrow);
 			this.totalDataChangeThrow = true;
 		},
 		currentData(newVal, oldVal) {
@@ -541,7 +543,7 @@ export default {
 				return;
 			}
 			this._doCheckScrollViewShouldFullHeight(newVal);
-			if(!this.realTotalData.length && !newVal.length){
+			if (!this.realTotalData.length && !newVal.length) {
 				eventThrow = false;
 			}
 			this.realTotalData = newVal;
