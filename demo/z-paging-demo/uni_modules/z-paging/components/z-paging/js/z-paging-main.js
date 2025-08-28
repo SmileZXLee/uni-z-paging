@@ -228,6 +228,7 @@ export default {
 		// #ifdef H5 || MP
 		delay = c.delayTime;
 		// #endif
+		this.systemInfo = u.getSystemInfoSync();
 		this.$nextTick(() => {
 			// 初始化systemInfo
 			this.systemInfo = u.getSystemInfoSync();
