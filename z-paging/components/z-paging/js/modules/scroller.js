@@ -496,7 +496,7 @@ export default {
 			// 在非ios平台滚动中，再次验证一下是否滚动到了底部。因为在一些安卓设备中，有概率滚动到底部不触发@scrolltolower事件，因此添加双重检测逻辑
 			// 排除快手的情况，因为在快手安卓中双重检测会导致滚动到底部事件多次触发
 			// #ifndef MP-KUAISHOU
-			if (!this.isIos) {
+			if (this.toBottomLoadingMoreEnabled && !this.isIos) {
 				// 滚动区域内容的总高度 - 当前滚动的scrollTop = 当前滚动区域的顶部与内容底部的距离
 				const scrollDiff = e.detail.scrollHeight - this.oldScrollTop;
 				this._checkScrolledToBottom(scrollDiff);
