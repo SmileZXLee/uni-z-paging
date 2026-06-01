@@ -4,6 +4,12 @@
     <img alt="logo" src="https://z-paging.zxlee.cn/img/title-logo.png" height="100" style="margin-bottom: 50px;">
 </p>
 
+<p align="center">
+  <b>语言 / Language：</b>
+  <a href="./README.md">🇨🇳 中文</a> &nbsp;|&nbsp;
+  <a href="./README_EN.md">🇬🇧 English</a>
+</p>
+
 [![release](https://img.shields.io/github/v/release/SmileZXLee/uni-z-paging?style=flat)](https://github.com/SmileZXLee/uni-z-paging/releases)
 [![download](https://img.shields.io/npm/dt/z-paging?style=flat)](https://www.npmjs.com/package/z-paging)
 [![license](https://img.shields.io/github/license/SmileZXLee/uni-z-paging?style=flat)](https://en.wikipedia.org/wiki/MIT_License)
