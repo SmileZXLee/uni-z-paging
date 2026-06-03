@@ -596,8 +596,8 @@ v2.8.8 (2025-08-29)
 	 * @property {String} virtualCellIdPrefix 虚拟列表cell id的前缀
 	 * @property {Boolean} useInnerList 是否在z-paging内部循环渲染列表(使用内置列表)，默认为false
 	 * @property {Boolean} forceCloseInnerList 强制关闭inner-list，默认为false
-	 * @property {Boolean} virtualInSwiperSlot 虚拟列表是否使用swiper-item或其他父组件包裹，默认为false
-	 * @property {Boolean} inSwiperSlot z-paging是否使用swiper-item或其他父组件包裹，默认为否
+	 * @property {Boolean} virtualParentLevel 虚拟列表父组件层级，默认为0，此属性为了解决vue3+(微信小程序或QQ小程序)中，使用非内置列表写法时，若z-paging在swiper-item或其他父组件内存在无法获取slot插入的cell高度进而导致虚拟列表失败的问题
+	 * @property {Number|String} parentLevel 父组件层级，默认为0，此属性为了解决vue3+(微信小程序或QQ小程序)中，scrollIntoViewById和scrollIntoViewByIndex因无法获取节点信息导致滚动到指定view无效的问题
 	 * @property {String} cellKeyName 内置列表cell的key名称(仅nvue有效)
 	 * @property {Object} innerListStyle innerList样式
 	 * @property {Object} innerCellStyle innerCell样式
