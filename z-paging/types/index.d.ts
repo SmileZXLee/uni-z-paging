@@ -20,5 +20,6 @@ declare module 'z-paging' {
   }
 }
 
+declare type ZPagingLayoutRef = typeof import('./comps/z-paging-layout')['ZPagingLayoutRef']
 declare type ZPagingSwiperRef = typeof import('./comps/z-paging-swiper')['ZPagingSwiperRef']
 declare type ZPagingSwiperItemRef = typeof import('./comps/z-paging-swiper-item')['ZPagingSwiperItemRef']

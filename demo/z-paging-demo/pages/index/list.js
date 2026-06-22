@@ -143,6 +143,11 @@ export default {
 			title: '内置列表模式演示',
 			file: 'inner-list-demo',
 			subTitle: '使用内置for循环渲染list，无需书写v-for，也无需v-model绑定list(不支持字节跳动小程序)'
+		},
+		{
+			title: '页面基础容器布局演示',
+			file: 'layout-demo',
+			subTitle: '使用z-paging-layout作为页面基础容器，可包含顶部和底部固定区域等'
 		}
 	],
 	listNvue: [{

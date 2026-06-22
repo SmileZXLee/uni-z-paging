@@ -295,6 +295,13 @@
 			"style": {
 				"navigationBarTitleText": "虚拟列表+高度相同瀑布流演示(内置列表写法)"
 			}
+		},
+		{
+			"path": "pages/layout-demo/layout-demo",
+			"style": {
+				"navigationBarTitleText": "页面基础容器布局演示",
+				"enablePullDownRefresh": false
+			}
 		}
 	],
 	"globalStyle": {
