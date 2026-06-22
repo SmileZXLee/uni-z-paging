@@ -48,10 +48,11 @@ export default {
 			type: String,
 			default: u.gc('scrollIntoView', '')
 		},
-		// z-paging是否使用swiper-item或其他父组件包裹，默认为否，此属性为了解决vue3+(微信小程序或QQ小程序)中，scrollIntoViewById和scrollIntoViewByIndex因无法获取节点信息导致滚动到指定view无效的问题
-		inSwiperSlot: {
-			type: Boolean,
-			default: false
+		// 父组件层级，默认为0，此属性为了解决vue3+(微信小程序或QQ小程序)中，scrollIntoViewById和scrollIntoViewByIndex因无法获取节点信息导致滚动到指定view无效的问题
+		// 仅vue3+(微信小程序或QQ小程序)有效，其他情况此属性设置任何值都无效。如果z-paging在swiper-item内，设置为1；如果嵌套层级更深，设置对应的数字(如2、3、4等)
+		parentLevel: {
+			type: [Number, String],
+			default: 0
 		},
 	},
 	data() {
@@ -388,8 +389,15 @@ export default {
 					// 通过uni.createSelectorQuery().in(this.$parent)来解决此问题
 					// #ifdef VUE3
 					// #ifdef MP-WEIXIN || MP-QQ
-					if (this.inSwiperSlot) {
-						inDom = this.$parent;
+					if (this.parentLevel > 0) {
+						const level = parseInt(this.parentLevel);
+						let parent = this.$parent;
+						for (let i = 1; i < level; i++) {
+							if (parent && parent.$parent) {
+								parent = parent.$parent;
+							}
+						}
+						inDom = parent;
 					}
 					// #endif
 					// #endif
