@@ -126,6 +126,11 @@ export default {
 			type: Object,
 			default: u.gc('pagingContentStyle', {}),
 		},
+		// 设置z-paging的容器(插槽的父view)的class
+		pagingContentClass: {
+			type: [String, Array, Object],
+			default: u.gc('pagingContentClass', ''),
+		},
 		// z-paging是否自动高度，若自动高度则会自动铺满屏幕
 		autoHeight: {
 			type: Boolean,

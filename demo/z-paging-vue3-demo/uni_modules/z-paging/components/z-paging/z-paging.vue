@@ -101,7 +101,7 @@ v2.8.8 (2025-08-29)
 								<!-- 全屏Loading -->
 								<slot v-if="showLoading&&zSlots.loading&&!loadingFullFixed" name="loading" />
 								<!-- 主体内容 -->
-								<view class="zp-paging-container-content" :style="[finalPlaceholderTopHeightStyle,finalPagingContentStyle]">
+								<view class="zp-paging-container-content" :class="[pagingContentClass]" :style="[finalPlaceholderTopHeightStyle,finalPagingContentStyle]">
 									<!-- #ifdef VUE3 -->
 									<!-- 虚拟列表顶部占位view -->
 									<view v-if="useVirtualList" class="zp-virtual-placeholder" :style="[{height:virtualPlaceholderTopHeight+'px'}]"/>
@@ -470,6 +470,8 @@ v2.8.8 (2025-08-29)
 	 * @property {String} defaultThemeStyle loading(下拉刷新、上拉加载更多)的主题样式，支持black，white，默认为black
 	 * @property {Object} pagingStyle 设置z-paging的style，部分平台(如微信小程序)无法直接修改组件的style，可使用此属性代替
 	 * @property {String|Array|Object} pagingClass 设置z-paging的class，优先级低于pagingStyle和height、width、maxWidth、bgColor
+	 * @property {Object} pagingContentStyle 设置z-paging的容器(插槽的父view)的style
+	 * @property {String|Array|Object} pagingContentClass 设置z-paging的容器(插槽的父view)的class
 	 * @property {String} height z-paging的高度，优先级低于pagingStyle中设置的height，传字符串，如100px、100rpx、100%
 	 * @property {String} width z-paging的宽度，优先级低于pagingStyle中设置的width，传字符串，如100px、100rpx、100%
 	 * @property {String} maxWidth z-paging的最大宽度，优先级低于pagingStyle中设置的max-width，默认为空

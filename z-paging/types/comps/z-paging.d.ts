@@ -280,6 +280,18 @@ declare interface ZPagingProps {
   pagingClass?: string | string[] | Record<string, boolean>
 
   /**
+   * 设置z-paging的容器(插槽的父view)的style
+   */
+  pagingContentStyle?: Partial<CSSStyleDeclaration>
+
+  /**
+   * 设置z-paging的容器(插槽的父view)的class
+   * @since 2.8.9
+   */
+  pagingContentClass?: string | string[] | Record<string, boolean>
+
+
+  /**
    * z-paging的高度，优先级低于paging-style中设置的height
    * - 传字符串，如100px、100rpx、100%
    */
