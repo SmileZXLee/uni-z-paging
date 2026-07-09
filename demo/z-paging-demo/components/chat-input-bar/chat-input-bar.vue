@@ -6,13 +6,13 @@
 		<view class="chat-input-bar">
 			<view class="chat-input-container">
 				<!-- :adjust-position="false"必须设置，防止键盘弹窗自动上顶，交由z-paging内部处理 -->
-				<input :focus="focus" class="chat-input" v-model="msg" :adjust-position="false" confirm-type="send" type="text" placeholder="请输入内容" @confirm="sendClick" />
+				<input :focus="focus" class="chat-input" v-model="msg" :adjust-position="false" confirm-type="send" type="text" placeholder="请输入内容" @focus="onFocus" @blur="onBlur" />
 			</view>
 			<!-- 表情图标（如果不需要切换表情面板则不用写） -->
 			<view class="emoji-container">
 				<image class="emoji-img" :src="`/static/${emojiType || 'emoji'}.png`" @click="emojiChange"></image>
 			</view>
-			<view :class="{'chat-input-send': true, 'chat-input-send-disabled': !sendEnabled}" @click="sendClick">
+			<view :class="{'chat-input-send': true, 'chat-input-send-disabled': !sendEnabled}" @touchend.prevent="sendClick">
 				<text class="chat-input-send-text">发送</text>
 			</view>
 		</view>
@@ -56,6 +56,17 @@
 			}
 		},
 		methods: {
+			onFocus() {
+				this.$emit('focus');
+			},
+			onBlur() {
+				this.$emit('blur');
+			},
+			measureRect(callback) {
+				uni.createSelectorQuery().in(this).select('.chat-input-bar-container').boundingClientRect(data => {
+					callback && callback(data || null);
+				}).exec();
+			},
 			// 更新了键盘高度（如果不需要切换表情面板则不用写）
 			updateKeyboardHeightChange(res) {
 				if (res.height > 0) {
@@ -93,6 +104,7 @@
 				if (!this.sendEnabled) return;
 				this.$emit('send', this.msg);
 				this.msg = '';
+				this.focus = true;
 			}
 		}
 	}
