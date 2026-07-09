@@ -492,6 +492,7 @@ v2.8.8 (2025-08-29)
 	 * @property {Boolean} auto [z-paging]mounted后是否自动调用reload方法(mounted后自动调用接口)，默认为true
 	 * @property {Boolean} autoScrollToTopWhenReload reload时自动滚动到顶部，默认为true
 	 * @property {Boolean} autoCleanListWhenReload reload时立即自动清空原list，默认为true
+	 * @property {Boolean} autoCleanListWhenReloadError reload失败时是否立即自动清空原list，默认为true。若设置为false，则在下拉刷新失败时不会清空第一页的数据
 	 * @property {Boolean} showRefresherWhenReload 列表刷新时自动显示下拉刷新view，默认为false
 	 * @property {Boolean} showLoadingMoreWhenReload 列表刷新时自动显示加载更多view，且为加载中状态，默认为false
 	 * @property {Boolean} createdReload 组件created时立即触发reload，默认为false

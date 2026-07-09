@@ -1,7 +1,7 @@
 <!-- 普通模式演示(vue) -->
 <template>
 	<view class="content">
-		<z-paging ref="paging" v-model="dataList" @query="queryList">
+		<z-paging ref="paging" :autoCleanListWhenReloadError="false" v-model="dataList" @query="queryList">
 			<!-- 需要固定在顶部不滚动的view放在slot="top"的view中，如果需要跟着滚动，则不要设置slot="top" -->
 			<!-- 注意！此处的z-tabs为独立的组件，可替换为第三方的tabs，若需要使用z-tabs，请在插件市场搜索z-tabs并引入，否则会报插件找不到的错误 -->
 			<template #top>
@@ -25,6 +25,7 @@
 				dataList: [],
 				tabList: ['测试1','测试2','测试3','测试4'],
 				tabIndex: 0,
+				test: false
 			}
 		},
 		methods: {
@@ -34,6 +35,11 @@
 				this.$refs.paging.reload();
 			},
 			queryList(pageNo, pageSize) {
+				if (this.test) {
+					this.$refs.paging.complete(false);
+					return;
+				}
+				this.test = true;
 				// 组件加载时会自动触发此方法，因此默认页面加载时会自动触发，无需手动调用
 				// 这里的pageNo和pageSize会自动计算好，直接传给服务器即可
 				// 模拟请求服务器获取分页数据，请替换成自己的网络请求

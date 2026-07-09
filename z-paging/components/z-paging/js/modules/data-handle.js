@@ -83,6 +83,11 @@ export default {
 			type: Boolean,
 			default: u.gc('autoCleanListWhenReload', true)
 		},
+		// reload失败时是否立即自动清空原list，默认为是。若设置为否，则在下拉刷新失败时，不会清空第一页的数据
+		autoCleanListWhenReloadError: {
+			type: Boolean,
+			default: u.gc('autoCleanListWhenReloadError', true)
+		},
 		// 列表刷新时自动显示下拉刷新view，默认为否
 		showRefresherWhenReload: {
 			type: Boolean,
@@ -528,7 +533,11 @@ export default {
 					}
 				}
 			} else {
-				this._currentDataChange(data, this.currentData);
+				if (this.isFirstPage && !this.autoCleanListWhenReloadError) {
+					this.totalData = this.realTotalData;
+				} else {
+					this._currentDataChange(data, this.currentData);
+				}
 				this._callDataPromise(false);
 				this.loadingStatus = Enum.More.Fail;
 				this.isHandlingRefreshToPage = false;

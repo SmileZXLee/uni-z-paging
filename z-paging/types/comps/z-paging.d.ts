@@ -427,6 +427,14 @@ declare interface ZPagingProps {
   autoCleanListWhenReload?: boolean
 
   /**
+   * reload失败时是否立即自动清空原list
+   * - 若设置为false，则在下拉刷新失败时不会清空第一页的数据
+   * @default true
+   * @since 2.8.7
+   */
+  autoCleanListWhenReloadError?: boolean
+
+  /**
    * 列表刷新时自动显示下拉刷新 view
    * @default false
    * @since 1.7.2
