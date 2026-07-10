@@ -44,8 +44,7 @@
 			lastUniKeyboardHeight: 0,
 			inputFocused: false,
 			focusViewportHeight: 0,
-			focusInputBarBottom: 0,
-			adjustPositionDetectTimerList: [],
+			baseWindowMetrics: null,
 			adjustPositionInvalidLogged: false
 		}
 	},
@@ -81,23 +80,23 @@
 			const compatState = {
 				observer,
 				decorView,
-				lastKeyboardHeight: 0
+				lastKeyboardHeight: 0,
+				latestMetrics: null
 			};
 			compatState.listener = plus.android.implements('android.view.ViewTreeObserver$OnGlobalLayoutListener', {
 				onGlobalLayout: () => {
-					const rect = new Rect();
-					decorView.getWindowVisibleDisplayFrame(rect);
-					const rootView = decorView.getRootView();
-					plus.android.importClass(rootView);
-					const rootHeight = Number(rootView.getHeight());
-					const bottom = Number(plus.android.getAttribute(rect, 'bottom'));
-					let keyboardHeight = rootHeight - bottom;
+					const metrics = this.getAndroidWindowMetrics(Rect, decorView);
+					compatState.latestMetrics = metrics;
+					if (metrics && metrics.keyboardHeight < 150) {
+						this.baseWindowMetrics = { ...metrics, keyboardHeight: 0 };
+					}
+					let keyboardHeight = metrics.keyboardHeight;
 					if (keyboardHeight < 150) {
 						keyboardHeight = 0;
 					}
 					if (keyboardHeight === compatState.lastKeyboardHeight) return;
 					compatState.lastKeyboardHeight = keyboardHeight;
-					this.detectAdjustPositionFailure(keyboardHeight);
+					this.detectAdjustPositionFailureByWindow(keyboardHeight, metrics);
 				}
 			});
 			observer.addOnGlobalLayoutListener(compatState.listener);
@@ -109,101 +108,85 @@
 			this.adjustPositionInvalidLogged = false;
 			this.lastUniKeyboardHeight = 0;
 			this.focusViewportHeight = this.getViewportHeight();
-			this.$refs.inputBar && this.$refs.inputBar.measureRect(rect => {
-				this.focusInputBarBottom = rect && typeof rect.bottom === 'number' ? rect.bottom : 0;
-				console.log('[chat-history-demo] focus输入栏位置', {
-					focusViewportHeight: this.focusViewportHeight,
-					focusInputBarBottom: this.focusInputBarBottom
-				});
+			console.log('[chat-history-demo] focus窗口数据', {
+				focusViewportHeight: this.focusViewportHeight,
+				baseWindowMetrics: this.baseWindowMetrics,
+				currentWindowMetrics: this.getCurrentAndroidWindowMetrics()
 			});
 		},
 		onInputBlur() {
 			this.inputFocused = false;
 			this.adjustPositionInvalidLogged = false;
 			this.focusViewportHeight = 0;
-			this.focusInputBarBottom = 0;
 			this.lastUniKeyboardHeight = 0;
-			this.clearAdjustPositionDetectTimers();
 		},
-		clearAdjustPositionDetectTimers() {
-			this.adjustPositionDetectTimerList.forEach(timer => clearTimeout(timer));
-			this.adjustPositionDetectTimerList = [];
+		getAndroidWindowMetrics(RectClass, decorView) {
+			// #ifdef APP-PLUS
+			const RectCtor = RectClass || plus.android.importClass('android.graphics.Rect');
+			const targetDecorView = decorView || this.androidKeyboardCompat && this.androidKeyboardCompat.decorView;
+			if (!targetDecorView) return null;
+			const rect = new RectCtor();
+			targetDecorView.getWindowVisibleDisplayFrame(rect);
+			const rootView = targetDecorView.getRootView();
+			plus.android.importClass(rootView);
+			const rootHeight = Number(rootView.getHeight()) || 0;
+			const top = Number(plus.android.getAttribute(rect, 'top')) || 0;
+			const bottom = Number(plus.android.getAttribute(rect, 'bottom')) || 0;
+			const visibleHeight = Math.max(0, bottom - top);
+			return {
+				top,
+				bottom,
+				visibleHeight,
+				rootHeight,
+				keyboardHeight: Math.max(0, rootHeight - bottom)
+			};
+			// #endif
+			return null;
 		},
-		scheduleAdjustPositionDetect(task, delay) {
-			const timer = setTimeout(() => {
-				this.adjustPositionDetectTimerList = this.adjustPositionDetectTimerList.filter(item => item !== timer);
-				task();
-			}, delay);
-			this.adjustPositionDetectTimerList.push(timer);
+		getCurrentAndroidWindowMetrics() {
+			// #ifdef APP-PLUS
+			if (plus.os.name !== 'Android') return null;
+			if (this.androidKeyboardCompat && this.androidKeyboardCompat.latestMetrics) {
+				return { ...this.androidKeyboardCompat.latestMetrics };
+			}
+			// #endif
+			return null;
 		},
-		runAdjustPositionDetect(keyboardHeight, stage) {
+		detectAdjustPositionFailureByWindow(keyboardHeight, metrics) {
 			if (!this.inputFocused || !keyboardHeight || this.adjustPositionInvalidLogged) return;
-			this.$refs.inputBar && this.$refs.inputBar.measureRect(rect => {
-				if (!rect || typeof rect.bottom !== 'number') return;
-				const currentViewportHeight = this.getViewportHeight();
-				const actualBottom = rect.bottom;
-				const movedDistance = this.focusInputBarBottom - actualBottom;
-				const moveGap = keyboardHeight - movedDistance;
-				console.log('[chat-history-demo] uni失效检测数据', {
-					stage,
+			const baseMetrics = this.baseWindowMetrics;
+			if (!baseMetrics || !metrics) return;
+			const visibleHeightOffset = baseMetrics.visibleHeight - metrics.visibleHeight;
+			const topOffset = metrics.top - baseMetrics.top;
+			const viewportHeight = this.getViewportHeight();
+			console.log('[chat-history-demo] 窗口失效检测数据', {
+				keyboardHeight,
+				uniKeyboardHeight: this.lastUniKeyboardHeight,
+				viewportHeight,
+				baseTop: baseMetrics.top,
+				currentTop: metrics.top,
+				baseVisibleHeight: baseMetrics.visibleHeight,
+				currentVisibleHeight: metrics.visibleHeight,
+				visibleHeightOffset,
+				topOffset
+			});
+			const windowResizedBySystem = visibleHeightOffset > Math.max(60, keyboardHeight * 0.2);
+			const windowMovedBySystem = topOffset > Math.max(20, keyboardHeight * 0.08);
+			if (windowResizedBySystem || windowMovedBySystem) {
+				this.adjustPositionInvalidLogged = true;
+				console.warn('[chat-history-demo] 检测到adjust-position=false失效', {
 					keyboardHeight,
-					focusViewportHeight: this.focusViewportHeight,
-					currentViewportHeight,
-					focusInputBarBottom: this.focusInputBarBottom,
-					actualBottom,
-					movedDistance,
-					moveGap
-				});
-				if (moveGap > Math.max(40, keyboardHeight * 0.15)) {
-					this.adjustPositionInvalidLogged = true;
-					console.warn('[chat-history-demo] 检测到adjust-position=false失效', {
-						stage,
-						keyboardHeight,
-						focusViewportHeight: this.focusViewportHeight,
-						currentViewportHeight,
-						focusInputBarBottom: this.focusInputBarBottom,
-						actualBottom,
-						movedDistance,
-						moveGap,
-						source: 'uni-keyboard-height-change'
-					});
-				}
-			});
-		},
-		detectAdjustPositionFailure(nativeKeyboardHeight) {
-			if (!this.inputFocused || !nativeKeyboardHeight || this.adjustPositionInvalidLogged) return;
-			this.$nextTick(() => {
-				const currentViewportHeight = this.getViewportHeight();
-				const viewportOffset = this.focusViewportHeight > 0 ? this.focusViewportHeight - currentViewportHeight : 0;
-				const uniListenerMissing = !this.lastUniKeyboardHeight;
-				const viewportShrinkBySystem = viewportOffset > Math.max(60, nativeKeyboardHeight * 0.2);
-				console.log('[chat-history-demo] 键盘检测数据', {
-					nativeKeyboardHeight,
 					uniKeyboardHeight: this.lastUniKeyboardHeight,
-					focusViewportHeight: this.focusViewportHeight,
-					currentViewportHeight,
-					viewportOffset
+					viewportHeight,
+					baseTop: baseMetrics.top,
+					currentTop: metrics.top,
+					baseVisibleHeight: baseMetrics.visibleHeight,
+					currentVisibleHeight: metrics.visibleHeight,
+					visibleHeightOffset,
+					topOffset,
+					source: 'android-window-metrics'
 				});
-				if (uniListenerMissing || viewportShrinkBySystem) {
-					this.adjustPositionInvalidLogged = true;
-					console.warn('[chat-history-demo] 检测到adjust-position=false失效', {
-						nativeKeyboardHeight,
-						uniKeyboardHeight: this.lastUniKeyboardHeight,
-						focusViewportHeight: this.focusViewportHeight,
-						currentViewportHeight,
-						viewportOffset
-					});
-				}
-			});
-		},
-		detectAdjustPositionFailureByUni(keyboardHeight) {
-			if (!this.inputFocused || !keyboardHeight || this.adjustPositionInvalidLogged) return;
-			this.clearAdjustPositionDetectTimers();
-			this.$nextTick(() => {
-				this.runAdjustPositionDetect(keyboardHeight, 'nextTick');
-				this.scheduleAdjustPositionDetect(() => this.runAdjustPositionDetect(keyboardHeight, 'delay-50ms'), 50);
-				this.scheduleAdjustPositionDetect(() => this.runAdjustPositionDetect(keyboardHeight, 'delay-120ms'), 120);
-			});
+			}
 		},
 		disposeAndroidKeyboardCompat() {
 			// #ifdef APP-PLUS
@@ -238,7 +221,7 @@
 				height: this.lastUniKeyboardHeight,
 				viewportHeight: this.getViewportHeight()
 			});
-			this.detectAdjustPositionFailureByUni(this.lastUniKeyboardHeight);
+			this.detectAdjustPositionFailureByWindow(this.lastUniKeyboardHeight, this.getCurrentAndroidWindowMetrics());
 			this.$refs.inputBar.updateKeyboardHeightChange(res);
 		}, 
 			// 用户尝试隐藏键盘，此时如果表情面板在展示中，应当通知chatInputBar隐藏表情面板（如果不需要切换表情面板则不用写）
